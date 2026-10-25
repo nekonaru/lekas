@@ -2,7 +2,7 @@
 
 Aplikasi Android untuk mencatat tugas dan deadline kuliah, dikerjakan sendiri dengan bantuan AI. Tanpa akun, tanpa cloud, tanpa kolaborasi. Semua data tersimpan di HP.
 
-Dokumen ini adalah penataan ulang v2. Bagian 13 sampai 22 versi sebelumnya (fitur tambahan, perubahan skema, jadwal baru, dua bahasa) sudah dilebur ke dalam alur utama, jadi tidak ada lagi bagian yang berbunyi "ubah bagian 3.1" atau "tambahkan ke skema". Daftar perubahan ada di **Lampiran A**. Hal yang masih perlu kamu putuskan ada di **Lampiran B**.
+Dokumen ini adalah penataan ulang v2. Bagian 13 sampai 22 versi sebelumnya (fitur tambahan, perubahan skema, jadwal baru, dua bahasa) sudah dilebur ke dalam alur utama, jadi tidak ada lagi bagian yang berbunyi "ubah bagian 3.1" atau "tambahkan ke skema". Daftar perubahan ada di **Lampiran A**. Hal yang masih perlu kamu putuskan ada di **Lampiran B**. Revisi ketiga menambah 28 fitur baru dan memperkaya beberapa fitur lama (bagian 5.16 sampai 5.33 dan 7.15 sampai 7.24).
 
 ## Daftar Isi
 
@@ -64,6 +64,7 @@ Ditunda sampai Fase B stabil dan dipakai satu semester penuh. Putuskan dari data
 - Asisten AI, Smart Planner berbasis pembelajaran (versi aturan sederhana ada di 7.6)
 - Gamifikasi, model berlangganan Pro, analitik
 - Sinkron dua arah dengan Google Calendar
+- Pengingat berbasis lokasi (geofence), aplikasi jam tangan, pengenalan tulisan tangan, berbagi jadwal antarpengguna
 
 ---
 
@@ -73,43 +74,77 @@ Fokus satu persona dulu: **mahasiswa**. Tugas datang lewat grup WhatsApp, deadli
 
 **Validasi sebelum membangun (1 hari):** tanya 5 sampai 10 teman kelas: "kamu catat tugas di mana sekarang, dan apa yang paling bikin kesal?" Catat jawabannya, lalu cocokkan dengan fitur Fase A dan B. Bandingkan juga dengan Google Tasks, Todoist, dan TickTick untuk tahu apa yang benar-benar beda.
 
+**Pilih fitur bersama teman:** setelah itu tunjukkan daftar fitur di bagian 3 ke teman yang sama dan minta masing-masing memilih 5 fitur yang paling mereka butuhkan. Pakai hasilnya untuk menyusun ulang Urutan 4 dan 5. Daftar fitur sudah panjang, dan suara pengguna nyata lebih andal daripada tebakan.
+
 ---
 
 ## 3. Peta Fitur dan Perkiraan Usaha
 
-Perkiraan hari kerja untuk satu orang paruh waktu dengan bantuan AI, belum termasuk pengujian di HP nyata. Kolom **Tahap** merujuk ke bagian 13. Tanda `*` berarti penempatan atau angka itu usulan penataan, bukan keputusan di v2 awal (lihat Lampiran B).
+Perkiraan hari kerja untuk satu orang paruh waktu dengan bantuan AI, belum termasuk pengujian di HP nyata. Kolom **Urutan** adalah urutan pembangunan (bagian 13), bukan tempat berhenti. Tanda `*` berarti penempatan atau angka itu usulan penataan, bukan keputusan di v2 awal (lihat Lampiran B).
 
-| Fitur | Bagian | Prioritas | Tahap | Usaha (hari) |
-| --- | --- | --- | --- | --- |
-| Inbox | 5.1 | W | 1 | 2 |
-| Subtugas dan progres | 5.2 | W | 1 | 3 |
-| Jadwal kuliah dan Kelas Hari Ini | 5.3 | W | 1 | 5 |
-| Tunda cerdas, geser kartu, aksi massal | 5.5 | W | 1 | 3 |
-| Tanggal mulai dan pengingat mulai | 5.4 | S | 2 | 2 |
-| Riwayat deadline | 5.6 | S | 2 | 2 |
-| Ujian dan materi belajar | 5.7 | S | 2 | 2 |
-| Ringkasan pagi dan malam | 5.12 | S | 2 | 2 |
-| Sampah dan pemulihan | 5.11 | S | 2 | 2 |
-| Share dari tangkapan layar (OCR) | 7.3 | S | 4 | 4 |
-| Deteksi duplikat dan deadline diundur | 7.5 | S | 4 | 4 |
-| Nilai, IPS, IPK, simulator | 7.9 | S | 4 | 5 |
-| Rencana belajar ujian | 7.10 | S | 4 | 3 |
-| Cadangan otomatis | 7.13 | S | 4 | 3 |
-| Share dari aplikasi lain | 7.4 | S | 4* | 1* |
-| Timer fokus | 5.8 | S | 5* | 4 |
-| Pin, tag, duplikat, templat | 5.9 | S | 5* | 4 |
-| Kontak dan tautan kelas | 5.15 | S | 5* | 1 |
-| Quick Add suara | 7.1 | S | 5* | 2 |
-| Pintasan ikon dan Quick Settings | 7.2 | S | 5* | 2 |
-| Saran waktu kosong | 7.6 | S | 5* | 4 |
-| Kalender minggu, agenda, ICS | 7.7 | S | 5* | 5 |
-| Widget lanjutan | 7.8 | S | 5* | 4 |
-| Tugas berulang sederhana | 5.10 | B | 5 | 3 |
-| Kunci aplikasi, tema, mode SMA | 5.13, 5.14 | B | 5 | 4 |
-| Statistik dan rekap semester | 7.11 | B | 5 | 3 |
-| Bagikan sebagai teks, impor CSV | 7.12, 7.14 | B | 5 | 3 |
+| Fitur | Bagian | Prioritas | Urutan | Usaha (hari) | Asal |
+| --- | --- | --- | --- | --- | --- |
+| Inbox | 5.1 | W | 1 | 2 | v2 |
+| Subtugas dan progres | 5.2 | W | 1 | 3 | v2 |
+| Jadwal kuliah dan Kelas Hari Ini | 5.3 | W | 1 | 5 | v2 |
+| Tunda cerdas, geser kartu, aksi massal | 5.5 | W | 1 | 3 | v2 |
+| Tanggal mulai dan pengingat mulai | 5.4 | S | 2 | 2 | v2 |
+| Riwayat deadline | 5.6 | S | 2 | 2 | v2 |
+| Ujian dan materi belajar | 5.7 | S | 2 | 2 | diperkaya |
+| Ringkasan pagi dan malam | 5.12 | S | 2 | 2 | diperkaya |
+| Sampah dan pemulihan | 5.11 | S | 2 | 2 | v2 |
+| Cara kumpul dan status dikumpul | 5.16 | S | 2 | 3 | baru |
+| Pembatalan kelas dan hari libur | 5.20 | S | 2 | 2 | baru |
+| Pengingat tugas terlambat | 5.22 | S | 2 | 1 | baru |
+| Pusat diagnostik pengingat | 5.23 | S | 2 | 2 | baru |
+| Keamanan data lokal | 5.30 | S | 2 | 2 | baru |
+| Share dari tangkapan layar (OCR) | 7.3 | S | 4 | 4 | v2 |
+| Deteksi duplikat dan deadline diundur | 7.5 | S | 4 | 4 | v2 |
+| Nilai, IPS, IPK, simulator | 7.9 | S | 4 | 5 | v2 |
+| Rencana belajar ujian | 7.10 | S | 4 | 3 | v2 |
+| Cadangan otomatis | 7.13 | S | 4 | 3 | v2 |
+| Share dari aplikasi lain | 7.4 | S | 4* | 1* | v2 |
+| Bobot komponen per matkul | 5.18 | S | 4 | 2 | baru |
+| Target pribadi | 5.17 | S | 4 | 2 | baru |
+| Kehadiran dan batas absen | 5.19 | S | 4 | 4 | baru |
+| Senyap saat kelas dan notifikasi tidak berisik | 5.21 | S | 4 | 2 | baru |
+| Fokus hari ini (Tiga Besar) | 5.24 | S | 4 | 1 | baru |
+| Ganti semester | 5.29 | S | 4 | 2 | baru |
+| Saring tersimpan dan pencarian lanjutan | 5.28 | S | 4 | 2 | baru |
+| Parser lanjutan (estimasi, prioritas, tag, cara kumpul) | 7.15 | S | 4 | 4 | baru |
+| Lampiran dokumen | 7.20 | S | 4 | 2 | baru |
+| Skenario nilai "bagaimana jika" | 7.22 | S | 4 | 2 | baru |
+| Impor gabung dan pemulihan selektif | 7.23 | S | 4 | 3 | baru |
+| Timer fokus | 5.8 | S | 5* | 4 | v2 |
+| Pin, tag, duplikat, templat | 5.9 | S | 5* | 4 | v2 |
+| Kontak dan tautan kelas | 5.15 | S | 5* | 1 | v2 |
+| Quick Add suara | 7.1 | S | 5* | 2 | v2 |
+| Pintasan ikon dan Quick Settings | 7.2 | S | 5* | 2 | v2 |
+| Saran waktu kosong | 7.6 | S | 5* | 4 | v2 |
+| Kalender minggu, agenda, ICS | 7.7 | S | 5* | 5 | v2 |
+| Widget lanjutan | 7.8 | S | 5* | 5 | diperkaya |
+| Wadah non-matkul | 5.25 | S | 5 | 2 | baru |
+| Proyek dan milestone | 5.26 | S | 5 | 5 | baru |
+| Quick Add banyak baris dan ulang cepat | 7.16 | S | 5 | 2 | baru |
+| Peta beban mingguan | 7.17 | S | 5 | 3 | baru |
+| Tugas berulang sederhana | 5.10 | B | 5 | 3 | v2 |
+| Kunci aplikasi, tema, mode SMA | 5.13, 5.14 | B | 5 | 4 | v2 |
+| Statistik dan rekap semester | 7.11 | B | 5 | 4 | diperkaya |
+| Bagikan sebagai teks, impor CSV | 7.12, 7.14 | B | 5 | 3 | v2 |
+| Dependensi tugas | 5.27 | B | 5 | 2 | baru |
+| Mode demo | 5.31 | B | 5 | 1 | baru |
+| Daftar bawaan per matkul | 5.32 | B | 5 | 2 | baru |
+| Tautan cepat global | 5.33 | B | 5 | 1 | baru |
+| Impor jadwal dari tangkapan layar | 7.18 | B | 5 | 3 | baru |
+| Ekspor gambar dan PDF | 7.19 | B | 5 | 3 | baru |
+| Catatan pertemuan per matkul | 7.21 | B | 5 | 3 | baru |
+| Cadangan terenkripsi | 7.24 | B | 5 | 2 | baru |
 
-**Jumlah kasar (dikoreksi):** Wajib 13 hari, Sebaiknya 56 hari, Bonus 13 hari. Di v2 awal tertulis 13, 50, dan 16. Angka Sebaiknya naik karena penjumlahan sebelumnya meleset dan karena "Share dari aplikasi lain" belum ada di tabel. Angka Bonus turun karena penjumlahan sebelumnya meleset.
+Kolom **Asal:** `v2` sudah ada di v2 awal, `baru` ditambahkan di revisi ketiga, `diperkaya` fitur lama yang isi atau usahanya bertambah.
+
+**Jumlah kasar (diperbarui di revisi ketiga):** Wajib 13 hari, Sebaiknya 105 hari, Bonus 31 hari, total **149 hari kerja**. Sebelum revisi ketiga totalnya 82 hari (13, 56, 13). Sebaiknya naik 49 hari dan Bonus naik 18 hari karena 28 fitur baru (20 bertanda S, 8 bertanda B) dan tambahan usaha untuk widget dan statistik. **Tidak ada fitur baru yang dijadikan Wajib**, jadi inti aplikasi tidak tertunda.
+
+Angka ini jauh melebihi kapasitas satu pembuat paruh waktu bila semuanya dikerjakan. Karena itu Urutan 5 sepenuhnya opsional, aturan pemotongan (bagian 1) adalah pengaman utama, dan validasi bersama teman (bagian 2) dipakai untuk memilih mana yang benar-benar layak dikerjakan.
 
 **Di luar tabel:** rencana inti Fase A dan B (bagian 13) dan dukungan dua bahasa (sekitar 11 sampai 12 hari, tersebar di tiap fitur, lihat bagian 8).
 
@@ -140,16 +175,20 @@ Perkiraan hari kerja untuk satu orang paruh waktu dengan bantuan AI, belum terma
 
 Urutan bagian dari atas ke bawah. Bagian bertanda fitur tambahan baru muncul bila fiturnya sudah dibuat.
 
-1. **Kelas berikutnya** (kartu ringkas dengan sisa waktu, fitur 5.3).
-2. **Disematkan** (tugas yang di-pin, tampil di luar urutan skor, fitur 5.9).
-3. **Terlambat** (diurutkan dari yang paling lama terlambat), dengan tombol cepat "Tandai selesai" atau "Atur ulang".
-4. **Hari ini dan besok**, diurutkan skor urgensi.
-5. **Sedang dikerjakan** (status Dikerjakan), selalu terlihat, tidak turun.
-6. **Hitung mundur ujian** bila kurang dari 14 hari (fitur 5.7).
-7. **Minggu ini**, diciutkan secara bawaan.
-8. **Kapan-kapan**, diciutkan.
+1. **Kelas berikutnya** (kartu ringkas dengan sisa waktu, fitur 5.3), memperhitungkan pembatalan dan perubahan satu kali (5.20).
+2. **Fokus hari ini** (maksimal 3 tugas pilihan, fitur 5.24).
+3. **Disematkan** (tugas yang di-pin, tampil di luar urutan skor, fitur 5.9).
+4. **Terlambat** (diurutkan dari yang paling lama terlambat), dengan tombol cepat "Tandai selesai" atau "Atur ulang".
+5. **Hari ini dan besok**, diurutkan skor urgensi.
+6. **Sedang dikerjakan** (status Dikerjakan), selalu terlihat, tidak turun.
+7. **Hitung mundur ujian** bila kurang dari 14 hari (fitur 5.7).
+8. **Minggu ini**, diciutkan secara bawaan.
+9. **Menunggu** (tugas yang bergantung pada tugas lain, fitur 5.27), diciutkan.
+10. **Kapan-kapan**, diciutkan.
 
 Inbox (fitur 5.1) punya tab sendiri dengan badge angka, bukan bagian di layar ini.
+
+**Agar layar tidak terlalu penuh:** bagian hanya tampil bila ada isinya, dan tiap bagian bisa disembunyikan lewat Pengaturan > Susunan Hari Ini. Kartu peringatan (izin pengingat dicabut, 5.23; minggu padat, 7.17; Inbox menumpuk, 5.1) tampil paling atas, bisa ditutup, dan maksimal satu kartu sekaligus.
 
 Setiap kartu menampilkan **alasan singkat** mengapa posisinya di situ, misalnya "deadline 6 jam lagi, bobot 30%". Ini membuat urutan terasa masuk akal dan mudah dipercaya.
 
@@ -179,6 +218,9 @@ T = estimasi_jam / jam_efektif_tersisa  (dibatasi 0 sampai 2)
 
 - Jadwal kuliah diisi: jam kuliah dikurangkan dari jam efektif (5.3).
 - Subtugas ada: estimasi sisa waktu untuk T dikurangi sesuai persentase selesai (5.2).
+- Target pribadi ada: komponen U dihitung dari target selesai, bukan dari deadline resmi (5.17).
+- Bobot komponen diisi: komponen B memakai bobot efektif (5.18).
+- Tugas menunggu tugas lain: tidak ikut diurutkan, karena berada di bagian Menunggu (5.27).
 
 **Pengujian rumus:** siapkan 15 tugas nyata dari semestermu, urutkan manual dulu, lalu bandingkan dengan urutan aplikasi. Ubah konstanta sampai 12 dari 15 cocok.
 
@@ -191,7 +233,7 @@ T = estimasi_jam / jam_efektif_tersisa  (dibatasi 0 sampai 2)
 3. Deadline diubah atau tugas selesai: pengingat lama dibatalkan lewat `notif_id`, lalu dibuat ulang bila perlu.
 4. **Boot receiver** menjadwalkan ulang semua pengingat aktif setelah HP restart atau aplikasi diperbarui.
 5. Hanya jadwalkan 14 hari ke depan. Sisanya dijadwalkan ulang oleh tugas harian (Lampiran B, poin 2).
-6. Tombol aksi di notifikasi: **Selesai** dan **Tunda 1 jam** (pilihan tunda lengkap ada di 5.5).
+6. Tombol aksi di notifikasi: **Selesai** dan **Tunda 1 jam** (pilihan tunda lengkap ada di 5.5). Perilaku tugas terlambat ada di 5.22, notifikasi berkelompok dan anggaran notifikasi di 5.21, dan diagnostik di 5.23.
 7. Perubahan zona waktu HP memicu penjadwalan ulang.
 
 **Hal Android yang wajib ditangani sejak awal**
@@ -238,7 +280,7 @@ Fondasi untuk banyak fitur lain.
 - Setiap wadah punya slot kelas: hari, jam mulai, jam selesai, ruangan, jenis (kuliah atau praktikum). Satu matkul boleh punya beberapa slot.
 - **Kelas Hari Ini:** kartu di atas layar Hari Ini yang menunjukkan kelas berikutnya dan sisa waktunya.
 - **Jam efektif lebih akurat:** jam kuliah otomatis dikurangkan dari jam produktif di rumus skor urgensi, tidak lagi hanya memakai nilai bawaan 10 jam.
-- **Pengingat kelas:** 30 menit sebelum mulai (bisa dimatikan per matkul).
+- **Pengingat kelas:** 30 menit sebelum mulai (bisa dimatikan per matkul). Pembatalan atau perubahan satu kali ada di 5.20, kehadiran di 5.19.
 - **Deteksi bentrok:** peringatan saat dua slot tumpang tindih atau saat deadline jatuh di tengah jam kelas.
 - Pengisian cepat: salin slot dari hari lain. Setelah parser ada (Fase B), bisa juga ketik "basdat senin 08.00 10.30 lab2".
 
@@ -271,6 +313,7 @@ Situasi umum: dosen mengundur atau memajukan deadline lewat chat.
 - **Daftar materi** memakai subtugas (satu bab atau topik per baris) sehingga progres belajar terlihat sebagai cincin.
 - Catatan "yang sering keluar" dan tautan sumber bisa ditulis di catatan tugas.
 - Hitung mundur ujian muncul di layar Hari Ini bila kurang dari 14 hari.
+- **Mode Minggu Ujian** (opsional, bisa dimatikan): bila ada 2 ujian atau lebih dalam 7 hari, layar Hari Ini menciutkan bagian Minggu ini dan Kapan-kapan, dan menonjolkan jadwal ujian serta progres materinya.
 
 ### 5.8 Timer fokus [S]
 
@@ -303,6 +346,7 @@ Tanpa RRULE. Hanya tiga pola: **harian, mingguan (hari tertentu), bulanan (tangg
 - **Ringkasan pagi** (bawaan 07.00): "Hari ini: 2 kelas, 3 tugas. Paling mendesak: laprak Basdat (deadline 23.59)."
 - **Penutup malam** (bawaan 20.30, bisa dimatikan): "Ada 2 tugas besok. Mau cek sekarang?" Hanya tampil bila ada tugas berdeadline besok.
 - Keduanya dihitung lokal dari database, tanpa server.
+- Ringkasan pagi bisa menyertakan jatah absen yang tinggal 1 (5.19) dan tombol "Pilih fokus hari ini" (5.24). Penutup malam bisa menyertakan "Besok bawa: ..." (5.32).
 
 ### 5.13 Keamanan lokal dan tampilan [B]
 
@@ -323,6 +367,145 @@ Mesin yang sama, dengan perbedaan tampilan.
 
 - Di detail wadah: tombol "Buka WhatsApp dosen", "Buka tautan kelas" (Google Classroom, LMS kampus, Zoom atau Meet), dan "Salin nomor ruangan".
 - Tautan tersimpan di `space_meta` dan dibuka lewat browser atau aplikasi terkait.
+
+### 5.16 Cara kumpul dan status "sudah dikumpul" [S]
+
+Banyak tugas gagal bukan karena belum selesai, tetapi karena salah cara atau salah nama berkas saat mengumpulkan.
+
+- Tiga kolom opsional di "Detail lain": **cara kumpul** (`email`, `lms`, `paper`, `drive`, `other`), **tujuan** (alamat email, nama kelas LMS, ruangan), dan **pola nama berkas** (contoh `{nim}_{nama}_{matkul}_{judul}`).
+- Variabel `{nim}` dan `{nama}` diambil dari Pengaturan > Profil (opsional, tersimpan lokal saja). `{matkul}` dan `{judul}` diambil dari tugas.
+- Tombol **Salin nama berkas** dan **Salin tujuan**. Untuk cara kumpul email, tombol **Buka email** membuka aplikasi email dengan alamat dan subjek terisi.
+- Tombol **Tandai sudah dikumpul** mencatat `submitted_at`. Menandai Selesai pada tugas yang punya cara kumpul menanyakan "Sudah dikumpul?", supaya Selesai tidak berarti sekadar selesai mengerjakan.
+- **Cek sebelum kumpul:** subtugas bertanda cek (nama berkas benar, format PDF, lampiran lengkap) yang bisa datang dari templat (5.9).
+- Statistik ketepatan waktu (7.11) memakai `submitted_at` bila ada.
+
+### 5.17 Target pribadi [S]
+
+- Selain deadline resmi, tugas boleh punya **target selesai** yang lebih awal. Pengaturan bawaan: 0, 1, atau 2 hari lebih awal, khusus untuk tugas berbobot besar.
+- Target memakai kolom `target_at`. Skor urgensi memakai target (bukan deadline) untuk komponen U bila target ada, supaya urutan sesuai niatmu. Pengingat H-3 dan seterusnya tetap dari deadline resmi, ditambah satu pengingat di target.
+- Kartu menampilkan "Target Rabu, deadline Jumat". Melewati target tidak memindahkan tugas ke bagian Terlambat, hanya memberi lencana kuning.
+- Target harus sebelum deadline. Peta beban mingguan (7.17) memakai target.
+
+### 5.18 Bobot komponen per matkul [S]
+
+- Di detail wadah: tabel komponen penilaian, misalnya UTS 30, UAS 40, Tugas 20, Kuis 10 (kunci `midterm`, `final`, `assignment`, `quiz`, `attendance`, `other`). Peringatan bila jumlahnya bukan 100.
+- Jenis tugas dipetakan ke komponen: `quiz` ke `quiz`, `midterm` ke `midterm`, `final` ke `final`, sisanya (`lab_report`, `paper`, `presentation`, `other`) ke `assignment`.
+- **Bobot efektif** tugas dihitung saat tampil: bobot yang diisi manual bila ada, bila kosong maka bobot komponen dibagi jumlah tugas pada komponen itu.
+- Bobot efektif dipakai untuk komponen B skor urgensi, rekap nilai, prediksi nilai (7.9), dan skenario (7.22). Kolom `weight_percent` di tugas tetap hanya untuk isian manual, tidak ada bobot yang disimpan ganda.
+
+### 5.19 Kehadiran dan batas absen [S]
+
+Banyak kampus mensyaratkan kehadiran minimum untuk ikut ujian akhir, dan jatah absen mudah terlupa.
+
+- Tiap pertemuan kelas (dari slot jadwal, 5.3) bisa dicatat: **Hadir**, **Absen**, **Izin**, **Sakit**. Pencatatan dari kartu Kelas Hari Ini atau dari notifikasi opsional "Isi kehadiran" 10 menit setelah kelas selesai (mati secara bawaan, dinyalakan per matkul).
+- Pengaturan per matkul: jumlah pertemuan rencana (bawaan 16), batas absen maksimal dalam persen (bawaan 25, **sesuaikan dengan aturan kampusmu**), dan apakah izin dan sakit dihitung sebagai absen.
+- Tampilan per matkul: "Hadir 9 dari 11 pertemuan, sisa jatah absen 2". Peringatan lembut bila sisa jatah tinggal 1 dan peringatan merah (dengan ikon dan teks) bila habis.
+- Hari libur dan kelas yang dibatalkan (5.20) tidak dihitung sebagai pertemuan.
+- Jatah absen yang tinggal 1 ikut muncul di Ringkasan pagi (5.12).
+
+### 5.20 Pembatalan dan perubahan kelas sekali [S]
+
+- Dari kartu Kelas Hari Ini: **Kelas kosong**, **Pindah ruang**, atau **Ganti jam** untuk satu tanggal saja, tanpa mengubah jadwal mingguan (`class_exceptions`).
+- Kelas kosong membatalkan pengingat kelas dan pertanyaan kehadiran hari itu, dan membebaskan jam itu dalam hitungan jam efektif dan saran waktu kosong.
+- **Hari libur:** tandai satu tanggal sebagai libur untuk semua kelas, atau impor dari ICS kalender akademik (7.7).
+- Setelah parser ada (Fase B), kata seperti "kosong", "libur", "tidak ada kuliah", dan "diganti" di pesan share mengusulkan pembatalan. Pengguna yang memutuskan.
+
+### 5.21 Senyap saat kelas dan notifikasi yang tidak berisik [S]
+
+Semakin banyak fitur berarti semakin banyak notifikasi, dan notifikasi berlebihan membuat pengguna mematikan semuanya. Bagian ini menjaga agar itu tidak terjadi.
+
+- **Senyap saat kelas** (opsional): pengingat yang jatuh di tengah jam kelas ditahan sampai kelas selesai. Pengecualian: pengingat deadline kurang dari 1 jam tidak pernah ditahan.
+- **Gabung notifikasi:** pengingat dari beberapa tugas dalam rentang 10 menit digabung menjadi satu notifikasi berkelompok ("3 tugas mendekati deadline") dengan daftar di dalamnya.
+- **Anggaran notifikasi:** maksimal 8 notifikasi non-kritis per hari (bisa diatur). Pengingat deadline kurang dari 3 jam tidak pernah dipangkas. Kelebihan di atas anggaran digabung ke ringkasan.
+- **Intensitas:** Tenang, Normal, Gencar. Tenang: H-1 dan 3 jam. Normal: seperti 4.6. Gencar: ditambah pengingat tiap 6 jam pada hari deadline.
+- Aturan untuk pengingat di jam tenang mengikuti keputusan di Lampiran B poin 1.
+
+### 5.22 Pengingat tugas terlambat [S]
+
+Kanal "tugas terlambat" sudah ada di 4.6, tetapi perilakunya belum ditentukan. Aturannya:
+
+- Satu notifikasi per hari (bawaan 09.00) berisi semua tugas terlambat. Setiap tugas muncul maksimal 3 hari berturut-turut, lalu berhenti dan hanya terlihat di bagian Terlambat dan Ringkasan pagi.
+- Aksi di notifikasi: **Selesai**, **Atur ulang** (deadline baru), dan **Tunda**.
+- Nada tidak menyalahkan (bagian 11). Bisa dimatikan.
+
+### 5.23 Pusat diagnostik pengingat [S]
+
+Perluasan layar Cek Pengingat (4.6) untuk masalah yang paling sulit dilacak: pengingat yang tidak muncul di merek HP tertentu.
+
+- Daftar pengingat terjadwal 14 hari ke depan, status izin (notifikasi dan alarm presisi), status pengecualian penghemat baterai, serta merek dan versi Android.
+- **Riwayat tes notifikasi 1 menit:** setelah tes, aplikasi menanyakan "Muncul tepat waktu?" dan mencatat jawabannya.
+- Pengingat nyata dicatat `acked_at` bila diketuk atau salah satu tombol aksinya dipakai. **Batasan jujur:** aplikasi tidak bisa memastikan sebuah notifikasi benar-benar tampil di layar, hanya bahwa pengguna berinteraksi dengannya. Pengingat yang lewat tanpa interaksi tidak bisa dibedakan dari yang tidak muncul.
+- Tombol **Salin laporan diagnostik**: teks berisi merek, versi Android, status izin, jumlah pengingat terjadwal, dan hasil tes terakhir. Berguna untuk dikirim dari HP teman ke pembuat aplikasi atau ditempel ke AI saat debugging.
+- Satu kartu peringatan di layar Hari Ini bila izin dicabut atau penghemat baterai aktif (bisa ditutup).
+
+### 5.24 Fokus hari ini ("Tiga Besar") [S]
+
+- Pilih sampai 3 tugas sebagai fokus hari ini, dari kartu atau dari layar saran di Ringkasan pagi (5.12).
+- Bagian "Fokus hari ini" tampil tepat di bawah Kelas berikutnya di layar Hari Ini. Beda dengan pin: pin menetap, fokus hanya berlaku satu hari (`focus_date`).
+- Tugas fokus yang belum selesai ditawarkan lagi esok pagi: "Lanjutkan 2 tugas kemarin?"
+- Bila ketiganya selesai, tampilkan animasi kecil. Tanpa lencana, skor, atau peringkat.
+
+### 5.25 Wadah non-matkul [S]
+
+- Kolom `kind` pada wadah: `course` (matkul), `organization` (organisasi), `project` (proyek), `personal` (pribadi), `other`.
+- Wadah non-matkul tidak punya SKS, nilai, kehadiran, atau komponen bobot. Layar wadahnya menampilkan tugas, catatan, tautan, dan jadwal rapat (slot kelas berjenis `meeting`).
+- Berguna untuk organisasi kampus, kepanitiaan, dan kegiatan pribadi supaya tidak bercampur dengan rekap nilai.
+- Alias dan parser bekerja seperti biasa.
+
+### 5.26 Proyek dan milestone [S]
+
+- Tugas **induk** dengan **anak** yang punya tenggat sendiri (`parent_id`). Berbeda dari subtugas (5.2) yang hanya berupa centang tanpa tanggal.
+- Induk menampilkan progres dari anak yang selesai dan "milestone berikutnya". Anak muncul di layar Hari Ini seperti tugas biasa dengan label nama induk.
+- **Rencana mundur:** isi deadline akhir dan pilih templat proyek, aplikasi mengusulkan tanggal tiap milestone sebagai persentase dari waktu yang tersisa. Pengguna mengubah atau menolak.
+- Templat proyek disimpan di `task_templates` (kolom `milestones_json`). Contoh laporan akhir: topik, bab 1 sampai 3, bab 4 dan 5, revisi, finalisasi, pengumpulan.
+- Menghapus induk menanyakan nasib anak: ikut dihapus atau dilepas menjadi tugas biasa.
+- Skor: anak dihitung seperti tugas biasa, induk tidak memiliki skor sendiri.
+
+### 5.27 Dependensi tugas [B]
+
+- Tugas boleh "menunggu" tugas lain (`task_deps`), misalnya laprak menunggu praktikum selesai.
+- Tugas yang menunggu tampil di bagian ciut "Menunggu" dan tidak mengirim pengingat mulai (5.4). Pengingat deadline tetap berjalan.
+- Saat prasyarat selesai, satu notifikasi lembut: "Sekarang bisa mulai: laprak Basdat."
+- Siklus ditolak saat menyimpan.
+
+### 5.28 Saring tersimpan dan pencarian lanjutan [S]
+
+- Gabungkan wadah, jenis, tag, status, rentang tanggal, dan kata kunci menjadi **tampilan tersimpan** (misalnya "Kelompok yang belum mulai", "UAS semester ini") dengan nama dan urutan sendiri (`saved_filters`).
+- Tampilan tersimpan muncul sebagai chip di layar Tugas dan bisa dijadikan pintasan ikon (7.2).
+- Pencarian global mencakup judul, catatan, subtugas, tag, nama wadah, teks asli pesan share, dan catatan pertemuan bila ada (7.21). Hasil dikelompokkan per jenis. Riwayat pencarian terakhir bisa dihapus.
+
+### 5.29 Ganti semester [S]
+
+- Wizard akhir semester: ringkasan (jumlah tugas selesai, IPS bila nilai akhir terisi), lalu **arsipkan** semua wadah semester lama.
+- Buat semester baru: pilih wadah yang disalin (nama, kode, alias, meta, slot kelas, komponen bobot) tanpa tugas dan tanpa nilai, lalu tentukan `period` baru.
+- Tugas yang belum selesai di semester lama: biarkan di arsip, pindahkan ke wadah baru, atau hapus.
+- `active_period` di Pengaturan menjadi penyaring bawaan. Semester lama tetap bisa dibuka dari Arsip.
+
+### 5.30 Keamanan data lokal [S]
+
+Tanpa cloud, database di HP adalah satu-satunya salinan. Fitur ini melindunginya.
+
+- **Snapshot sebelum migrasi:** sebelum Drift menjalankan migrasi skema, berkas database disalin ke folder internal aplikasi (simpan 2 terakhir). Bila migrasi gagal, tawarkan pulihkan dari snapshot, bukan macet berulang.
+- **Cek integritas** di Pengaturan (`PRAGMA integrity_check`) dengan hasil yang bisa dibaca dan jalur pulihkan dari snapshot atau cadangan JSON.
+- Bila database tidak bisa dibuka saat start, tampilkan layar pemulihan (impor cadangan, mulai baru, salin laporan).
+- Cadangan JSON diverifikasi sebelum dianggap berhasil: dibaca ulang dan jumlah barisnya dibandingkan.
+
+### 5.31 Mode demo [B]
+
+- Opsi di onboarding: "Coba dengan data contoh". Aplikasi membuat satu semester contoh (3 matkul, 8 tugas, jadwal) bertanda `is_sample`.
+- Tombol "Hapus data contoh" di Pengaturan dan di banner layar Hari Ini. Berguna untuk teman yang baru mencoba dan untuk tangkapan layar.
+- Data contoh tidak ikut cadangan.
+
+### 5.32 Daftar bawaan per matkul [B]
+
+- Di detail wadah: daftar barang bawaan (laptop, kabel LAN, laprak cetak) di `space_items`.
+- Penutup malam (5.12) menyebut "Besok bawa: ..." bila ada kelas besok yang daftarnya terisi.
+- Centang malam hari, dan centang direset otomatis sesudah kelas.
+
+### 5.33 Tautan cepat global [B]
+
+- Daftar tautan bebas (SIAKAD, e-learning kampus, KRS, perpustakaan) di Pengaturan dan satu baris tombol kecil di layar Hari Ini (bisa disembunyikan). Disimpan di `quick_links`.
+- Pintasan ikon (7.2) bisa memakai tautan yang dipilih.
 
 ---
 
@@ -378,6 +561,7 @@ Mesin yang sama, dengan perbedaan tampilan.
 - Layar hasil menampilkan **daftar calon tugas dengan kotak centang**, tiap calon dengan chip yang bisa dikoreksi. Satu pesan bisa menjadi beberapa tugas.
 - Teks asli pesan disimpan di catatan tugas supaya syarat pengumpulan tidak hilang.
 - Bila tidak ada kalimat berkata kunci, tampilkan seluruh pesan sebagai satu calon dengan judul yang bisa diubah.
+- Setelah parser lanjutan (7.15) ada, calon tugas juga membawa estimasi, prioritas, cara kumpul, tautan, dan usulan subtugas bila terbaca.
 
 ### 6.3 Widget Layar Utama
 
@@ -395,6 +579,7 @@ Mesin yang sama, dengan perbedaan tampilan.
 
 - Foto (dari kamera atau galeri) dan tautan. Disimpan di folder aplikasi, batas ukuran 10 MB per berkas.
 - Dimasukkan ke ekspor cadangan sebagai berkas zip.
+- Lampiran berkas dokumen (PDF, Word, presentasi) ada di 7.20.
 
 ### 6.6 Fitur Murah yang Bernilai Tinggi
 
@@ -464,6 +649,7 @@ Versi ringan dari Smart Planner, murni aturan.
 - Widget **Daftar Tugas** (3 sampai 6 baris) dengan kotak centang yang bisa diketuk langsung.
 - Widget **Kelas Hari Ini** (jadwal singkat).
 - Widget **Hitung Mundur Ujian**.
+- Widget **Fokus Hari Ini** (5.24): tiga tugas fokus dengan kotak centang.
 - Tombol tambah cepat di tiap widget.
 - Pembaruan saat data berubah dan setiap 30 menit sebagai cadangan.
 
@@ -482,6 +668,8 @@ Versi ringan dari Smart Planner, murni aturan.
 ### 7.11 Statistik pribadi dan rekap semester [B]
 
 - Persentase tugas tepat waktu, rata-rata selisih antara selesai dan deadline, matkul paling padat, hari paling sibuk.
+- Tambahan: ketepatan pengumpulan (memakai `submitted_at`, 5.16), akurasi estimasi per jenis tugas (dari timer fokus, 5.8), hari dan jam paling produktif, rekap kehadiran per matkul (5.19), dan tren per minggu.
+- Semua angka dihitung lokal dan bisa direset.
 - Ringkasan akhir semester: total tugas selesai, jam fokus, deadline yang diundur, dan rekap nilai. Bisa dibagikan sebagai gambar teks.
 - Tidak ada skor sosial, lencana, atau peringkat.
 
@@ -500,6 +688,92 @@ Versi ringan dari Smart Planner, murni aturan.
 
 - Impor CSV sederhana (judul, tanggal, wadah) untuk pindahan dari aplikasi lain atau dari spreadsheet.
 - Pemetaan kolom dipilih sendiri oleh pengguna di layar impor.
+
+### 7.15 Parser lanjutan: estimasi, prioritas, tag, cara kumpul [S]
+
+Menambah langkah pipeline 6.1. Dikerjakan setelah parser dasar lulus tesnya.
+
+- **Token singkat:** `@basdat` (wadah), `#kelompok` (tag), `!` atau `!tinggi` (prioritas tinggi), `!rendah`, `~2j` atau `~45m` (estimasi).
+- **Estimasi bahasa alami:** "estimasi 2 jam", "sekitar 30 menit". Ungkapan "3 jam lagi" selalu waktu relatif, bukan estimasi.
+- **Kata prioritas:** "penting", "urgent", "wajib" jadi tinggi. "santai", "kalau sempat" jadi rendah. Semua tampil sebagai chip yang bisa dikoreksi.
+- **Cara kumpul:** alamat email di teks menjadi cara kumpul `email` dengan tujuan alamat itu. Kata "classroom", "e-learning", "LMS", "drive" memilih cara kumpul yang sesuai. "dicetak" atau "hardcopy" memilih `paper`. Tautan di pesan masuk sebagai lampiran tautan.
+- **Pola nama berkas:** kalimat setelah "format nama file" atau "penamaan" disimpan mentah sebagai `filename_pattern` dengan chip "cek pola".
+- **Subtugas:** daftar bernomor atau berbutir dalam pesan share diusulkan sebagai subtugas.
+
+| Input | Aturan |
+| --- | --- |
+| `laprak basdat jumat ~3j !tinggi #kelompok` | Estimasi 180 menit, prioritas tinggi, tag kelompok |
+| `kerjakan 3 jam lagi` | Waktu relatif (3 jam dari sekarang), bukan estimasi |
+| `estimasi 3 jam, kumpul ke dosen@kampus.ac.id` | Estimasi 180 menit, cara kumpul email |
+| `kirim lewat classroom sebelum jam 12` | Cara kumpul `lms`, deadline 12.00 |
+| `penting banget tapi santai dulu` | Kata bertentangan: chip prioritas "perlu dicek" |
+
+Korpus uji ditambah 50 kalimat. Target akurasi: estimasi 85%, prioritas 80%, cara kumpul 85%.
+
+### 7.16 Quick Add banyak baris dan ulang cepat [S]
+
+- Tombol **Tempel** menerima beberapa baris. Satu baris menjadi satu calon tugas dengan layar centang seperti 6.2. Aplikasi tidak membaca clipboard tanpa ketukan pengguna.
+- **Ulangi dari tugas terakhir:** menyalin wadah, jenis, dan jam deadline dari tugas sebelumnya, berguna saat mencatat beberapa tugas matkul yang sama.
+- **Saran dari riwayat:** saat mengetik judul yang mirip tugas lama ("laprak minggu lalu"), ketuk untuk menyalin subtugas dan estimasinya.
+
+### 7.17 Peta beban mingguan [S]
+
+- Grafik batang 7 hari dan peta panas 4 minggu: jam estimasi tugas (memakai target pribadi atau deadline) dibandingkan jam efektif tersedia (4.5, 5.3, 5.20).
+- Hari yang melebihi 100 persen ditandai merah dengan ikon, bukan hanya warna.
+- Bila minggu ini padat, satu kartu di layar Hari Ini: "Rabu 140 persen. Mau mulai salah satu lebih awal?" dengan usulan tugas yang boleh dimajukan (estimasi terisi, tanggal mulai kosong, hari sebelumnya longgar). Pengguna memutuskan.
+- Tugas tanpa estimasi tidak dihitung dan layar mencatat "5 tugas belum punya estimasi", supaya angkanya tidak menyesatkan.
+- Murni aturan, tanpa AI.
+
+### 7.18 Impor jadwal dari tangkapan layar atau teks portal [B]
+
+- Bagikan tangkapan layar jadwal atau KRS, atau tempel teksnya. OCR (7.3) dan parser jam dan hari menghasilkan calon slot kelas (hari, jam, ruang, nama matkul) dan calon wadah baru.
+- Layar pratinjau berupa tabel yang bisa diedit sebelum disimpan. Tidak ada yang disimpan otomatis.
+- Format portal berbeda-beda. Sediakan jalur ketik manual dan kumpulkan 10 contoh portal sebagai korpus uji.
+- Mengurangi pekerjaan awal mengisi jadwal (5.3), yang mungkin hambatan terbesar bagi pengguna baru.
+
+### 7.19 Ekspor gambar dan PDF [B]
+
+- Bagikan sebagai **gambar**: jadwal minggu, daftar tugas minggu ini, dan rekap semester (7.11).
+- Ekspor **PDF**: rekap nilai per matkul, riwayat deadline sebuah tugas (bukti perubahan deadline, 5.6), dan daftar kehadiran (5.19).
+- Semuanya dibuat di HP tanpa server. Gambar dari render widget Flutter, PDF dari paket `pdf`. Teks mengikuti bahasa aktif.
+
+### 7.20 Lampiran dokumen [S]
+
+- Selain foto dan tautan (6.5): berkas PDF, dokumen, dan presentasi dari pemilih berkas atau menu Bagikan (misalnya soal tugas dari grup WhatsApp).
+- Disimpan di folder aplikasi. Batas bawaan 10 MB per berkas, bisa dinaikkan sampai 25 MB di Pengaturan. Berkas yang lebih besar ditolak dengan pesan jelas dan opsi simpan tautan saja.
+- Dibuka lewat aplikasi lain (`open_filex`). Gambar dan PDF punya pratinjau sederhana.
+- Ikut cadangan zip. Ukuran total lampiran tampil di Pengaturan, dengan opsi "cadangan tanpa lampiran" agar cadangan tetap kecil.
+- Kolom `attachments` mendapat `mime` dan `size_bytes`.
+
+### 7.21 Catatan pertemuan per matkul [B]
+
+- Catatan per pertemuan: tanggal, nomor pertemuan, topik, isi, dan foto papan tulis (lampiran). Templat singkat: topik, hal penting, tugas yang disebut, pertanyaan.
+- Dari catatan, satu ketukan **jadikan tugas** atau **jadikan materi ujian** (judul bab menjadi subtugas pada tugas ujian, 5.7).
+- Daftar catatan per matkul diurutkan menurut tanggal. Pencarian global mencakup isinya (5.28).
+- Bukan aplikasi catatan penuh: teks biasa tanpa format kaya, supaya ringan dan mudah ikut cadangan.
+
+### 7.22 Skenario nilai "bagaimana jika" [S]
+
+- Di layar prediksi nilai (7.9): geser nilai untuk komponen yang belum ada (misalnya UAS 60, 70, 80) dan lihat proyeksi nilai akhir serta hurufnya.
+- Tampilkan **nilai minimal yang dibutuhkan** untuk tiap target huruf, dan tandai target yang sudah mustahil dengan bahasa yang tidak menyalahkan ("Target A sulit dicapai, B+ masih mungkin").
+- Memakai bobot komponen (5.18) dan skala nilai kampus (7.9). Kehadiran ikut dihitung bila punya bobot.
+- Satu skenario favorit bisa disimpan per matkul. Hitungan sederhana, lokal.
+
+### 7.23 Impor gabung dan pemulihan selektif [S]
+
+- Dua mode impor cadangan: **Timpa** (seperti sebelumnya) dan **Gabung**. Gabung memakai UUID dan `updated_at`: item baru ditambahkan, item yang sudah ada mengambil versi yang lebih baru, dan penghapusan (`deleted_at`) mengikuti versi yang lebih baru.
+- Pratinjau sebelum diterapkan: "12 tugas baru, 3 diperbarui, 1 konflik".
+- **Konflik** (kedua sisi berubah sejak cadangan): tampilkan keduanya dan pengguna memilih.
+- **Pulihkan selektif:** pilih satu wadah atau satu tugas dari cadangan tanpa menyentuh yang lain.
+- Berguna saat ganti HP (data baru sudah terlanjur dimasukkan di HP baru) atau memakai dua HP. Ini bukan sinkron otomatis.
+- Syarat: semua tabel yang dicadangkan punya UUID, `updated_at`, dan `deleted_at`. Tabel penghubung digabung sebagai gabungan himpunan.
+
+### 7.24 Cadangan terenkripsi [B]
+
+- Opsi kata sandi untuk berkas cadangan (enkripsi AES-GCM, kunci diturunkan dari kata sandi dengan fungsi turunan kunci standar).
+- Peringatan jelas saat diaktifkan: kata sandi yang hilang berarti cadangan tidak bisa dibuka, dan tidak ada pemulihan kata sandi.
+- Cadangan otomatis (7.13) memakai opsi yang sama. Berkas memiliki header berisi versi format dan parameter kunci.
+- Berguna karena cadangan memuat nama dosen, tautan kelas, catatan pertemuan, dan lampiran.
 
 ---
 
@@ -578,6 +852,13 @@ Terjemahan hanya terjadi di lapisan tampilan.
 | Prioritas | `2` | Tinggi / High |
 | Jenis kelas | `lab` | Praktikum / Lab session |
 | Kunci meta | `lecturer` | Dosen / Lecturer |
+| Cara kumpul | `lms` | LMS / LMS |
+| Cara kumpul | `paper` | Kertas / Hard copy |
+| Kehadiran | `excused` | Izin / Excused |
+| Kehadiran | `sick` | Sakit / Sick |
+| Jenis wadah | `organization` | Organisasi / Organization |
+| Pengecualian kelas | `cancelled` | Kelas kosong / Cancelled |
+| Pengecualian kelas | `holiday` | Libur / Holiday |
 
 Akibatnya: tugas yang dibuat saat bahasa Indonesia tetap benar saat bahasa diganti, berkas cadangan tidak bergantung bahasa, dan pencarian atau penyaring tidak terpengaruh. Hanya teks yang diketik pengguna sendiri (judul, catatan, nama matkul) tidak diterjemahkan.
 
@@ -742,6 +1023,12 @@ CREATE TABLE spaces (
   sks INTEGER,                   -- SKS (jumlah kredit)
   target_grade TEXT,
   final_grade TEXT,
+  kind TEXT DEFAULT 'course',    -- course | organization | project | personal | other
+  total_meetings INTEGER,        -- pertemuan rencana untuk kehadiran (bawaan 16)
+  max_absent_percent INTEGER,    -- batas absen, bawaan 25 (sesuaikan aturan kampus)
+  excused_counts_absent INTEGER DEFAULT 0,  -- izin dan sakit dihitung absen
+  attend_prompt INTEGER DEFAULT 0,          -- notifikasi "Isi kehadiran"
+  is_sample INTEGER DEFAULT 0,   -- data contoh (mode demo)
   archived INTEGER DEFAULT 0,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
@@ -777,6 +1064,13 @@ CREATE TABLE tasks (
   is_group INTEGER DEFAULT 0,
   pinned INTEGER DEFAULT 0,
   inbox INTEGER DEFAULT 0,       -- 1 = masih di Inbox
+  target_at INTEGER,             -- target selesai pribadi (sebelum deadline)
+  submit_method TEXT,            -- email | lms | paper | drive | other
+  submit_target TEXT,            -- alamat email, nama kelas LMS, ruangan
+  filename_pattern TEXT,         -- contoh: {nim}_{nama}_{matkul}_{judul}
+  submitted_at INTEGER,          -- kapan ditandai sudah dikumpul
+  focus_date INTEGER,            -- tanggal fokus hari ini (yyyymmdd lokal)
+  parent_id TEXT REFERENCES tasks(id),   -- induk (proyek), NULL = tugas biasa
   repeat_kind TEXT,              -- none | daily | weekly | monthly
   repeat_every INTEGER,          -- hari dalam pekan atau tanggal dalam bulan
   source_text TEXT,              -- pesan asli bila dari share
@@ -806,7 +1100,7 @@ CREATE TABLE class_slots (
   start_min INTEGER NOT NULL,    -- menit sejak 00.00
   end_min INTEGER NOT NULL,
   room TEXT,
-  kind TEXT DEFAULT 'lecture',   -- lecture | lab
+  kind TEXT DEFAULT 'lecture',   -- lecture | lab | meeting
   updated_at INTEGER NOT NULL,
   deleted_at INTEGER
 );
@@ -825,8 +1119,10 @@ CREATE TABLE task_tags (
 CREATE TABLE attachments (
   id TEXT PRIMARY KEY,
   task_id TEXT NOT NULL REFERENCES tasks(id),
-  kind TEXT NOT NULL,            -- image | link
+  kind TEXT NOT NULL,            -- image | link | file
   path_or_url TEXT NOT NULL,
+  mime TEXT,
+  size_bytes INTEGER,
   created_at INTEGER NOT NULL
 );
 
@@ -835,10 +1131,11 @@ CREATE TABLE reminders (
   task_id TEXT REFERENCES tasks(id),          -- NULL untuk pengingat kelas
   class_slot_id TEXT REFERENCES class_slots(id),
   fire_at INTEGER NOT NULL,
-  kind TEXT,                     -- d3 | d1 | h3 | m30 | start | study | class | snooze
+  kind TEXT,                     -- d3 | d1 | h3 | m30 | target | start | study | class | attend | overdue | snooze
                                  -- (d = hari sebelum deadline, h = jam, m = menit)
   notif_id INTEGER NOT NULL,
-  fired INTEGER DEFAULT 0
+  fired INTEGER DEFAULT 0,
+  acked_at INTEGER               -- diketuk atau tombol aksi dipakai (5.23)
 );
 
 CREATE TABLE task_events (
@@ -863,7 +1160,94 @@ CREATE TABLE task_templates (
   name TEXT NOT NULL,
   type TEXT,
   estimate_minutes INTEGER,
-  subtasks_json TEXT             -- daftar judul subtugas
+  subtasks_json TEXT,            -- daftar judul subtugas
+  milestones_json TEXT           -- milestone proyek (judul dan persen waktu), 5.26
+);
+
+CREATE TABLE grade_components (
+  space_id TEXT NOT NULL REFERENCES spaces(id),
+  key TEXT NOT NULL,             -- midterm | final | assignment | quiz | attendance | other
+  weight_percent REAL NOT NULL,
+  PRIMARY KEY (space_id, key)
+);
+
+CREATE TABLE attendance (
+  id TEXT PRIMARY KEY,
+  space_id TEXT NOT NULL REFERENCES spaces(id),
+  slot_id TEXT REFERENCES class_slots(id),
+  date TEXT NOT NULL,            -- tanggal lokal 'YYYY-MM-DD'
+  status TEXT NOT NULL,          -- present | absent | excused | sick
+  note TEXT,
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER,
+  UNIQUE (slot_id, date)
+);
+
+CREATE TABLE class_exceptions (
+  id TEXT PRIMARY KEY,
+  slot_id TEXT REFERENCES class_slots(id),   -- NULL untuk libur semua kelas
+  date TEXT NOT NULL,            -- tanggal lokal 'YYYY-MM-DD'
+  kind TEXT NOT NULL,            -- cancelled | moved | room_changed | holiday
+  new_start_min INTEGER,
+  new_end_min INTEGER,
+  new_room TEXT,
+  note TEXT,
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER
+);
+
+CREATE TABLE task_deps (
+  task_id TEXT NOT NULL REFERENCES tasks(id),
+  depends_on_id TEXT NOT NULL REFERENCES tasks(id),
+  PRIMARY KEY (task_id, depends_on_id)
+);
+
+CREATE TABLE saved_filters (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  query_json TEXT NOT NULL,      -- wadah, jenis, tag, status, rentang tanggal, kata kunci
+  sort_order INTEGER DEFAULT 0,
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER
+);
+
+CREATE TABLE space_items (
+  id TEXT PRIMARY KEY,
+  space_id TEXT NOT NULL REFERENCES spaces(id),
+  title TEXT NOT NULL,           -- barang bawaan
+  sort_order INTEGER DEFAULT 0,
+  checked_on TEXT,               -- tanggal lokal terakhir dicentang
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER
+);
+
+CREATE TABLE quick_links (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  sort_order INTEGER DEFAULT 0,
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER
+);
+
+CREATE TABLE class_notes (
+  id TEXT PRIMARY KEY,
+  space_id TEXT NOT NULL REFERENCES spaces(id),
+  meeting_no INTEGER,
+  date TEXT,                     -- tanggal lokal 'YYYY-MM-DD'
+  title TEXT,
+  body TEXT,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  deleted_at INTEGER
+);
+
+CREATE TABLE diagnostics (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL,            -- test_1min | permission_check | battery_check
+  created_at INTEGER NOT NULL,
+  result TEXT,                   -- ok | late | missing
+  note TEXT
 );
 
 CREATE TABLE parser_prefs (
@@ -885,6 +1269,10 @@ CREATE TABLE settings (
 - **Inbox** tidak butuh tabel baru: tugas dengan `inbox = 1` dan `space_id` kosong.
 - **Ujian** memakai tabel `tasks` dengan `type` `quiz`, `midterm`, atau `final`. Materi belajar memakai `subtasks`. Tidak perlu tabel ujian terpisah.
 - Nilai komponen untuk prediksi memakai `weight_percent` dan `score_obtained` di `tasks`.
+- **Tanggal kalender** (`attendance.date`, `class_exceptions.date`, `class_notes.date`, `space_items.checked_on`) disimpan sebagai teks tanggal lokal `YYYY-MM-DD`. Ini pengecualian dari aturan UTC epoch karena yang dimaksud adalah hari di kalender, bukan titik waktu. `focus_date` memakai bilangan `yyyymmdd` dengan alasan yang sama.
+- **Dihitung, tidak disimpan:** bobot efektif tugas (5.18), status "menunggu" (dari `task_deps`, 5.27), progres proyek (dari anak, 5.26), sisa jatah absen (dari `attendance`, 5.19), dan beban mingguan (7.17).
+- **Impor gabung (7.23):** tabel dengan UUID, `updated_at`, dan `deleted_at` digabung berdasarkan versi terbaru. Tabel penghubung (`space_aliases`, `space_meta`, `task_tags`, `task_deps`, `grade_components`) digabung sebagai himpunan.
+- **Data contoh** (`spaces.is_sample = 1`) tidak ikut cadangan.
 - Wajib pakai **migrasi Drift yang bernomor** sejak versi pertama, supaya pembaruan aplikasi tidak menghapus data.
 - Impor dan ekspor cadangan harus menyertakan semua tabel, dan **versi format berkas cadangan dicatat di dalam berkas** supaya cadangan lama tetap bisa dibaca.
 
@@ -929,6 +1317,26 @@ CREATE TABLE settings (
 | Impor ICS | Berkas dari Google Calendar, portal kampus, dan zona waktu berbeda |
 | IPK | Bandingkan hasil dengan perhitungan manual dua semester |
 | Aksi massal | 200 tugas terpilih sekaligus, pastikan tidak macet dan undo tetap bekerja |
+| Cara kumpul | Pola nama berkas dengan variabel kosong, alamat email tidak valid, Selesai lalu "sudah dikumpul" |
+| Target pribadi | Target setelah deadline ditolak, target terlewat, deadline diubah setelah target diisi |
+| Bobot komponen | Jumlah bobot bukan 100, komponen tanpa tugas, tugas dengan dan tanpa bobot manual |
+| Kehadiran | Batas absen pada 16 pertemuan, izin dihitung atau tidak, kelas kosong tidak dihitung |
+| Pengecualian kelas | Kelas kosong membatalkan pengingat, libur menutup semua kelas satu hari, ganti jam melewati tengah malam |
+| Notifikasi tidak berisik | 10 pengingat dalam 10 menit menjadi satu, deadline di bawah 3 jam tidak pernah digabung atau dipangkas, anggaran harian |
+| Senyap saat kelas | Pengingat di tengah kelas ditahan, deadline di bawah 1 jam tidak ditahan, kelas dibatalkan melepas penahanan |
+| Pengingat terlambat | Berhenti setelah 3 hari berturut-turut, tugas selesai di tengah, deadline diubah membatalkan |
+| Diagnostik | Izin dicabut, penghemat baterai aktif, hasil tes 1 menit, laporan terbaca oleh manusia dan AI |
+| Fokus hari ini | Ganti hari, tugas fokus selesai atau dihapus, batas 3 |
+| Proyek dan dependensi | Hapus induk (ikut hapus atau dilepas), rencana mundur dengan deadline sangat dekat, siklus dependensi ditolak |
+| Tampilan tersimpan | Filter yang wadahnya diarsipkan atau tag-nya dihapus |
+| Ganti semester | Salin wadah tanpa tugas, tiga pilihan untuk tugas belum selesai, `active_period` berubah |
+| Snapshot dan integritas | Migrasi sengaja digagalkan, berkas database dirusak, pulihkan dari snapshot |
+| Parser lanjutan | 50 kalimat tambahan, "3 jam lagi" melawan "estimasi 3 jam", email dan tautan dalam pesan |
+| Peta beban | Tugas tanpa estimasi, minggu libur, jam efektif nol |
+| Lampiran dokumen | Berkas 11 MB dan 25 MB, nama berkas aneh, cadangan dengan dan tanpa lampiran |
+| Impor gabung | Dua HP dengan data berbeda, konflik dua sisi, item dihapus di satu sisi, `updated_at` sama |
+| Cadangan terenkripsi | Kata sandi salah, berkas rusak sebagian, impor lintas versi format |
+| Impor jadwal | 10 contoh portal, OCR salah baca jam |
 
 ### 12.3 Dua bahasa
 
@@ -945,60 +1353,92 @@ CREATE TABLE settings (
 
 ---
 
-## 13. Jadwal Kerja
+## 13. Urutan Pembangunan (Satu Alur Berkelanjutan)
 
-Perkiraan total **16 sampai 20 minggu** paruh waktu (bukan 10 minggu seperti rencana inti awal), **belum termasuk dua bahasa** (sekitar 11 sampai 12 hari, bagian 8.10). Urutan di bawah dirancang supaya selalu ada titik berhenti yang aman.
+Aplikasi dibangun sebagai **satu alur kerja panjang tanpa jeda per sesi atau per tahap**. Urutan di bawah hanya menentukan dependensi (apa harus ada lebih dulu), **bukan tempat berhenti**. Setelah satu fitur selesai, pembangun langsung lanjut ke fitur berikutnya.
 
-### Tahap 1: Fase A inti + semua [W] (sekitar 7 minggu)
+Perkiraan kasar paruh waktu setelah revisi ketiga: Urutan 1 sekitar 7 minggu, Urutan 2 sekitar 4 minggu, Urutan 3 sekitar 5 minggu, dan Urutan 4 sekitar 9 sampai 11 minggu. Jadi sampai akhir Urutan 4 sekitar **25 sampai 27 minggu**, **belum termasuk dua bahasa** (sekitar 11 sampai 12 hari, bagian 8.10). Urutan 5 menambah sekitar 14 minggu dan sepenuhnya opsional. Angka ini hanya untuk perencanaan manusia. Pembangun tidak menunggu kalender.
 
-Rincian lima minggu inti:
+Kolom **Urutan** di bagian 3 merujuk ke daftar ini: fitur urutan 1 dikerjakan sebelum urutan 2, dan seterusnya.
 
-- Minggu 1: struktur proyek, tema, database Drift, wadah dan tugas (CRUD).
-- Minggu 2: skor urgensi, layar Hari Ini, bagian dan alasan, undo.
-- Minggu 3: ReminderService, izin, boot receiver, layar Cek Pengingat.
-- Minggu 4: uji pengingat di HP nyata, perbaikan, pencarian, penyaring.
-- Minggu 5: ekspor dan impor cadangan, onboarding, mode gelap, rapikan.
+### Urutan 1: Fase A inti + semua [W]
 
-Sekitar dua minggu berikutnya untuk fitur [W]: Inbox, subtugas, jadwal kuliah, tunda cerdas dan aksi massal.
+1. Struktur proyek, tema, database Drift, wadah dan tugas (CRUD).
+2. Skor urgensi, layar Hari Ini, bagian dan alasan, undo.
+3. ReminderService, izin, boot receiver, layar Cek Pengingat.
+4. Pencarian, penyaring, ekspor dan impor cadangan, onboarding, mode gelap.
+5. Fitur [W]: Inbox, subtugas, jadwal kuliah, tunda cerdas dan aksi massal.
 
-**Titik berhenti 1:** pakai sendiri 1 minggu penuh. Lanjut hanya bila tidak ada pengingat yang hilang.
+### Urutan 2: Fase A [S] terpilih
 
-### Tahap 2: Fase A [S] terpilih (sekitar 2 minggu)
+Tanggal mulai, riwayat deadline, ujian, ringkasan pagi dan malam, tempat sampah, cara kumpul (5.16), pembatalan kelas dan libur (5.20), pengingat tugas terlambat (5.22), pusat diagnostik pengingat (5.23), dan keamanan data lokal (5.30).
 
-Tanggal mulai, riwayat deadline, ujian, ringkasan pagi dan malam, tempat sampah.
+Bila ingin memangkas, urutan prioritas di sini: keamanan data lokal (5.30) dan pusat diagnostik (5.23) dikerjakan lebih dulu karena paling dekat dengan target "tanpa kehilangan satu pengingat pun".
 
-### Tahap 3: Fase B inti (sekitar 5 minggu)
+### Urutan 3: Fase B inti
 
-- Minggu B1: kumpulkan korpus kalimat, tulis tes parser.
-- Minggu B2: parser waktu dan wadah sampai tes lulus, UI chip (Inbox mulai mendapat saran parser).
-- Minggu B3: share dari WhatsApp dan layar calon tugas.
-- Minggu B4: widget dasar dan kalender bulanan.
-- Minggu B5: lampiran, prediksi nilai, ringkasan minggu malam, uji teman 1 minggu.
+1. Korpus kalimat dan tes parser (ditulis sebelum parser).
+2. Parser waktu dan wadah sampai tes lulus, UI chip, saran parser di Inbox.
+3. Share dari WhatsApp dan layar calon tugas.
+4. Widget dasar dan kalender bulanan.
+5. Lampiran, prediksi nilai, ringkasan minggu malam.
 
-**Titik berhenti 2:** uji dengan 5 teman selama 1 minggu.
+### Urutan 4: Fase B [S] terpilih
 
-### Tahap 4: Fase B [S] terpilih (sekitar 4 sampai 6 minggu)
+OCR, deteksi duplikat dan perubahan deadline, nilai dan IPK, cadangan otomatis, rencana belajar ujian, share dari aplikasi lain, bobot komponen (5.18), target pribadi (5.17), kehadiran (5.19), senyap saat kelas dan notifikasi tidak berisik (5.21), fokus hari ini (5.24), ganti semester (5.29), saring tersimpan (5.28), parser lanjutan (7.15), lampiran dokumen (7.20), skenario nilai (7.22), dan impor gabung (7.23).
 
-OCR, deteksi duplikat dan perubahan deadline, nilai dan IPK, cadangan otomatis, rencana belajar ujian, share dari aplikasi lain.
+Urutan di dalam Urutan 4: bobot komponen (5.18) sebelum nilai (7.9) dan skenario (7.22), jadwal kuliah (5.3) sebelum kehadiran (5.19), dan parser dasar (6.1) sebelum parser lanjutan (7.15).
 
-### Tahap 5: Sisa [S] dan semua [B] (hanya bila waktu dan semangat masih ada)
+### Urutan 5: Sisa [S] dan semua [B]
 
-Timer fokus, pin dan tag, kontak kelas, suara, pintasan, saran waktu kosong, kalender lengkap, widget lanjutan, tugas berulang, kunci aplikasi dan mode SMA, statistik, bagikan teks dan impor CSV.
+Timer fokus, pin dan tag, kontak kelas, suara, pintasan, saran waktu kosong, kalender lengkap, widget lanjutan, wadah non-matkul (5.25), proyek dan milestone (5.26), Quick Add banyak baris (7.16), peta beban mingguan (7.17), tugas berulang, kunci aplikasi dan mode SMA, statistik, bagikan teks dan impor CSV, dependensi tugas (5.27), mode demo (5.31), daftar bawaan (5.32), tautan cepat (5.33), impor jadwal dari tangkapan layar (7.18), ekspor gambar dan PDF (7.19), catatan pertemuan (7.21), dan cadangan terenkripsi (7.24).
 
-**Definisi selesai tiap tahap:** dipakai nyata minimal 1 minggu oleh pembuatnya tanpa kehilangan satu pengingat pun.
+### Pemeriksaan oleh manusia (berjalan paralel, tidak memblokir)
 
-**Aturan pemotongan** (bagian 1): buang urut dari bawah tabel prioritas bila waktu mepet.
+- Setelah urutan 1 selesai: pakai sendiri minimal 1 minggu sambil pembangunan terus berjalan.
+- Setelah urutan 3 selesai: minta 5 teman mencoba selama 1 minggu, termasuk yang memakai Xiaomi, Oppo, Realme, dan Samsung.
+- Laporan masalah masuk ke daftar perbaikan di `PROGRESS.md` (bagian 14). **Laporan pengingat yang hilang diprioritaskan di atas fitur baru**, karena itu target utama aplikasi. Selain itu, pembangunan tidak berhenti menunggu hasil uji.
+
+### Kapan satu fitur dianggap selesai
+
+Tes lulus, aplikasi berjalan tanpa error, perubahan sudah di-commit, dan `PROGRESS.md` diperbarui. Tidak ada syarat menunggu pemakaian nyata sebelum lanjut ke fitur berikutnya.
+
+**Aturan pemotongan** (bagian 1): bila waktu mepet, buang urut dari bawah tabel prioritas.
 
 ---
 
-## 14. Cara Bekerja dengan AI agar Tidak Macet
+## 14. Cara Bekerja dengan AI (Satu Alur Berkelanjutan)
 
-1. Simpan `ARCHITECTURE.md` berisi struktur folder, keputusan penting, skema database, dan aturan (misalnya "skor tidak disimpan", "database hanya menyimpan kunci netral"). Tempel di awal tiap sesi baru.
-2. **Satu fitur per sesi.** Selesaikan, jalankan, commit, baru lanjut.
-3. Commit kecil dan sering di GitHub. Bila AI merusak sesuatu, kembali ke commit terakhir yang baik.
-4. Minta AI menulis tes sebelum atau bersama kode, terutama untuk parser dan skor.
-5. Sebelum mengubah bagian lama, minta AI menjelaskan dulu apa yang akan disentuh.
-6. Sisihkan waktu khusus untuk debugging pengingat di HP nyata, karena itu bagian yang tidak bisa diuji AI.
+Tujuannya agar AI pembangun tidak berhenti di tiap fitur atau tiap sesi, dan tetap bisa melanjutkan sendiri bila percakapan terpotong atau konteksnya hilang.
+
+1. **Dua berkas penuntun di repo**, dibaca AI di awal dan diperbarui AI sendiri:
+   - `ARCHITECTURE.md`: struktur folder, keputusan penting, skema database, dan aturan (misalnya "skor tidak disimpan", "database hanya menyimpan kunci netral").
+   - `PROGRESS.md`: daftar centang seluruh fitur dari tabel bagian 3 menurut urutan bagian 13, ditambah daftar masalah terbuka. AI mencentang tiap fitur yang selesai dan membaca berkas ini untuk tahu harus lanjut dari mana.
+2. **Kerjakan berurutan tanpa jeda.** Selesai satu fitur (tes lulus, aplikasi jalan, commit), langsung mulai fitur berikutnya. Tidak perlu menunggu perintah, persetujuan, atau pesan "lanjut".
+3. **Berhenti hanya bila benar-benar terhalang**, yaitu:
+   - butuh keputusan yang tercantum di Lampiran B,
+   - butuh akun, kunci, atau izin yang hanya manusia bisa berikan,
+   - butuh uji di HP fisik yang memang menghalangi langkah berikutnya,
+   - tes tetap gagal setelah tiga upaya perbaikan yang berbeda.
+
+   Dalam kasus itu, catat hambatannya di `PROGRESS.md`, lalu **lanjut ke fitur lain yang tidak bergantung** padanya. Jangan berhenti total.
+4. **Commit kecil dan sering.** Bila ada yang rusak, kembali ke commit terakhir yang baik.
+5. **Tes ditulis bersama kode**, terutama untuk parser dan skor.
+6. **Sebelum mengubah bagian lama**, tulis di pesan commit apa yang disentuh dan alasannya. Tidak perlu menunggu persetujuan.
+7. **Pengingat di HP nyata** tidak bisa diuji AI. AI menyiapkan layar Cek Pengingat dan daftar langkah uji, manusia menjalankannya dan melapor, AI memasukkan temuan ke `PROGRESS.md` dan terus melanjutkan pekerjaan lain sambil menunggu.
+
+**Prompt pembuka (tempel sekali di awal, dan lagi hanya bila percakapan baru):**
+
+```
+Baca ARCHITECTURE.md, PROGRESS.md, dan dokumen rancangan lengkap.
+Bangun seluruh fitur secara berurutan sesuai bagian 13, mulai dari fitur
+pertama yang belum dicentang di PROGRESS.md. Jangan berhenti di antara
+fitur dan jangan minta persetujuan untuk lanjut. Setelah tiap fitur:
+jalankan tes, commit, perbarui PROGRESS.md, lalu langsung kerjakan fitur
+berikutnya. Berhenti hanya bila terhalang oleh hal yang tercantum di
+bagian 14 poin 3, dan bila itu terjadi, catat di PROGRESS.md lalu
+lanjutkan ke fitur lain yang tidak bergantung.
+```
 
 ---
 
@@ -1006,27 +1446,36 @@ Timer fokus, pin dan tag, kontak kelas, suara, pintasan, saran waktu kosong, kal
 
 | Risiko | Penangkal |
 | --- | --- |
-| Scope melebar | Daftar parkir, aturan satu fitur per sesi, aturan pemotongan |
+| Scope melebar | Daftar parkir, urutan pembangunan yang tetap, aturan pemotongan |
 | Pengingat hilang di merek tertentu | Layar Cek Pengingat, uji dini di HP teman |
 | Parser salah tebak lalu pengguna kehilangan kepercayaan | Chip yang bisa dikoreksi, tidak ada penyimpanan diam-diam |
 | Data hilang karena ganti HP atau pasang ulang | Ekspor dan impor cadangan, pengingat cadangan berkala |
-| Kode berantakan setelah banyak iterasi | ARCHITECTURE.md, tes, commit kecil |
-| Kehilangan motivasi | Titik berhenti jelas: Fase A saja sudah aplikasi yang berguna |
+| Kode berantakan atau arah hilang setelah banyak iterasi | ARCHITECTURE.md, PROGRESS.md, tes, commit kecil |
+| Kehilangan motivasi | Urutan 1 saja sudah aplikasi yang berguna, jadi hasil pakai nyata muncul lebih awal |
 | Pekerjaan terjemahan menumpuk di akhir | Tulis teks lewat lokalisasi sejak hari pertama, grep sebelum rilis (8.9) |
+| Terlalu banyak fitur untuk satu pembuat | Label W, S, B, Urutan 5 opsional, aturan pemotongan, pilih fitur bersama teman (bagian 2) |
+| Notifikasi berlebihan membuat pengguna mematikan semuanya | Anggaran notifikasi, gabung notifikasi, intensitas (5.21) |
+| Layar Hari Ini terlalu penuh | Bagian hanya tampil bila berisi dan bisa disembunyikan, satu kartu peringatan sekaligus (4.4) |
+| Cadangan membengkak karena lampiran dan catatan | Cadangan tanpa lampiran, ukuran total di Pengaturan (7.20) |
+| Database rusak saat migrasi | Snapshot sebelum migrasi, cek integritas, layar pemulihan (5.30) |
 
 ---
 
 ## 16. Gambaran Satu Hari Bersama Aplikasi
 
-Gambaran ini memakai fitur dari seluruh tahap, jadi sebagian baru nyata di Tahap 3 sampai 5.
+Gambaran ini memakai fitur dari seluruh tahap, jadi sebagian baru nyata di Urutan 3 sampai 5.
 
 **07.00** Notifikasi pagi: "Hari ini 2 kelas, 3 tugas. Paling mendesak: laprak Basdat (deadline 23.59)." Di widget terlihat Kelas Hari Ini.
 
 **09.40** Di kelas, dosen menyebut kuis Pemweb besok. Kamu membuka Quick Add, menekan mikrofon, dan berkata "kuis pemweb besok jam delapan". Chip muncul: Kuis, Pemrograman Web, besok 08.00. Satu ketukan menyimpan.
 
+**10.30** Notifikasi "Isi kehadiran: Basdat" muncul setelah kelas. Kamu mengetuk Hadir. Di layar matkul tertulis "sisa jatah absen 3".
+
 **12.15** Grup kelas mengirim tangkapan layar pengumuman. Kamu bagikan ke aplikasi. OCR mengenali dua kalimat deadline, dan aplikasi mencatat bahwa salah satunya sepertinya mengubah deadline tugas yang sudah ada. Kamu menyetujui, dan riwayat deadline mencatat "diundur".
 
 **14.00** Saran waktu kosong: "Kamu kosong sampai 16.00. Mulai laprak Basdat?" Kamu menyalakan timer fokus 25 menit.
+
+**17.00** Kartu peringatan di layar Hari Ini: "Kamis 130 persen." Kamu memajukan satu laprak ke besok sore, lalu memilih tiga tugas fokus untuk besok.
 
 **20.30** Penutup malam: "Ada 2 tugas besok." Kamu menunda satu pengingat ke pagi hari dan tidur tenang.
 
@@ -1040,7 +1489,7 @@ Gambaran ini memakai fitur dari seluruh tahap, jadi sebagian baru nyata di Tahap
 
 - Bagian 13 sampai 22 dilebur ke alur utama. Bagian 22.11 ("Dampak pada Skema dan Bagian Lain") dihapus karena semua dampaknya sudah diterapkan langsung: langkah bahasa di onboarding (4.1), baris bahasa di 4.7, kamus parser terpisah (8.5 dan 9), pengujian bahasa (12.3), dan folder `l10n/` (9).
 - Tiga daftar parkir (bagian 1, 12, 21) menjadi satu.
-- Tiga jadwal (bagian 9, 18, dan usaha di 22.12) menjadi satu di bagian 13 dan 3.
+- Tiga jadwal (bagian 9, 18, dan usaha di 22.12) menjadi satu urutan pembangunan di bagian 13 dan 3.
 - Tiga tabel pengujian (bagian 8, 19, 22.10) menjadi satu bagian 12 dengan tiga kelompok.
 - Penomoran fitur tambahan sekarang berurutan per fase (5.x untuk Fase A, 7.x untuk Fase B).
 
@@ -1053,8 +1502,25 @@ Gambaran ini memakai fitur dari seluruh tahap, jadi sebagian baru nyata di Tahap
 - **Inbox dan parser (5.1):** Inbox [W] ada di Fase A, tetapi saran dari parser baru ada di Fase B. Saya tulis eksplisit bahwa Inbox Fase A berisi teks mentah dan saran parser menyala belakangan.
 - **Jadwal kuliah (5.3):** pengisian lewat ketikan "basdat senin 08.00..." ditandai baru bisa setelah parser ada.
 - **Usaha:** total fitur dikoreksi (Sebaiknya 50 menjadi 56, Bonus 16 menjadi 13). "Share dari aplikasi lain" (7.4) ditambahkan ke tabel dengan perkiraan 1 hari.
-- **Tahap:** kolom Tahap ditambahkan ke tabel prioritas supaya setiap fitur punya tempat di jadwal. Fitur [S] yang tidak disebut di jadwal lama ditempatkan di Tahap 5 (bertanda `*`).
+- **Urutan:** kolom Urutan ditambahkan ke tabel prioritas supaya setiap fitur punya tempat di jadwal. Fitur [S] yang tidak disebut di jadwal lama ditempatkan di Urutan 5 (bertanda `*`).
 - Perbaikan kecil: "Tampilan tersibuk" menjadi "Penanda minggu tersibuk" (6.4), rumus batas mulai di 5.4 ditulis dengan tanda kurung supaya tidak ambigu, dan jenis tugas `quiz` dan `final` ditambahkan ke tabel kunci netral.
+
+**Revisi kedua (tanpa pembagian sesi kerja):**
+
+- Bagian 13 "Jadwal Kerja" menjadi "Urutan Pembangunan (Satu Alur Berkelanjutan)". Pembagian tahap, minggu, dan "titik berhenti" tidak lagi berfungsi sebagai tempat berhenti. Pemakaian sendiri 1 minggu dan uji 5 teman tetap ada, tetapi berjalan paralel dan tidak menghalangi pembangunan.
+- Satu pengecualian yang sengaja dipertahankan: laporan pengingat hilang diprioritaskan di atas fitur baru. Hapus bila kamu tidak mau ada prioritas apa pun.
+- Bagian 14 ditulis ulang: aturan "satu fitur per sesi" dihapus, ditambah `PROGRESS.md` supaya AI bisa melanjutkan sendiri, daftar kondisi berhenti yang sempit, dan prompt pembuka siap tempel.
+- Baris risiko di bagian 15 disesuaikan.
+
+**Revisi ketiga (pengembangan dan pengayaan fitur):**
+
+- **28 fitur baru.** Fase A (5.16 sampai 5.33): cara kumpul dan status dikumpul, target pribadi, bobot komponen, kehadiran dan batas absen, pembatalan kelas dan libur, notifikasi tidak berisik, pengingat tugas terlambat, pusat diagnostik pengingat, fokus hari ini, wadah non-matkul, proyek dan milestone, dependensi tugas, saring tersimpan, ganti semester, keamanan data lokal, mode demo, daftar bawaan, dan tautan cepat global. Fase B (7.15 sampai 7.24): parser lanjutan, Quick Add banyak baris, peta beban mingguan, impor jadwal dari tangkapan layar, ekspor gambar dan PDF, lampiran dokumen, catatan pertemuan, skenario nilai, impor gabung, dan cadangan terenkripsi.
+- **Fitur lama diperkaya:** Mode Minggu Ujian (5.7), ringkasan pagi dan malam (5.12), widget Fokus Hari Ini (7.8), statistik tambahan (7.11), share WhatsApp dan lampiran (6.2, 6.5), pembatalan satu kali di jadwal kuliah (5.3), dan perilaku kanal tugas terlambat yang sebelumnya hanya disebut namanya (4.6, 5.22).
+- **Layar Hari Ini (4.4)** bertambah bagian Fokus hari ini dan Menunggu, serta aturan agar layar tidak terlalu penuh. **Skor urgensi (4.5)** mendapat tiga penyesuaian (target pribadi, bobot efektif, tugas menunggu). Rumus dasarnya tidak berubah.
+- **Skema (bagian 10):** 9 tabel baru, kolom baru di `spaces`, `tasks`, `attachments`, `reminders`, dan `task_templates`, serta aturan tanggal kalender sebagai teks lokal. Kunci netral baru ditambahkan ke tabel 8.3.
+- **Tabel prioritas (bagian 3)** dibangun ulang dengan kolom Asal. Usaha total naik dari 82 menjadi 149 hari kerja. Tidak ada fitur baru yang berlabel Wajib.
+- **Pengujian (12.2)** ditambah baris untuk semua fitur baru. **Urutan (13)** dan **risiko (15)** disesuaikan. Bagian 2 menambahkan langkah memilih fitur bersama teman, dan daftar parkir ditambah beberapa ide yang sengaja ditunda.
+- Di antara fitur baru, ada ide yang sengaja **tidak** dimasukkan karena melanggar batasan tanpa akun dan tanpa server atau terlalu berat: pengingat berbasis lokasi, aplikasi jam tangan, dan berbagi jadwal antarpengguna (semuanya di daftar parkir).
 
 **Tidak diubah:** semua keputusan produk, rumus skor, aturan parser, daftar fitur, dan isi tiap fitur.
 
@@ -1064,7 +1530,12 @@ Gambaran ini memakai fitur dari seluruh tahap, jadi sebagian baru nyata di Tahap
 
 1. **Pengingat di jam tenang.** Deadline bawaan 23.59 dan jam tenang 22.00 sampai 06.00, sehingga pengingat "30 menit sebelum" (sekitar 23.29) selalu jatuh di jam tenang, begitu juga pengingat 1 jam. Tentukan aturannya: digeser ke sebelum jam tenang, dikecualikan bila deadline kurang dari 1 jam, atau digabung ke satu notifikasi sebelum jam tenang. Selain itu, jam tidur untuk skor (23.00 sampai 06.00, bagian 4.5) dan jam tenang notifikasi (22.00 sampai 06.00) berbeda. Sengaja atau perlu disamakan?
 2. **Penjadwalan 14 hari ke depan.** Di 4.6 tertulis "dijadwalkan ulang oleh tugas harian saat aplikasi dibuka". Bila aplikasi tidak dibuka lebih dari 14 hari, pengingat yang jauh bisa tidak pernah terjadwal. Pertimbangkan tugas latar periodik (misalnya WorkManager) selain pemicu saat aplikasi dibuka, karena target utamamu adalah tidak kehilangan satu pengingat pun.
-3. **Dua bahasa dan beban waktu.** Pilihan Inggris menambah sekitar 11 sampai 12 hari dan tidak ada di estimasi 16 sampai 20 minggu. Pengguna utamamu teman sekelas berbahasa Indonesia. Pertimbangkan: kerjakan infrastrukturnya sekarang (ARB, kunci netral, tanpa teks di kode, sekitar 3 sampai 4 hari) dan tunda terjemahan Inggris serta kamus parser Inggris ke Tahap 5. Strategi bertahap di 8.5 sudah mengarah ke sini.
-4. **Penempatan fitur bertanda `*` di tabel bagian 3.** Timer fokus, pin dan tag, kontak kelas, suara, pintasan, saran waktu kosong, kalender lengkap, dan widget lanjutan tidak punya tahap di v2 awal. Cek apakah Tahap 5 sudah sesuai keinginanmu, atau ada yang mau dinaikkan.
+3. **Dua bahasa dan beban waktu.** Pilihan Inggris menambah sekitar 11 sampai 12 hari dan tidak ada di estimasi 16 sampai 20 minggu. Pengguna utamamu teman sekelas berbahasa Indonesia. Pertimbangkan: kerjakan infrastrukturnya sekarang (ARB, kunci netral, tanpa teks di kode, sekitar 3 sampai 4 hari) dan tunda terjemahan Inggris serta kamus parser Inggris ke Urutan 5. Strategi bertahap di 8.5 sudah mengarah ke sini.
+4. **Penempatan fitur bertanda `*` di tabel bagian 3.** Timer fokus, pin dan tag, kontak kelas, suara, pintasan, saran waktu kosong, kalender lengkap, dan widget lanjutan tidak punya tahap di v2 awal. Cek apakah Urutan 5 sudah sesuai keinginanmu, atau ada yang mau dinaikkan.
 5. **Izin dan layanan Android yang perlu dicek dokumentasinya.** Dua fitur punya risiko di versi Android baru: alarm presisi (`SCHEDULE_EXACT_ALARM`, sepengetahuan saya tidak diberikan otomatis pada Android 14 ke atas untuk aplikasi baru) dan timer fokus yang "tetap hidup saat layar mati" (butuh foreground service dengan tipe yang sesuai). Estimasi 4 hari untuk timer fokus mungkin terlalu kecil. Periksa dokumentasi Android terbaru sebelum mengerjakan keduanya.
-6. **Cadangan otomatis lebih awal?** Tanpa cloud, kehilangan data adalah risiko terbesar bagi pengguna. Cadangan manual JSON sudah ada di Tahap 1, tetapi cadangan otomatis (7.13) baru di Tahap 4. Bila ingin lebih aman, naikkan ke Tahap 2.
+6. **Cadangan otomatis lebih awal?** Tanpa cloud, kehilangan data adalah risiko terbesar bagi pengguna. Cadangan manual JSON sudah ada di Urutan 1, tetapi cadangan otomatis (7.13) baru di Urutan 4. Bila ingin lebih aman, naikkan ke Urutan 2.
+7. **Aturan kehadiran kampus.** Batas absen (bawaan 25 persen) dan cara menghitung izin dan sakit berbeda tiap kampus dan kadang tiap dosen. Cek aturan kampusmu sebelum menetapkan nilai bawaan di 5.19.
+8. **Anggaran notifikasi.** Nilai bawaan 8 notifikasi non-kritis per hari (5.21) hanyalah tebakan. Tentukan setelah dipakai nyata, dan putuskan apakah intensitas "Gencar" memang diperlukan.
+9. **Data pribadi di Profil.** Pola nama berkas (5.16) memakai NIM dan nama dari Pengaturan > Profil. Putuskan apakah kolom ini disimpan di database biasa, ikut cadangan, dan ikut cadangan terenkripsi (7.24) atau dikecualikan dari cadangan.
+10. **Tambahan 49 hari Sebaiknya dan 18 hari Bonus.** Total fitur kini 149 hari kerja. Putuskan fitur baru mana yang benar-benar masuk Urutan 4 dan mana yang dipindah ke Urutan 5 setelah memilih bersama teman (bagian 2). Usul saya: pertahankan di Urutan 4 hanya keamanan data (5.30), diagnostik (5.23), bobot komponen (5.18), kehadiran (5.19), dan parser lanjutan (7.15), karena paling dekat dengan masalah nyata mahasiswa dan target aplikasi.
+11. **Foreground service dan penyimpanan.** Lampiran dokumen (7.20), cadangan otomatis ke folder pilihan (7.13), dan cadangan terenkripsi (7.24) bergantung pada izin penyimpanan dan folder (Storage Access Framework) yang berbeda antar versi Android. Periksa dokumentasi Android terbaru sebelum mengerjakan.
