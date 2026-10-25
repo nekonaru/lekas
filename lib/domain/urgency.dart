@@ -63,7 +63,7 @@ double urgencyScore({
         : remaining.toDouble();
 
     final remainingHours = remainingAfterProgress / 60.0;
-    final effectiveLeft = (effectiveHoursAvailable ?? max(hoursLeft, 1)) *
+    final effectiveLeft = (effectiveHoursAvailable ?? max(hoursLeft, 1.0)) *
         ScoringConfig.effectiveHoursPerDay / 24.0;
     final ratio = effectiveLeft <= 0 ? 2.0 : remainingHours / effectiveLeft;
     t = ratio.clamp(0.0, 2.0);
