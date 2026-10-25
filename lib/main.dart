@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'data/providers.dart';
+import 'features/home/home_shell.dart';
 
 void main() {
   runApp(const ProviderScope(child: LekasApp()));
@@ -20,9 +21,7 @@ class LekasApp extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
       darkTheme: ThemeData.dark(useMaterial3: true),
-      home: const Scaffold(
-        body: Center(child: Text('Lekas')),
-      ),
+      home: const HomeShell(),
     );
   }
 }
