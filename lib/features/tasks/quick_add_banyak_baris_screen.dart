@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import '../../l10n/app_localizations.dart';
+
+class QuickAddBanyakBarisScreen extends ConsumerStatefulWidget {
+  const QuickAddBanyakBarisScreen({super.key});
+
+  @override
+  ConsumerState<QuickAddBanyakBarisScreen> createState() => _QuickAddBanyakBarisScreenState();
+}
+
+class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisScreenState> {
+  final _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Quick Add Banyak Baris')),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _textController,
+                maxLines: null,
+                expands: true,
+                decoration: const InputDecoration(
+                  labelText: 'Tempel beberapa baris (satu baris = satu tugas)',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_textController.text.isEmpty) return;
+                final lines = _textController.text.split('\n');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${lines.length} tugas akan dibuat')),
+                );
+              },
+              child: const Text('Buat Tugas'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

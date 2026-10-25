@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Lekas</string>
+    <string name="channel_deadline">Deadline</string>
+    <string name="channel_deadline_desc">Pengingat deadline tugas</string>
+    <string name="channel_overdue">Tugas Terlambat</string>
+    <string name="channel_overdue_desc">Pengingat tugas terlambat</string>
+    <string name="channel_summary">Ringkasan</string>
+    <string name="channel_summary_desc">Ringkasan pagi dan malam</string>
+    <string name="shortcut_add_task">Tambah Tugas</string>
+    <string name="shortcut_today">Hari Ini</string>
+    <string name="shortcut_inbox">Inbox</string>
+    <string name="quick_settings_tile">Tambah Cepat</string>
+    <string name="notification_permission">Izinkan notifikasi untuk pengingat tugas</string>
+    <string name="alarm_permission">Izinkan alarm presisi untuk pengingat tepat waktu</string>
+    <string name="battery_optimization">Matikan penghemat baterai untuk Lekas agar pengingat tidak hilang</string>
+</resources>

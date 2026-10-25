@@ -12,6 +12,13 @@ class Spaces extends Table {
   IntColumn get sks => integer().nullable()();
   TextColumn get targetGrade => text().nullable()();
   TextColumn get finalGrade => text().nullable()();
+  TextColumn get kind => text().withDefault(const Constant('course'))();
+  IntColumn get totalMeetings => integer().withDefault(const Constant(16))();
+  IntColumn get maxAbsentPercent => integer().withDefault(const Constant(25))();
+  BoolColumn get excusedCountsAbsent =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get attendPrompt => boolean().withDefault(const Constant(false))();
+  BoolColumn get isSample => boolean().withDefault(const Constant(false))();
   BoolColumn get archived => boolean().withDefault(const Constant(false))();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
@@ -54,6 +61,13 @@ class Tasks extends Table {
   BoolColumn get isGroup => boolean().withDefault(const Constant(false))();
   BoolColumn get pinned => boolean().withDefault(const Constant(false))();
   BoolColumn get inbox => boolean().withDefault(const Constant(false))();
+  IntColumn get targetAt => integer().nullable()();
+  TextColumn get submitMethod => text().nullable()();
+  TextColumn get submitTarget => text().nullable()();
+  TextColumn get filenamePattern => text().nullable()();
+  IntColumn get submittedAt => integer().nullable()();
+  IntColumn get focusDate => integer().nullable()();
+  TextColumn get parentId => text().nullable().references(Tasks, #id)();
   TextColumn get repeatKind => text().nullable()();
   IntColumn get repeatEvery => integer().nullable()();
   TextColumn get sourceText => text().nullable()();
@@ -115,6 +129,8 @@ class Attachments extends Table {
   TextColumn get taskId => text().references(Tasks, #id)();
   TextColumn get kind => text()();
   TextColumn get pathOrUrl => text()();
+  TextColumn get mime => text().nullable()();
+  IntColumn get sizeBytes => integer().nullable()();
   IntColumn get createdAt => integer()();
 
   @override
@@ -129,6 +145,7 @@ class Reminders extends Table {
   TextColumn get kind => text().nullable()();
   IntColumn get notifId => integer()();
   BoolColumn get fired => boolean().withDefault(const Constant(false))();
+  IntColumn get ackedAt => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -163,6 +180,7 @@ class TaskTemplates extends Table {
   TextColumn get type => text().nullable()();
   IntColumn get estimateMinutes => integer().nullable()();
   TextColumn get subtasksJson => text().nullable()();
+  TextColumn get milestonesJson => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -193,20 +211,117 @@ class TaskDeps extends Table {
 
 class ClassExceptions extends Table {
   TextColumn get id => text()();
-  TextColumn get classSlotId => text().references(ClassSlots, #id)();
-  IntColumn get date => integer()();
-  TextColumn get kind => text()(); // cancelled | moved | holiday
+  TextColumn get classSlotId =>
+      text().nullable().references(ClassSlots, #id)();
+  TextColumn get date => text()();
+  TextColumn get kind => text()();
   IntColumn get newStartMin => integer().nullable()();
   IntColumn get newEndMin => integer().nullable()();
   TextColumn get newRoom => text().nullable()();
+  TextColumn get note => text().nullable()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class SpaceItems extends Table {
+  TextColumn get id => text()();
+  TextColumn get spaceId => text().references(Spaces, #id)();
+  TextColumn get title => text()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  TextColumn get checkedOn => text().nullable()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class QuickLinks extends Table {
+  TextColumn get id => text()();
+  TextColumn get title => text()();
+  TextColumn get url => text()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class ClassNotes extends Table {
+  TextColumn get id => text()();
+  TextColumn get spaceId => text().references(Spaces, #id)();
+  IntColumn get meetingNo => integer().nullable()();
+  TextColumn get date => text().nullable()();
+  TextColumn get title => text().nullable()();
+  TextColumn get body => text().nullable()();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class Diagnostics extends Table {
+  TextColumn get id => text()();
+  TextColumn get kind => text()();
+  IntColumn get createdAt => integer()();
+  TextColumn get result => text().nullable()();
+  TextColumn get note => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class GradeComponents extends Table {
+  TextColumn get spaceId => text().references(Spaces, #id)();
+  TextColumn get key => text()();
+  RealColumn get weightPercent => real()();
+
+  @override
+  Set<Column> get primaryKey => {spaceId, key};
+}
+
+class SavedFilters extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get queryJson => text()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
 
 @DriftDatabase(tables: [
-  Spaces, SpaceAliases, SpaceMeta, Tasks, Subtasks, ClassSlots,
-  Tags, TaskTags, Attachments, Reminders, TaskEvents, FocusSessions,
-  TaskTemplates, ParserPrefs, Settings, TaskDeps, ClassExceptions,
+  Spaces,
+  SpaceAliases,
+  SpaceMeta,
+  Tasks,
+  Subtasks,
+  ClassSlots,
+  Tags,
+  TaskTags,
+  Attachments,
+  Reminders,
+  TaskEvents,
+  FocusSessions,
+  TaskTemplates,
+  ParserPrefs,
+  Settings,
+  TaskDeps,
+  ClassExceptions,
+  SpaceItems,
+  QuickLinks,
+  ClassNotes,
+  Diagnostics,
+  GradeComponents,
+  SavedFilters,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
