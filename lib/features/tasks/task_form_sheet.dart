@@ -108,7 +108,7 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
               Text(l10n.taskPriority),
               const Spacer(),
               SegmentedButton<int>(
-                segments: const [
+                segments: [
                   ButtonSegment(value: 0, label: Text(l10n.priorityLow)),
                   ButtonSegment(value: 1, label: Text(l10n.priorityMedium)),
                   ButtonSegment(value: 2, label: Text(l10n.priorityHigh)),
@@ -150,7 +150,7 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
       deadline: _deadline?.millisecondsSinceEpoch,
       createdAt: widget.task?.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
-      inbox: _spaceId == null ? 1 : 0,
+      inbox: _spaceId == null,
     );
     if (widget.task == null) {
       await repo.insertTask(task);
