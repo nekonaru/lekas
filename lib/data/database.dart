@@ -184,10 +184,29 @@ class Settings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
+class TaskDeps extends Table {
+  TextColumn get taskId => text().references(Tasks, #id)();
+  TextColumn get dependsOn => text().references(Tasks, #id)();
+  @override
+  Set<Column> get primaryKey => {taskId, dependsOn};
+}
+
+class ClassExceptions extends Table {
+  TextColumn get id => text()();
+  TextColumn get classSlotId => text().references(ClassSlots, #id)();
+  IntColumn get date => integer()();
+  TextColumn get kind => text()(); // cancelled | moved | holiday
+  IntColumn get newStartMin => integer().nullable()();
+  IntColumn get newEndMin => integer().nullable()();
+  TextColumn get newRoom => text().nullable()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Spaces, SpaceAliases, SpaceMeta, Tasks, Subtasks, ClassSlots,
   Tags, TaskTags, Attachments, Reminders, TaskEvents, FocusSessions,
-  TaskTemplates, ParserPrefs, Settings,
+  TaskTemplates, ParserPrefs, Settings, TaskDeps, ClassExceptions,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);

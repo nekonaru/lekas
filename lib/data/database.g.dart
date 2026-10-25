@@ -6271,6 +6271,695 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   }
 }
 
+class $TaskDepsTable extends TaskDeps with TableInfo<$TaskDepsTable, TaskDep> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskDepsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+    'task_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tasks (id)',
+    ),
+  );
+  static const VerificationMeta _dependsOnMeta = const VerificationMeta(
+    'dependsOn',
+  );
+  @override
+  late final GeneratedColumn<String> dependsOn = GeneratedColumn<String>(
+    'depends_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tasks (id)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [taskId, dependsOn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_deps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TaskDep> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('task_id')) {
+      context.handle(
+        _taskIdMeta,
+        taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('depends_on')) {
+      context.handle(
+        _dependsOnMeta,
+        dependsOn.isAcceptableOrUnknown(data['depends_on']!, _dependsOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dependsOnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {taskId, dependsOn};
+  @override
+  TaskDep map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskDep(
+      taskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_id'],
+      )!,
+      dependsOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}depends_on'],
+      )!,
+    );
+  }
+
+  @override
+  $TaskDepsTable createAlias(String alias) {
+    return $TaskDepsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskDep extends DataClass implements Insertable<TaskDep> {
+  final String taskId;
+  final String dependsOn;
+  const TaskDep({required this.taskId, required this.dependsOn});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['task_id'] = Variable<String>(taskId);
+    map['depends_on'] = Variable<String>(dependsOn);
+    return map;
+  }
+
+  TaskDepsCompanion toCompanion(bool nullToAbsent) {
+    return TaskDepsCompanion(
+      taskId: Value(taskId),
+      dependsOn: Value(dependsOn),
+    );
+  }
+
+  factory TaskDep.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskDep(
+      taskId: serializer.fromJson<String>(json['taskId']),
+      dependsOn: serializer.fromJson<String>(json['dependsOn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'taskId': serializer.toJson<String>(taskId),
+      'dependsOn': serializer.toJson<String>(dependsOn),
+    };
+  }
+
+  TaskDep copyWith({String? taskId, String? dependsOn}) => TaskDep(
+    taskId: taskId ?? this.taskId,
+    dependsOn: dependsOn ?? this.dependsOn,
+  );
+  TaskDep copyWithCompanion(TaskDepsCompanion data) {
+    return TaskDep(
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      dependsOn: data.dependsOn.present ? data.dependsOn.value : this.dependsOn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskDep(')
+          ..write('taskId: $taskId, ')
+          ..write('dependsOn: $dependsOn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(taskId, dependsOn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskDep &&
+          other.taskId == this.taskId &&
+          other.dependsOn == this.dependsOn);
+}
+
+class TaskDepsCompanion extends UpdateCompanion<TaskDep> {
+  final Value<String> taskId;
+  final Value<String> dependsOn;
+  final Value<int> rowid;
+  const TaskDepsCompanion({
+    this.taskId = const Value.absent(),
+    this.dependsOn = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskDepsCompanion.insert({
+    required String taskId,
+    required String dependsOn,
+    this.rowid = const Value.absent(),
+  }) : taskId = Value(taskId),
+       dependsOn = Value(dependsOn);
+  static Insertable<TaskDep> custom({
+    Expression<String>? taskId,
+    Expression<String>? dependsOn,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (taskId != null) 'task_id': taskId,
+      if (dependsOn != null) 'depends_on': dependsOn,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskDepsCompanion copyWith({
+    Value<String>? taskId,
+    Value<String>? dependsOn,
+    Value<int>? rowid,
+  }) {
+    return TaskDepsCompanion(
+      taskId: taskId ?? this.taskId,
+      dependsOn: dependsOn ?? this.dependsOn,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (dependsOn.present) {
+      map['depends_on'] = Variable<String>(dependsOn.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskDepsCompanion(')
+          ..write('taskId: $taskId, ')
+          ..write('dependsOn: $dependsOn, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ClassExceptionsTable extends ClassExceptions
+    with TableInfo<$ClassExceptionsTable, ClassException> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ClassExceptionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _classSlotIdMeta = const VerificationMeta(
+    'classSlotId',
+  );
+  @override
+  late final GeneratedColumn<String> classSlotId = GeneratedColumn<String>(
+    'class_slot_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES class_slots (id)',
+    ),
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<int> date = GeneratedColumn<int>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _newStartMinMeta = const VerificationMeta(
+    'newStartMin',
+  );
+  @override
+  late final GeneratedColumn<int> newStartMin = GeneratedColumn<int>(
+    'new_start_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _newEndMinMeta = const VerificationMeta(
+    'newEndMin',
+  );
+  @override
+  late final GeneratedColumn<int> newEndMin = GeneratedColumn<int>(
+    'new_end_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _newRoomMeta = const VerificationMeta(
+    'newRoom',
+  );
+  @override
+  late final GeneratedColumn<String> newRoom = GeneratedColumn<String>(
+    'new_room',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    classSlotId,
+    date,
+    kind,
+    newStartMin,
+    newEndMin,
+    newRoom,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'class_exceptions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ClassException> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('class_slot_id')) {
+      context.handle(
+        _classSlotIdMeta,
+        classSlotId.isAcceptableOrUnknown(
+          data['class_slot_id']!,
+          _classSlotIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_classSlotIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('new_start_min')) {
+      context.handle(
+        _newStartMinMeta,
+        newStartMin.isAcceptableOrUnknown(
+          data['new_start_min']!,
+          _newStartMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('new_end_min')) {
+      context.handle(
+        _newEndMinMeta,
+        newEndMin.isAcceptableOrUnknown(data['new_end_min']!, _newEndMinMeta),
+      );
+    }
+    if (data.containsKey('new_room')) {
+      context.handle(
+        _newRoomMeta,
+        newRoom.isAcceptableOrUnknown(data['new_room']!, _newRoomMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ClassException map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ClassException(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      classSlotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}class_slot_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}date'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      newStartMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}new_start_min'],
+      ),
+      newEndMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}new_end_min'],
+      ),
+      newRoom: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}new_room'],
+      ),
+    );
+  }
+
+  @override
+  $ClassExceptionsTable createAlias(String alias) {
+    return $ClassExceptionsTable(attachedDatabase, alias);
+  }
+}
+
+class ClassException extends DataClass implements Insertable<ClassException> {
+  final String id;
+  final String classSlotId;
+  final int date;
+  final String kind;
+  final int? newStartMin;
+  final int? newEndMin;
+  final String? newRoom;
+  const ClassException({
+    required this.id,
+    required this.classSlotId,
+    required this.date,
+    required this.kind,
+    this.newStartMin,
+    this.newEndMin,
+    this.newRoom,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['class_slot_id'] = Variable<String>(classSlotId);
+    map['date'] = Variable<int>(date);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || newStartMin != null) {
+      map['new_start_min'] = Variable<int>(newStartMin);
+    }
+    if (!nullToAbsent || newEndMin != null) {
+      map['new_end_min'] = Variable<int>(newEndMin);
+    }
+    if (!nullToAbsent || newRoom != null) {
+      map['new_room'] = Variable<String>(newRoom);
+    }
+    return map;
+  }
+
+  ClassExceptionsCompanion toCompanion(bool nullToAbsent) {
+    return ClassExceptionsCompanion(
+      id: Value(id),
+      classSlotId: Value(classSlotId),
+      date: Value(date),
+      kind: Value(kind),
+      newStartMin: newStartMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newStartMin),
+      newEndMin: newEndMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newEndMin),
+      newRoom: newRoom == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newRoom),
+    );
+  }
+
+  factory ClassException.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ClassException(
+      id: serializer.fromJson<String>(json['id']),
+      classSlotId: serializer.fromJson<String>(json['classSlotId']),
+      date: serializer.fromJson<int>(json['date']),
+      kind: serializer.fromJson<String>(json['kind']),
+      newStartMin: serializer.fromJson<int?>(json['newStartMin']),
+      newEndMin: serializer.fromJson<int?>(json['newEndMin']),
+      newRoom: serializer.fromJson<String?>(json['newRoom']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'classSlotId': serializer.toJson<String>(classSlotId),
+      'date': serializer.toJson<int>(date),
+      'kind': serializer.toJson<String>(kind),
+      'newStartMin': serializer.toJson<int?>(newStartMin),
+      'newEndMin': serializer.toJson<int?>(newEndMin),
+      'newRoom': serializer.toJson<String?>(newRoom),
+    };
+  }
+
+  ClassException copyWith({
+    String? id,
+    String? classSlotId,
+    int? date,
+    String? kind,
+    Value<int?> newStartMin = const Value.absent(),
+    Value<int?> newEndMin = const Value.absent(),
+    Value<String?> newRoom = const Value.absent(),
+  }) => ClassException(
+    id: id ?? this.id,
+    classSlotId: classSlotId ?? this.classSlotId,
+    date: date ?? this.date,
+    kind: kind ?? this.kind,
+    newStartMin: newStartMin.present ? newStartMin.value : this.newStartMin,
+    newEndMin: newEndMin.present ? newEndMin.value : this.newEndMin,
+    newRoom: newRoom.present ? newRoom.value : this.newRoom,
+  );
+  ClassException copyWithCompanion(ClassExceptionsCompanion data) {
+    return ClassException(
+      id: data.id.present ? data.id.value : this.id,
+      classSlotId: data.classSlotId.present
+          ? data.classSlotId.value
+          : this.classSlotId,
+      date: data.date.present ? data.date.value : this.date,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      newStartMin: data.newStartMin.present
+          ? data.newStartMin.value
+          : this.newStartMin,
+      newEndMin: data.newEndMin.present ? data.newEndMin.value : this.newEndMin,
+      newRoom: data.newRoom.present ? data.newRoom.value : this.newRoom,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClassException(')
+          ..write('id: $id, ')
+          ..write('classSlotId: $classSlotId, ')
+          ..write('date: $date, ')
+          ..write('kind: $kind, ')
+          ..write('newStartMin: $newStartMin, ')
+          ..write('newEndMin: $newEndMin, ')
+          ..write('newRoom: $newRoom')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, classSlotId, date, kind, newStartMin, newEndMin, newRoom);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ClassException &&
+          other.id == this.id &&
+          other.classSlotId == this.classSlotId &&
+          other.date == this.date &&
+          other.kind == this.kind &&
+          other.newStartMin == this.newStartMin &&
+          other.newEndMin == this.newEndMin &&
+          other.newRoom == this.newRoom);
+}
+
+class ClassExceptionsCompanion extends UpdateCompanion<ClassException> {
+  final Value<String> id;
+  final Value<String> classSlotId;
+  final Value<int> date;
+  final Value<String> kind;
+  final Value<int?> newStartMin;
+  final Value<int?> newEndMin;
+  final Value<String?> newRoom;
+  final Value<int> rowid;
+  const ClassExceptionsCompanion({
+    this.id = const Value.absent(),
+    this.classSlotId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.newStartMin = const Value.absent(),
+    this.newEndMin = const Value.absent(),
+    this.newRoom = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ClassExceptionsCompanion.insert({
+    required String id,
+    required String classSlotId,
+    required int date,
+    required String kind,
+    this.newStartMin = const Value.absent(),
+    this.newEndMin = const Value.absent(),
+    this.newRoom = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       classSlotId = Value(classSlotId),
+       date = Value(date),
+       kind = Value(kind);
+  static Insertable<ClassException> custom({
+    Expression<String>? id,
+    Expression<String>? classSlotId,
+    Expression<int>? date,
+    Expression<String>? kind,
+    Expression<int>? newStartMin,
+    Expression<int>? newEndMin,
+    Expression<String>? newRoom,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (classSlotId != null) 'class_slot_id': classSlotId,
+      if (date != null) 'date': date,
+      if (kind != null) 'kind': kind,
+      if (newStartMin != null) 'new_start_min': newStartMin,
+      if (newEndMin != null) 'new_end_min': newEndMin,
+      if (newRoom != null) 'new_room': newRoom,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ClassExceptionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? classSlotId,
+    Value<int>? date,
+    Value<String>? kind,
+    Value<int?>? newStartMin,
+    Value<int?>? newEndMin,
+    Value<String?>? newRoom,
+    Value<int>? rowid,
+  }) {
+    return ClassExceptionsCompanion(
+      id: id ?? this.id,
+      classSlotId: classSlotId ?? this.classSlotId,
+      date: date ?? this.date,
+      kind: kind ?? this.kind,
+      newStartMin: newStartMin ?? this.newStartMin,
+      newEndMin: newEndMin ?? this.newEndMin,
+      newRoom: newRoom ?? this.newRoom,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (classSlotId.present) {
+      map['class_slot_id'] = Variable<String>(classSlotId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<int>(date.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (newStartMin.present) {
+      map['new_start_min'] = Variable<int>(newStartMin.value);
+    }
+    if (newEndMin.present) {
+      map['new_end_min'] = Variable<int>(newEndMin.value);
+    }
+    if (newRoom.present) {
+      map['new_room'] = Variable<String>(newRoom.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClassExceptionsCompanion(')
+          ..write('id: $id, ')
+          ..write('classSlotId: $classSlotId, ')
+          ..write('date: $date, ')
+          ..write('kind: $kind, ')
+          ..write('newStartMin: $newStartMin, ')
+          ..write('newEndMin: $newEndMin, ')
+          ..write('newRoom: $newRoom, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6289,6 +6978,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TaskTemplatesTable taskTemplates = $TaskTemplatesTable(this);
   late final $ParserPrefsTable parserPrefs = $ParserPrefsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
+  late final $TaskDepsTable taskDeps = $TaskDepsTable(this);
+  late final $ClassExceptionsTable classExceptions = $ClassExceptionsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6309,6 +7002,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     taskTemplates,
     parserPrefs,
     settings,
+    taskDeps,
+    classExceptions,
   ];
 }
 
@@ -9210,6 +9905,26 @@ final class $$ClassSlotsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$ClassExceptionsTable, List<ClassException>>
+  _classExceptionsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.classExceptions,
+    aliasName: 'class_slots__id__class_exceptions__class_slot_id',
+  );
+
+  $$ClassExceptionsTableProcessedTableManager get classExceptionsRefs {
+    final manager = $$ClassExceptionsTableTableManager(
+      $_db,
+      $_db.classExceptions,
+    ).filter((f) => f.classSlotId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _classExceptionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ClassSlotsTableFilterComposer
@@ -9300,6 +10015,31 @@ class $$ClassSlotsTableFilterComposer
           }) => $$RemindersTableFilterComposer(
             $db: $db,
             $table: $db.reminders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> classExceptionsRefs(
+    Expression<bool> Function($$ClassExceptionsTableFilterComposer f) f,
+  ) {
+    final $$ClassExceptionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.classExceptions,
+      getReferencedColumn: (t) => t.classSlotId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassExceptionsTableFilterComposer(
+            $db: $db,
+            $table: $db.classExceptions,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9463,6 +10203,31 @@ class $$ClassSlotsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> classExceptionsRefs<T extends Object>(
+    Expression<T> Function($$ClassExceptionsTableAnnotationComposer a) f,
+  ) {
+    final $$ClassExceptionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.classExceptions,
+      getReferencedColumn: (t) => t.classSlotId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassExceptionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.classExceptions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ClassSlotsTableTableManager
@@ -9478,7 +10243,11 @@ class $$ClassSlotsTableTableManager
           $$ClassSlotsTableUpdateCompanionBuilder,
           (ClassSlot, $$ClassSlotsTableReferences),
           ClassSlot,
-          PrefetchHooks Function({bool spaceId, bool remindersRefs})
+          PrefetchHooks Function({
+            bool spaceId,
+            bool remindersRefs,
+            bool classExceptionsRefs,
+          })
         > {
   $$ClassSlotsTableTableManager(_$AppDatabase db, $ClassSlotsTable table)
     : super(
@@ -9547,66 +10316,94 @@ class $$ClassSlotsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({spaceId = false, remindersRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (remindersRefs) db.reminders],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (spaceId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.spaceId,
-                        referencedTable: $$ClassSlotsTableReferences
-                            ._spaceIdTable(db),
-                        referencedColumn: $$ClassSlotsTableReferences
-                            ._spaceIdTable(db)
-                            .id,
-                      ) as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                spaceId = false,
+                remindersRefs = false,
+                classExceptionsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (remindersRefs) db.reminders,
+                    if (classExceptionsRefs) db.classExceptions,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (spaceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.spaceId,
+                            referencedTable: $$ClassSlotsTableReferences
+                                ._spaceIdTable(db),
+                            referencedColumn: $$ClassSlotsTableReferences
+                                ._spaceIdTable(db)
+                                .id,
+                          ) as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (remindersRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ClassSlot,
+                          $ClassSlotsTable,
+                          Reminder,
+                          $RemindersTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClassSlotsTableReferences
+                              ._remindersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClassSlotsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remindersRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'class_slot_id',
+                          typedResults: items,
+                        ),
+                      if (classExceptionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ClassSlot,
+                          $ClassSlotsTable,
+                          ClassException,
+                          $ClassExceptionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClassSlotsTableReferences
+                              ._classExceptionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClassSlotsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).classExceptionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'class_slot_id',
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (remindersRefs)
-                    await $_getPrefetchedDataByColumns<
-                      ClassSlot,
-                      $ClassSlotsTable,
-                      Reminder,
-                      $RemindersTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$ClassSlotsTableReferences
-                          ._remindersRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$ClassSlotsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).remindersRefs,
-                      currentColumn: 'id',
-                      referencedColumn: 'class_slot_id',
-                      typedResults: items,
-                    ),
-                ];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -9623,7 +10420,11 @@ typedef $$ClassSlotsTableProcessedTableManager =
       $$ClassSlotsTableUpdateCompanionBuilder,
       (ClassSlot, $$ClassSlotsTableReferences),
       ClassSlot,
-      PrefetchHooks Function({bool spaceId, bool remindersRefs})
+      PrefetchHooks Function({
+        bool spaceId,
+        bool remindersRefs,
+        bool classExceptionsRefs,
+      })
     >;
 typedef $$TagsTableCreateCompanionBuilder = TagsCompanion Function({
   required String id,
@@ -12088,6 +12889,709 @@ typedef $$SettingsTableProcessedTableManager =
       Setting,
       PrefetchHooks Function()
     >;
+typedef $$TaskDepsTableCreateCompanionBuilder = TaskDepsCompanion Function({
+  required String taskId,
+  required String dependsOn,
+  Value<int> rowid,
+});
+typedef $$TaskDepsTableUpdateCompanionBuilder = TaskDepsCompanion Function({
+  Value<String> taskId,
+  Value<String> dependsOn,
+  Value<int> rowid,
+});
+
+final class $$TaskDepsTableReferences
+    extends BaseReferences<_$AppDatabase, $TaskDepsTable, TaskDep> {
+  $$TaskDepsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TasksTable _taskIdTable(_$AppDatabase db) =>
+      db.tasks.createAlias('task_deps__task_id__tasks__id');
+
+  $$TasksTableProcessedTableManager get taskId {
+    final $_column = $_itemColumn<String>('task_id')!;
+
+    final manager = $$TasksTableTableManager(
+      $_db,
+      $_db.tasks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $TasksTable _dependsOnTable(_$AppDatabase db) =>
+      db.tasks.createAlias('task_deps__depends_on__tasks__id');
+
+  $$TasksTableProcessedTableManager get dependsOn {
+    final $_column = $_itemColumn<String>('depends_on')!;
+
+    final manager = $$TasksTableTableManager(
+      $_db,
+      $_db.tasks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_dependsOnTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TaskDepsTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskDepsTable> {
+  $$TaskDepsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$TasksTableFilterComposer get taskId {
+    final $$TasksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taskId,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableFilterComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TasksTableFilterComposer get dependsOn {
+    final $$TasksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.dependsOn,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableFilterComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TaskDepsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskDepsTable> {
+  $$TaskDepsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$TasksTableOrderingComposer get taskId {
+    final $$TasksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taskId,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TasksTableOrderingComposer get dependsOn {
+    final $$TasksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.dependsOn,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TaskDepsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskDepsTable> {
+  $$TaskDepsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$TasksTableAnnotationComposer get taskId {
+    final $$TasksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taskId,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TasksTableAnnotationComposer get dependsOn {
+    final $$TasksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.dependsOn,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TaskDepsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TaskDepsTable,
+          TaskDep,
+          $$TaskDepsTableFilterComposer,
+          $$TaskDepsTableOrderingComposer,
+          $$TaskDepsTableAnnotationComposer,
+          $$TaskDepsTableCreateCompanionBuilder,
+          $$TaskDepsTableUpdateCompanionBuilder,
+          (TaskDep, $$TaskDepsTableReferences),
+          TaskDep,
+          PrefetchHooks Function({bool taskId, bool dependsOn})
+        > {
+  $$TaskDepsTableTableManager(_$AppDatabase db, $TaskDepsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskDepsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskDepsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskDepsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> taskId = const Value.absent(),
+                Value<String> dependsOn = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TaskDepsCompanion(
+                taskId: taskId,
+                dependsOn: dependsOn,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String taskId,
+                required String dependsOn,
+                Value<int> rowid = const Value.absent(),
+              }) => TaskDepsCompanion.insert(
+                taskId: taskId,
+                dependsOn: dependsOn,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TaskDepsTable, TaskDep>(table),
+                  $$TaskDepsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({taskId = false, dependsOn = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (taskId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.taskId,
+                        referencedTable: $$TaskDepsTableReferences._taskIdTable(
+                          db,
+                        ),
+                        referencedColumn: $$TaskDepsTableReferences
+                            ._taskIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (dependsOn) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.dependsOn,
+                        referencedTable: $$TaskDepsTableReferences
+                            ._dependsOnTable(db),
+                        referencedColumn: $$TaskDepsTableReferences
+                            ._dependsOnTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TaskDepsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TaskDepsTable,
+      TaskDep,
+      $$TaskDepsTableFilterComposer,
+      $$TaskDepsTableOrderingComposer,
+      $$TaskDepsTableAnnotationComposer,
+      $$TaskDepsTableCreateCompanionBuilder,
+      $$TaskDepsTableUpdateCompanionBuilder,
+      (TaskDep, $$TaskDepsTableReferences),
+      TaskDep,
+      PrefetchHooks Function({bool taskId, bool dependsOn})
+    >;
+typedef $$ClassExceptionsTableCreateCompanionBuilder =
+    ClassExceptionsCompanion Function({
+      required String id,
+      required String classSlotId,
+      required int date,
+      required String kind,
+      Value<int?> newStartMin,
+      Value<int?> newEndMin,
+      Value<String?> newRoom,
+      Value<int> rowid,
+    });
+typedef $$ClassExceptionsTableUpdateCompanionBuilder =
+    ClassExceptionsCompanion Function({
+      Value<String> id,
+      Value<String> classSlotId,
+      Value<int> date,
+      Value<String> kind,
+      Value<int?> newStartMin,
+      Value<int?> newEndMin,
+      Value<String?> newRoom,
+      Value<int> rowid,
+    });
+
+final class $$ClassExceptionsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $ClassExceptionsTable, ClassException> {
+  $$ClassExceptionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ClassSlotsTable _classSlotIdTable(_$AppDatabase db) => db.classSlots
+      .createAlias('class_exceptions__class_slot_id__class_slots__id');
+
+  $$ClassSlotsTableProcessedTableManager get classSlotId {
+    final $_column = $_itemColumn<String>('class_slot_id')!;
+
+    final manager = $$ClassSlotsTableTableManager(
+      $_db,
+      $_db.classSlots,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_classSlotIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ClassExceptionsTableFilterComposer
+    extends Composer<_$AppDatabase, $ClassExceptionsTable> {
+  $$ClassExceptionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get newStartMin => $composableBuilder(
+    column: $table.newStartMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get newEndMin => $composableBuilder(
+    column: $table.newEndMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get newRoom => $composableBuilder(
+    column: $table.newRoom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ClassSlotsTableFilterComposer get classSlotId {
+    final $$ClassSlotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classSlotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableFilterComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ClassExceptionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ClassExceptionsTable> {
+  $$ClassExceptionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get newStartMin => $composableBuilder(
+    column: $table.newStartMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get newEndMin => $composableBuilder(
+    column: $table.newEndMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get newRoom => $composableBuilder(
+    column: $table.newRoom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ClassSlotsTableOrderingComposer get classSlotId {
+    final $$ClassSlotsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classSlotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableOrderingComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ClassExceptionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ClassExceptionsTable> {
+  $$ClassExceptionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get newStartMin => $composableBuilder(
+    column: $table.newStartMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get newEndMin =>
+      $composableBuilder(column: $table.newEndMin, builder: (column) => column);
+
+  GeneratedColumn<String> get newRoom =>
+      $composableBuilder(column: $table.newRoom, builder: (column) => column);
+
+  $$ClassSlotsTableAnnotationComposer get classSlotId {
+    final $$ClassSlotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classSlotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ClassExceptionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ClassExceptionsTable,
+          ClassException,
+          $$ClassExceptionsTableFilterComposer,
+          $$ClassExceptionsTableOrderingComposer,
+          $$ClassExceptionsTableAnnotationComposer,
+          $$ClassExceptionsTableCreateCompanionBuilder,
+          $$ClassExceptionsTableUpdateCompanionBuilder,
+          (ClassException, $$ClassExceptionsTableReferences),
+          ClassException,
+          PrefetchHooks Function({bool classSlotId})
+        > {
+  $$ClassExceptionsTableTableManager(
+    _$AppDatabase db,
+    $ClassExceptionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ClassExceptionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ClassExceptionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ClassExceptionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> classSlotId = const Value.absent(),
+                Value<int> date = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int?> newStartMin = const Value.absent(),
+                Value<int?> newEndMin = const Value.absent(),
+                Value<String?> newRoom = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClassExceptionsCompanion(
+                id: id,
+                classSlotId: classSlotId,
+                date: date,
+                kind: kind,
+                newStartMin: newStartMin,
+                newEndMin: newEndMin,
+                newRoom: newRoom,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String classSlotId,
+                required int date,
+                required String kind,
+                Value<int?> newStartMin = const Value.absent(),
+                Value<int?> newEndMin = const Value.absent(),
+                Value<String?> newRoom = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClassExceptionsCompanion.insert(
+                id: id,
+                classSlotId: classSlotId,
+                date: date,
+                kind: kind,
+                newStartMin: newStartMin,
+                newEndMin: newEndMin,
+                newRoom: newRoom,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ClassExceptionsTable, ClassException>(table),
+                  $$ClassExceptionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({classSlotId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (classSlotId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.classSlotId,
+                        referencedTable: $$ClassExceptionsTableReferences
+                            ._classSlotIdTable(db),
+                        referencedColumn: $$ClassExceptionsTableReferences
+                            ._classSlotIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ClassExceptionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ClassExceptionsTable,
+      ClassException,
+      $$ClassExceptionsTableFilterComposer,
+      $$ClassExceptionsTableOrderingComposer,
+      $$ClassExceptionsTableAnnotationComposer,
+      $$ClassExceptionsTableCreateCompanionBuilder,
+      $$ClassExceptionsTableUpdateCompanionBuilder,
+      (ClassException, $$ClassExceptionsTableReferences),
+      ClassException,
+      PrefetchHooks Function({bool classSlotId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12121,4 +13625,8 @@ class $AppDatabaseManager {
       $$ParserPrefsTableTableManager(_db, _db.parserPrefs);
   $$SettingsTableTableManager get settings =>
       $$SettingsTableTableManager(_db, _db.settings);
+  $$TaskDepsTableTableManager get taskDeps =>
+      $$TaskDepsTableTableManager(_db, _db.taskDeps);
+  $$ClassExceptionsTableTableManager get classExceptions =>
+      $$ClassExceptionsTableTableManager(_db, _db.classExceptions);
 }
