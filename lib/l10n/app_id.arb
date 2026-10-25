@@ -1,0 +1,17 @@
+{
+  "@@locale": "id",
+  "todayTitle": "Hari Ini",
+  "tasksCount": "{count} tugas",
+  "@tasksCount": { "placeholders": { "count": { "type": "int" } } },
+  "inboxTitle": "Inbox",
+  "spacesTitle": "Wadah",
+  "calendarTitle": "Kalender",
+  "settingsTitle": "Pengaturan",
+  "quickAddHint": "Tambah tugas cepat...",
+  "emptyToday": "Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?",
+  "undo": "Urungkan",
+  "done": "Selesai",
+  "snooze1h": "Tunda 1 jam",
+  "morningSummary": "Hari ini: {classes} kelas, {tasks} tugas.",
+  "@morningSummary": { "placeholders": { "classes": { "type": "int" }, "tasks": { "type": "int" } } }
+}
