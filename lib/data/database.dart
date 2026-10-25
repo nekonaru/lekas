@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import 'models.dart';
+
 part 'database.g.dart';
 
 class Spaces extends Table {
@@ -13,12 +15,6 @@ class Spaces extends Table {
   TextColumn get targetGrade => text().nullable()();
   TextColumn get finalGrade => text().nullable()();
   TextColumn get kind => text().withDefault(const Constant('course'))();
-  IntColumn get totalMeetings => integer().withDefault(const Constant(16))();
-  IntColumn get maxAbsentPercent => integer().withDefault(const Constant(25))();
-  BoolColumn get excusedCountsAbsent =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get attendPrompt => boolean().withDefault(const Constant(false))();
-  BoolColumn get isSample => boolean().withDefault(const Constant(false))();
   BoolColumn get archived => boolean().withDefault(const Constant(false))();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
@@ -211,8 +207,7 @@ class TaskDeps extends Table {
 
 class ClassExceptions extends Table {
   TextColumn get id => text()();
-  TextColumn get classSlotId =>
-      text().nullable().references(ClassSlots, #id)();
+  TextColumn get classSlotId => text().nullable().references(ClassSlots, #id)();
   TextColumn get date => text()();
   TextColumn get kind => text()();
   IntColumn get newStartMin => integer().nullable()();
