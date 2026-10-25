@@ -50,10 +50,8 @@ class TaskRepository {
   }
 
   Future<void> restoreTask(String id) async {
-    await db.update(db.tasks).replace(Task(
-      id: id,
-      title: '',
-      createdAt: 0,
+    final existing = await getTask(id);
+    await db.update(db.tasks).replace(existing.copyWith(
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: null,
     ));

@@ -36,7 +36,7 @@ class SpaceRepository {
   }
 
   Future<void> deleteSpace(String id) async {
-    await db.delete(db.spaces).delete(const Filter<Space>(db.spaces.id.equals(id)));
+    await (delete(db.spaces)..where(db.spaces.id.equals(id))).go();
   }
 
   Future<void> insertAlias(SpaceAlias alias) async {

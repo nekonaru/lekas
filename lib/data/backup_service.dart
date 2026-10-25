@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/database.dart';
 import '../data/models.dart';
+import 'package:drift/drift.dart';
 
 class BackupService {
   final AppDatabase db;
@@ -92,161 +93,161 @@ class BackupService {
     // Import spaces
     if (data['spaces'] != null) {
       for (final item in data['spaces']) {
-        await db.into(db.spaces).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.spaces).replace(item);
       }
       stats['spaces'] = (data['spaces'] as List).length;
     }
 
     if (data['space_aliases'] != null) {
       for (final item in data['space_aliases']) {
-        await db.into(db.spaceAliases).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.spaceAliases).replace(item);
       }
       stats['space_aliases'] = (data['space_aliases'] as List).length;
     }
 
     if (data['space_meta'] != null) {
       for (final item in data['space_meta']) {
-        await db.into(db.spaceMeta).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.spaceMeta).replace(item);
       }
       stats['space_meta'] = (data['space_meta'] as List).length;
     }
 
     if (data['tasks'] != null) {
       for (final item in data['tasks']) {
-        await db.into(db.tasks).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.tasks).replace(item);
       }
       stats['tasks'] = (data['tasks'] as List).length;
     }
 
     if (data['subtasks'] != null) {
       for (final item in data['subtasks']) {
-        await db.into(db.subtasks).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.subtasks).replace(item);
       }
       stats['subtasks'] = (data['subtasks'] as List).length;
     }
 
     if (data['class_slots'] != null) {
       for (final item in data['class_slots']) {
-        await db.into(db.classSlots).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.classSlots).replace(item);
       }
       stats['class_slots'] = (data['class_slots'] as List).length;
     }
 
     if (data['tags'] != null) {
       for (final item in data['tags']) {
-        await db.into(db.tags).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.tags).replace(item);
       }
       stats['tags'] = (data['tags'] as List).length;
     }
 
     if (data['task_tags'] != null) {
       for (final item in data['task_tags']) {
-        await db.into(db.taskTags).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.taskTags).replace(item);
       }
       stats['task_tags'] = (data['task_tags'] as List).length;
     }
 
     if (data['attachments'] != null) {
       for (final item in data['attachments']) {
-        await db.into(db.attachments).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.attachments).replace(item);
       }
       stats['attachments'] = (data['attachments'] as List).length;
     }
 
     if (data['reminders'] != null) {
       for (final item in data['reminders']) {
-        await db.into(db.reminders).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.reminders).replace(item);
       }
       stats['reminders'] = (data['reminders'] as List).length;
     }
 
     if (data['task_events'] != null) {
       for (final item in data['task_events']) {
-        await db.into(db.taskEvents).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.taskEvents).replace(item);
       }
       stats['task_events'] = (data['task_events'] as List).length;
     }
 
     if (data['focus_sessions'] != null) {
       for (final item in data['focus_sessions']) {
-        await db.into(db.focusSessions).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.focusSessions).replace(item);
       }
       stats['focus_sessions'] = (data['focus_sessions'] as List).length;
     }
 
     if (data['task_templates'] != null) {
       for (final item in data['task_templates']) {
-        await db.into(db.taskTemplates).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.taskTemplates).replace(item);
       }
       stats['task_templates'] = (data['task_templates'] as List).length;
     }
 
     if (data['parser_prefs'] != null) {
       for (final item in data['parser_prefs']) {
-        await db.into(db.parserPrefs).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.parserPrefs).replace(item);
       }
       stats['parser_prefs'] = (data['parser_prefs'] as List).length;
     }
 
     if (data['settings'] != null) {
       for (final item in data['settings']) {
-        await db.into(db.settings).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.settings).replace(item);
       }
       stats['settings'] = (data['settings'] as List).length;
     }
 
     if (data['task_deps'] != null) {
       for (final item in data['task_deps']) {
-        await db.into(db.taskDeps).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.taskDeps).replace(item);
       }
       stats['task_deps'] = (data['task_deps'] as List).length;
     }
 
     if (data['class_exceptions'] != null) {
       for (final item in data['class_exceptions']) {
-        await db.into(db.classExceptions).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.classExceptions).replace(item);
       }
       stats['class_exceptions'] = (data['class_exceptions'] as List).length;
     }
 
     if (data['space_items'] != null) {
       for (final item in data['space_items']) {
-        await db.into(db.spaceItems).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.spaceItems).replace(item);
       }
       stats['space_items'] = (data['space_items'] as List).length;
     }
 
     if (data['quick_links'] != null) {
       for (final item in data['quick_links']) {
-        await db.into(db.quickLinks).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.quickLinks).replace(item);
       }
       stats['quick_links'] = (data['quick_links'] as List).length;
     }
 
     if (data['class_notes'] != null) {
       for (final item in data['class_notes']) {
-        await db.into(db.classNotes).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.classNotes).replace(item);
       }
       stats['class_notes'] = (data['class_notes'] as List).length;
     }
 
     if (data['diagnostics'] != null) {
       for (final item in data['diagnostics']) {
-        await db.into(db.diagnostics).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.diagnostics).replace(item);
       }
       stats['diagnostics'] = (data['diagnostics'] as List).length;
     }
 
     if (data['grade_components'] != null) {
       for (final item in data['grade_components']) {
-        await db.into(db.gradeComponents).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.gradeComponents).replace(item);
       }
       stats['grade_components'] = (data['grade_components'] as List).length;
     }
 
     if (data['saved_filters'] != null) {
       for (final item in data['saved_filters']) {
-        await db.into(db.savedFilters).insertOnConflict(item, OnConflictStrategy.replace);
+        await db.into(db.savedFilters).replace(item);
       }
       stats['saved_filters'] = (data['saved_filters'] as List).length;
     }

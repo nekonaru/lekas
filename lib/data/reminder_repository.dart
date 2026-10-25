@@ -23,7 +23,7 @@ class ReminderRepository {
   }
 
   Future<void> deleteReminder(String id) async {
-    await db.delete(db.reminders).delete(const Filter<Reminder>(db.reminders.id.equals(id)));
+    await (delete(db.reminders)..where(db.reminders.id.equals(id))).go();
   }
 
   Future<void> markAcked(String id) async {
