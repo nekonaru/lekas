@@ -18,6 +18,13 @@ Terakhir diperbarui: Sun Oct 26 2026
   di `lib/features/` (dari 66 placeholder menjadi 0). Setiap tombol kini membuka layar,
   dialog, bottom sheet, atau memanggil repository. Pengecualian: Quick Add suara masih
   menampilkan pesan `featureNotAvailable` karena plugin speech tidak ada di `pubspec.yaml`.
+- **Urutan aturan pengingat: jam tenang dulu, lalu kelas.** Bila ujung kelas jatuh di dalam
+  jam tenang, hasil kelas yang menang (dibaca ulang lewat `moveOutOfQuietHours`), sehingga
+  pengingat tidak pernah mendarat di 22.00-06.00. Pengecualian rancangan 5.21: deadline
+  kurang dari 1 jam setelah kelas selesai tidak pernah ditahan.
+- **Geser kartu tidak menghapus kartu.** `confirmDismiss` selalu mengembalikan `false`;
+  kartu balik ke tempatnya lalu daftar dimuat ulang, supaya tidak ada error
+  "dismissed widget still in the tree" saat data berubah lewat stream.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -43,8 +50,9 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Setiap bagian diurutkan oleh skor urgensi
 - [x] Navigasi ke detail tugas dari setiap bagian
 - [x] UndoSnackbar component
-- [ ] Alasan singkat di setiap kartu
-- [ ] Kartu peringatan (maksimal satu sekaligus)
+- [x] Alasan singkat di setiap kartu (`urgencyReason`, teks `alasan · bobot · tanggal`)
+- [x] Kartu peringatan (maksimal satu sekaligus, bisa ditutup: izin dicabut, Inbox >= 5, minggu padat >= 10)
+- [x] Geser kartu (kanan = selesai + undo, kiri = sheet tunda) dan aksi massal lewat long press
 - Status: [x] besarnya selesai
 
 ### 3. ReminderService, izin, boot receiver, layar Cek Pengingat
@@ -80,9 +88,9 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Inbox screen dengan daftar tugas inbox
 - [x] Subtugas screen: tambah, edit, hapus, toggle done
 - [x] Jadwal kuliah screen: tambah slot kelas per wadah
-- [x] Tunda cerdas (TundaSmartScreen)
-- [ ] Geser kartu dan aksi massal
-- Status: [ ] setengah selesai
+- [x] Tunda cerdas (TundaSmartScreen): hanya memindahkan pengingat, tidak pernah deadline (5.5)
+- [x] Geser kartu dan aksi massal (TaskSection Dismissible + selection bar TodayScreen)
+- Status: [x] selesai
 
 ---
 
@@ -127,7 +135,8 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Bobot komponen (WeightComponentScreen)
 - [x] Target pribadi (TargetPribadiScreen)
 - [x] Kehadiran (AttendanceScreen)
-- [ ] Senyap saat kelas dan notifikasi tidak berisik
+- [x] Senyap saat kelas (`class_quiet.dart`, pengecualian `class_exceptions`, deadline < 1 jam tidak ditahan; 6 tes)
+- [ ] Gabung notifikasi, anggaran 8 per hari dan intensitas (5.21 sisanya)
 - [x] Fokus hari ini (FokusHariIniScreen)
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
@@ -169,7 +178,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (354 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (378 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -275,10 +284,10 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 354 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 378 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 149 tes lulus (136 parser, 13 pengingat, urgensi)
-4. `flutter build apk` - sukses, `app-release.apk` 61.9 MB
+3. `flutter test` - 161 tes lulus (136 parser, 19 pengingat, urgensi)
+4. `flutter build apk` - sukses, `app-release.apk` 62.1 MB
 5. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 6. Push ke `main` dan CI GitHub Actions hijau
 
@@ -288,8 +297,7 @@ Tracking:
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - database.g.dart ditulis manual, perlu divalidasi dengan build_runner
 - Widget layar utama (home_widget package)
-- Geser kartu dan aksi massal (gesture detector)
 - Pin, tag, duplikat, templat
-- Senyap saat kelas dan notifikasi tidak berisik
+- Gabung notifikasi, anggaran 8 per hari dan intensitas notifikasi (5.21 sisanya)
 - Parser lanjutan (7.15)
 - Ringkasan minggu malam notifikasi
