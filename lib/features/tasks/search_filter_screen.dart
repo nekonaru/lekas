@@ -16,6 +16,7 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   final _searchController = TextEditingController();
   String? _spaceFilter;
   String? _typeFilter;
+  String? _tagFilter;
 
   @override
   void dispose() {
@@ -42,10 +43,12 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     }
   }
 
-  /// Bottom sheet with the space and type filters (design section 5.1).
+  /// Bottom sheet with the space, type and tag filters (design sections
+  /// 5.1 and 5.9: the three combine).
   Future<void> _openFilter() async {
     final l10n = AppLocalizations.of(context)!;
     final spaces = await ref.read(spaceRepositoryProvider).getSpaces();
+    final allTags = await ref.read(tagRepositoryProvider).getTags();
     if (!mounted) return;
     final types = const ['quiz', 'lab_report', 'paper', 'presentation', 'midterm', 'final'];
 
@@ -107,6 +110,32 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                 ),
               const Divider(),
               ListTile(
+                title: Text(l10n.tagsLabel),
+                subtitle: Text(
+                  _tagFilter == null ? l10n.allLabel : '#$_tagFilter',
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.label_outline),
+                title: Text(l10n.allLabel),
+                selected: _tagFilter == null,
+                onTap: () {
+                  setSheetState(() => _tagFilter = null);
+                  setState(() {});
+                },
+              ),
+              for (final tag in allTags)
+                ListTile(
+                  leading: const Icon(Icons.label_outline),
+                  title: Text('#${tag.name}'),
+                  selected: _tagFilter == tag.name,
+                  onTap: () {
+                    setSheetState(() => _tagFilter = tag.name);
+                    setState(() {});
+                  },
+                ),
+              const Divider(),
+              ListTile(
                 leading: const Icon(Icons.close),
                 title: Text(l10n.cancel),
                 onTap: () => Navigator.pop(sheetContext),
@@ -144,7 +173,9 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
           ListTile(
             title: Text(l10n.filterLabel),
             subtitle: Text(l10n.filterSubtitle),
-            selected: _spaceFilter != null || _typeFilter != null,
+            selected: _spaceFilter != null ||
+                _typeFilter != null ||
+                _tagFilter != null,
             trailing: const Icon(Icons.chevron_right),
             onTap: _openFilter,
           ),
@@ -162,24 +193,23 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                             t.title.toLowerCase().contains(query) ||
                             (t.notes ?? '').toLowerCase().contains(query)))
                     .toList();
-                if (tasks.isEmpty) {
-                  return Center(child: Text(l10n.emptyTaskList));
-                }
-                return ListView.builder(
-                  itemCount: tasks.length,
-                  itemBuilder: (context, index) {
-                    final task = tasks[index];
-                    return ListTile(
-                      title: Text(task.title),
-                      subtitle: Text(task.notes ?? ''),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) => TaskDetailScreen(taskId: task.id),
-                        ),
-                      ),
-                    );
+                if (_tagFilter == null) return _taskList(tasks, l10n);
+                // Design section 5.9: the tag filter combines with the
+                // space and type filters applied above.
+                return FutureBuilder<Map<String, List<String>>>(
+                  future: ref
+                      .read(tagRepositoryProvider)
+                      .tagsForTasks([for (final t in tasks) t.id]),
+                  builder: (context, tagSnapshot) {
+                    final tagsByTask = tagSnapshot.data;
+                    if (tagsByTask == null) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final tagged = tasks
+                        .where((t) =>
+                            (tagsByTask[t.id] ?? []).contains(_tagFilter))
+                        .toList();
+                    return _taskList(tagged, l10n);
                   },
                 );
               },
@@ -187,6 +217,29 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _taskList(List<Task> tasks, AppLocalizations l10n) {
+    if (tasks.isEmpty) {
+      return Center(child: Text(l10n.emptyTaskList));
+    }
+    return ListView.builder(
+      itemCount: tasks.length,
+      itemBuilder: (context, index) {
+        final task = tasks[index];
+        return ListTile(
+          title: Text(task.title),
+          subtitle: Text(task.notes ?? ''),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => TaskDetailScreen(taskId: task.id),
+            ),
+          ),
+        );
+      },
     );
   }
 }
