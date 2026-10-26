@@ -1290,4 +1290,12 @@ class AppLocalizationsId extends AppLocalizations {
   String budgetPerDay(int count) {
     return '$count notifikasi per hari';
   }
+
+  @override
+  String overdueDigestBody(int count) {
+    return '$count tugas melewati deadline. Ketuk untuk melihat daftarnya.';
+  }
+
+  @override
+  String get overdueReminderToggle => 'Satu notifikasi per hari pukul 09.00';
 }

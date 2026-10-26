@@ -590,6 +590,63 @@ class ReminderService {
     if (allocated) {
       await _ref.read(settingsRepositoryProvider).set('notif_id_seq', '$nextId');
     }
+
+    await _syncOverdueDigest(tasks, now, l10n);
+  }
+
+  /// One notification a day at 09:00 listing every overdue task
+  /// (design section 5.22). The body is rebuilt on each sync, which runs on
+  /// app start, on boot and after every task change, and a task leaves the
+  /// digest after three days ([countsAsFreshOverdue]).
+  Future<void> _syncOverdueDigest(
+    List<Task> tasks,
+    DateTime now,
+    AppLocalizations l10n,
+  ) async {
+    final settings = _ref.read(settingsRepositoryProvider);
+    final storedId =
+        int.tryParse(await settings.get('overdue_digest_notif_id') ?? '');
+    final enabled = await settings.get('overdue_digest_enabled') != '0';
+
+    final overdue = <Task>[
+      for (final task in tasks)
+        if (task.deletedAt == null &&
+            task.status != 'done' &&
+            task.deadline != null &&
+            countsAsFreshOverdue(
+              deadline: DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+              now: now,
+            ))
+          task,
+    ]..sort((a, b) => (a.deadline ?? 0).compareTo(b.deadline ?? 0));
+
+    if (!enabled || overdue.isEmpty) {
+      if (storedId != null) await _plugin.cancel(storedId);
+      return;
+    }
+
+    var id = storedId;
+    if (id == null) {
+      id = await _nextNotifId(settings);
+      await settings.set('notif_id_seq', '${id + 1}');
+      await settings.set('overdue_digest_notif_id', '$id');
+    }
+
+    // With a single task the Selesai and Tunda buttons are unambiguous; a
+    // longer list would apply them to the wrong task, so it carries none and
+    // a tap simply opens the app.
+    await scheduleNotification(
+      id: id,
+      when: nextDigestAt(now),
+      title: l10n.overdueTaskReminderTitle,
+      body: '${l10n.overdueDigestBody(overdue.length)}\n'
+          '${overdue.map((task) => task.title).join('\n')}',
+      payload:
+          ReminderPayload(overdue.first.id, ReminderPayload.actionOpen).encode(),
+      channelId: kChannelOverdue,
+      withActions: overdue.length == 1,
+      l10n: l10n,
+    );
   }
 
   /// Applies the quiet hours rule (design 4.6) and the silent during class

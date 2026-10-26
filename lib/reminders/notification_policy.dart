@@ -115,6 +115,24 @@ class PlannedNotification {
   bool get merged => members.length > 1;
 }
 
+/// Whether an overdue task still belongs in the daily overdue notification
+/// (design section 5.22): it is mentioned for at most three days after the
+/// deadline, then only the Overdue section and the morning summary show it.
+bool countsAsFreshOverdue({required DateTime deadline, required DateTime now}) {
+  if (!now.isAfter(deadline)) return false;
+  return now.isBefore(deadline.add(const Duration(days: 3)));
+}
+
+/// The next 09:00 that is still in the future: when the daily overdue
+/// digest fires (design section 5.22).
+DateTime nextDigestAt(DateTime now) {
+  var moment = DateTime(now.year, now.month, now.day, 9);
+  if (!moment.isAfter(now)) {
+    moment = moment.add(const Duration(days: 1));
+  }
+  return moment;
+}
+
 /// Reminders closer together than this become one notification.
 const Duration kMergeWindow = Duration(minutes: 10);
 

@@ -432,5 +432,8 @@
   "intensityEager": "Eager: plus every 6 hours on the deadline day",
   "notificationBudget": "Daily notification budget",
   "budgetPerDay": "{count} notifications per day",
-  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } }
+  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } },
+  "overdueDigestBody": "{count} tasks passed their deadline. Tap to review the list.",
+  "@overdueDigestBody": { "placeholders": { "count": { "type": "int" } } },
+  "overdueReminderToggle": "One notification a day at 09:00"
 }

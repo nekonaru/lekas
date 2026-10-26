@@ -18,6 +18,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   ThemeMode? _themeMode;
   String _intensity = 'normal';
   int _budget = kDailyNotificationBudget;
+  bool _overdueDigest = true;
 
   @override
   void initState() {
@@ -31,12 +32,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final themeMode = await ref.read(themeModeProvider.future);
     final intensity = await settings.get('reminder_intensity');
     final budget = int.tryParse(await settings.get('notification_budget') ?? '');
+    final digest = await settings.get('overdue_digest_enabled');
     if (!mounted) return;
     setState(() {
       _language = language;
       _themeMode = themeMode;
       _intensity = intensity ?? 'normal';
       _budget = budget ?? kDailyNotificationBudget;
+      _overdueDigest = digest != '0';
     });
   }
 
@@ -145,6 +148,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await ref.read(reminderServiceProvider).syncAll();
   }
 
+  /// Design section 5.22: the daily overdue digest can be switched off.
+  Future<void> _setOverdueDigest(bool value) async {
+    await ref.read(settingsRepositoryProvider).set(
+          'overdue_digest_enabled',
+          value ? '1' : '0',
+        );
+    if (!mounted) return;
+    setState(() => _overdueDigest = value);
+    await ref.read(reminderServiceProvider).syncAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -175,6 +189,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.notificationBudget),
             subtitle: Text(l10n.budgetPerDay(_budget)),
             onTap: _pickBudget,
+          ),
+          SwitchListTile(
+            title: Text(l10n.overdueTaskReminderTitle),
+            subtitle: Text(l10n.overdueReminderToggle),
+            value: _overdueDigest,
+            onChanged: _setOverdueDigest,
           ),
           const Divider(),
           ListTile(

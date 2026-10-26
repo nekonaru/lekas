@@ -47,6 +47,45 @@ void main() {
     });
   });
 
+  group('daily overdue digest (design section 5.22)', () {
+    final now = DateTime(2026, 10, 20, 9);
+
+    test('a task is only mentioned while it is overdue', () {
+      final deadline = now.add(const Duration(hours: 1));
+      expect(
+        countsAsFreshOverdue(deadline: deadline, now: now),
+        isFalse,
+      );
+      expect(
+        countsAsFreshOverdue(
+          deadline: now.subtract(const Duration(minutes: 30)),
+          now: now,
+        ),
+        isTrue,
+      );
+    });
+
+    test('a task stops appearing after three days', () {
+      final deadline = DateTime(2026, 10, 17, 23, 59);
+      expect(countsAsFreshOverdue(deadline: deadline, now: now), isTrue);
+      final later = DateTime(2026, 10, 21, 0, 1);
+      expect(countsAsFreshOverdue(deadline: deadline, now: later), isFalse);
+    });
+
+    test('the next digest is always at 09:00', () {
+      final beforeNine = DateTime(2026, 10, 20, 7, 30);
+      final afterNine = DateTime(2026, 10, 20, 10, 0);
+      expect(
+        nextDigestAt(beforeNine),
+        DateTime(2026, 10, 20, 9),
+      );
+      expect(
+        nextDigestAt(afterNine),
+        DateTime(2026, 10, 21, 9),
+      );
+    });
+  });
+
   group('merging and budget (design section 5.21)', () {
     final day = DateTime(2026, 10, 20, 8);
     final farDeadline = DateTime(2026, 10, 30, 23, 59);

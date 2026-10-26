@@ -2437,6 +2437,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} notifikasi per hari'**
   String budgetPerDay(int count);
+
+  /// No description provided for @overdueDigestBody.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas melewati deadline. Ketuk untuk melihat daftarnya.'**
+  String overdueDigestBody(int count);
+
+  /// No description provided for @overdueReminderToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu notifikasi per hari pukul 09.00'**
+  String get overdueReminderToggle;
 }
 
 class _AppLocalizationsDelegate

@@ -432,5 +432,8 @@
   "intensityEager": "Gencar: ditambah tiap 6 jam di hari deadline",
   "notificationBudget": "Anggaran notifikasi harian",
   "budgetPerDay": "{count} notifikasi per hari",
-  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } }
+  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } },
+  "overdueDigestBody": "{count} tugas melewati deadline. Ketuk untuk melihat daftarnya.",
+  "@overdueDigestBody": { "placeholders": { "count": { "type": "int" } } },
+  "overdueReminderToggle": "Satu notifikasi per hari pukul 09.00"
 }
