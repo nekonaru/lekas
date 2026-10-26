@@ -34,12 +34,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-3.47.0-
 
-      - name: Add notification permission to manifest
-        run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i 's#<manifest xmlns:android="http://schemas.android.com/apk/res/android">#<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />#' "$MANIFEST"
-          sed -i 's/android:label="lekas"/android:label="Lekas"/' "$MANIFEST"
-
       - name: Alias Android SDK platform 37.0 as android-37
         run: |
           SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
@@ -53,23 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-
-      - name: Enable core library desugaring
-        run: |
-          APP_GRADLE="android/app/build.gradle.kts"
-          if grep -q "isCoreLibraryDesugaringEnabled" "$APP_GRADLE"; then
-            sed -i 's/isCoreLibraryDesugaringEnabled\s*=\s*false/isCoreLibraryDesugaringEnabled = true/' "$APP_GRADLE"
-          else
-            sed -i '/sourceCompatibility/a\        isCoreLibraryDesugaringEnabled = true' "$APP_GRADLE"
-          fi
-          if ! grep -q "coreLibraryDesugaring" "$APP_GRADLE"; then
-            cat >> "$APP_GRADLE" << 'GRADLEOF'
-
-          dependencies {
-              coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-          }
-          GRADLEOF
-          fi
 
       - name: Build APK
         run: flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
