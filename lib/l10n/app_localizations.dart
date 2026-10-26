@@ -2335,6 +2335,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tutup'**
   String get closeLabel;
+
+  /// No description provided for @selectedCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} dipilih'**
+  String selectedCount(int count);
+
+  /// No description provided for @taskCompletedUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas diselesaikan'**
+  String get taskCompletedUndo;
+
+  /// No description provided for @tasksDeletedUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas dihapus'**
+  String tasksDeletedUndo(int count);
+
+  /// No description provided for @bulkUpdated.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas diperbarui'**
+  String bulkUpdated(int count);
+
+  /// No description provided for @snoozeSet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat ditunda ke {time}'**
+  String snoozeSet(String time);
 }
 
 class _AppLocalizationsDelegate

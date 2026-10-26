@@ -1225,4 +1225,27 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get closeLabel => 'Tutup';
+
+  @override
+  String selectedCount(int count) {
+    return '$count dipilih';
+  }
+
+  @override
+  String get taskCompletedUndo => 'Tugas diselesaikan';
+
+  @override
+  String tasksDeletedUndo(int count) {
+    return '$count tugas dihapus';
+  }
+
+  @override
+  String bulkUpdated(int count) {
+    return '$count tugas diperbarui';
+  }
+
+  @override
+  String snoozeSet(String time) {
+    return 'Pengingat ditunda ke $time';
+  }
 }

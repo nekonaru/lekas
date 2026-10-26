@@ -408,5 +408,14 @@
   "@warningInboxPile": { "placeholders": { "count": { "type": "int" } } },
   "warningBusyWeek": "Busy week: {count} tasks due. Tap to review.",
   "@warningBusyWeek": { "placeholders": { "count": { "type": "int" } } },
-  "closeLabel": "Close"
+  "closeLabel": "Close",
+  "selectedCount": "{count} selected",
+  "@selectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "taskCompletedUndo": "Task completed",
+  "tasksDeletedUndo": "{count} tasks deleted",
+  "@tasksDeletedUndo": { "placeholders": { "count": { "type": "int" } } },
+  "bulkUpdated": "{count} tasks updated",
+  "@bulkUpdated": { "placeholders": { "count": { "type": "int" } } },
+  "snoozeSet": "Reminder snoozed to {time}",
+  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } }
 }

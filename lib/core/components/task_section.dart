@@ -21,6 +21,18 @@ class TaskSection extends StatelessWidget {
   final String locale;
   final void Function(Task)? onTaskTap;
 
+  /// Swipe right: mark the task done (design section 5.5).
+  final Future<void> Function(Task)? onTaskDone;
+
+  /// Swipe left: open the smart snooze choices for the task.
+  final Future<void> Function(Task)? onTaskSnooze;
+
+  /// Long press: enter or leave multi select for bulk actions.
+  final void Function(Task)? onTaskLongPress;
+
+  /// Highlights the tasks picked in multi select mode.
+  final bool Function(Task)? isSelected;
+
   const TaskSection({
     super.key,
     required this.section,
@@ -28,6 +40,10 @@ class TaskSection extends StatelessWidget {
     required this.now,
     required this.locale,
     this.onTaskTap,
+    this.onTaskDone,
+    this.onTaskSnooze,
+    this.onTaskLongPress,
+    this.isSelected,
   });
 
   String title(AppLocalizations l10n) {
@@ -101,10 +117,15 @@ class TaskSection extends StatelessWidget {
             weightPercent: task.weightPercent,
             estimateMinutes: task.estimateMinutes,
           );
-          return Card(
+          final selected = isSelected?.call(task) ?? false;
+          final card = Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: ListTile(
-              leading: _priorityIcon(task.priority),
+              leading: selected
+                  ? Icon(Icons.check_circle,
+                      color: Theme.of(context).colorScheme.primary)
+                  : _priorityIcon(task.priority),
+              selected: selected,
               title: Text(task.title),
               subtitle: Text(_subtitleText(l10n, task)),
               trailing: Row(
@@ -117,6 +138,31 @@ class TaskSection extends StatelessWidget {
               ),
               onTap: onTaskTap != null ? () => onTaskTap!(task) : null,
             ),
+          );
+
+          if (onTaskDone == null && onTaskSnooze == null) return card;
+
+          // Swipe right to finish, swipe left to snooze (design section 5.5).
+          return Dismissible(
+            key: ValueKey('task:${task.id}'),
+            direction: DismissDirection.horizontal,
+            background: _swipeBackground(context, right: true),
+            secondaryBackground: _swipeBackground(context, right: false),
+            confirmDismiss: (direction) async {
+              if (direction == DismissDirection.startToEnd) {
+                await onTaskDone?.call(task);
+              } else if (direction == DismissDirection.endToStart) {
+                await onTaskSnooze?.call(task);
+              }
+              // The card snaps back and the list reloads with the new state.
+              return false;
+            },
+            child: onTaskLongPress == null
+                ? card
+                : GestureDetector(
+                    onLongPress: () => onTaskLongPress!(task),
+                    child: card,
+                  ),
           );
         }),
       ],
@@ -171,6 +217,21 @@ class TaskSection extends StatelessWidget {
       parts.add(DateUtil.formatDateTime(deadline, locale));
     }
     return parts.join(' · ');
+  }
+
+  /// Colored strip revealed while a card is dragged (design section 5.5).
+  Widget _swipeBackground(BuildContext context, {required bool right}) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      color: right ? colors.primary : colors.tertiary,
+      alignment: right ? Alignment.centerLeft : Alignment.centerRight,
+      child: Icon(
+        right ? Icons.check : Icons.snooze,
+        color: right ? colors.onPrimary : colors.onTertiary,
+      ),
+    );
   }
 
   Widget _priorityIcon(int priority) {

@@ -408,5 +408,14 @@
   "@warningInboxPile": { "placeholders": { "count": { "type": "int" } } },
   "warningBusyWeek": "Minggu padat: {count} tugas jatuh tempo. Ketuk untuk melihat.",
   "@warningBusyWeek": { "placeholders": { "count": { "type": "int" } } },
-  "closeLabel": "Tutup"
+  "closeLabel": "Tutup",
+  "selectedCount": "{count} dipilih",
+  "@selectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "taskCompletedUndo": "Tugas diselesaikan",
+  "tasksDeletedUndo": "{count} tugas dihapus",
+  "@tasksDeletedUndo": { "placeholders": { "count": { "type": "int" } } },
+  "bulkUpdated": "{count} tugas diperbarui",
+  "@bulkUpdated": { "placeholders": { "count": { "type": "int" } } },
+  "snoozeSet": "Pengingat ditunda ke {time}",
+  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } }
 }

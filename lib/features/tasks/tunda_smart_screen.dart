@@ -4,6 +4,7 @@ import '../../data/providers.dart';
 import '../../data/task_repository.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../reminders/reminder_service.dart';
 
 class TundaSmartScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -77,11 +78,10 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
           } else {
             fireAt = DateTime.now().add(const Duration(days: 2));
           }
-          await repo.updateTask(
-                task.copyWith(
-                  updatedAt: DateTime.now().millisecondsSinceEpoch,
-                ),
-              );
+          // Design 5.5: tunda moves the reminder only, never the deadline.
+          await ref
+              .read(reminderServiceProvider)
+              .snoozeTaskAt(task.id, fireAt);
           if (!context.mounted) return;
           Navigator.pop(context, fireAt);
         },

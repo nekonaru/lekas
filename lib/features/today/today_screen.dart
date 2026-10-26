@@ -1,9 +1,11 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/date_util.dart';
 import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
+import '../../core/components/undo_snackbar.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -24,9 +26,25 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   int? _inboxCount;
   bool? _notificationsOn;
 
+  /// Tasks picked by a long press, for the bulk actions of design 5.5.
+  final Set<String> _selection = {};
+
+  /// Last list loaded by the builder, so the action bar can reach it.
+  List<Task> _tasks = const [];
+
   /// Key of the warning the user closed this session. At most one card
   /// is ever shown (design section 4.4).
   String? _dismissedWarning;
+
+  void _toggleSelection(String id) {
+    setState(() {
+      if (!_selection.remove(id)) _selection.add(id);
+    });
+  }
+
+  void _clearSelection() {
+    setState(_selection.clear);
+  }
 
   @override
   void initState() {
@@ -135,27 +153,303 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       ),
     );
   }
+  List<Task> _picked(List<Task> tasks) =>
+      tasks.where((task) => _selection.contains(task.id)).toList();
+
+  /// Swipe right: finish one task and offer undo (design section 5.5).
+  Future<void> _completeOne(Task task) async {
+    final l10n = AppLocalizations.of(context)!;
+    final repository = ref.read(taskRepositoryProvider);
+    await repository.markDone(task.id);
+    await ref.read(reminderServiceProvider).syncAll();
+    if (!mounted) return;
+    setState(() {});
+    UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
+      await repository.updateTask(task.copyWith(
+        status: 'todo',
+        completedAt: const Value(null),
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      ));
+      if (mounted) setState(() {});
+      await ref.read(reminderServiceProvider).syncAll();
+    });
+  }
+
+  /// Bulk complete with an undo, as required by design section 5.5.
+  Future<void> _completeSelected(List<Task> tasks) async {
+    final l10n = AppLocalizations.of(context)!;
+    final repository = ref.read(taskRepositoryProvider);
+    final picked = _picked(tasks);
+    if (picked.isEmpty) return;
+    for (final task in picked) {
+      await repository.markDone(task.id);
+    }
+    _clearSelection();
+    await ref.read(reminderServiceProvider).syncAll();
+    if (!mounted) return;
+    UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      for (final task in picked) {
+        await repository.updateTask(task.copyWith(
+          status: 'todo',
+          completedAt: const Value(null),
+          updatedAt: now,
+        ));
+      }
+      if (mounted) setState(() {});
+      await ref.read(reminderServiceProvider).syncAll();
+    });
+  }
+
+  Future<void> _deleteSelected(List<Task> tasks) async {
+    final l10n = AppLocalizations.of(context)!;
+    final repository = ref.read(taskRepositoryProvider);
+    final picked = _picked(tasks);
+    if (picked.isEmpty) return;
+    for (final task in picked) {
+      await repository.softDeleteTask(task.id);
+    }
+    _clearSelection();
+    await ref.read(reminderServiceProvider).syncAll();
+    if (!mounted) return;
+    UndoSnackbar.show(context, l10n.tasksDeletedUndo(picked.length), () async {
+      for (final task in picked) {
+        await repository.restoreTask(task.id);
+      }
+      if (mounted) setState(() {});
+      await ref.read(reminderServiceProvider).syncAll();
+    });
+  }
+
+  Future<void> _pickPriority(List<Task> tasks) async {
+    final l10n = AppLocalizations.of(context)!;
+    final picked = _picked(tasks);
+    if (picked.isEmpty) return;
+    final priority = await showModalBottomSheet<int>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.flag_outlined),
+              title: Text(l10n.priorityLow),
+              onTap: () => Navigator.pop(sheetContext, 0),
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag),
+              title: Text(l10n.priorityMedium),
+              onTap: () => Navigator.pop(sheetContext, 1),
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag),
+              title: Text(l10n.priorityHigh),
+              onTap: () => Navigator.pop(sheetContext, 2),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (priority == null || !mounted) return;
+    final repository = ref.read(taskRepositoryProvider);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    for (final task in picked) {
+      await repository
+          .updateTask(task.copyWith(priority: priority, updatedAt: now));
+    }
+    if (!mounted) return;
+    setState(() {});
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.bulkUpdated(picked.length))),
+    );
+  }
+
+  Future<void> _pickSpace(List<Task> tasks) async {
+    final l10n = AppLocalizations.of(context)!;
+    final picked = _picked(tasks);
+    if (picked.isEmpty) return;
+    final spaces = await ref.read(spaceRepositoryProvider).getSpaces();
+    if (!mounted) return;
+    final spaceId = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.block),
+              title: Text(l10n.inboxTitle),
+              onTap: () => Navigator.pop(sheetContext, ''),
+            ),
+            for (final space in spaces)
+              ListTile(
+                leading: const Icon(Icons.folder_outlined),
+                title: Text(space.name),
+                onTap: () => Navigator.pop(sheetContext, space.id),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (spaceId == null || !mounted) return;
+    final repository = ref.read(taskRepositoryProvider);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    for (final task in picked) {
+      await repository.updateTask(task.copyWith(
+        spaceId: Value(spaceId.isEmpty ? null : spaceId),
+        inbox: spaceId.isEmpty,
+        updatedAt: now,
+      ));
+    }
+    if (!mounted) return;
+    setState(() {});
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.bulkUpdated(picked.length))),
+    );
+  }
+
+  /// Smart snooze choices offered by the left swipe (design section 5.5).
+  Future<void> _openSnooze(Task task) async {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
+    final now = DateTime.now();
+    final tomorrow7 = now.add(const Duration(days: 1));
+    final options = <MapEntry<String, DateTime>>[
+      MapEntry(l10n.oneHourLabel, now.add(const Duration(hours: 1))),
+      MapEntry(
+        l10n.tonight7pmLabel,
+        now.hour < 19
+            ? DateTime(now.year, now.month, now.day, 19)
+            : DateTime(now.year, now.month, now.day, 19)
+                .add(const Duration(days: 1)),
+      ),
+      MapEntry(
+        l10n.tomorrow7amLabel,
+        DateTime(tomorrow7.year, tomorrow7.month, tomorrow7.day, 7),
+      ),
+      MapEntry(l10n.weekendLabel, _nextSaturdayAt(now, 9)),
+    ];
+
+    final chosen = await showModalBottomSheet<DateTime>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                task.title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            for (final option in options)
+              ListTile(
+                leading: const Icon(Icons.snooze),
+                title: Text(option.key),
+                subtitle: Text(DateUtil.formatDateTime(option.value, locale)),
+                onTap: () => Navigator.pop(sheetContext, option.value),
+              ),
+            ListTile(
+              leading: const Icon(Icons.edit_calendar),
+              title: Text(l10n.pickTimeLabel),
+              onTap: () async {
+                final date = await showDatePicker(
+                  context: sheetContext,
+                  initialDate: now,
+                  firstDate: now,
+                  lastDate: now.add(const Duration(days: 365)),
+                );
+                if (date == null || !sheetContext.mounted) return;
+                final time = await showTimePicker(
+                  context: sheetContext,
+                  initialTime: TimeOfDay.fromDateTime(now),
+                );
+                if (time == null) return;
+                if (!sheetContext.mounted) return;
+                Navigator.pop(
+                  sheetContext,
+                  DateTime(
+                      date.year, date.month, date.day, time.hour, time.minute),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null || !mounted) return;
+    // Tunda moves the reminder only, never the deadline (design 5.5).
+    await ref.read(reminderServiceProvider).snoozeTaskAt(task.id, chosen);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.snoozeSet(DateUtil.formatTime(chosen, locale))),
+      ),
+    );
+  }
+
+  /// The next Saturday at [hour], never today (design section 5.5).
+  DateTime _nextSaturdayAt(DateTime from, int hour) {
+    final ahead = (DateTime.saturday - from.weekday + 7) % 7;
+    final day = from.add(Duration(days: ahead == 0 ? 7 : ahead));
+    return DateTime(day.year, day.month, day.day, hour);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
     final repo = ref.watch(taskRepositoryProvider);
 
+    final selecting = _selection.isNotEmpty;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.todayTitle),
+        title: Text(selecting
+            ? l10n.selectedCount(_selection.length)
+            : l10n.todayTitle),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => const TaskFormSheet(),
-              );
-            },
-            tooltip: l10n.quickAddHint,
-          ),
+          if (selecting) ...[
+            IconButton(
+              icon: const Icon(Icons.check),
+              tooltip: l10n.markLabel,
+              onPressed: () => _completeSelected(_tasks),
+            ),
+            IconButton(
+              icon: const Icon(Icons.flag_outlined),
+              tooltip: l10n.priorityMedium,
+              onPressed: () => _pickPriority(_tasks),
+            ),
+            IconButton(
+              icon: const Icon(Icons.folder_outlined),
+              tooltip: l10n.taskContainer,
+              onPressed: () => _pickSpace(_tasks),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              tooltip: l10n.deleteLabel,
+              onPressed: () => _deleteSelected(_tasks),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: l10n.closeLabel,
+              onPressed: _clearSelection,
+            ),
+          ] else
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const TaskFormSheet(),
+                );
+              },
+              tooltip: l10n.quickAddHint,
+            ),
         ],
       ),
       body: FutureBuilder<List<Task>>(
@@ -165,6 +459,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           final allTasks = snapshot.data ?? [];
+          _tasks = allTasks;
           final now = DateTime.now();
 
           final Map<TodaySection, List<Task>> sections = {};
@@ -227,62 +522,29 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           return ListView(
             children: [
               ?warning,
-              if (sections[TodaySection.overdue]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.overdue,
-                  tasks: sections[TodaySection.overdue]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.doing]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.doing,
-                  tasks: sections[TodaySection.doing]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.today]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.today,
-                  tasks: sections[TodaySection.today]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.thisWeek]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.thisWeek,
-                  tasks: sections[TodaySection.thisWeek]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.upcoming]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.upcoming,
-                  tasks: sections[TodaySection.upcoming]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.waiting]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.waiting,
-                  tasks: sections[TodaySection.waiting]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
-              if (sections[TodaySection.someday]?.isNotEmpty ?? false)
-                TaskSection(
-                  section: TodaySection.someday,
-                  tasks: sections[TodaySection.someday]!,
-                  now: now,
-                  locale: locale,
-                  onTaskTap: (task) => _navigateToDetail(context, task.id),
-                ),
+              for (final section in const [
+                TodaySection.overdue,
+                TodaySection.doing,
+                TodaySection.today,
+                TodaySection.thisWeek,
+                TodaySection.upcoming,
+                TodaySection.waiting,
+                TodaySection.someday,
+              ])
+                if (sections[section]?.isNotEmpty ?? false)
+                  TaskSection(
+                    section: section,
+                    tasks: sections[section]!,
+                    now: now,
+                    locale: locale,
+                    onTaskTap: (task) => _selection.isEmpty
+                        ? _navigateToDetail(context, task.id)
+                        : _toggleSelection(task.id),
+                    onTaskDone: _completeOne,
+                    onTaskSnooze: _openSnooze,
+                    onTaskLongPress: (task) => _toggleSelection(task.id),
+                    isSelected: (task) => _selection.contains(task.id),
+                  ),
             ],
           );
         },

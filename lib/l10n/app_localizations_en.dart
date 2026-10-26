@@ -1223,4 +1223,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get closeLabel => 'Close';
+
+  @override
+  String selectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get taskCompletedUndo => 'Task completed';
+
+  @override
+  String tasksDeletedUndo(int count) {
+    return '$count tasks deleted';
+  }
+
+  @override
+  String bulkUpdated(int count) {
+    return '$count tasks updated';
+  }
+
+  @override
+  String snoozeSet(String time) {
+    return 'Reminder snoozed to $time';
+  }
 }

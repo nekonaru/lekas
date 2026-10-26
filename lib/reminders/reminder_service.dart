@@ -581,6 +581,13 @@ class ReminderService {
   }
 
   Future<void> _snooze(String taskId) async {
+    await snoozeTaskAt(taskId, DateTime.now().add(const Duration(hours: 1)));
+  }
+
+  /// Snoozes a task to [fireAt] (design section 5.5): the deadline does not
+  /// move, only a single reminder is added for the chosen moment.
+  Future<void> snoozeTaskAt(String taskId, DateTime fireAt) async {
+    if (!_initialized) await init();
     final repository = _ref.read(taskRepositoryProvider);
     final reminderRepository = _ref.read(reminderRepositoryProvider);
     final settings = _ref.read(settingsRepositoryProvider);
@@ -592,13 +599,19 @@ class ReminderService {
     }
     if (task.deletedAt != null) return;
     final now = DateTime.now();
-    final target = now.add(const Duration(hours: 1));
-    final fireAt = moveOutOfQuietHours(target, target);
+    final moment = moveOutOfQuietHours(fireAt, fireAt);
+    // Drops the snoozes of this task so repeated tunda does not pile up.
+    for (final row in await reminderRepository.getReminders()) {
+      if (row.kind == kKindSnooze && row.taskId == taskId) {
+        await _plugin.cancel(row.notifId);
+        await reminderRepository.deleteReminder(row.id);
+      }
+    }
     final notifId = await _nextNotifId(settings);
     await reminderRepository.insertReminder(Reminder(
       id: '$kKindSnooze:$taskId:${now.millisecondsSinceEpoch}',
       taskId: taskId,
-      fireAt: fireAt.millisecondsSinceEpoch,
+      fireAt: moment.millisecondsSinceEpoch,
       kind: kKindSnooze,
       notifId: notifId,
       fired: false,
@@ -607,7 +620,7 @@ class ReminderService {
     final l10n = await _l10n();
     await scheduleNotification(
       id: notifId,
-      when: fireAt,
+      when: moment,
       title: task.title,
       body: l10n.reminderSnoozed,
       payload: ReminderPayload(taskId, ReminderPayload.actionOpen).encode(),
