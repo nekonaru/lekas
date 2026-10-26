@@ -70,6 +70,17 @@ class TaskRepository {
     ));
   }
 
+  /// Pins or unpins a task (design section 5.9): pinned tasks always come
+  /// first on the Today screen, outside the urgency order.
+  Future<void> setPinned(String id, bool pinned) async {
+    await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        pinned: Value(pinned),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
   Stream<List<Task>> watchInbox() {
     return (db.select(db.tasks)
           ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))

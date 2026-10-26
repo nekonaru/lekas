@@ -183,6 +183,15 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       );
                     },
                   ),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.push_pin),
+                    title: Text(l10n.pinTaskLabel),
+                    value: task.pinned,
+                    onChanged: (value) async {
+                      await repo.setPinned(task.id, value);
+                      if (mounted) setState(() {});
+                    },
+                  ),
                   ListTile(
                     leading: const Icon(Icons.label_outline),
                     title: Text(l10n.tagsLabel),

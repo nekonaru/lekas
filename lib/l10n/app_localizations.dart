@@ -2533,6 +2533,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ubah tag'**
   String get editTagsTitle;
+
+  /// No description provided for @sectionPinned.
+  ///
+  /// In id, this message translates to:
+  /// **'Disematkan'**
+  String get sectionPinned;
+
+  /// No description provided for @pinTaskLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sematkan di atas layar Hari Ini'**
+  String get pinTaskLabel;
 }
 
 class _AppLocalizationsDelegate

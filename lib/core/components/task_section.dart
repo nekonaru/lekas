@@ -5,6 +5,7 @@ import '../../core/date_util.dart';
 import '../../l10n/app_localizations.dart';
 
 enum TodaySection {
+  pinned,
   overdue,
   doing,
   today,
@@ -48,6 +49,8 @@ class TaskSection extends StatelessWidget {
 
   String title(AppLocalizations l10n) {
     switch (section) {
+      case TodaySection.pinned:
+        return l10n.sectionPinned;
       case TodaySection.overdue:
         return l10n.sectionOverdue;
       case TodaySection.doing:
@@ -67,6 +70,8 @@ class TaskSection extends StatelessWidget {
 
   IconData get icon {
     switch (section) {
+      case TodaySection.pinned:
+        return Icons.push_pin;
       case TodaySection.overdue:
         return Icons.warning;
       case TodaySection.doing:

@@ -464,7 +464,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           final Map<TodaySection, List<Task>> sections = {};
           for (final task in allTasks) {
-            final section = _classifyTask(task, now);
+            // Design section 5.9: pinned tasks come first, outside the score.
+            final section =
+                task.pinned ? TodaySection.pinned : _classifyTask(task, now);
             sections.putIfAbsent(section, () => []).add(task);
           }
 
@@ -523,6 +525,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             children: [
               ?warning,
               for (final section in const [
+                TodaySection.pinned,
                 TodaySection.overdue,
                 TodaySection.doing,
                 TodaySection.today,

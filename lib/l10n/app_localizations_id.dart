@@ -1350,4 +1350,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get editTagsTitle => 'Ubah tag';
+
+  @override
+  String get sectionPinned => 'Disematkan';
+
+  @override
+  String get pinTaskLabel => 'Sematkan di atas layar Hari Ini';
 }

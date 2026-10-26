@@ -454,5 +454,7 @@
   "summaryWeeklyToggle": "Sunday night at 20:30",
   "tagsLabel": "Tags",
   "tagsHint": "Comma separated, for example revision, group",
-  "editTagsTitle": "Edit tags"
+  "editTagsTitle": "Edit tags",
+  "sectionPinned": "Pinned",
+  "pinTaskLabel": "Pin to the top of Today"
 }

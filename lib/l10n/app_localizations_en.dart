@@ -1349,4 +1349,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editTagsTitle => 'Edit tags';
+
+  @override
+  String get sectionPinned => 'Pinned';
+
+  @override
+  String get pinTaskLabel => 'Pin to the top of Today';
 }

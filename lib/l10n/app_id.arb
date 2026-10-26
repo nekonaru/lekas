@@ -454,5 +454,7 @@
   "summaryWeeklyToggle": "Minggu malam pukul 20.30",
   "tagsLabel": "Tag",
   "tagsHint": "Pisahkan dengan koma, misalnya revisi, kelompok",
-  "editTagsTitle": "Ubah tag"
+  "editTagsTitle": "Ubah tag",
+  "sectionPinned": "Disematkan",
+  "pinTaskLabel": "Sematkan di atas layar Hari Ini"
 }
