@@ -2545,6 +2545,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sematkan di atas layar Hari Ini'**
   String get pinTaskLabel;
+
+  /// No description provided for @duplicateTask.
+  ///
+  /// In id, this message translates to:
+  /// **'Duplikat tugas'**
+  String get duplicateTask;
+
+  /// No description provided for @duplicatedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Salinan tugas dibuat'**
+  String get duplicatedToast;
 }
 
 class _AppLocalizationsDelegate

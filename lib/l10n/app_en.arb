@@ -456,5 +456,7 @@
   "tagsHint": "Comma separated, for example revision, group",
   "editTagsTitle": "Edit tags",
   "sectionPinned": "Pinned",
-  "pinTaskLabel": "Pin to the top of Today"
+  "pinTaskLabel": "Pin to the top of Today",
+  "duplicateTask": "Duplicate task",
+  "duplicatedToast": "Task copy created"
 }

@@ -456,5 +456,7 @@
   "tagsHint": "Pisahkan dengan koma, misalnya revisi, kelompok",
   "editTagsTitle": "Ubah tag",
   "sectionPinned": "Disematkan",
-  "pinTaskLabel": "Sematkan di atas layar Hari Ini"
+  "pinTaskLabel": "Sematkan di atas layar Hari Ini",
+  "duplicateTask": "Duplikat tugas",
+  "duplicatedToast": "Salinan tugas dibuat"
 }

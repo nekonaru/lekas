@@ -183,6 +183,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       );
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.copy),
+                    title: Text(l10n.duplicateTask),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _duplicate(task),
+                  ),
                   SwitchListTile(
                     secondary: const Icon(Icons.push_pin),
                     title: Text(l10n.pinTaskLabel),
@@ -263,6 +269,20 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       case 'done': return l10n.done;
       default: return l10n.statusTodo;
     }
+  }
+
+  /// Design section 5.9: duplicating a weekly lab report takes one tap.
+  Future<void> _duplicate(Task task) async {
+    final copy =
+        await ref.read(taskRepositoryProvider).duplicateTask(task.id);
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.duplicatedToast)));
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => TaskDetailScreen(taskId: copy.id)),
+    );
   }
 
   /// Design section 5.9: free tags, edited as a comma separated list.

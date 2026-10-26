@@ -1356,4 +1356,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pinTaskLabel => 'Sematkan di atas layar Hari Ini';
+
+  @override
+  String get duplicateTask => 'Duplikat tugas';
+
+  @override
+  String get duplicatedToast => 'Salinan tugas dibuat';
 }

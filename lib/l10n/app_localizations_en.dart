@@ -1355,4 +1355,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinTaskLabel => 'Pin to the top of Today';
+
+  @override
+  String get duplicateTask => 'Duplicate task';
+
+  @override
+  String get duplicatedToast => 'Task copy created';
 }
