@@ -21,6 +21,30 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
 
   int _selectedWeekday = 1;
 
+  /// Removes a slot after an explicit confirmation (design section 3.4).
+  Future<void> _confirmDelete(ClassSlot slot) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.classScheduleTitle),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.deleteLabel),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await ref.read(classSlotRepositoryProvider).deleteClassSlot(slot.id);
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
     _startController.dispose();
@@ -89,7 +113,12 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                     Row(
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // Clears the slot form without saving.
+                            _startController.clear();
+                            _endController.clear();
+                            _roomController.clear();
+                          },
                           child: Text(l10n.cancel),
                         ),
                         const Spacer(),
@@ -133,6 +162,7 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                             title: Text('${weekdays[slot.weekday - 1]}: $start - $end'),
                             subtitle: Text(slot.room ?? '-'),
                             trailing: const Icon(Icons.chevron_right),
+                            onTap: () => _confirmDelete(slot),
                           );
                         },
                       ),

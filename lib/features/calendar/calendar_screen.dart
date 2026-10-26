@@ -91,7 +91,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () =>
+            setState(() => _focusedMonth = DateTime.now()),
         child: const Icon(Icons.today),
       ),
     );

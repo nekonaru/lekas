@@ -3,6 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
+import '../tasks/attendance_screen.dart';
+import '../tasks/catatan_pertemuan_screen.dart';
+import '../tasks/daftar_bawaan_screen.dart';
+import '../tasks/kontak_kelas_screen.dart';
+import '../tasks/tasks_screen.dart';
+import '../tasks/weight_component_screen.dart';
 import 'class_schedule_screen.dart';
 
 class SpaceDetailScreen extends ConsumerStatefulWidget {
@@ -14,6 +20,10 @@ class SpaceDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
+  void _push(Widget screen) {
+    Navigator.push(context, MaterialPageRoute<void>(builder: (_) => screen));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -73,37 +83,38 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 title: Text(l10n.tasksMenuLabel),
                 leading: const Icon(Icons.task),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(const TasksScreen()),
               ),
               ListTile(
                 title: Text(l10n.attendanceTitle),
                 leading: const Icon(Icons.check_circle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(AttendanceScreen(spaceId: space.id)),
               ),
               ListTile(
                 title: Text(l10n.componentWeightLabel),
                 leading: const Icon(Icons.percent),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(WeightComponentScreen(
+                    spaceId: space.id, spaceName: space.name)),
               ),
               ListTile(
                 title: Text(l10n.meetingNotesTitle),
                 leading: const Icon(Icons.note),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(CatatanPertemuanScreen(spaceId: space.id)),
               ),
               ListTile(
                 title: Text(l10n.classContactsLinksTitle),
                 leading: const Icon(Icons.contact_phone),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(KontakKelasScreen(spaceId: space.id)),
               ),
               ListTile(
                 title: Text(l10n.defaultChecklistShort),
                 leading: const Icon(Icons.inventory),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _push(const DaftarBawaanScreen()),
               ),
             ],
           ),
