@@ -6,6 +6,7 @@ import 'database.dart';
 import 'space_repository.dart';
 import 'task_repository.dart';
 import 'subtask_repository.dart';
+import 'tag_repository.dart';
 import 'class_slot_repository.dart';
 import 'reminder_repository.dart';
 import 'settings_repository.dart';
@@ -54,6 +55,11 @@ final taskRepositoryProvider = Provider<TaskRepository>((ref) {
 
 final subtaskRepositoryProvider = Provider<SubtaskRepository>((ref) {
   return SubtaskRepository(ref.read(appDatabaseProvider));
+});
+
+/// Free tags (design section 5.9).
+final tagRepositoryProvider = Provider<TagRepository>((ref) {
+  return TagRepository(ref.read(appDatabaseProvider));
 });
 
 final classSlotRepositoryProvider = Provider<ClassSlotRepository>((ref) {

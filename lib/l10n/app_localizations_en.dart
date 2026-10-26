@@ -1340,4 +1340,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get summaryWeeklyToggle => 'Sunday night at 20:30';
+
+  @override
+  String get tagsLabel => 'Tags';
+
+  @override
+  String get tagsHint => 'Comma separated, for example revision, group';
+
+  @override
+  String get editTagsTitle => 'Edit tags';
 }

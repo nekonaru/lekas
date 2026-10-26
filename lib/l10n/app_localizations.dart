@@ -2515,6 +2515,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Minggu malam pukul 20.30'**
   String get summaryWeeklyToggle;
+
+  /// No description provided for @tagsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tag'**
+  String get tagsLabel;
+
+  /// No description provided for @tagsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pisahkan dengan koma, misalnya revisi, kelompok'**
+  String get tagsHint;
+
+  /// No description provided for @editTagsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah tag'**
+  String get editTagsTitle;
 }
 
 class _AppLocalizationsDelegate

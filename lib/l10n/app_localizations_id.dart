@@ -1341,4 +1341,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get summaryWeeklyToggle => 'Minggu malam pukul 20.30';
+
+  @override
+  String get tagsLabel => 'Tag';
+
+  @override
+  String get tagsHint => 'Pisahkan dengan koma, misalnya revisi, kelompok';
+
+  @override
+  String get editTagsTitle => 'Ubah tag';
 }

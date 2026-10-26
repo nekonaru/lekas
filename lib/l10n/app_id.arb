@@ -451,5 +451,8 @@
   "@weeklySummaryBusiest": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
   "weeklySummaryBackup": "Cadangan terakhir {days} hari lalu.",
   "@weeklySummaryBackup": { "placeholders": { "days": { "type": "int" } } },
-  "summaryWeeklyToggle": "Minggu malam pukul 20.30"
+  "summaryWeeklyToggle": "Minggu malam pukul 20.30",
+  "tagsLabel": "Tag",
+  "tagsHint": "Pisahkan dengan koma, misalnya revisi, kelompok",
+  "editTagsTitle": "Ubah tag"
 }

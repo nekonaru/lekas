@@ -100,6 +100,28 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                               ],
                             ),
                           ],
+                          FutureBuilder<List<Tag>>(
+                            future:
+                                ref.read(tagRepositoryProvider).tagsForTask(task.id),
+                            builder: (context, tagSnapshot) {
+                              final tags = tagSnapshot.data ?? const <Tag>[];
+                              if (tags.isEmpty) return const SizedBox.shrink();
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 4,
+                                  children: [
+                                    for (final tag in tags)
+                                      Chip(
+                                        label: Text('#${tag.name}'),
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -160,6 +182,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         ),
                       );
                     },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.label_outline),
+                    title: Text(l10n.tagsLabel),
+                    subtitle: Text(l10n.tagsHint),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _editTags(task),
                   ),
                   ListTile(
                     title: Text(l10n.editTask),
@@ -225,6 +254,45 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       case 'done': return l10n.done;
       default: return l10n.statusTodo;
     }
+  }
+
+  /// Design section 5.9: free tags, edited as a comma separated list.
+  Future<void> _editTags(Task task) async {
+    final repo = ref.read(tagRepositoryProvider);
+    final current = await repo.tagsForTask(task.id);
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(
+      text: current.map((tag) => tag.name).join(', '),
+    );
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.editTagsTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(hintText: l10n.tagsHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    if (saved != true || !mounted) return;
+    final names = [
+      for (final part in controller.text.split(',')) part.trim(),
+    ];
+    await repo.setTaskTags(task.id, names);
+    controller.dispose();
+    if (mounted) setState(() {});
   }
 
   Future<void> _addSubtask(BuildContext context, String taskId) async {
