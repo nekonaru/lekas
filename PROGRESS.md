@@ -31,6 +31,10 @@ Terakhir diperbarui: Sun Oct 26 2026
   aplikasi; tombol Selesai dan Tunda hanya dipasang saat notifikasi itu berisi tepat satu
   tugas, supaya aksinya tidak menyangkut tugas yang salah. Isinya dibangun ulang tiap sync
   (buka app, boot, ubah tugas), bukan tepat pada jamnya.
+- **Ringkasan minggu dijadwalkan Minggu pukul 20.30.** Catatan "Minggu malam" tidak
+  menyebut jam; dipakai jam penutup malam (5.12) supaya hanya satu jenis jam malam.
+  Isinya dihitung lokal: tugas tepat waktu 7 hari terakhir, matkul terpadat minggu depan,
+  dan usia cadangan terakhir (diambil dari `last_backup_at` yang ditulis tiap ekspor).
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -144,6 +148,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Senyap saat kelas (`class_quiet.dart`, pengecualian `class_exceptions`, deadline < 1 jam tidak ditahan; 6 tes)
 - [x] Gabung notifikasi (<= 10 menit jadi satu), anggaran 8 per hari dan intensitas Tenang/Normal/Gencar (`notification_policy.dart`, 11 tes)
 - [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan)
+- [x] Ringkasan minggu Minggu malam 20.30: tugas tepat waktu, matkul terpadat minggu depan, usia cadangan terakhir (catatan "Minggu malam", sakelar sendiri)
 - [x] Fokus hari ini (FokusHariIniScreen)
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
@@ -185,7 +190,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (398 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (403 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -291,9 +296,9 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 398 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 403 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 176 tes lulus (136 parser, 20 pengingat, 14 kebijakan ringkasan, 6 urgensi)
+3. `flutter test` - 180 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi)
 4. `flutter build apk` - sukses, `app-release.apk` 62.5 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
@@ -305,7 +310,6 @@ Tracking:
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - Widget layar utama (home_widget package)
 - Pin, tag, duplikat, templat
-- Isi digest terlambat, ringkasan pagi dan penutup malam diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
+- Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
 - Ringkasan pagi belum menyertakan jatah absen tersisa (5.19) dan tombol pilih fokus (5.24)
 - Parser lanjutan (7.15)
-- Ringkasan minggu malam notifikasi
