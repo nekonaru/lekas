@@ -9,11 +9,13 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../data/models.dart';
+import '../data/class_slot_repository.dart';
 import '../data/providers.dart';
 import '../data/reminder_repository.dart';
 import '../data/settings_repository.dart';
 import '../data/task_repository.dart';
 import '../l10n/app_localizations.dart';
+import 'class_quiet.dart';
 
 /// One reminder offset before a deadline (design section 4.6).
 class ReminderSpec {
@@ -461,6 +463,11 @@ class ReminderService {
     final horizon = now.add(const Duration(days: kScheduleHorizonDays));
     final nowMs = now.millisecondsSinceEpoch;
 
+    final classSlotRepo = _ref.read(classSlotRepositoryProvider);
+    final classExceptionRepo = _ref.read(classExceptionRepositoryProvider);
+    final exceptions = await classExceptionRepo.getClassExceptions();
+    final slotsBySpace = <String, List<ClassSlot>>{};
+
     final desired = <String, _Desired>{};
     for (final task in tasks) {
       if (task.deletedAt != null || task.status == 'done') continue;
@@ -471,7 +478,14 @@ class ReminderService {
       for (final spec in _specsFor(task)) {
         final raw = deadline.subtract(spec.offset);
         if (!raw.isAfter(now) || raw.isAfter(horizon)) continue;
-        final fireAt = moveOutOfQuietHours(raw, deadline);
+        final fireAt = await _applyQuietAndClass(
+          raw,
+          deadline,
+          task.spaceId,
+          slotsBySpace,
+          classSlotRepo,
+          exceptions,
+        );
         if (!fireAt.isAfter(now)) continue;
         if (taken != null &&
             taken.difference(fireAt).abs() < const Duration(minutes: 2)) {
@@ -524,6 +538,42 @@ class ReminderService {
     if (allocated) {
       await _ref.read(settingsRepositoryProvider).set('notif_id_seq', '$nextId');
     }
+  }
+
+  /// Applies the quiet hours rule (design 4.6) and the silent during class
+  /// rule (design 5.21) to one candidate time.
+  Future<DateTime> _applyQuietAndClass(
+    DateTime raw,
+    DateTime deadline,
+    String? spaceId,
+    Map<String, List<ClassSlot>> slotsBySpace,
+    ClassSlotRepository slotRepository,
+    List<ClassException> exceptions,
+  ) async {
+    var fireAt = moveOutOfQuietHours(raw, deadline);
+    if (spaceId == null) return fireAt;
+
+    var slots = slotsBySpace[spaceId];
+    if (slots == null) {
+      slots = await slotRepository.getClassSlots(spaceId);
+      slotsBySpace[spaceId] = slots;
+    }
+    final windows = classWindowsFor(
+      date: fireAt,
+      spaceId: spaceId,
+      slots: slots,
+      exceptions: exceptions,
+    );
+    final held = holdOutOfClass(
+      fireAt: fireAt,
+      deadline: deadline,
+      windows: windows,
+    );
+    if (held == fireAt) return fireAt;
+    // A class running into the quiet window keeps the alert out of the class,
+    // even when the quiet rule would move it earlier in the evening.
+    final quiet = moveOutOfQuietHours(held, deadline);
+    return quiet.isAfter(held) ? quiet : held;
   }
 
   List<ReminderSpec> _specsFor(Task task) {

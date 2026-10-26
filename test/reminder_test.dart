@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lekas/data/database.dart';
+import 'package:lekas/reminders/class_quiet.dart';
 import 'package:lekas/reminders/reminder_service.dart';
 
 void main() {
@@ -80,6 +82,139 @@ void main() {
 
     test('only two weeks ahead are ever scheduled', () {
       expect(kScheduleHorizonDays, 14);
+    });
+  });
+
+  group('silent during class (design section 5.21)', () {
+    // Tuesday 20 October 2026, weekday 2.
+    final day = DateTime(2026, 10, 20);
+
+    ClassSlot lecture({
+      String id = 'slot1',
+      int weekday = 2,
+      int startMin = 8 * 60,
+      int endMin = 9 * 60 + 30,
+    }) =>
+        ClassSlot(
+          id: id,
+          spaceId: 's1',
+          weekday: weekday,
+          startMin: startMin,
+          endMin: endMin,
+          kind: 'lecture',
+          updatedAt: 0,
+        );
+
+    test('a reminder inside class waits until the class ends', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: const [],
+      );
+      final held = holdOutOfClass(
+        fireAt: DateTime(2026, 10, 20, 8, 45),
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        windows: windows,
+      );
+      expect(held, DateTime(2026, 10, 20, 9, 30));
+    });
+
+    test('a reminder before class starts is untouched', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: const [],
+      );
+      final fireAt = DateTime(2026, 10, 20, 7, 0);
+      expect(
+        holdOutOfClass(
+          fireAt: fireAt,
+          deadline: DateTime(2026, 10, 21, 23, 59),
+          windows: windows,
+        ),
+        fireAt,
+      );
+    });
+
+    test('a deadline under an hour after class is never held', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: const [],
+      );
+      final fireAt = DateTime(2026, 10, 20, 8, 45);
+      final held = holdOutOfClass(
+        fireAt: fireAt,
+        deadline: DateTime(2026, 10, 20, 10, 0),
+        windows: windows,
+      );
+      expect(held, fireAt);
+    });
+
+    test('a cancelled class releases the reminder', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: [
+          ClassException(
+            id: 'e1',
+            classSlotId: 'slot1',
+            date: '2026-10-20',
+            kind: 'cancelled',
+            updatedAt: 0,
+          ),
+        ],
+      );
+      expect(windows, isEmpty);
+      final fireAt = DateTime(2026, 10, 20, 8, 45);
+      expect(
+        holdOutOfClass(
+          fireAt: fireAt,
+          deadline: DateTime(2026, 10, 21, 23, 59),
+          windows: windows,
+        ),
+        fireAt,
+      );
+    });
+
+    test('a moved class holds to its new end time', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: [
+          ClassException(
+            id: 'e2',
+            classSlotId: 'slot1',
+            date: '2026-10-20',
+            kind: 'moved',
+            newStartMin: 13 * 60,
+            newEndMin: 14 * 60 + 30,
+            updatedAt: 0,
+          ),
+        ],
+      );
+      expect(windows.single.start, DateTime(2026, 10, 20, 13, 0));
+      final held = holdOutOfClass(
+        fireAt: DateTime(2026, 10, 20, 13, 30),
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        windows: windows,
+      );
+      expect(held, DateTime(2026, 10, 20, 14, 30));
+    });
+
+    test('a class on another weekday does not hold anything', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture(weekday: 3)],
+        exceptions: const [],
+      );
+      expect(windows, isEmpty);
     });
   });
 }
