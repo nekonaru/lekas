@@ -2155,6 +2155,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak ada duplikat untuk tugas ini.'**
   String get noDuplicateFound;
+
+  /// No description provided for @saved.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersimpan'**
+  String get saved;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In id, this message translates to:
+  /// **'Disalin ke papan klip'**
+  String get copiedToClipboard;
+
+  /// No description provided for @noStatsDataYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data untuk statistik ini.'**
+  String get noStatsDataYet;
+
+  /// No description provided for @attendanceSavedToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Kehadiran hari ini: {status}'**
+  String attendanceSavedToday(String status);
+
+  /// No description provided for @featureNotAvailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Fitur ini belum tersedia.'**
+  String get featureNotAvailable;
+
+  /// No description provided for @enabledLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif'**
+  String get enabledLabel;
+
+  /// No description provided for @disabledLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nonaktif'**
+  String get disabledLabel;
+
+  /// No description provided for @spaceCreated.
+  ///
+  /// In id, this message translates to:
+  /// **'Wadah dibuat: {name}'**
+  String spaceCreated(String name);
+
+  /// No description provided for @tasksProcessed.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas diproses'**
+  String tasksProcessed(int count);
+
+  /// No description provided for @deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Dihapus'**
+  String get deleted;
+
+  /// No description provided for @sampleDataRemoved.
+  ///
+  /// In id, this message translates to:
+  /// **'Data contoh dihapus'**
+  String get sampleDataRemoved;
 }
 
 class _AppLocalizationsDelegate

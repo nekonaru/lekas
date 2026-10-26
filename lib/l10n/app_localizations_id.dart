@@ -1118,4 +1118,43 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noDuplicateFound => 'Tidak ada duplikat untuk tugas ini.';
+
+  @override
+  String get saved => 'Tersimpan';
+
+  @override
+  String get copiedToClipboard => 'Disalin ke papan klip';
+
+  @override
+  String get noStatsDataYet => 'Belum ada data untuk statistik ini.';
+
+  @override
+  String attendanceSavedToday(String status) {
+    return 'Kehadiran hari ini: $status';
+  }
+
+  @override
+  String get featureNotAvailable => 'Fitur ini belum tersedia.';
+
+  @override
+  String get enabledLabel => 'Aktif';
+
+  @override
+  String get disabledLabel => 'Nonaktif';
+
+  @override
+  String spaceCreated(String name) {
+    return 'Wadah dibuat: $name';
+  }
+
+  @override
+  String tasksProcessed(int count) {
+    return '$count tugas diproses';
+  }
+
+  @override
+  String get deleted => 'Dihapus';
+
+  @override
+  String get sampleDataRemoved => 'Data contoh dihapus';
 }

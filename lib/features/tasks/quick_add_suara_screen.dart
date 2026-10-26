@@ -24,7 +24,13 @@ class _QuickAddSuaraScreenState extends ConsumerState<QuickAddSuaraScreen> {
             Text(l10n.voiceQuickAddHint),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () {},
+              // Not implemented yet: no speech recognition plugin is declared
+              // in pubspec.yaml, so recording can not start.
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.featureNotAvailable)),
+                );
+              },
               icon: const Icon(Icons.mic),
               label: Text(l10n.startRecording),
             ),

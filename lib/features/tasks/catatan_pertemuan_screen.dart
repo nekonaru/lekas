@@ -24,6 +24,35 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
     super.dispose();
   }
 
+  Future<void> _openNote(ClassNote note) async {
+    final l10n = AppLocalizations.of(context)!;
+    final deleted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(note.title ?? l10n.untitledNote),
+        content: Text(note.body ?? l10n.noNotesLabel),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.deleteLabel),
+          ),
+        ],
+      ),
+    );
+    if (deleted != true || !mounted) return;
+    await ref.read(classNoteRepositoryProvider).deleteClassNote(note.id);
+    if (!mounted) return;
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.deleted)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -87,7 +116,7 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
                       title: Text(note.title ?? l10n.untitledNote),
                       subtitle: Text(note.body ?? ''),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
+                      onTap: () => _openNote(note),
                     );
                   },
                 );

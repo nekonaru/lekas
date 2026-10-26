@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -16,10 +17,34 @@ class GantiSemesterScreen extends ConsumerStatefulWidget {
 class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
   final _periodController = TextEditingController();
 
+  /// One of 'archive', 'move' or 'delete'. Null means nothing chosen yet.
+  String? _unfinishedOption;
+
   @override
   void dispose() {
     _periodController.dispose();
     super.dispose();
+  }
+
+  /// Applies the chosen option to every task that is not done yet and returns
+  /// how many tasks were touched.
+  Future<int> _applyUnfinishedOption(String newSpaceId) async {
+    final option = _unfinishedOption;
+    if (option == null || option == 'archive') return 0;
+    final taskRepo = ref.read(taskRepositoryProvider);
+    final tasks = await taskRepo.getTasks(includeInbox: true);
+    final unfinished = tasks.where((t) => t.status != 'done').toList();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    for (final task in unfinished) {
+      if (option == 'move') {
+        await taskRepo.updateTask(
+          task.copyWith(spaceId: Value(newSpaceId), updatedAt: now),
+        );
+      } else {
+        await taskRepo.softDeleteTask(task.id);
+      }
+    }
+    return unfinished.length;
   }
 
   @override
@@ -50,17 +75,26 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
             ListTile(
               title: Text(l10n.keepInArchive),
               leading: const Icon(Icons.archive),
-              onTap: () {},
+              trailing: _unfinishedOption == 'archive'
+                  ? const Icon(Icons.check_circle, color: Colors.green)
+                  : null,
+              onTap: () => setState(() => _unfinishedOption = 'archive'),
             ),
             ListTile(
               title: Text(l10n.moveToNewSpace),
               leading: const Icon(Icons.folder_copy),
-              onTap: () {},
+              trailing: _unfinishedOption == 'move'
+                  ? const Icon(Icons.check_circle, color: Colors.green)
+                  : null,
+              onTap: () => setState(() => _unfinishedOption = 'move'),
             ),
             ListTile(
               title: Text(l10n.deleteLabel),
               leading: const Icon(Icons.delete, color: Colors.red),
-              onTap: () {},
+              trailing: _unfinishedOption == 'delete'
+                  ? const Icon(Icons.check_circle, color: Colors.green)
+                  : null,
+              onTap: () => setState(() => _unfinishedOption = 'delete'),
             ),
             const Spacer(),
             ElevatedButton(
@@ -69,18 +103,27 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
                 final period = _periodController.text.isEmpty
                     ? l10n.newSemester
                     : _periodController.text;
-                await repo.insertSpace(Space(
+                final now = DateTime.now().millisecondsSinceEpoch;
+                final newSpace = Space(
                   id: const Uuid().v4(),
                   name: period,
                   period: period,
                   color: AppTheme.containerColors[0].toARGB32(),
                   kind: 'course',
                   archived: false,
-                  createdAt: DateTime.now().millisecondsSinceEpoch,
-                  updatedAt: DateTime.now().millisecondsSinceEpoch,
-                ));
+                  createdAt: now,
+                  updatedAt: now,
+                );
+                await repo.insertSpace(newSpace);
+                final affected = await _applyUnfinishedOption(newSpace.id);
                 if (!context.mounted) return;
+                final messenger = ScaffoldMessenger.of(context);
                 Navigator.pop(context);
+                if (affected > 0) {
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.tasksProcessed(affected))),
+                  );
+                }
               },
               child: Text(l10n.createNewSemester),
             ),

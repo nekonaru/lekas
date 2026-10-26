@@ -13,6 +13,60 @@ class AttendanceScreen extends ConsumerStatefulWidget {
 }
 
 class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
+  /// Today's record is stored in space meta under `attendance:<yyyy-MM-dd>`.
+  String? _todayStatus;
+
+  String get _todayKey =>
+      'attendance:${DateTime.now().toIso8601String().split('T').first}';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToday();
+  }
+
+  Future<void> _loadToday() async {
+    final value =
+        await ref.read(spaceRepositoryProvider).getMeta(widget.spaceId, _todayKey);
+    if (!mounted) return;
+    setState(() => _todayStatus = value);
+  }
+
+  Future<void> _mark(String status, String label) async {
+    final l10n = AppLocalizations.of(context)!;
+    await ref.read(spaceRepositoryProvider).setMeta(widget.spaceId, _todayKey, status);
+    if (!mounted) return;
+    setState(() => _todayStatus = status);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.attendanceSavedToday(label))),
+    );
+  }
+
+  Widget _markButton({
+    required String status,
+    required String statusLabel,
+    Color? background,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final selected = _todayStatus == status;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (selected)
+          const Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Icon(Icons.check_circle, color: Colors.green),
+          ),
+        ElevatedButton(
+          onPressed: () => _mark(status, statusLabel),
+          style:
+              background == null ? null : ElevatedButton.styleFrom(backgroundColor: background),
+          child: Text(l10n.markLabel),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -50,31 +104,31 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
               const Divider(),
               ListTile(
                 title: Text(l10n.presentLabel),
-                trailing: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(l10n.markLabel),
+                trailing: _markButton(
+                  status: 'present',
+                  statusLabel: l10n.presentLabel,
                 ),
               ),
               ListTile(
                 title: Text(l10n.absentLabel),
-                trailing: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: Text(l10n.markLabel),
+                trailing: _markButton(
+                  status: 'absent',
+                  statusLabel: l10n.absentLabel,
+                  background: Colors.red,
                 ),
               ),
               ListTile(
                 title: Text(l10n.excusedLabel),
-                trailing: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(l10n.markLabel),
+                trailing: _markButton(
+                  status: 'excused',
+                  statusLabel: l10n.excusedLabel,
                 ),
               ),
               ListTile(
                 title: Text(l10n.sickLabel),
-                trailing: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(l10n.markLabel),
+                trailing: _markButton(
+                  status: 'sick',
+                  statusLabel: l10n.sickLabel,
                 ),
               ),
             ],

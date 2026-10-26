@@ -1116,4 +1116,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDuplicateFound => 'No duplicate found for this task.';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get copiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String get noStatsDataYet => 'No data for this statistic yet.';
+
+  @override
+  String attendanceSavedToday(String status) {
+    return 'Attendance recorded for today: $status';
+  }
+
+  @override
+  String get featureNotAvailable => 'This feature is not available yet.';
+
+  @override
+  String get enabledLabel => 'Enabled';
+
+  @override
+  String get disabledLabel => 'Disabled';
+
+  @override
+  String spaceCreated(String name) {
+    return 'Space created: $name';
+  }
+
+  @override
+  String tasksProcessed(int count) {
+    return '$count tasks processed';
+  }
+
+  @override
+  String get deleted => 'Deleted';
+
+  @override
+  String get sampleDataRemoved => 'Sample data removed';
 }
