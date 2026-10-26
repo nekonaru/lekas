@@ -63,12 +63,12 @@ class _StatistikRekapScreenState extends ConsumerState<StatistikRekapScreen> {
   Future<String> _attendanceText() async {
     final l10n = AppLocalizations.of(context)!;
     final db = ref.read(appDatabaseProvider);
-    final rows = await db.select(db.spaceMeta).get();
+    final rows = await (db.select(db.attendance)
+          ..where((t) => t.deletedAt.isNull()))
+        .get();
     final counts = <String, int>{};
     for (final row in rows) {
-      if (!row.key.startsWith('attendance:')) continue;
-      final value = row.value ?? '';
-      counts[value] = (counts[value] ?? 0) + 1;
+      counts[row.status] = (counts[row.status] ?? 0) + 1;
     }
     final labels = <String, String>{
       'present': l10n.presentLabel,

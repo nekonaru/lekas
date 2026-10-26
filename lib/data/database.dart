@@ -13,6 +13,16 @@ class Spaces extends Table {
   TextColumn get targetGrade => text().nullable()();
   TextColumn get finalGrade => text().nullable()();
   TextColumn get kind => text().withDefault(const Constant('course'))();
+
+  /// Attendance (design section 5.19): planned meetings and the absence
+  /// limit in percent, both with the campus defaults applied in code.
+  IntColumn get totalMeetings => integer().nullable()();
+  IntColumn get maxAbsentPercent => integer().nullable()();
+  BoolColumn get excusedCountsAbsent => boolean().nullable()();
+
+  /// The optional "mark your attendance" prompt of design section 5.19.
+  BoolColumn get attendPrompt => boolean().nullable()();
+
   BoolColumn get archived => boolean().withDefault(const Constant(false))();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
@@ -291,6 +301,24 @@ class SavedFilters extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// One recorded meeting of a class (design section 5.19): `present`,
+/// `absent`, `excused` or `sick`, stored per local calendar day.
+class Attendance extends Table {
+  TextColumn get id => text()();
+  TextColumn get spaceId => text().references(Spaces, #id)();
+  TextColumn get slotId => text().nullable().references(ClassSlots, #id)();
+
+  /// Local calendar day as `YYYY-MM-DD` (design section 10).
+  TextColumn get date => text()();
+  TextColumn get status => text()();
+  TextColumn get note => text().nullable()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Spaces,
   SpaceAliases,
@@ -315,10 +343,26 @@ class SavedFilters extends Table {
   Diagnostics,
   GradeComponents,
   SavedFilters,
+  Attendance,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // Attendance and the per course settings of design 5.19.
+            await m.createTable(attendance);
+            await m.addColumn(spaces, spaces.totalMeetings);
+            await m.addColumn(spaces, spaces.maxAbsentPercent);
+            await m.addColumn(spaces, spaces.excusedCountsAbsent);
+            await m.addColumn(spaces, spaces.attendPrompt);
+          }
+        },
+      );
 }

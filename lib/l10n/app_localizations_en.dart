@@ -1390,4 +1390,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get templateSavedToast => 'Template saved';
+
+  @override
+  String attendanceProgress(int attended, int planned) {
+    return 'Attended $attended of $planned meetings';
+  }
+
+  @override
+  String attendanceLimitNote(int percent, int limit) {
+    return 'Absence limit $percent percent, $limit used';
+  }
+
+  @override
+  String attendanceRemaining(int count) {
+    return '$count absences left';
+  }
+
+  @override
+  String get attendanceLastOne => 'Only one absence left. Careful.';
+
+  @override
+  String get attendanceExhausted =>
+      'Absences used up, you are at the campus minimum.';
+
+  @override
+  String get totalMeetingsLabel => 'Planned meetings';
+
+  @override
+  String get absentLimitLabel => 'Maximum absences (percent)';
+
+  @override
+  String get excusedCountsLabel => 'Excused and sick count as absent';
 }

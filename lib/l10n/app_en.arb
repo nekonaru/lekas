@@ -468,5 +468,16 @@
   "saveAsTemplate": "Save as template",
   "templateNameLabel": "Template name",
   "templateUsedToast": "New task created from the template",
-  "templateSavedToast": "Template saved"
+  "templateSavedToast": "Template saved",
+  "attendanceProgress": "Attended {attended} of {planned} meetings",
+  "@attendanceProgress": { "placeholders": { "attended": { "type": "int" }, "planned": { "type": "int" } } },
+  "attendanceLimitNote": "Absence limit {percent} percent, {limit} used",
+  "@attendanceLimitNote": { "placeholders": { "percent": { "type": "int" }, "limit": { "type": "int" } } },
+  "attendanceRemaining": "{count} absences left",
+  "@attendanceRemaining": { "placeholders": { "count": { "type": "int" } } },
+  "attendanceLastOne": "Only one absence left. Careful.",
+  "attendanceExhausted": "Absences used up, you are at the campus minimum.",
+  "totalMeetingsLabel": "Planned meetings",
+  "absentLimitLabel": "Maximum absences (percent)",
+  "excusedCountsLabel": "Excused and sick count as absent"
 }

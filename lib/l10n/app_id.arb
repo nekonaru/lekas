@@ -468,5 +468,16 @@
   "saveAsTemplate": "Simpan sebagai templat",
   "templateNameLabel": "Nama templat",
   "templateUsedToast": "Tugas baru dibuat dari templat",
-  "templateSavedToast": "Templat disimpan"
+  "templateSavedToast": "Templat disimpan",
+  "attendanceProgress": "Hadir {attended} dari {planned} pertemuan",
+  "@attendanceProgress": { "placeholders": { "attended": { "type": "int" }, "planned": { "type": "int" } } },
+  "attendanceLimitNote": "Batas absen {percent} persen, jatah terpakai {limit}",
+  "@attendanceLimitNote": { "placeholders": { "percent": { "type": "int" }, "limit": { "type": "int" } } },
+  "attendanceRemaining": "Sisa jatah absen {count}",
+  "@attendanceRemaining": { "placeholders": { "count": { "type": "int" } } },
+  "attendanceLastOne": "Sisa jatah absen tinggal satu. Hati-hati.",
+  "attendanceExhausted": "Jatah absen habis, kehadiranmu sudah di batas kampus.",
+  "totalMeetingsLabel": "Jumlah pertemuan rencana",
+  "absentLimitLabel": "Batas absen maksimal (persen)",
+  "excusedCountsLabel": "Izin dan sakit dihitung absen"
 }

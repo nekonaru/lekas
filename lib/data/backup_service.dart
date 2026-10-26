@@ -42,6 +42,7 @@ class BackupService {
     data['diagnostics'] = (await db.select(db.diagnostics).get()).map((e) => e.toJson()).toList();
     data['grade_components'] = (await db.select(db.gradeComponents).get()).map((e) => e.toJson()).toList();
     data['saved_filters'] = (await db.select(db.savedFilters).get()).map((e) => e.toJson()).toList();
+    data['attendance'] = (await db.select(db.attendance).get()).map((e) => e.toJson()).toList();
 
     final jsonString = JsonEncoder.withIndent('  ').convert(data);
     final dir = await getApplicationDocumentsDirectory();
@@ -71,6 +72,7 @@ class BackupService {
     if (mode == 'replace') {
       // Delete all existing data first
       await db.delete(db.savedFilters).go();
+      await db.delete(db.attendance).go();
       await db.delete(db.gradeComponents).go();
       await db.delete(db.diagnostics).go();
       await db.delete(db.classNotes).go();
@@ -136,6 +138,13 @@ class BackupService {
         await db.into(db.classSlots).insert(item, mode: InsertMode.insertOrReplace);
       }
       stats['class_slots'] = (data['class_slots'] as List).length;
+    }
+
+    if (data['attendance'] != null) {
+      for (final item in data['attendance']) {
+        await db.into(db.attendance).insert(item, mode: InsertMode.insertOrReplace);
+      }
+      stats['attendance'] = (data['attendance'] as List).length;
     }
 
     if (data['tags'] != null) {

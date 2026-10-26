@@ -1391,4 +1391,35 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get templateSavedToast => 'Templat disimpan';
+
+  @override
+  String attendanceProgress(int attended, int planned) {
+    return 'Hadir $attended dari $planned pertemuan';
+  }
+
+  @override
+  String attendanceLimitNote(int percent, int limit) {
+    return 'Batas absen $percent persen, jatah terpakai $limit';
+  }
+
+  @override
+  String attendanceRemaining(int count) {
+    return 'Sisa jatah absen $count';
+  }
+
+  @override
+  String get attendanceLastOne => 'Sisa jatah absen tinggal satu. Hati-hati.';
+
+  @override
+  String get attendanceExhausted =>
+      'Jatah absen habis, kehadiranmu sudah di batas kampus.';
+
+  @override
+  String get totalMeetingsLabel => 'Jumlah pertemuan rencana';
+
+  @override
+  String get absentLimitLabel => 'Batas absen maksimal (persen)';
+
+  @override
+  String get excusedCountsLabel => 'Izin dan sakit dihitung absen';
 }

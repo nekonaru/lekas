@@ -60,6 +60,30 @@ class SpaceRepository {
     return rows.map((r) => r.alias).toList();
   }
 
+  /// Attendance settings of one course (design section 5.19): planned
+  /// meetings, absence limit in percent and how izin and sick days count.
+  Future<void> setAttendanceSettings(
+    String spaceId, {
+    int? totalMeetings,
+    int? maxAbsentPercent,
+    bool? excusedCountsAbsent,
+  }) async {
+    await (db.update(db.spaces)..where((t) => t.id.equals(spaceId))).write(
+      SpacesCompanion(
+        totalMeetings: totalMeetings == null
+            ? const Value.absent()
+            : Value(totalMeetings),
+        maxAbsentPercent: maxAbsentPercent == null
+            ? const Value.absent()
+            : Value(maxAbsentPercent),
+        excusedCountsAbsent: excusedCountsAbsent == null
+            ? const Value.absent()
+            : Value(excusedCountsAbsent),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
   Future<void> setMeta(String spaceId, String key, String? value) async {
     await db.customStatement('''
       INSERT INTO space_meta (space_id, key, value) VALUES (?, ?, ?)

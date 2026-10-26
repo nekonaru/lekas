@@ -2605,6 +2605,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Templat disimpan'**
   String get templateSavedToast;
+
+  /// No description provided for @attendanceProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Hadir {attended} dari {planned} pertemuan'**
+  String attendanceProgress(int attended, int planned);
+
+  /// No description provided for @attendanceLimitNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas absen {percent} persen, jatah terpakai {limit}'**
+  String attendanceLimitNote(int percent, int limit);
+
+  /// No description provided for @attendanceRemaining.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa jatah absen {count}'**
+  String attendanceRemaining(int count);
+
+  /// No description provided for @attendanceLastOne.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa jatah absen tinggal satu. Hati-hati.'**
+  String get attendanceLastOne;
+
+  /// No description provided for @attendanceExhausted.
+  ///
+  /// In id, this message translates to:
+  /// **'Jatah absen habis, kehadiranmu sudah di batas kampus.'**
+  String get attendanceExhausted;
+
+  /// No description provided for @totalMeetingsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah pertemuan rencana'**
+  String get totalMeetingsLabel;
+
+  /// No description provided for @absentLimitLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas absen maksimal (persen)'**
+  String get absentLimitLabel;
+
+  /// No description provided for @excusedCountsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin dan sakit dihitung absen'**
+  String get excusedCountsLabel;
 }
 
 class _AppLocalizationsDelegate

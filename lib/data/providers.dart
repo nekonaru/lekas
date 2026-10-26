@@ -7,6 +7,7 @@ import 'space_repository.dart';
 import 'task_repository.dart';
 import 'subtask_repository.dart';
 import 'tag_repository.dart';
+import 'attendance_repository.dart';
 import 'class_slot_repository.dart';
 import 'reminder_repository.dart';
 import 'settings_repository.dart';
@@ -60,6 +61,11 @@ final subtaskRepositoryProvider = Provider<SubtaskRepository>((ref) {
 /// Free tags (design section 5.9).
 final tagRepositoryProvider = Provider<TagRepository>((ref) {
   return TagRepository(ref.read(appDatabaseProvider));
+});
+
+/// Attendance records and the absence quota (design section 5.19).
+final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
+  return AttendanceRepository(ref.read(appDatabaseProvider));
 });
 
 final classSlotRepositoryProvider = Provider<ClassSlotRepository>((ref) {

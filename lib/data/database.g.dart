@@ -103,6 +103,55 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     requiredDuringInsert: false,
     defaultValue: const Constant('course'),
   );
+  static const VerificationMeta _totalMeetingsMeta = const VerificationMeta(
+    'totalMeetings',
+  );
+  @override
+  late final GeneratedColumn<int> totalMeetings = GeneratedColumn<int>(
+    'total_meetings',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxAbsentPercentMeta = const VerificationMeta(
+    'maxAbsentPercent',
+  );
+  @override
+  late final GeneratedColumn<int> maxAbsentPercent = GeneratedColumn<int>(
+    'max_absent_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _excusedCountsAbsentMeta =
+      const VerificationMeta('excusedCountsAbsent');
+  @override
+  late final GeneratedColumn<bool> excusedCountsAbsent = GeneratedColumn<bool>(
+    'excused_counts_absent',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("excused_counts_absent" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _attendPromptMeta = const VerificationMeta(
+    'attendPrompt',
+  );
+  @override
+  late final GeneratedColumn<bool> attendPrompt = GeneratedColumn<bool>(
+    'attend_prompt',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("attend_prompt" IN (0, 1))',
+    ),
+  );
   static const VerificationMeta _archivedMeta = const VerificationMeta(
     'archived',
   );
@@ -163,6 +212,10 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     targetGrade,
     finalGrade,
     kind,
+    totalMeetings,
+    maxAbsentPercent,
+    excusedCountsAbsent,
+    attendPrompt,
     archived,
     createdAt,
     updatedAt,
@@ -246,6 +299,42 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
       );
     }
+    if (data.containsKey('total_meetings')) {
+      context.handle(
+        _totalMeetingsMeta,
+        totalMeetings.isAcceptableOrUnknown(
+          data['total_meetings']!,
+          _totalMeetingsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_absent_percent')) {
+      context.handle(
+        _maxAbsentPercentMeta,
+        maxAbsentPercent.isAcceptableOrUnknown(
+          data['max_absent_percent']!,
+          _maxAbsentPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('excused_counts_absent')) {
+      context.handle(
+        _excusedCountsAbsentMeta,
+        excusedCountsAbsent.isAcceptableOrUnknown(
+          data['excused_counts_absent']!,
+          _excusedCountsAbsentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('attend_prompt')) {
+      context.handle(
+        _attendPromptMeta,
+        attendPrompt.isAcceptableOrUnknown(
+          data['attend_prompt']!,
+          _attendPromptMeta,
+        ),
+      );
+    }
     if (data.containsKey('archived')) {
       context.handle(
         _archivedMeta,
@@ -323,6 +412,22 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         DriftSqlType.string,
         data['${effectivePrefix}kind'],
       )!,
+      totalMeetings: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_meetings'],
+      ),
+      maxAbsentPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_absent_percent'],
+      ),
+      excusedCountsAbsent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}excused_counts_absent'],
+      ),
+      attendPrompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}attend_prompt'],
+      ),
       archived: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}archived'],
@@ -359,6 +464,15 @@ class Space extends DataClass implements Insertable<Space> {
   final String? targetGrade;
   final String? finalGrade;
   final String kind;
+
+  /// Attendance (design section 5.19): planned meetings and the absence
+  /// limit in percent, both with the campus defaults applied in code.
+  final int? totalMeetings;
+  final int? maxAbsentPercent;
+  final bool? excusedCountsAbsent;
+
+  /// The optional "mark your attendance" prompt of design section 5.19.
+  final bool? attendPrompt;
   final bool archived;
   final int createdAt;
   final int updatedAt;
@@ -374,6 +488,10 @@ class Space extends DataClass implements Insertable<Space> {
     this.targetGrade,
     this.finalGrade,
     required this.kind,
+    this.totalMeetings,
+    this.maxAbsentPercent,
+    this.excusedCountsAbsent,
+    this.attendPrompt,
     required this.archived,
     required this.createdAt,
     required this.updatedAt,
@@ -404,6 +522,18 @@ class Space extends DataClass implements Insertable<Space> {
       map['final_grade'] = Variable<String>(finalGrade);
     }
     map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || totalMeetings != null) {
+      map['total_meetings'] = Variable<int>(totalMeetings);
+    }
+    if (!nullToAbsent || maxAbsentPercent != null) {
+      map['max_absent_percent'] = Variable<int>(maxAbsentPercent);
+    }
+    if (!nullToAbsent || excusedCountsAbsent != null) {
+      map['excused_counts_absent'] = Variable<bool>(excusedCountsAbsent);
+    }
+    if (!nullToAbsent || attendPrompt != null) {
+      map['attend_prompt'] = Variable<bool>(attendPrompt);
+    }
     map['archived'] = Variable<bool>(archived);
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
@@ -433,6 +563,18 @@ class Space extends DataClass implements Insertable<Space> {
           ? const Value.absent()
           : Value(finalGrade),
       kind: Value(kind),
+      totalMeetings: totalMeetings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalMeetings),
+      maxAbsentPercent: maxAbsentPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxAbsentPercent),
+      excusedCountsAbsent: excusedCountsAbsent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(excusedCountsAbsent),
+      attendPrompt: attendPrompt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attendPrompt),
       archived: Value(archived),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -458,6 +600,12 @@ class Space extends DataClass implements Insertable<Space> {
       targetGrade: serializer.fromJson<String?>(json['targetGrade']),
       finalGrade: serializer.fromJson<String?>(json['finalGrade']),
       kind: serializer.fromJson<String>(json['kind']),
+      totalMeetings: serializer.fromJson<int?>(json['totalMeetings']),
+      maxAbsentPercent: serializer.fromJson<int?>(json['maxAbsentPercent']),
+      excusedCountsAbsent: serializer.fromJson<bool?>(
+        json['excusedCountsAbsent'],
+      ),
+      attendPrompt: serializer.fromJson<bool?>(json['attendPrompt']),
       archived: serializer.fromJson<bool>(json['archived']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
@@ -478,6 +626,10 @@ class Space extends DataClass implements Insertable<Space> {
       'targetGrade': serializer.toJson<String?>(targetGrade),
       'finalGrade': serializer.toJson<String?>(finalGrade),
       'kind': serializer.toJson<String>(kind),
+      'totalMeetings': serializer.toJson<int?>(totalMeetings),
+      'maxAbsentPercent': serializer.toJson<int?>(maxAbsentPercent),
+      'excusedCountsAbsent': serializer.toJson<bool?>(excusedCountsAbsent),
+      'attendPrompt': serializer.toJson<bool?>(attendPrompt),
       'archived': serializer.toJson<bool>(archived),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
@@ -496,6 +648,10 @@ class Space extends DataClass implements Insertable<Space> {
     Value<String?> targetGrade = const Value.absent(),
     Value<String?> finalGrade = const Value.absent(),
     String? kind,
+    Value<int?> totalMeetings = const Value.absent(),
+    Value<int?> maxAbsentPercent = const Value.absent(),
+    Value<bool?> excusedCountsAbsent = const Value.absent(),
+    Value<bool?> attendPrompt = const Value.absent(),
     bool? archived,
     int? createdAt,
     int? updatedAt,
@@ -511,6 +667,16 @@ class Space extends DataClass implements Insertable<Space> {
     targetGrade: targetGrade.present ? targetGrade.value : this.targetGrade,
     finalGrade: finalGrade.present ? finalGrade.value : this.finalGrade,
     kind: kind ?? this.kind,
+    totalMeetings: totalMeetings.present
+        ? totalMeetings.value
+        : this.totalMeetings,
+    maxAbsentPercent: maxAbsentPercent.present
+        ? maxAbsentPercent.value
+        : this.maxAbsentPercent,
+    excusedCountsAbsent: excusedCountsAbsent.present
+        ? excusedCountsAbsent.value
+        : this.excusedCountsAbsent,
+    attendPrompt: attendPrompt.present ? attendPrompt.value : this.attendPrompt,
     archived: archived ?? this.archived,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -532,6 +698,18 @@ class Space extends DataClass implements Insertable<Space> {
           ? data.finalGrade.value
           : this.finalGrade,
       kind: data.kind.present ? data.kind.value : this.kind,
+      totalMeetings: data.totalMeetings.present
+          ? data.totalMeetings.value
+          : this.totalMeetings,
+      maxAbsentPercent: data.maxAbsentPercent.present
+          ? data.maxAbsentPercent.value
+          : this.maxAbsentPercent,
+      excusedCountsAbsent: data.excusedCountsAbsent.present
+          ? data.excusedCountsAbsent.value
+          : this.excusedCountsAbsent,
+      attendPrompt: data.attendPrompt.present
+          ? data.attendPrompt.value
+          : this.attendPrompt,
       archived: data.archived.present ? data.archived.value : this.archived,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -552,6 +730,10 @@ class Space extends DataClass implements Insertable<Space> {
           ..write('targetGrade: $targetGrade, ')
           ..write('finalGrade: $finalGrade, ')
           ..write('kind: $kind, ')
+          ..write('totalMeetings: $totalMeetings, ')
+          ..write('maxAbsentPercent: $maxAbsentPercent, ')
+          ..write('excusedCountsAbsent: $excusedCountsAbsent, ')
+          ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -572,6 +754,10 @@ class Space extends DataClass implements Insertable<Space> {
     targetGrade,
     finalGrade,
     kind,
+    totalMeetings,
+    maxAbsentPercent,
+    excusedCountsAbsent,
+    attendPrompt,
     archived,
     createdAt,
     updatedAt,
@@ -591,6 +777,10 @@ class Space extends DataClass implements Insertable<Space> {
           other.targetGrade == this.targetGrade &&
           other.finalGrade == this.finalGrade &&
           other.kind == this.kind &&
+          other.totalMeetings == this.totalMeetings &&
+          other.maxAbsentPercent == this.maxAbsentPercent &&
+          other.excusedCountsAbsent == this.excusedCountsAbsent &&
+          other.attendPrompt == this.attendPrompt &&
           other.archived == this.archived &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
@@ -608,6 +798,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
   final Value<String?> targetGrade;
   final Value<String?> finalGrade;
   final Value<String> kind;
+  final Value<int?> totalMeetings;
+  final Value<int?> maxAbsentPercent;
+  final Value<bool?> excusedCountsAbsent;
+  final Value<bool?> attendPrompt;
   final Value<bool> archived;
   final Value<int> createdAt;
   final Value<int> updatedAt;
@@ -624,6 +818,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.targetGrade = const Value.absent(),
     this.finalGrade = const Value.absent(),
     this.kind = const Value.absent(),
+    this.totalMeetings = const Value.absent(),
+    this.maxAbsentPercent = const Value.absent(),
+    this.excusedCountsAbsent = const Value.absent(),
+    this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -641,6 +839,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.targetGrade = const Value.absent(),
     this.finalGrade = const Value.absent(),
     this.kind = const Value.absent(),
+    this.totalMeetings = const Value.absent(),
+    this.maxAbsentPercent = const Value.absent(),
+    this.excusedCountsAbsent = const Value.absent(),
+    this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
     required int createdAt,
     required int updatedAt,
@@ -662,6 +864,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Expression<String>? targetGrade,
     Expression<String>? finalGrade,
     Expression<String>? kind,
+    Expression<int>? totalMeetings,
+    Expression<int>? maxAbsentPercent,
+    Expression<bool>? excusedCountsAbsent,
+    Expression<bool>? attendPrompt,
     Expression<bool>? archived,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
@@ -679,6 +885,11 @@ class SpacesCompanion extends UpdateCompanion<Space> {
       if (targetGrade != null) 'target_grade': targetGrade,
       if (finalGrade != null) 'final_grade': finalGrade,
       if (kind != null) 'kind': kind,
+      if (totalMeetings != null) 'total_meetings': totalMeetings,
+      if (maxAbsentPercent != null) 'max_absent_percent': maxAbsentPercent,
+      if (excusedCountsAbsent != null)
+        'excused_counts_absent': excusedCountsAbsent,
+      if (attendPrompt != null) 'attend_prompt': attendPrompt,
       if (archived != null) 'archived': archived,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -698,6 +909,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Value<String?>? targetGrade,
     Value<String?>? finalGrade,
     Value<String>? kind,
+    Value<int?>? totalMeetings,
+    Value<int?>? maxAbsentPercent,
+    Value<bool?>? excusedCountsAbsent,
+    Value<bool?>? attendPrompt,
     Value<bool>? archived,
     Value<int>? createdAt,
     Value<int>? updatedAt,
@@ -715,6 +930,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
       targetGrade: targetGrade ?? this.targetGrade,
       finalGrade: finalGrade ?? this.finalGrade,
       kind: kind ?? this.kind,
+      totalMeetings: totalMeetings ?? this.totalMeetings,
+      maxAbsentPercent: maxAbsentPercent ?? this.maxAbsentPercent,
+      excusedCountsAbsent: excusedCountsAbsent ?? this.excusedCountsAbsent,
+      attendPrompt: attendPrompt ?? this.attendPrompt,
       archived: archived ?? this.archived,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -756,6 +975,18 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     if (kind.present) {
       map['kind'] = Variable<String>(kind.value);
     }
+    if (totalMeetings.present) {
+      map['total_meetings'] = Variable<int>(totalMeetings.value);
+    }
+    if (maxAbsentPercent.present) {
+      map['max_absent_percent'] = Variable<int>(maxAbsentPercent.value);
+    }
+    if (excusedCountsAbsent.present) {
+      map['excused_counts_absent'] = Variable<bool>(excusedCountsAbsent.value);
+    }
+    if (attendPrompt.present) {
+      map['attend_prompt'] = Variable<bool>(attendPrompt.value);
+    }
     if (archived.present) {
       map['archived'] = Variable<bool>(archived.value);
     }
@@ -787,6 +1018,10 @@ class SpacesCompanion extends UpdateCompanion<Space> {
           ..write('targetGrade: $targetGrade, ')
           ..write('finalGrade: $finalGrade, ')
           ..write('kind: $kind, ')
+          ..write('totalMeetings: $totalMeetings, ')
+          ..write('maxAbsentPercent: $maxAbsentPercent, ')
+          ..write('excusedCountsAbsent: $excusedCountsAbsent, ')
+          ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -10192,6 +10427,519 @@ class SavedFiltersCompanion extends UpdateCompanion<SavedFilter> {
   }
 }
 
+class $AttendanceTable extends Attendance
+    with TableInfo<$AttendanceTable, AttendanceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AttendanceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _spaceIdMeta = const VerificationMeta(
+    'spaceId',
+  );
+  @override
+  late final GeneratedColumn<String> spaceId = GeneratedColumn<String>(
+    'space_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES spaces (id)',
+    ),
+  );
+  static const VerificationMeta _slotIdMeta = const VerificationMeta('slotId');
+  @override
+  late final GeneratedColumn<String> slotId = GeneratedColumn<String>(
+    'slot_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES class_slots (id)',
+    ),
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    spaceId,
+    slotId,
+    date,
+    status,
+    note,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'attendance';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AttendanceData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('space_id')) {
+      context.handle(
+        _spaceIdMeta,
+        spaceId.isAcceptableOrUnknown(data['space_id']!, _spaceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_spaceIdMeta);
+    }
+    if (data.containsKey('slot_id')) {
+      context.handle(
+        _slotIdMeta,
+        slotId.isAcceptableOrUnknown(data['slot_id']!, _slotIdMeta),
+      );
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AttendanceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AttendanceData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      spaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}space_id'],
+      )!,
+      slotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slot_id'],
+      ),
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}date'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $AttendanceTable createAlias(String alias) {
+    return $AttendanceTable(attachedDatabase, alias);
+  }
+}
+
+class AttendanceData extends DataClass implements Insertable<AttendanceData> {
+  final String id;
+  final String spaceId;
+  final String? slotId;
+
+  /// Local calendar day as `YYYY-MM-DD` (design section 10).
+  final String date;
+  final String status;
+  final String? note;
+  final int updatedAt;
+  final int? deletedAt;
+  const AttendanceData({
+    required this.id,
+    required this.spaceId,
+    this.slotId,
+    required this.date,
+    required this.status,
+    this.note,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['space_id'] = Variable<String>(spaceId);
+    if (!nullToAbsent || slotId != null) {
+      map['slot_id'] = Variable<String>(slotId);
+    }
+    map['date'] = Variable<String>(date);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    return map;
+  }
+
+  AttendanceCompanion toCompanion(bool nullToAbsent) {
+    return AttendanceCompanion(
+      id: Value(id),
+      spaceId: Value(spaceId),
+      slotId: slotId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(slotId),
+      date: Value(date),
+      status: Value(status),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory AttendanceData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AttendanceData(
+      id: serializer.fromJson<String>(json['id']),
+      spaceId: serializer.fromJson<String>(json['spaceId']),
+      slotId: serializer.fromJson<String?>(json['slotId']),
+      date: serializer.fromJson<String>(json['date']),
+      status: serializer.fromJson<String>(json['status']),
+      note: serializer.fromJson<String?>(json['note']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'spaceId': serializer.toJson<String>(spaceId),
+      'slotId': serializer.toJson<String?>(slotId),
+      'date': serializer.toJson<String>(date),
+      'status': serializer.toJson<String>(status),
+      'note': serializer.toJson<String?>(note),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+    };
+  }
+
+  AttendanceData copyWith({
+    String? id,
+    String? spaceId,
+    Value<String?> slotId = const Value.absent(),
+    String? date,
+    String? status,
+    Value<String?> note = const Value.absent(),
+    int? updatedAt,
+    Value<int?> deletedAt = const Value.absent(),
+  }) => AttendanceData(
+    id: id ?? this.id,
+    spaceId: spaceId ?? this.spaceId,
+    slotId: slotId.present ? slotId.value : this.slotId,
+    date: date ?? this.date,
+    status: status ?? this.status,
+    note: note.present ? note.value : this.note,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  AttendanceData copyWithCompanion(AttendanceCompanion data) {
+    return AttendanceData(
+      id: data.id.present ? data.id.value : this.id,
+      spaceId: data.spaceId.present ? data.spaceId.value : this.spaceId,
+      slotId: data.slotId.present ? data.slotId.value : this.slotId,
+      date: data.date.present ? data.date.value : this.date,
+      status: data.status.present ? data.status.value : this.status,
+      note: data.note.present ? data.note.value : this.note,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AttendanceData(')
+          ..write('id: $id, ')
+          ..write('spaceId: $spaceId, ')
+          ..write('slotId: $slotId, ')
+          ..write('date: $date, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    spaceId,
+    slotId,
+    date,
+    status,
+    note,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AttendanceData &&
+          other.id == this.id &&
+          other.spaceId == this.spaceId &&
+          other.slotId == this.slotId &&
+          other.date == this.date &&
+          other.status == this.status &&
+          other.note == this.note &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class AttendanceCompanion extends UpdateCompanion<AttendanceData> {
+  final Value<String> id;
+  final Value<String> spaceId;
+  final Value<String?> slotId;
+  final Value<String> date;
+  final Value<String> status;
+  final Value<String?> note;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<int> rowid;
+  const AttendanceCompanion({
+    this.id = const Value.absent(),
+    this.spaceId = const Value.absent(),
+    this.slotId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.status = const Value.absent(),
+    this.note = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AttendanceCompanion.insert({
+    required String id,
+    required String spaceId,
+    this.slotId = const Value.absent(),
+    required String date,
+    required String status,
+    this.note = const Value.absent(),
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       spaceId = Value(spaceId),
+       date = Value(date),
+       status = Value(status),
+       updatedAt = Value(updatedAt);
+  static Insertable<AttendanceData> custom({
+    Expression<String>? id,
+    Expression<String>? spaceId,
+    Expression<String>? slotId,
+    Expression<String>? date,
+    Expression<String>? status,
+    Expression<String>? note,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (spaceId != null) 'space_id': spaceId,
+      if (slotId != null) 'slot_id': slotId,
+      if (date != null) 'date': date,
+      if (status != null) 'status': status,
+      if (note != null) 'note': note,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AttendanceCompanion copyWith({
+    Value<String>? id,
+    Value<String>? spaceId,
+    Value<String?>? slotId,
+    Value<String>? date,
+    Value<String>? status,
+    Value<String?>? note,
+    Value<int>? updatedAt,
+    Value<int?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return AttendanceCompanion(
+      id: id ?? this.id,
+      spaceId: spaceId ?? this.spaceId,
+      slotId: slotId ?? this.slotId,
+      date: date ?? this.date,
+      status: status ?? this.status,
+      note: note ?? this.note,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (spaceId.present) {
+      map['space_id'] = Variable<String>(spaceId.value);
+    }
+    if (slotId.present) {
+      map['slot_id'] = Variable<String>(slotId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<String>(date.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AttendanceCompanion(')
+          ..write('id: $id, ')
+          ..write('spaceId: $spaceId, ')
+          ..write('slotId: $slotId, ')
+          ..write('date: $date, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10222,6 +10970,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $SavedFiltersTable savedFilters = $SavedFiltersTable(this);
+  late final $AttendanceTable attendance = $AttendanceTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10250,6 +10999,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     diagnostics,
     gradeComponents,
     savedFilters,
+    attendance,
   ];
 }
 
@@ -10264,6 +11014,10 @@ typedef $$SpacesTableCreateCompanionBuilder = SpacesCompanion Function({
   Value<String?> targetGrade,
   Value<String?> finalGrade,
   Value<String> kind,
+  Value<int?> totalMeetings,
+  Value<int?> maxAbsentPercent,
+  Value<bool?> excusedCountsAbsent,
+  Value<bool?> attendPrompt,
   Value<bool> archived,
   required int createdAt,
   required int updatedAt,
@@ -10281,6 +11035,10 @@ typedef $$SpacesTableUpdateCompanionBuilder = SpacesCompanion Function({
   Value<String?> targetGrade,
   Value<String?> finalGrade,
   Value<String> kind,
+  Value<int?> totalMeetings,
+  Value<int?> maxAbsentPercent,
+  Value<bool?> excusedCountsAbsent,
+  Value<bool?> attendPrompt,
   Value<bool> archived,
   Value<int> createdAt,
   Value<int> updatedAt,
@@ -10420,6 +11178,24 @@ final class $$SpacesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$AttendanceTable, List<AttendanceData>>
+  _attendanceRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.attendance,
+    aliasName: 'spaces__id__attendance__space_id',
+  );
+
+  $$AttendanceTableProcessedTableManager get attendanceRefs {
+    final manager = $$AttendanceTableTableManager(
+      $_db,
+      $_db.attendance,
+    ).filter((f) => f.spaceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attendanceRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$SpacesTableFilterComposer
@@ -10478,6 +11254,26 @@ class $$SpacesTableFilterComposer
 
   ColumnFilters<String> get kind => $composableBuilder(
     column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalMeetings => $composableBuilder(
+    column: $table.totalMeetings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxAbsentPercent => $composableBuilder(
+    column: $table.maxAbsentPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get excusedCountsAbsent => $composableBuilder(
+    column: $table.excusedCountsAbsent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get attendPrompt => $composableBuilder(
+    column: $table.attendPrompt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10675,6 +11471,31 @@ class $$SpacesTableFilterComposer
     );
     return f(composer);
   }
+
+  Expression<bool> attendanceRefs(
+    Expression<bool> Function($$AttendanceTableFilterComposer f) f,
+  ) {
+    final $$AttendanceTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attendance,
+      getReferencedColumn: (t) => t.spaceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttendanceTableFilterComposer(
+            $db: $db,
+            $table: $db.attendance,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$SpacesTableOrderingComposer
@@ -10733,6 +11554,26 @@ class $$SpacesTableOrderingComposer
 
   ColumnOrderings<String> get kind => $composableBuilder(
     column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalMeetings => $composableBuilder(
+    column: $table.totalMeetings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxAbsentPercent => $composableBuilder(
+    column: $table.maxAbsentPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get excusedCountsAbsent => $composableBuilder(
+    column: $table.excusedCountsAbsent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get attendPrompt => $composableBuilder(
+    column: $table.attendPrompt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -10799,6 +11640,26 @@ class $$SpacesTableAnnotationComposer
 
   GeneratedColumn<String> get kind =>
       $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get totalMeetings => $composableBuilder(
+    column: $table.totalMeetings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxAbsentPercent => $composableBuilder(
+    column: $table.maxAbsentPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get excusedCountsAbsent => $composableBuilder(
+    column: $table.excusedCountsAbsent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get attendPrompt => $composableBuilder(
+    column: $table.attendPrompt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get archived =>
       $composableBuilder(column: $table.archived, builder: (column) => column);
@@ -10986,6 +11847,31 @@ class $$SpacesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> attendanceRefs<T extends Object>(
+    Expression<T> Function($$AttendanceTableAnnotationComposer a) f,
+  ) {
+    final $$AttendanceTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attendance,
+      getReferencedColumn: (t) => t.spaceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttendanceTableAnnotationComposer(
+            $db: $db,
+            $table: $db.attendance,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$SpacesTableTableManager
@@ -11009,6 +11895,7 @@ class $$SpacesTableTableManager
             bool spaceItemsRefs,
             bool classNotesRefs,
             bool gradeComponentsRefs,
+            bool attendanceRefs,
           })
         > {
   $$SpacesTableTableManager(_$AppDatabase db, $SpacesTable table)
@@ -11034,6 +11921,10 @@ class $$SpacesTableTableManager
                 Value<String?> targetGrade = const Value.absent(),
                 Value<String?> finalGrade = const Value.absent(),
                 Value<String> kind = const Value.absent(),
+                Value<int?> totalMeetings = const Value.absent(),
+                Value<int?> maxAbsentPercent = const Value.absent(),
+                Value<bool?> excusedCountsAbsent = const Value.absent(),
+                Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
@@ -11050,6 +11941,10 @@ class $$SpacesTableTableManager
                 targetGrade: targetGrade,
                 finalGrade: finalGrade,
                 kind: kind,
+                totalMeetings: totalMeetings,
+                maxAbsentPercent: maxAbsentPercent,
+                excusedCountsAbsent: excusedCountsAbsent,
+                attendPrompt: attendPrompt,
                 archived: archived,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -11068,6 +11963,10 @@ class $$SpacesTableTableManager
                 Value<String?> targetGrade = const Value.absent(),
                 Value<String?> finalGrade = const Value.absent(),
                 Value<String> kind = const Value.absent(),
+                Value<int?> totalMeetings = const Value.absent(),
+                Value<int?> maxAbsentPercent = const Value.absent(),
+                Value<bool?> excusedCountsAbsent = const Value.absent(),
+                Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
@@ -11084,6 +11983,10 @@ class $$SpacesTableTableManager
                 targetGrade: targetGrade,
                 finalGrade: finalGrade,
                 kind: kind,
+                totalMeetings: totalMeetings,
+                maxAbsentPercent: maxAbsentPercent,
+                excusedCountsAbsent: excusedCountsAbsent,
+                attendPrompt: attendPrompt,
                 archived: archived,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -11107,6 +12010,7 @@ class $$SpacesTableTableManager
                 spaceItemsRefs = false,
                 classNotesRefs = false,
                 gradeComponentsRefs = false,
+                attendanceRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -11118,6 +12022,7 @@ class $$SpacesTableTableManager
                     if (spaceItemsRefs) db.spaceItems,
                     if (classNotesRefs) db.classNotes,
                     if (gradeComponentsRefs) db.gradeComponents,
+                    if (attendanceRefs) db.attendance,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -11258,6 +12163,26 @@ class $$SpacesTableTableManager
                           referencedColumn: 'space_id',
                           typedResults: items,
                         ),
+                      if (attendanceRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Space,
+                          $SpacesTable,
+                          AttendanceData,
+                          $AttendanceTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SpacesTableReferences
+                              ._attendanceRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SpacesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).attendanceRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'space_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -11286,6 +12211,7 @@ typedef $$SpacesTableProcessedTableManager =
         bool spaceItemsRefs,
         bool classNotesRefs,
         bool gradeComponentsRefs,
+        bool attendanceRefs,
       })
     >;
 typedef $$SpaceAliasesTableCreateCompanionBuilder =
@@ -13696,6 +14622,24 @@ final class $$ClassSlotsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$AttendanceTable, List<AttendanceData>>
+  _attendanceRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.attendance,
+    aliasName: 'class_slots__id__attendance__slot_id',
+  );
+
+  $$AttendanceTableProcessedTableManager get attendanceRefs {
+    final manager = $$AttendanceTableTableManager(
+      $_db,
+      $_db.attendance,
+    ).filter((f) => f.slotId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attendanceRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ClassSlotsTableFilterComposer
@@ -13811,6 +14755,31 @@ class $$ClassSlotsTableFilterComposer
           }) => $$ClassExceptionsTableFilterComposer(
             $db: $db,
             $table: $db.classExceptions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> attendanceRefs(
+    Expression<bool> Function($$AttendanceTableFilterComposer f) f,
+  ) {
+    final $$AttendanceTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attendance,
+      getReferencedColumn: (t) => t.slotId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttendanceTableFilterComposer(
+            $db: $db,
+            $table: $db.attendance,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -13999,6 +14968,31 @@ class $$ClassSlotsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> attendanceRefs<T extends Object>(
+    Expression<T> Function($$AttendanceTableAnnotationComposer a) f,
+  ) {
+    final $$AttendanceTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attendance,
+      getReferencedColumn: (t) => t.slotId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttendanceTableAnnotationComposer(
+            $db: $db,
+            $table: $db.attendance,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ClassSlotsTableTableManager
@@ -14018,6 +15012,7 @@ class $$ClassSlotsTableTableManager
             bool spaceId,
             bool remindersRefs,
             bool classExceptionsRefs,
+            bool attendanceRefs,
           })
         > {
   $$ClassSlotsTableTableManager(_$AppDatabase db, $ClassSlotsTable table)
@@ -14092,12 +15087,14 @@ class $$ClassSlotsTableTableManager
                 spaceId = false,
                 remindersRefs = false,
                 classExceptionsRefs = false,
+                attendanceRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (remindersRefs) db.reminders,
                     if (classExceptionsRefs) db.classExceptions,
+                    if (attendanceRefs) db.attendance,
                   ],
                   addJoins:
                       <
@@ -14171,6 +15168,26 @@ class $$ClassSlotsTableTableManager
                           referencedColumn: 'class_slot_id',
                           typedResults: items,
                         ),
+                      if (attendanceRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ClassSlot,
+                          $ClassSlotsTable,
+                          AttendanceData,
+                          $AttendanceTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClassSlotsTableReferences
+                              ._attendanceRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClassSlotsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).attendanceRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'slot_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -14195,6 +15212,7 @@ typedef $$ClassSlotsTableProcessedTableManager =
         bool spaceId,
         bool remindersRefs,
         bool classExceptionsRefs,
+        bool attendanceRefs,
       })
     >;
 typedef $$TagsTableCreateCompanionBuilder = TagsCompanion Function({
@@ -19184,6 +20202,460 @@ typedef $$SavedFiltersTableProcessedTableManager =
       SavedFilter,
       PrefetchHooks Function()
     >;
+typedef $$AttendanceTableCreateCompanionBuilder = AttendanceCompanion Function({
+  required String id,
+  required String spaceId,
+  Value<String?> slotId,
+  required String date,
+  required String status,
+  Value<String?> note,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+typedef $$AttendanceTableUpdateCompanionBuilder = AttendanceCompanion Function({
+  Value<String> id,
+  Value<String> spaceId,
+  Value<String?> slotId,
+  Value<String> date,
+  Value<String> status,
+  Value<String?> note,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+
+final class $$AttendanceTableReferences
+    extends BaseReferences<_$AppDatabase, $AttendanceTable, AttendanceData> {
+  $$AttendanceTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SpacesTable _spaceIdTable(_$AppDatabase db) =>
+      db.spaces.createAlias('attendance__space_id__spaces__id');
+
+  $$SpacesTableProcessedTableManager get spaceId {
+    final $_column = $_itemColumn<String>('space_id')!;
+
+    final manager = $$SpacesTableTableManager(
+      $_db,
+      $_db.spaces,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_spaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $ClassSlotsTable _slotIdTable(_$AppDatabase db) =>
+      db.classSlots.createAlias('attendance__slot_id__class_slots__id');
+
+  $$ClassSlotsTableProcessedTableManager? get slotId {
+    final $_column = $_itemColumn<String>('slot_id');
+    if ($_column == null) return null;
+    final manager = $$ClassSlotsTableTableManager(
+      $_db,
+      $_db.classSlots,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_slotIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AttendanceTableFilterComposer
+    extends Composer<_$AppDatabase, $AttendanceTable> {
+  $$AttendanceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SpacesTableFilterComposer get spaceId {
+    final $$SpacesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableFilterComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ClassSlotsTableFilterComposer get slotId {
+    final $$ClassSlotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.slotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableFilterComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AttendanceTableOrderingComposer
+    extends Composer<_$AppDatabase, $AttendanceTable> {
+  $$AttendanceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SpacesTableOrderingComposer get spaceId {
+    final $$SpacesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableOrderingComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ClassSlotsTableOrderingComposer get slotId {
+    final $$ClassSlotsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.slotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableOrderingComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AttendanceTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AttendanceTable> {
+  $$AttendanceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$SpacesTableAnnotationComposer get spaceId {
+    final $$SpacesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ClassSlotsTableAnnotationComposer get slotId {
+    final $$ClassSlotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.slotId,
+      referencedTable: $db.classSlots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassSlotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.classSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AttendanceTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AttendanceTable,
+          AttendanceData,
+          $$AttendanceTableFilterComposer,
+          $$AttendanceTableOrderingComposer,
+          $$AttendanceTableAnnotationComposer,
+          $$AttendanceTableCreateCompanionBuilder,
+          $$AttendanceTableUpdateCompanionBuilder,
+          (AttendanceData, $$AttendanceTableReferences),
+          AttendanceData,
+          PrefetchHooks Function({bool spaceId, bool slotId})
+        > {
+  $$AttendanceTableTableManager(_$AppDatabase db, $AttendanceTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AttendanceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AttendanceTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AttendanceTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> spaceId = const Value.absent(),
+                Value<String?> slotId = const Value.absent(),
+                Value<String> date = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AttendanceCompanion(
+                id: id,
+                spaceId: spaceId,
+                slotId: slotId,
+                date: date,
+                status: status,
+                note: note,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String spaceId,
+                Value<String?> slotId = const Value.absent(),
+                required String date,
+                required String status,
+                Value<String?> note = const Value.absent(),
+                required int updatedAt,
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AttendanceCompanion.insert(
+                id: id,
+                spaceId: spaceId,
+                slotId: slotId,
+                date: date,
+                status: status,
+                note: note,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AttendanceTable, AttendanceData>(table),
+                  $$AttendanceTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({spaceId = false, slotId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (spaceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.spaceId,
+                        referencedTable: $$AttendanceTableReferences
+                            ._spaceIdTable(db),
+                        referencedColumn: $$AttendanceTableReferences
+                            ._spaceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (slotId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.slotId,
+                        referencedTable: $$AttendanceTableReferences
+                            ._slotIdTable(db),
+                        referencedColumn: $$AttendanceTableReferences
+                            ._slotIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AttendanceTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AttendanceTable,
+      AttendanceData,
+      $$AttendanceTableFilterComposer,
+      $$AttendanceTableOrderingComposer,
+      $$AttendanceTableAnnotationComposer,
+      $$AttendanceTableCreateCompanionBuilder,
+      $$AttendanceTableUpdateCompanionBuilder,
+      (AttendanceData, $$AttendanceTableReferences),
+      AttendanceData,
+      PrefetchHooks Function({bool spaceId, bool slotId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19233,4 +20705,6 @@ class $AppDatabaseManager {
       $$GradeComponentsTableTableManager(_db, _db.gradeComponents);
   $$SavedFiltersTableTableManager get savedFilters =>
       $$SavedFiltersTableTableManager(_db, _db.savedFilters);
+  $$AttendanceTableTableManager get attendance =>
+      $$AttendanceTableTableManager(_db, _db.attendance);
 }
