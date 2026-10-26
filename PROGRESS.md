@@ -4,7 +4,21 @@ Sumber rancangan: `rancangan baru.md` (bagian 3, 13, 14).
 Dipakai AI untuk melanjutkan pembangunan setelah percakapan terputih.
 Centang `[x]` tiap fitur setelah: tes lulus, aplikasi berjalan, commit, dan PROGRESS.md diperbarui.
 
-Terakhir diperbarui: Sun Oct 25 2026
+Terakhir diperbarui: Sun Oct 26 2026
+
+---
+
+## Catatan keputusan (baca dulu)
+
+- **`gen-l10n` tetap dipakai.** `rules.md` bagian 8 melarang codegen l10n, tetapi repo ini
+  sudah memakai ARB + `generate: true`. Rancangan bagian 8.2 (dua bahasa lewat ARB) menang
+  untuk arsitektur; `rules.md` menang untuk gaya kode, commit, dan push. Kunci ARB hidup di
+  `lib/l10n/app_id.arb` dan `app_en.arb`, lalu `flutter gen-l10n` dijalankan.
+- **Banyak layar masih rangka.** Sekitar 66 `onTap: () {}` / `onPressed: () {}` masih kosong
+  (terbanyak di `home_shell.dart` dan layar Fase B). Layar sudah bisa dibuka dan
+  sudah dilokalisasi, tetapi tombolnya belum beraksi. Status jujur per bagian ada di bawah.
+- **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
+  ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
 ---
 
@@ -34,27 +48,32 @@ Terakhir diperbarui: Sun Oct 25 2026
 
 ### 3. ReminderService, izin, boot receiver, layar Cek Pengingat
 - [x] ReminderService dengan flutter_local_notifications + timezone
-- [x] Jadwal H-3, H-1, 3 jam, 30 menit sebelum deadline
+- [x] Jadwal H-3, H-1, 3 jam, 30 menit sebelum deadline (+ H-7 bila bobot >= 60)
+- [x] Reconcile otomatis: DB vs plugin setiap perubahan tugas, saat app dibuka, dan saat resumed
+- [x] Jam tenang 22.00 sampai 06.00 digeser ke 21.55, tidak melewati deadline (Lampiran B poin 1)
+- [x] Horizon jadwal 14 hari ke depan
 - [x] 4 channel notifikasi: deadline, overdue, summary, test
 - [x] AndroidManifest.xml dengan permissions (POST_NOTIFICATIONS, SCHEDULE_EXACT_ALARM, RECEIVE_BOOT_COMPLETED)
-- [x] BootReceiver.java
-- [x] strings.xml + values-in/strings.xml (native Android lokalisasi)
-- [ ] Izin POST_NOTIFICATIONS dan SCHEDULE_EXACT_ALARM runtime (native)
-- [ ] Boot receiver jadwalkan ulang setelah restart
-- [ ] Batalkan dan buat ulang pengingat saat deadline berubah
-- [ ] Hanya jadwalkan 14 hari ke depan
-- [x] Notifikasi dengan tombol Selesai dan Tunda 1 jam (struktur)
-- [x] Layar Cek Pengingat / Diagnostik (di settings)
-- Status: [ ] setengah selesai
+- [x] BootReceiver.java: engine Flutter latar belakang, entrypoint `reminderBoot`, handshake `lekas/boot`, timeout 30 detik, `goAsync()`
+- [x] LekasPlatformChannel.java: zona waktu (`getID`), buka pengaturan notifikasi dan baterai
+- [x] Izin POST_NOTIFICATIONS diminta saat tugas ber-deadline pertama disimpan (task_form_sheet + quick_add)
+- [x] Izin alarm presisi: cek `canScheduleExactNotifications()`, fallback inexact, retry bila `zonedSchedule` gagal
+- [x] Batalkan dan buat ulang pengingat saat deadline berubah (syncAll)
+- [x] Hanya jadwalkan 14 hari ke depan (kScheduleHorizonDays)
+- [x] Notifikasi dengan tombol Selesai dan Tunda 1 jam (foreground + background isolate)
+- [x] Layar Cek Pengingat / Diagnostik (izin, tes 1 menit, panduan baterai, riwayat tes)
+- [ ] Uji manual di HP fisik: reboot, hemat baterai, ganti zona waktu, izin alarm ditolak (rancangan 14.7)
+- Status: [x] kode selesai, uji perangkat menunggu manusia
 
 ### 4. Pencarian, penyaring, ekspor dan impor cadangan, onboarding, mode gelap
 - [x] Onboarding: bahasa, jenjang, matkul pertama, simpan onboarded flag
 - [x] Mode gelap/terang (AppTheme)
+- [x] Pilih bahasa dan mode tema di Pengaturan (localeProvider + themeModeProvider)
 - [x] BackupService: ekspor dan impor JSON semua 24 tabel
 - [x] BackupScreen UI: export, import, pilih folder
 - [x] SearchFilterScreen (pencarian dan penyaring)
 - [x] TundaSmartScreen (tunda cerdas)
-- Status: [ ] setengah selesai
+- Status: [x] selesai
 
 ### 5. Fitur [W]: Inbox, subtugas, jadwal kuliah, tunda cerdas dan aksi massal
 - [x] Inbox screen dengan daftar tugas inbox
@@ -84,7 +103,10 @@ Terakhir diperbarui: Sun Oct 25 2026
 ## Urutan 3: Fase B inti
 - [x] Parser bahasa Indonesia: normalizer, time_extractor, matcher, parser_service
 - [x] Parser dictionary id.dart dan en.dart
-- [x] Share dari WhatsApp (share_intake_screen)
+- [x] Tes parser: 136 tes lulus, termasuk tabel kasus tepi 6.1 dan korpus 100+ kalimat
+- [x] Quick Add tersambung ke parser: chip deadline, wadah, jenis, prioritas, mode kelompok
+- [x] Share dari WhatsApp (share_intake_screen): split kalimat, chip koreksi, simpan banyak tugas
+- [x] Share intent aktif: intent-filter SEND text/plain + listener `ReceiveSharingIntent` di main.dart
 - [ ] Widget dasar (home_widget)
 - [x] Kalender bulanan (CalendarScreen)
 - [x] Lampiran foto dan tautan (AttachmentScreen)
@@ -146,24 +168,27 @@ Terakhir diperbarui: Sun Oct 25 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (40+ kunci)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (363 kunci, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
-- [x] Semua layar pakai AppLocalizations
-- [ ] Penjadwalan ulang pengingat saat ganti bahasa
+- [x] Semua layar pakai AppLocalizations (tidak ada teks Indonesia hardcoded di lib/features)
+- [x] Penyesuaian bahasa lewat localeProvider (pengingat memakai bahasa dari Pengaturan)
 - [x] Teks native Android strings.xml + values-in
-- [ ] Kamus parser Inggris (bisa ditunda ke Urutan 5)
-- Status: [x] infrastruktur selesai
+- [x] Kamus parser en.dart (dasar)
+- [ ] Parser Inggris setara penuh (bisa ditunda ke Urutan 5)
+- Status: [x] infrastruktur dan isi selesai
 
 ---
 
 ## Native Android
-- [x] AndroidManifest.xml (permissions, boot receiver, share intent)
+- [x] AndroidManifest.xml (permissions, boot receiver, share intent SEND text/plain)
 - [x] values/strings.xml (Inggris)
 - [x] values-in/strings.xml (Indonesia)
-- [x] BootReceiver.java
-- [ ] Runtime permission handling (POST_NOTIFICATIONS, SCHEDULE_EXACT_ALARM)
+- [x] BootReceiver.java (engine latar belakang + handshake + goAsync)
+- [x] LekasPlatformChannel.java (zona waktu, pengaturan notifikasi, pengaturan baterai)
+- [x] MainActivity.kt mendaftarkan LekasPlatformChannel
+- [x] Runtime permission handling (POST_NOTIFICATIONS lewat plugin, SCHEDULE_EXACT_ALARM via cek presisi)
 
 ---
 
@@ -235,31 +260,31 @@ L10N (5):
 - lib/l10n/app_id.arb, app_en.arb
 - lib/l10n/app_localizations.dart, _id.dart, _en.dart
 
-Native Android (4):
+Native Android (5):
 - android/app/src/main/AndroidManifest.xml
 - android/app/src/main/res/values/strings.xml
 - android/app/src/main/res/values-in/strings.xml
-- android/app/src/main/java/com/example/lekas/BootReceiver.java
+- android/app/src/main/java/com/lekas/lekas/BootReceiver.java
+- android/app/src/main/java/com/lekas/lekas/LekasPlatformChannel.java
 
 Tracking:
 - PROGRESS.md
 
 ---
 
-## Langkah yang perlu dilakukan saat Flutter tersedia
+## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter pub get`
-2. `flutter pub run build_runner build` (untuk database.g.dart)
-3. `flutter gen-l10n` (untuk generate localization code dari ARB)
-4. `flutter test`
-5. `flutter analyze`
-6. `flutter build apk` (untuk rilis Android)
+1. `flutter gen-l10n` - sukses, 363 kunci per bahasa
+2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
+3. `flutter test` - 149 tes lulus (136 parser, 13 pengingat, urgensi)
+4. `flutter build apk` - sukses, `app-release.apk` 60.7 MB
+5. Push ke `main` dan CI GitHub Actions hijau
 
 ## Masalah terbuka (perlu native Android / Flutter)
 
+- Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
+- Sekitar 66 placeholder `onTap: () {}` / `onPressed: () {}` belum beraksi (urutan 1 sisa)
 - database.g.dart ditulis manual, perlu divalidasi dengan build_runner
-- Runtime permission handling untuk POST_NOTIFICATIONS dan SCHEDULE_EXACT_ALARM
-- Boot receiver jadwalkan ulang setelah restart (native + Flutter method channel)
 - Widget layar utama (home_widget package)
 - Geser kartu dan aksi massal (gesture detector)
 - Pin, tag, duplikat, templat
