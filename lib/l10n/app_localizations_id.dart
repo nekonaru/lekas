@@ -1157,4 +1157,72 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get sampleDataRemoved => 'Data contoh dihapus';
+
+  @override
+  String get sectionOverdue => 'Terlambat';
+
+  @override
+  String get sectionDoing => 'Sedang Dikerjakan';
+
+  @override
+  String get sectionToday => 'Hari Ini dan Besok';
+
+  @override
+  String get sectionThisWeek => 'Minggu Ini';
+
+  @override
+  String get sectionUpcoming => 'Mendatang';
+
+  @override
+  String get sectionWaiting => 'Menunggu';
+
+  @override
+  String get sectionSomeday => 'Kapan-kapan';
+
+  @override
+  String get reasonOverdue => 'Lewat deadline';
+
+  @override
+  String reasonDueInHours(int hours) {
+    return '$hours jam lagi';
+  }
+
+  @override
+  String get reasonHighPriority => 'Prioritas tinggi';
+
+  @override
+  String get reasonTightEstimate => 'Perkiraan waktu mepet';
+
+  @override
+  String reasonTimeLeft(int hours) {
+    return 'Sisa $hours jam';
+  }
+
+  @override
+  String get reasonNoDeadline => 'Tanpa deadline';
+
+  @override
+  String reasonWeight(String percent) {
+    return 'bobot $percent%';
+  }
+
+  @override
+  String get warningTitle => 'Peringatan';
+
+  @override
+  String get warningPermissionRevoked =>
+      'Izin pengingat dicabut. Ketuk untuk membuka pengaturan.';
+
+  @override
+  String warningInboxPile(int count) {
+    return 'Inbox menumpuk: $count tugas tanpa wadah. Ketuk untuk membereskan.';
+  }
+
+  @override
+  String warningBusyWeek(int count) {
+    return 'Minggu padat: $count tugas jatuh tempo. Ketuk untuk melihat.';
+  }
+
+  @override
+  String get closeLabel => 'Tutup';
 }

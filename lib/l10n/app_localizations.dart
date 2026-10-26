@@ -2221,6 +2221,120 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Data contoh dihapus'**
   String get sampleDataRemoved;
+
+  /// No description provided for @sectionOverdue.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlambat'**
+  String get sectionOverdue;
+
+  /// No description provided for @sectionDoing.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang Dikerjakan'**
+  String get sectionDoing;
+
+  /// No description provided for @sectionToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari Ini dan Besok'**
+  String get sectionToday;
+
+  /// No description provided for @sectionThisWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu Ini'**
+  String get sectionThisWeek;
+
+  /// No description provided for @sectionUpcoming.
+  ///
+  /// In id, this message translates to:
+  /// **'Mendatang'**
+  String get sectionUpcoming;
+
+  /// No description provided for @sectionWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get sectionWaiting;
+
+  /// No description provided for @sectionSomeday.
+  ///
+  /// In id, this message translates to:
+  /// **'Kapan-kapan'**
+  String get sectionSomeday;
+
+  /// No description provided for @reasonOverdue.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewat deadline'**
+  String get reasonOverdue;
+
+  /// No description provided for @reasonDueInHours.
+  ///
+  /// In id, this message translates to:
+  /// **'{hours} jam lagi'**
+  String reasonDueInHours(int hours);
+
+  /// No description provided for @reasonHighPriority.
+  ///
+  /// In id, this message translates to:
+  /// **'Prioritas tinggi'**
+  String get reasonHighPriority;
+
+  /// No description provided for @reasonTightEstimate.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan waktu mepet'**
+  String get reasonTightEstimate;
+
+  /// No description provided for @reasonTimeLeft.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa {hours} jam'**
+  String reasonTimeLeft(int hours);
+
+  /// No description provided for @reasonNoDeadline.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa deadline'**
+  String get reasonNoDeadline;
+
+  /// No description provided for @reasonWeight.
+  ///
+  /// In id, this message translates to:
+  /// **'bobot {percent}%'**
+  String reasonWeight(String percent);
+
+  /// No description provided for @warningTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Peringatan'**
+  String get warningTitle;
+
+  /// No description provided for @warningPermissionRevoked.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin pengingat dicabut. Ketuk untuk membuka pengaturan.'**
+  String get warningPermissionRevoked;
+
+  /// No description provided for @warningInboxPile.
+  ///
+  /// In id, this message translates to:
+  /// **'Inbox menumpuk: {count} tugas tanpa wadah. Ketuk untuk membereskan.'**
+  String warningInboxPile(int count);
+
+  /// No description provided for @warningBusyWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu padat: {count} tugas jatuh tempo. Ketuk untuk melihat.'**
+  String warningBusyWeek(int count);
+
+  /// No description provided for @closeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get closeLabel;
 }
 
 class _AppLocalizationsDelegate

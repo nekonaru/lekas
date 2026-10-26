@@ -74,6 +74,42 @@ double urgencyScore({
   return (u * uw) + p + (b * bw) + (t * ScoringConfig.tFactor);
 }
 
+/// The single factor that dominates a task's score, shown as the short
+/// reason under every card (design section 4.4).
+enum UrgencyReason {
+  overdue,
+  dueSoon,
+  highPriority,
+  heavyWeight,
+  tightEstimate,
+  timeLeft,
+  noDeadline,
+}
+
+/// Picks the reason a task sits where it does. The same inputs as
+/// [urgencyScore] so the printed reason always matches the sorted order.
+UrgencyReason urgencyReason({
+  required DateTime now,
+  DateTime? deadline,
+  required int priority,
+  double? weightPercent,
+  int? estimateMinutes,
+}) {
+  if (deadline == null) return UrgencyReason.noDeadline;
+
+  final hoursLeft = deadline.difference(now).inMinutes / 60.0;
+  if (hoursLeft <= 0) return UrgencyReason.overdue;
+  if (hoursLeft <= 24) return UrgencyReason.dueSoon;
+  if ((weightPercent ?? 0) >= 60) return UrgencyReason.heavyWeight;
+  if (priority == 2) return UrgencyReason.highPriority;
+  if (estimateMinutes != null &&
+      estimateMinutes > 0 &&
+      estimateMinutes / 60.0 > hoursLeft) {
+    return UrgencyReason.tightEstimate;
+  }
+  return UrgencyReason.timeLeft;
+}
+
 /// The screen section where a task should appear, based on status and conditions.
 enum TaskSection { today, overdue, doing, upcoming, thisWeek, waiting, someday, inbox }
 

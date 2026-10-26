@@ -1155,4 +1155,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sampleDataRemoved => 'Sample data removed';
+
+  @override
+  String get sectionOverdue => 'Overdue';
+
+  @override
+  String get sectionDoing => 'In progress';
+
+  @override
+  String get sectionToday => 'Today and tomorrow';
+
+  @override
+  String get sectionThisWeek => 'This week';
+
+  @override
+  String get sectionUpcoming => 'Upcoming';
+
+  @override
+  String get sectionWaiting => 'Waiting';
+
+  @override
+  String get sectionSomeday => 'Someday';
+
+  @override
+  String get reasonOverdue => 'Past deadline';
+
+  @override
+  String reasonDueInHours(int hours) {
+    return '$hours hours left';
+  }
+
+  @override
+  String get reasonHighPriority => 'High priority';
+
+  @override
+  String get reasonTightEstimate => 'Estimate is tight';
+
+  @override
+  String reasonTimeLeft(int hours) {
+    return '$hours hours to go';
+  }
+
+  @override
+  String get reasonNoDeadline => 'No deadline';
+
+  @override
+  String reasonWeight(String percent) {
+    return 'weight $percent%';
+  }
+
+  @override
+  String get warningTitle => 'Warning';
+
+  @override
+  String get warningPermissionRevoked =>
+      'Reminder permission was revoked. Tap to open settings.';
+
+  @override
+  String warningInboxPile(int count) {
+    return 'Inbox is piling up: $count tasks without a course. Tap to clear it.';
+  }
+
+  @override
+  String warningBusyWeek(int count) {
+    return 'Busy week: $count tasks due. Tap to review.';
+  }
+
+  @override
+  String get closeLabel => 'Close';
 }
