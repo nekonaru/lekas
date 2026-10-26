@@ -216,5 +216,22 @@ void main() {
       );
       expect(windows, isEmpty);
     });
+
+    test('a holiday without a slot releases every class of that day', () {
+      final windows = classWindowsFor(
+        date: day,
+        spaceId: 's1',
+        slots: [lecture()],
+        exceptions: [
+          ClassException(
+            id: 'e3',
+            date: '2026-10-20',
+            kind: 'cancelled',
+            updatedAt: 0,
+          ),
+        ],
+      );
+      expect(windows, isEmpty);
+    });
   });
 }

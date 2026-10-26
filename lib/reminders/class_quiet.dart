@@ -29,9 +29,11 @@ List<ClassWindow> classWindowsFor({
 
     ClassException? change;
     for (final exception in exceptions) {
-      if (exception.classSlotId == slot.id &&
-          exception.date == key &&
-          exception.deletedAt == null) {
+      if (exception.date != key || exception.deletedAt != null) continue;
+      // An exception without a slot is a holiday for every class that day.
+      if (exception.classSlotId == slot.id ||
+          (exception.classSlotId == null &&
+              exception.kind.contains('cancel'))) {
         change = exception;
         break;
       }
