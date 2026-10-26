@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -15,6 +16,31 @@ class AttachmentScreen extends ConsumerStatefulWidget {
 }
 
 class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
+  /// Sends the attachment to another app (design section 7.6).
+  Future<void> _share(Attachment attachment) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      if (attachment.kind == 'link') {
+        await Share.share(attachment.pathOrUrl);
+        return;
+      }
+      final file = File(attachment.pathOrUrl);
+      if (!await file.exists()) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.attachmentFileMissing)),
+        );
+        return;
+      }
+      await Share.shareXFiles([XFile(file.path)]);
+    } catch (_) {
+      // A share sheet can fail when no app accepts the payload.
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.attachmentFileMissing)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -37,8 +63,8 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
               return ListTile(
                 title: Text(attachment.pathOrUrl.split('/').last),
                 subtitle: Text(attachment.kind),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                trailing: const Icon(Icons.share),
+                onTap: () => _share(attachment),
               );
             },
           );

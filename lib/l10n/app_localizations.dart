@@ -2101,6 +2101,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Matkul Pertama'**
   String get firstCourseFallback;
+
+  /// No description provided for @allLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get allLabel;
+
+  /// No description provided for @typeLabReport.
+  ///
+  /// In id, this message translates to:
+  /// **'Laprak'**
+  String get typeLabReport;
+
+  /// No description provided for @typePaper.
+  ///
+  /// In id, this message translates to:
+  /// **'Makalah'**
+  String get typePaper;
+
+  /// No description provided for @typePresentation.
+  ///
+  /// In id, this message translates to:
+  /// **'Presentasi'**
+  String get typePresentation;
+
+  /// No description provided for @emptyTaskList.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tugas.'**
+  String get emptyTaskList;
+
+  /// No description provided for @typeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get typeLabel;
+
+  /// No description provided for @attachmentFileMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'File tidak ada di perangkat ini.'**
+  String get attachmentFileMissing;
+
+  /// No description provided for @openLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get openLabel;
+
+  /// No description provided for @noDuplicateFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada duplikat untuk tugas ini.'**
+  String get noDuplicateFound;
 }
 
 class _AppLocalizationsDelegate

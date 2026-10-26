@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
+import 'search_filter_screen.dart';
 
 class SavedFilterScreen extends ConsumerStatefulWidget {
   const SavedFilterScreen({super.key});
@@ -19,6 +20,42 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  /// Offers the two things a saved view can do: open it or delete it.
+  Future<void> _openActions(SavedFilter filter) async {
+    final l10n = AppLocalizations.of(context)!;
+    final action = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(filter.name),
+        content: Text(l10n.filterSubtitle),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'delete'),
+            child: Text(l10n.deleteLabel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'open'),
+            child: Text(l10n.openLabel),
+          ),
+        ],
+      ),
+    );
+    if (action == null || !mounted) return;
+    if (action == 'delete') {
+      await ref.read(savedFilterRepositoryProvider).deleteSavedFilter(filter.id);
+      if (mounted) setState(() {});
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => const SearchFilterScreen()),
+    );
   }
 
   @override
@@ -43,7 +80,7 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
               return ListTile(
                 title: Text(filter.name),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _openActions(filter),
               );
             },
           );

@@ -1091,4 +1091,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get firstCourseFallback => 'Matkul Pertama';
+
+  @override
+  String get allLabel => 'Semua';
+
+  @override
+  String get typeLabReport => 'Laprak';
+
+  @override
+  String get typePaper => 'Makalah';
+
+  @override
+  String get typePresentation => 'Presentasi';
+
+  @override
+  String get emptyTaskList => 'Belum ada tugas.';
+
+  @override
+  String get typeLabel => 'Jenis';
+
+  @override
+  String get attachmentFileMissing => 'File tidak ada di perangkat ini.';
+
+  @override
+  String get openLabel => 'Buka';
+
+  @override
+  String get noDuplicateFound => 'Tidak ada duplikat untuk tugas ini.';
 }

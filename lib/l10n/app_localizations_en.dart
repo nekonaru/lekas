@@ -1089,4 +1089,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firstCourseFallback => 'First Course';
+
+  @override
+  String get allLabel => 'All';
+
+  @override
+  String get typeLabReport => 'Lab report';
+
+  @override
+  String get typePaper => 'Paper';
+
+  @override
+  String get typePresentation => 'Presentation';
+
+  @override
+  String get emptyTaskList => 'No tasks yet.';
+
+  @override
+  String get typeLabel => 'Type';
+
+  @override
+  String get attachmentFileMissing => 'The file is no longer on this device.';
+
+  @override
+  String get openLabel => 'Open';
+
+  @override
+  String get noDuplicateFound => 'No duplicate found for this task.';
 }

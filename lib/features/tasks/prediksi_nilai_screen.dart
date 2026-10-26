@@ -13,6 +13,38 @@ class PrediksiNilaiScreen extends ConsumerStatefulWidget {
 }
 
 class _PrediksiNilaiScreenState extends ConsumerState<PrediksiNilaiScreen> {
+  /// Details of one grading component with an explicit delete step
+  /// (design section 7.7).
+  Future<void> _showComponent(GradeComponent component) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(component.key),
+        content: Text(
+          l10n.weightPercentLabel(
+            component.weightPercent.toStringAsFixed(0),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.deleteLabel),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await ref
+        .read(gradeComponentRepositoryProvider)
+        .deleteGradeComponent(widget.spaceId, component.key);
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -42,7 +74,7 @@ class _PrediksiNilaiScreenState extends ConsumerState<PrediksiNilaiScreen> {
                   l10n.weightPercentLabel(component.weightPercent.toStringAsFixed(0)),
                 ),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _showComponent(component),
               );
             },
           );
