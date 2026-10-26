@@ -26,11 +26,11 @@ Terakhir diperbarui: Sun Oct 26 2026
   kartu balik ke tempatnya lalu daftar dimuat ulang, supaya tidak ada error
   "dismissed widget still in the tree" saat data berubah lewat stream.
 - **Notifikasi gabungan tidak punya tombol aksi per tugas.** `flutter_local_notifications`
-  tidak punya grup sistemik, jadi penggabungan (5.21) dan digest terlambat (5.22) dibuat
-  sebagai satu notifikasi berisi daftar judul. Ketuk membuka aplikasi; tombol Selesai dan
-  Tunda hanya dipasang saat notifikasi itu berisi tepat satu tugas, supaya aksinya tidak
-  menyangkut tugas yang salah. Isi digest dibangun ulang tiap sync (buka app, boot, ubah
-  tugas), bukan tepat pukul 09.00.
+  tidak punya grup sistemik, jadi penggabungan (5.21), digest terlambat (5.22) dan ringkasan
+  pagi/malam (5.12) dibuat sebagai satu notifikasi berisi daftar judul. Ketuk membuka
+  aplikasi; tombol Selesai dan Tunda hanya dipasang saat notifikasi itu berisi tepat satu
+  tugas, supaya aksinya tidak menyangkut tugas yang salah. Isinya dibangun ulang tiap sync
+  (buka app, boot, ubah tugas), bukan tepat pada jamnya.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -40,7 +40,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 
 ### 1. Struktur proyek, tema, database Drift, wadah dan tugas (CRUD)
 - [x] database.dart — skema lengkap 24 tabel sesuai bagian 10
-- [x] database.g.dart — generated Drift code (manual, perlu build_runner validasi)
+- [x] database.g.dart — generated Drift code (divalidasi ulang dengan `build_runner`: hasilnya identik)
 - [x] data/models.dart — semua 24 data class
 - [x] Repository per entitas (15 repository)
 - [x] Providers untuk semua repository + onboardedProvider + backupServiceProvider
@@ -104,7 +104,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Tanggal mulai (task.startAt column di skema)
 - [x] Riwayat perubahan deadline (TaskEvent, DeadlineHistoryScreen)
 - [x] Ujian dan materi belajar (ExamScreen, type quiz/midterm/final)
-- [x] Ringkasan pagi dan malam (layar MorningNightSummaryScreen; notifikasinya belum)
+- [x] Ringkasan pagi dan malam: layar MorningNightSummaryScreen + notifikasi 07.00 dan 20.30 (5.12)
 - [x] Tempat sampah dan pemulihan (TrashScreen)
 - [x] Cara kumpul dan status sudah dikumpul (SubmissionScreen)
 - [x] Pembatalan kelas dan hari libur (ClassException, ClassExceptionRepository)
@@ -143,7 +143,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Kehadiran (AttendanceScreen)
 - [x] Senyap saat kelas (`class_quiet.dart`, pengecualian `class_exceptions`, deadline < 1 jam tidak ditahan; 6 tes)
 - [x] Gabung notifikasi (<= 10 menit jadi satu), anggaran 8 per hari dan intensitas Tenang/Normal/Gencar (`notification_policy.dart`, 11 tes)
-- [ ] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (layarnya sudah ada)
+- [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan)
 - [x] Fokus hari ini (FokusHariIniScreen)
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
@@ -185,7 +185,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (378 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (398 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -291,21 +291,21 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 392 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 398 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 172 tes lulus (136 parser, 19 pengingat, 11 kebijakan notifikasi, urgensi)
-4. `flutter build apk` - sukses, `app-release.apk` 62.4 MB
-5. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
-6. Push ke `main` dan CI GitHub Actions hijau
+3. `flutter test` - 176 tes lulus (136 parser, 20 pengingat, 14 kebijakan ringkasan, 6 urgensi)
+4. `flutter build apk` - sukses, `app-release.apk` 62.5 MB
+5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
+6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
+7. Push ke `main` dan CI GitHub Actions hijau
 
 ## Masalah terbuka (perlu native Android / Flutter)
 
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
-- database.g.dart ditulis manual, perlu divalidasi dengan build_runner
 - Widget layar utama (home_widget package)
 - Pin, tag, duplikat, templat
-- Isi digest terlambat dan notifikasi gabungan diperbarui saat sync (buka app, boot, ubah tugas), bukan saat jam 09.00 juga
-- Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (layar sudah ada)
+- Isi digest terlambat, ringkasan pagi dan penutup malam diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
+- Ringkasan pagi belum menyertakan jatah absen tersisa (5.19) dan tombol pilih fokus (5.24)
 - Parser lanjutan (7.15)
 - Ringkasan minggu malam notifikasi
