@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -24,7 +23,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     final backup = ref.watch(backupServiceProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadangan Data')),
+      appBar: AppBar(title: Text(l10n.backupTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -33,57 +32,61 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             trailing: _isExporting
                 ? const CircularProgressIndicator()
                 : const Icon(Icons.file_download),
-            onTap: _isExporting ? null : () async {
-              setState(() => _isExporting = true);
-              try {
-                final file = await backup.exportToJson();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Diekspor ke: ${file.path}')),
-                  );
-                }
-              } finally {
-                if (mounted) setState(() => _isExporting = false);
-              }
-            },
+            onTap: _isExporting
+                ? null
+                : () async {
+                    final messenger = ScaffoldMessenger.of(context);
+                    setState(() => _isExporting = true);
+                    try {
+                      final file = await backup.exportToJson();
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(l10n.exportedTo(file.path))),
+                      );
+                    } finally {
+                      if (mounted) setState(() => _isExporting = false);
+                    }
+                  },
           ),
           ListTile(
             title: Text(l10n.importBackup),
             trailing: _isImporting
                 ? const CircularProgressIndicator()
                 : const Icon(Icons.file_upload),
-            onTap: _isImporting ? null : () async {
-              setState(() => _isImporting = true);
-              try {
-                final result = await FilePicker.platform.pickFiles(
-                  type: FileType.any,
-                  allowedExtensions: ['json'],
-                );
-                if (result != null && result.files.single.path != null) {
-                  final file = File(result.files.single.path!);
-                  final stats = await backup.importFromJson(file);
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Diimpor: ${stats['tasks'] ?? 0} tugas')),
-                    );
-                  }
-                }
-              } finally {
-                if (mounted) setState(() => _isImporting = false);
-              }
-            },
+            onTap: _isImporting
+                ? null
+                : () async {
+                    final messenger = ScaffoldMessenger.of(context);
+                    setState(() => _isImporting = true);
+                    try {
+                      final result = await FilePicker.platform.pickFiles(
+                        type: FileType.any,
+                        allowedExtensions: ['json'],
+                      );
+                      if (result != null && result.files.single.path != null) {
+                        final file = File(result.files.single.path!);
+                        final stats = await backup.importFromJson(file);
+                        final tasks =
+                            int.tryParse('${stats['tasks']}') ?? 0;
+                        messenger.showSnackBar(
+                          SnackBar(content: Text(l10n.importedTasks(tasks))),
+                        );
+                      }
+                    } finally {
+                      if (mounted) setState(() => _isImporting = false);
+                    }
+                  },
           ),
           const Divider(),
           ListTile(
-            title: const Text('Pilih Folder Cadangan Otomatis'),
-            subtitle: const Text('Untuk cadangan mingguan otomatis'),
+            title: Text(l10n.autoBackupFolder),
+            subtitle: Text(l10n.autoBackupFolderHint),
             trailing: const Icon(Icons.folder),
             onTap: () async {
-              final repo = ref.read(backupServiceProvider);
-              final folder = await repo.pickBackupFolder();
-              if (folder != null && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Folder: $folder')),
+              final messenger = ScaffoldMessenger.of(context);
+              final folder = await ref.read(backupServiceProvider).pickBackupFolder();
+              if (folder != null) {
+                messenger.showSnackBar(
+                  SnackBar(content: Text(l10n.folderPicked(folder))),
                 );
               }
             },

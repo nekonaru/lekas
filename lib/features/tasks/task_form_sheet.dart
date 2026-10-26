@@ -1,14 +1,11 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import '../../core/theme.dart';
 import '../../core/date_util.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
-import 'task_detail_screen.dart';
+import '../../reminders/reminder_service.dart';
 
 class TaskFormSheet extends ConsumerStatefulWidget {
   final Task? task;
@@ -76,7 +73,7 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _spaceId,
+            initialValue: _spaceId,
             decoration: InputDecoration(labelText: l10n.taskContainer),
             items: const [],
             onChanged: (v) => setState(() => _spaceId = v),
@@ -98,7 +95,8 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
                   }
                 },
                 child: Text(_deadline != null
-                    ? DateUtil.formatDate(_deadline!, 'id')
+                    ? DateUtil.formatDate(
+                        _deadline!, Localizations.localeOf(context).languageCode)
                     : l10n.pickDate),
               ),
             ],
@@ -157,9 +155,38 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
     );
     if (widget.task == null) {
       await repo.insertTask(task);
+      if (_deadline != null) {
+        // Design 4.1: ask for notification permission the first time a task
+        // with a deadline is saved, right after the save succeeds.
+        await _askNotificationPermission();
+      }
     } else {
       await repo.updateTask(task);
     }
     if (mounted) Navigator.pop(context);
+  }
+
+  Future<void> _askNotificationPermission() async {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null || !mounted) return;
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.notifPermission),
+        content: Text(l10n.permissionExplain),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.allow),
+          ),
+        ],
+      ),
+    );
+    if (proceed != true || !mounted) return;
+    await ref.read(reminderServiceProvider).requestNotificationPermission();
   }
 }

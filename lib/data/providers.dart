@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart' show Locale, ThemeMode;
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'database.dart';
@@ -26,14 +27,22 @@ import 'package:path/path.dart' as p;
 import 'dart:io';
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase(LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'lekas.sqlite'));
-    return NativeDatabase.createInBackground(file);
-  }));
+  final db = AppDatabase(LazyDatabase(_openNativeDatabase));
   ref.onDispose(db.close);
   return db;
 });
+
+/// Opens the same database outside the provider tree. Used by background
+/// isolates such as the boot receiver and notification action buttons.
+Future<AppDatabase> openAppDatabase() async {
+  return AppDatabase(LazyDatabase(_openNativeDatabase));
+}
+
+Future<QueryExecutor> _openNativeDatabase() async {
+  final dir = await getApplicationDocumentsDirectory();
+  final file = File(p.join(dir.path, 'lekas.sqlite'));
+  return NativeDatabase.createInBackground(file);
+}
 
 final spaceRepositoryProvider = Provider<SpaceRepository>((ref) {
   return SpaceRepository(ref.read(appDatabaseProvider));
@@ -115,4 +124,23 @@ final onboardedProvider = FutureProvider<bool>((ref) async {
   final repo = ref.read(settingsRepositoryProvider);
   final value = await repo.get('onboarded');
   return value == 'true';
+});
+
+/// Display language, default Indonesian (design section 8.8).
+final localeProvider = FutureProvider<Locale>((ref) async {
+  final repo = ref.watch(settingsRepositoryProvider);
+  return Locale(await repo.getLanguage());
+});
+
+/// Theme preference: system, light or dark. Default follows the system.
+final themeModeProvider = FutureProvider<ThemeMode>((ref) async {
+  final repo = ref.watch(settingsRepositoryProvider);
+  switch (await repo.get('theme_mode')) {
+    case 'light':
+      return ThemeMode.light;
+    case 'dark':
+      return ThemeMode.dark;
+    default:
+      return ThemeMode.system;
+  }
 });
