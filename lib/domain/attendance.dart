@@ -96,3 +96,21 @@ String? attendanceAlertKey(AttendanceSummary summary) {
   if (summary.lastOne) return 'lastOne';
   return null;
 }
+
+/// One line per course for the morning summary when the absence quota is
+/// down to its last one or gone (design sections 5.12 and 5.19). Entries
+/// whose space name is missing from [spaceNames] are skipped so the
+/// notification never shows an empty course name.
+List<String> quotaAlertLines(
+  Iterable<({String spaceId, int remaining})> tight,
+  Map<String, String> spaceNames,
+  String Function(String name, int remaining) message,
+) {
+  final lines = <String>[];
+  for (final entry in tight) {
+    final name = spaceNames[entry.spaceId];
+    if (name == null || name.isEmpty) continue;
+    lines.add(message(name, entry.remaining));
+  }
+  return lines;
+}

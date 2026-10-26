@@ -479,5 +479,9 @@
   "attendanceExhausted": "Jatah absen habis, kehadiranmu sudah di batas kampus.",
   "totalMeetingsLabel": "Jumlah pertemuan rencana",
   "absentLimitLabel": "Batas absen maksimal (persen)",
-  "excusedCountsLabel": "Izin dan sakit dihitung absen"
+  "excusedCountsLabel": "Izin dan sakit dihitung absen",
+  "morningSummaryQuotaLast": "Jatah absen {name} tinggal 1, hati-hati hari ini.",
+  "@morningSummaryQuotaLast": { "placeholders": { "name": { "type": "String" } } },
+  "morningSummaryQuotaOut": "Jatah absen {name} sudah habis.",
+  "@morningSummaryQuotaOut": { "placeholders": { "name": { "type": "String" } } }
 }

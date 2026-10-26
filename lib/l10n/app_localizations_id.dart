@@ -1422,4 +1422,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get excusedCountsLabel => 'Izin dan sakit dihitung absen';
+
+  @override
+  String morningSummaryQuotaLast(String name) {
+    return 'Jatah absen $name tinggal 1, hati-hati hari ini.';
+  }
+
+  @override
+  String morningSummaryQuotaOut(String name) {
+    return 'Jatah absen $name sudah habis.';
+  }
 }

@@ -86,6 +86,15 @@ void main() {
       );
       expect(attendanceAlertKey(fine), isNull);
     });
+
+    test('the morning summary names only courses it can label', () {
+      final lines = quotaAlertLines(
+        const [(spaceId: 's1', remaining: 1), (spaceId: 's2', remaining: 0)],
+        const {'s1': 'Basdat'},
+        (name, remaining) => '$name:$remaining',
+      );
+      expect(lines, ['Basdat:1']);
+    });
   });
 
   group('attendance records (design section 5.19)', () {

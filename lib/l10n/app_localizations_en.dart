@@ -1421,4 +1421,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get excusedCountsLabel => 'Excused and sick count as absent';
+
+  @override
+  String morningSummaryQuotaLast(String name) {
+    return 'Absence quota for $name has 1 left, careful today.';
+  }
+
+  @override
+  String morningSummaryQuotaOut(String name) {
+    return 'Absence quota for $name is used up.';
+  }
 }

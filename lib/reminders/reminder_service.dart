@@ -15,6 +15,7 @@ import '../data/providers.dart';
 import '../data/reminder_repository.dart';
 import '../data/settings_repository.dart';
 import '../data/task_repository.dart';
+import '../domain/attendance.dart';
 import '../l10n/app_localizations.dart';
 import 'class_quiet.dart';
 
@@ -608,6 +609,22 @@ class ReminderService {
     return id;
   }
 
+  /// The morning summary lines for courses whose absence quota is down to
+  /// its last one or used up (design sections 5.12 and 5.19).
+  Future<List<String>> _absenceQuotaLines(AppLocalizations l10n) async {
+    final tight =
+        await _ref.read(attendanceRepositoryProvider).tightQuotas();
+    if (tight.isEmpty) return const [];
+    final spaces = await _ref
+        .read(spaceRepositoryProvider)
+        .getSpaces(includeArchived: true);
+    final names = {for (final space in spaces) space.id: space.name};
+    return quotaAlertLines(tight, names, (name, remaining) =>
+        remaining <= 0
+            ? l10n.morningSummaryQuotaOut(name)
+            : l10n.morningSummaryQuotaLast(name));
+  }
+
   /// Morning summary at 07:00 and evening wrap-up at 20:30, both computed
   /// locally (design section 5.12). The evening one only appears when tasks
   /// are due tomorrow.
@@ -653,6 +670,12 @@ class ReminderService {
             DateTime.fromMillisecondsSinceEpoch(dueToday.first.deadline!);
         final time = DateUtil.formatTime(deadline, l10n.localeName);
         buffer.write('\n${l10n.morningSummaryMostUrgent(dueToday.first.title, time)}');
+      }
+      // Design sections 5.12 and 5.19: a course down to its last absence,
+      // or out of absences entirely, joins the morning summary.
+      final quotaLines = await _absenceQuotaLines(l10n);
+      for (final line in quotaLines) {
+        buffer.write('\n$line');
       }
       await scheduleNotification(
         id: id,

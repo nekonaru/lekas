@@ -2653,6 +2653,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Izin dan sakit dihitung absen'**
   String get excusedCountsLabel;
+
+  /// No description provided for @morningSummaryQuotaLast.
+  ///
+  /// In id, this message translates to:
+  /// **'Jatah absen {name} tinggal 1, hati-hati hari ini.'**
+  String morningSummaryQuotaLast(String name);
+
+  /// No description provided for @morningSummaryQuotaOut.
+  ///
+  /// In id, this message translates to:
+  /// **'Jatah absen {name} sudah habis.'**
+  String morningSummaryQuotaOut(String name);
 }
 
 class _AppLocalizationsDelegate
