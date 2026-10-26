@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -79,13 +80,13 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await repo.updateTask(task.copyWith(
-                        submitMethod: _submitMethod,
-                        submitTarget: _submitTargetController.text.isEmpty
+                        submitMethod: Value(_submitMethod),
+                        submitTarget: Value(_submitTargetController.text.isEmpty
                             ? null
-                            : _submitTargetController.text,
-                        filenamePattern: _filenamePatternController.text.isEmpty
+                            : _submitTargetController.text),
+                        filenamePattern: Value(_filenamePatternController.text.isEmpty
                             ? null
-                            : _filenamePatternController.text,
+                            : _filenamePatternController.text),
                         updatedAt: DateTime.now().millisecondsSinceEpoch,
                       ));
                       if (mounted) Navigator.pop(context);

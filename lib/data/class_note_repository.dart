@@ -1,21 +1,20 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class ClassNoteRepository {
   final AppDatabase db;
   ClassNoteRepository(this.db);
 
   Stream<List<ClassNote>> watchClassNotes(String spaceId) {
-    return db.select(db.classNotes)..where(
-      db.classNotes.spaceId.equals(spaceId).and(db.classNotes.deletedAt.isNull()),
-    ).watch();
+    return (db.select(db.classNotes)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
+        .watch();
   }
 
   Future<List<ClassNote>> getClassNotes(String spaceId) async {
-    return db.select(db.classNotes)..where(
-      db.classNotes.spaceId.equals(spaceId).and(db.classNotes.deletedAt.isNull()),
-    ).get();
+    return (db.select(db.classNotes)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
+        .get();
   }
 
   Future<void> insertClassNote(ClassNote note) async {

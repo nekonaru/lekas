@@ -10,7 +10,7 @@ class ImporJadwalOCRScreen extends ConsumerStatefulWidget {
   ConsumerState<ImporJadwalOCRScreen> createState() => _ImporJadwalOCRScreenState();
 }
 
-class _ImporJadwalOCRScreenState extends ConsumerState<ImporJadwalOCRScreenState> {
+class _ImporJadwalOCRScreenState extends ConsumerState<ImporJadwalOCRScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

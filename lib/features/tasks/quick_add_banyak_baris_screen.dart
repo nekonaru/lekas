@@ -10,7 +10,7 @@ class QuickAddBanyakBarisScreen extends ConsumerStatefulWidget {
   ConsumerState<QuickAddBanyakBarisScreen> createState() => _QuickAddBanyakBarisScreenState();
 }
 
-class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisScreenState> {
+class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisScreen> {
   final _textController = TextEditingController();
 
   @override

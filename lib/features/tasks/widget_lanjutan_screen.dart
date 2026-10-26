@@ -10,7 +10,7 @@ class WidgetLanjutanScreen extends ConsumerStatefulWidget {
   ConsumerState<WidgetLanjutanScreen> createState() => _WidgetLanjutanScreenState();
 }
 
-class _WidgetLanjutanScreenState extends ConsumerState<WidgetLanjutanScreenState> {
+class _WidgetLanjutanScreenState extends ConsumerState<WidgetLanjutanScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

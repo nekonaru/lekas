@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -66,7 +67,7 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await repo.updateTask(task.copyWith(
-                        targetAt: _targetAt?.millisecondsSinceEpoch,
+                        targetAt: Value(_targetAt?.millisecondsSinceEpoch),
                         updatedAt: DateTime.now().millisecondsSinceEpoch,
                       ));
                       if (mounted) Navigator.pop(context);

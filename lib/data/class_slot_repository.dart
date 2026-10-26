@@ -1,21 +1,20 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class ClassSlotRepository {
   final AppDatabase db;
   ClassSlotRepository(this.db);
 
   Stream<List<ClassSlot>> watchClassSlots(String spaceId) {
-    return db.select(db.classSlots)..where(
-      db.classSlots.spaceId.equals(spaceId).and(db.classSlots.deletedAt.isNull()),
-    ).watch();
+    return (db.select(db.classSlots)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
+        .watch();
   }
 
   Future<List<ClassSlot>> getClassSlots(String spaceId) async {
-    return db.select(db.classSlots)..where(
-      db.classSlots.spaceId.equals(spaceId).and(db.classSlots.deletedAt.isNull()),
-    ).get();
+    return (db.select(db.classSlots)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
+        .get();
   }
 
   Future<void> insertClassSlot(ClassSlot slot) async {
@@ -33,6 +32,7 @@ class ClassSlotRepository {
       weekday: 0,
       startMin: 0,
       endMin: 0,
+      kind: 'lecture',
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
     ));

@@ -123,7 +123,10 @@ class ReminderService {
           priority: Priority.high,
         ),
       ),
-      matchDateTimeComponents: false,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
       payload: payload,
     );
   }

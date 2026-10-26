@@ -1,17 +1,18 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class ReminderRepository {
   final AppDatabase db;
   ReminderRepository(this.db);
 
   Stream<List<Reminder>> watchReminders() {
-    return db.select(db.reminders)..where(db.reminders.fired.equals(false)).watch();
+    return (db.select(db.reminders)..where((t) => t.fired.equals(false)))
+        .watch();
   }
 
   Future<List<Reminder>> getReminders() async {
-    return db.select(db.reminders)..where(db.reminders.fired.equals(false)).get();
+    return (db.select(db.reminders)..where((t) => t.fired.equals(false)))
+        .get();
   }
 
   Future<void> insertReminder(Reminder reminder) async {
@@ -23,7 +24,7 @@ class ReminderRepository {
   }
 
   Future<void> deleteReminder(String id) async {
-    await (delete(db.reminders)..where(db.reminders.id.equals(id))).go();
+    await (db.delete(db.reminders)..where((t) => t.id.equals(id))).go();
   }
 
   Future<void> markAcked(String id) async {
@@ -31,6 +32,7 @@ class ReminderRepository {
       id: id,
       fireAt: 0,
       notifId: 0,
+      fired: false,
       ackedAt: DateTime.now().millisecondsSinceEpoch,
     ));
   }

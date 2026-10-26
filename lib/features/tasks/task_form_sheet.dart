@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -147,6 +148,8 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
       notes: _notesController.text.isEmpty ? null : _notesController.text,
       priority: _priority,
       status: 'todo',
+      isGroup: false,
+      pinned: false,
       deadline: _deadline?.millisecondsSinceEpoch,
       createdAt: widget.task?.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,

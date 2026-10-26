@@ -10,7 +10,7 @@ class TautanCepatScreen extends ConsumerStatefulWidget {
   ConsumerState<TautanCepatScreen> createState() => _TautanCepatScreenState();
 }
 
-class _TautanCepatScreenState extends ConsumerState<TautanCepatScreenState> {
+class _TautanCepatScreenState extends ConsumerState<TautanCepatScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

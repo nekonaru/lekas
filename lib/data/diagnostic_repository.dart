@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class DiagnosticRepository {
   final AppDatabase db;

@@ -10,7 +10,7 @@ class BagikanTeksScreen extends ConsumerStatefulWidget {
   ConsumerState<BagikanTeksScreen> createState() => _BagikanTeksScreenState();
 }
 
-class _BagikanTeksScreenState extends ConsumerState<BagikanTeksScreenState> {
+class _BagikanTeksScreenState extends ConsumerState<BagikanTeksScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

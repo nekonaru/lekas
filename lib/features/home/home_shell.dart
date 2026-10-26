@@ -114,7 +114,7 @@ class _HomeShellState extends State<HomeShell> {
         onDestinationSelected: (v) => setState(() => _i = v),
         destinations: labels.asMap().entries.map((e) {
           return NavigationDestination(
-            icon: Icon(_icons[e.key]),
+            icon: Icon(_icons(e.key)),
             label: e.value,
           );
         }).toList(),

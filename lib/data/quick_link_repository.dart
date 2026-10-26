@@ -1,17 +1,18 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class QuickLinkRepository {
   final AppDatabase db;
   QuickLinkRepository(this.db);
 
   Stream<List<QuickLink>> watchQuickLinks() {
-    return db.select(db.quickLinks)..where(db.quickLinks.deletedAt.isNull()).watch();
+    return (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
+        .watch();
   }
 
   Future<List<QuickLink>> getQuickLinks() async {
-    return db.select(db.quickLinks)..where(db.quickLinks.deletedAt.isNull()).get();
+    return (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
+        .get();
   }
 
   Future<void> insertQuickLink(QuickLink link) async {
@@ -27,6 +28,7 @@ class QuickLinkRepository {
       id: id,
       title: '',
       url: '',
+      sortOrder: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
     ));

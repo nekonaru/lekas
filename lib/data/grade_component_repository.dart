@@ -1,17 +1,20 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class GradeComponentRepository {
   final AppDatabase db;
   GradeComponentRepository(this.db);
 
   Stream<List<GradeComponent>> watchGradeComponents(String spaceId) {
-    return db.select(db.gradeComponents)..where(db.gradeComponents.spaceId.equals(spaceId)).watch();
+    return (db.select(db.gradeComponents)
+          ..where((t) => t.spaceId.equals(spaceId)))
+        .watch();
   }
 
   Future<List<GradeComponent>> getGradeComponents(String spaceId) async {
-    return db.select(db.gradeComponents)..where(db.gradeComponents.spaceId.equals(spaceId)).get();
+    return (db.select(db.gradeComponents)
+          ..where((t) => t.spaceId.equals(spaceId)))
+        .get();
   }
 
   Future<void> insertGradeComponent(GradeComponent component) async {
@@ -23,6 +26,6 @@ class GradeComponentRepository {
   }
 
   Future<void> deleteGradeComponent(String spaceId, String key) async {
-    await db.delete(db.gradeComponents).delete(const Filter<GradeComponent>(db.gradeComponents.spaceId.equals(spaceId)));
+    await (db.delete(db.gradeComponents)..where((t) => t.spaceId.equals(spaceId) & t.key.equals(key))).go();
   }
 }

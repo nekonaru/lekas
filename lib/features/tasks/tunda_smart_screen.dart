@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
+import '../../data/task_repository.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -36,18 +37,18 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
               const SizedBox(height: 24),
               const Text('Pilih waktu tunda:'),
               const SizedBox(height: 16),
-              _tundaButton(context, '1 jam', Duration(hours: 1), repo, task.id),
+              _tundaButton(context, '1 jam', Duration(hours: 1), repo, task),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Nanti malam 19.00', null, repo, task.id,
+              _tundaButton(context, 'Nanti malam 19.00', null, repo, task,
                   customTime: const TimeOfDay(hour: 19, minute: 0)),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Besok pagi 07.00', null, repo, task.id,
+              _tundaButton(context, 'Besok pagi 07.00', null, repo, task,
                   customTime: const TimeOfDay(hour: 7, minute: 0),
                   isTomorrow: true),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Akhir pekan', null, repo, task.id),
+              _tundaButton(context, 'Akhir pekan', null, repo, task),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Pilih waktu', null, repo, task.id),
+              _tundaButton(context, 'Pilih waktu', null, repo, task),
             ],
           ),
         );
@@ -56,7 +57,8 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
   }
 
   Widget _tundaButton(BuildContext context, String label, Duration? duration,
-      WidgetRef ref, String taskId, {TimeOfDay? customTime, bool isTomorrow = false}) {
+      TaskRepository repo, Task task,
+      {TimeOfDay? customTime, bool isTomorrow = false}) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -76,7 +78,7 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
           } else {
             fireAt = DateTime.now().add(const Duration(days: 2));
           }
-          await ref.read(taskRepositoryProvider).updateTask(
+          await repo.updateTask(
                 task.copyWith(
                   updatedAt: DateTime.now().millisecondsSinceEpoch,
                 ),

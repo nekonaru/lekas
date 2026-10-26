@@ -25,7 +25,7 @@ class AppTheme {
         seedColor: accentColor,
         brightness: Brightness.light,
       ),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
       ),
@@ -39,7 +39,7 @@ class AppTheme {
         seedColor: accentColor,
         brightness: Brightness.dark,
       ),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
       ),

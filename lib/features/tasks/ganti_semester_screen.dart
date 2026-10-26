@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
+import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
 
 class GantiSemesterScreen extends ConsumerStatefulWidget {
@@ -69,6 +70,9 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
                   id: const Uuid().v4(),
                   name: _periodController.text.isEmpty ? 'Semester Baru' : _periodController.text,
                   period: _periodController.text.isEmpty ? 'Semester Baru' : _periodController.text,
+                  color: AppTheme.containerColors[0].value,
+                  kind: 'course',
+                  archived: false,
                   createdAt: DateTime.now().millisecondsSinceEpoch,
                   updatedAt: DateTime.now().millisecondsSinceEpoch,
                 ));

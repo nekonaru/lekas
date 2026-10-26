@@ -73,6 +73,7 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
                       id: const Uuid().v4(),
                       name: _nameController.text,
                       queryJson: '{}',
+                      sortOrder: 0,
                       updatedAt: DateTime.now().millisecondsSinceEpoch,
                     ));
                     if (mounted) Navigator.pop(context);

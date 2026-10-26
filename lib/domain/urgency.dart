@@ -27,7 +27,7 @@ double urgencyScore({
   double? weightPercent,
   int? estimateMinutes,
   int? remainingEstimateMinutes,
-  int? effectiveHoursAvailable, // jam efektif tersisa (dari jadwal kuliah, dll.)
+  double? effectiveHoursAvailable, // jam efektif tersisa (dari jadwal kuliah, dll.)
   double? subtaskProgress, // 0.0 sampai 1.0
   bool useTargetForUrgency = false,
   double? effectiveWeightPercent, // bobot efektif dari 5.18

@@ -10,7 +10,7 @@ class ProyekMilestoneScreen extends ConsumerStatefulWidget {
   ConsumerState<ProyekMilestoneScreen> createState() => _ProyekMilestoneScreenState();
 }
 
-class _ProyekMilestoneScreenState extends ConsumerState<ProyekMilestoneScreenState> {
+class _ProyekMilestoneScreenState extends ConsumerState<ProyekMilestoneScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

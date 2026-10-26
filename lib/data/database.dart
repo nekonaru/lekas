@@ -1,7 +1,5 @@
 import 'package:drift/drift.dart';
 
-import 'models.dart';
-
 part 'database.g.dart';
 
 class Spaces extends Table {

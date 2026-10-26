@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:drift/drift.dart' show Value;
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/date_util.dart';
@@ -85,8 +86,8 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (newDeadline != null) {
-      await repo.updateTask(task.copyWith(
-        deadline: newDeadline.millisecondsSinceEpoch,
+      await ref.read(taskRepositoryProvider).updateTask(task.copyWith(
+        deadline: Value(newDeadline.millisecondsSinceEpoch),
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       ));
       if (mounted) setState(() {});

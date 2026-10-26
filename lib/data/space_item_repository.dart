@@ -1,21 +1,22 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class SpaceItemRepository {
   final AppDatabase db;
   SpaceItemRepository(this.db);
 
   Stream<List<SpaceItem>> watchSpaceItems(String spaceId) {
-    return db.select(db.spaceItems)..where(
-      db.spaceItems.spaceId.equals(spaceId).and(db.spaceItems.deletedAt.isNull()),
-    ).watch();
+    return (db.select(db.spaceItems)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .watch();
   }
 
   Future<List<SpaceItem>> getSpaceItems(String spaceId) async {
-    return db.select(db.spaceItems)..where(
-      db.spaceItems.spaceId.equals(spaceId).and(db.spaceItems.deletedAt.isNull()),
-    ).get();
+    return (db.select(db.spaceItems)
+          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .get();
   }
 
   Future<void> insertSpaceItem(SpaceItem item) async {
@@ -31,6 +32,7 @@ class SpaceItemRepository {
       id: id,
       spaceId: '',
       title: '',
+      sortOrder: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
     ));

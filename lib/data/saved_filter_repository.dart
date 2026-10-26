@@ -1,17 +1,18 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class SavedFilterRepository {
   final AppDatabase db;
   SavedFilterRepository(this.db);
 
   Stream<List<SavedFilter>> watchSavedFilters() {
-    return db.select(db.savedFilters)..where(db.savedFilters.deletedAt.isNull()).watch();
+    return (db.select(db.savedFilters)..where((t) => t.deletedAt.isNull()))
+        .watch();
   }
 
   Future<List<SavedFilter>> getSavedFilters() async {
-    return db.select(db.savedFilters)..where(db.savedFilters.deletedAt.isNull()).get();
+    return (db.select(db.savedFilters)..where((t) => t.deletedAt.isNull()))
+        .get();
   }
 
   Future<void> insertSavedFilter(SavedFilter filter) async {
@@ -27,6 +28,7 @@ class SavedFilterRepository {
       id: id,
       name: '',
       queryJson: '',
+      sortOrder: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
     ));

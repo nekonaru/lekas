@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -109,6 +110,8 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
             id: const Uuid().v4(),
             taskId: widget.taskId,
             title: _titleController.text,
+            done: false,
+            sortOrder: 0,
             updatedAt: DateTime.now().millisecondsSinceEpoch,
           ));
           _titleController.clear();

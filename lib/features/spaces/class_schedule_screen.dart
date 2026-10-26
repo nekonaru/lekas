@@ -95,6 +95,7 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                               weekday: _selectedWeekday,
                               startMin: int.parse(startParts[0]) * 60 + int.parse(startParts[1]),
                               endMin: int.parse(endParts[0]) * 60 + int.parse(endParts[1]),
+                              kind: 'lecture',
                               room: _roomController.text.isEmpty ? null : _roomController.text,
                               updatedAt: DateTime.now().millisecondsSinceEpoch,
                             ));

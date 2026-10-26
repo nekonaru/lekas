@@ -10,7 +10,7 @@ class ModeDemoScreen extends ConsumerStatefulWidget {
   ConsumerState<ModeDemoScreen> createState() => _ModeDemoScreenState();
 }
 
-class _ModeDemoScreenState extends ConsumerState<ModeDemoScreenState> {
+class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

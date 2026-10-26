@@ -23,7 +23,7 @@ class _KalenderLengkapScreenState extends ConsumerState<KalenderLengkapScreen> {
             tabs: [
               Tab(text: 'Bulan', icon: Icon(Icons.calendar_month)),
               Tab(text: 'Minggu', icon: Icon(Icons.calendar_view_week)),
-              Tab(text: 'Agenda', icon: Icon(Icons.agenda)),
+              Tab(text: 'Agenda', icon: Icon(Icons.schedule)),
             ],
           ),
         ),

@@ -1,21 +1,22 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class SubtaskRepository {
   final AppDatabase db;
   SubtaskRepository(this.db);
 
   Stream<List<Subtask>> watchSubtasks(String taskId) {
-    return db.select(db.subtasks)..where(
-      db.subtasks.taskId.equals(taskId).and(db.subtasks.deletedAt.isNull()),
-    ).watch();
+    return (db.select(db.subtasks)
+          ..where((t) => t.taskId.equals(taskId) & t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .watch();
   }
 
   Future<List<Subtask>> getSubtasks(String taskId) async {
-    return db.select(db.subtasks)..where(
-      db.subtasks.taskId.equals(taskId).and(db.subtasks.deletedAt.isNull()),
-    ).get();
+    return (db.select(db.subtasks)
+          ..where((t) => t.taskId.equals(taskId) & t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .get();
   }
 
   Future<void> insertSubtask(Subtask subtask) async {
@@ -32,6 +33,7 @@ class SubtaskRepository {
       taskId: '',
       title: '',
       done: done,
+      sortOrder: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     ));
   }
@@ -41,6 +43,8 @@ class SubtaskRepository {
       id: id,
       taskId: '',
       title: '',
+      done: false,
+      sortOrder: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
     ));

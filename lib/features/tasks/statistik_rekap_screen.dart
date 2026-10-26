@@ -10,7 +10,7 @@ class StatistikRekapScreen extends ConsumerStatefulWidget {
   ConsumerState<StatistikRekapScreen> createState() => _StatistikRekapScreenState();
 }
 
-class _StatistikRekapScreenState extends ConsumerState<StatistikRekapScreenState> {
+class _StatistikRekapScreenState extends ConsumerState<StatistikRekapScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

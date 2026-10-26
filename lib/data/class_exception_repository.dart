@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class ClassExceptionRepository {
   final AppDatabase db;
@@ -9,7 +8,7 @@ class ClassExceptionRepository {
   Stream<List<ClassException>> watchClassExceptions({String? classSlotId}) {
     final query = db.select(db.classExceptions);
     if (classSlotId != null) {
-      query..where(db.classExceptions.classSlotId.equals(classSlotId));
+      query.where((t) => t.classSlotId.equals(classSlotId));
     }
     return query.watch();
   }
@@ -17,7 +16,7 @@ class ClassExceptionRepository {
   Future<List<ClassException>> getClassExceptions({String? classSlotId}) async {
     final query = db.select(db.classExceptions);
     if (classSlotId != null) {
-      query..where(db.classExceptions.classSlotId.equals(classSlotId));
+      query.where((t) => t.classSlotId.equals(classSlotId));
     }
     return query.get();
   }
@@ -31,6 +30,6 @@ class ClassExceptionRepository {
   }
 
   Future<void> deleteClassException(String id) async {
-    await db.delete(db.classExceptions).delete(const Filter<ClassException>(db.classExceptions.id.equals(id)));
+    await (db.delete(db.classExceptions)..where((t) => t.id.equals(id))).go();
   }
 }

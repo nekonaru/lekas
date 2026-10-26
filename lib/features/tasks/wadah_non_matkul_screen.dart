@@ -10,7 +10,7 @@ class WadahNonMatkulScreen extends ConsumerStatefulWidget {
   ConsumerState<WadahNonMatkulScreen> createState() => _WadahNonMatkulScreenState();
 }
 
-class _WadahNonMatkulScreenState extends ConsumerState<WadahNonMatkulScreenState> {
+class _WadahNonMatkulScreenState extends ConsumerState<WadahNonMatkulScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

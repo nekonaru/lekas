@@ -10,7 +10,7 @@ class TimerFokusScreen extends ConsumerStatefulWidget {
   ConsumerState<TimerFokusScreen> createState() => _TimerFokusScreenState();
 }
 
-class _TimerFokusScreenState extends ConsumerState<TimerFokusScreenState> {
+class _TimerFokusScreenState extends ConsumerState<TimerFokusScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

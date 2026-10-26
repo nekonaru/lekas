@@ -1,26 +1,28 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class SpaceRepository {
   final AppDatabase db;
   SpaceRepository(this.db);
 
   Stream<List<Space>> watchSpaces({bool includeArchived = false}) {
-    return db.select(db.spaces).where(
-      includeArchived ? const Constant(true) : db.spaces.archived.equals(false),
-    ).watch();
+    return (db.select(db.spaces)
+          ..where((t) =>
+              includeArchived ? const Constant(true) : t.archived.equals(false))
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .watch();
   }
 
   Future<List<Space>> getSpaces({bool includeArchived = false}) async {
-    return db.select(db.spaces).where(
-      includeArchived ? const Constant(true) : db.spaces.archived.equals(false),
-    ).get();
+    return (db.select(db.spaces)
+          ..where((t) =>
+              includeArchived ? const Constant(true) : t.archived.equals(false))
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .get();
   }
 
   Future<Space> getSpace(String id) async {
-    final result = await db.select(db.spaces)..where(db.spaces.id.equals(id));
-    return result.getSingle();
+    return (db.select(db.spaces)..where((t) => t.id.equals(id))).getSingle();
   }
 
   Future<void> insertSpace(Space space) async {
@@ -32,20 +34,29 @@ class SpaceRepository {
   }
 
   Future<void> archiveSpace(String id) async {
-    await db.update(db.spaces).replace(Space(id: id, name: '', archived: true, createdAt: 0, updatedAt: DateTime.now().millisecondsSinceEpoch));
+    await db.update(db.spaces).replace(Space(
+      id: id,
+      name: '',
+      color: 0,
+      kind: 'course',
+      archived: true,
+      createdAt: 0,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    ));
   }
 
   Future<void> deleteSpace(String id) async {
-    await (delete(db.spaces)..where(db.spaces.id.equals(id))).go();
+    await (db.delete(db.spaces)..where((t) => t.id.equals(id))).go();
   }
 
-  Future<void> insertAlias(SpaceAlias alias) async {
+  Future<void> insertAlias(SpaceAliase alias) async {
     await db.into(db.spaceAliases).insert(alias);
   }
 
   Future<List<String>> getAliases(String spaceId) async {
-    final query = db.select(db.spaceAliases)..where(db.spaceAliases.spaceId.equals(spaceId));
-    final rows = await query.get();
+    final rows = await (db.select(db.spaceAliases)
+          ..where((t) => t.spaceId.equals(spaceId)))
+        .get();
     return rows.map((r) => r.alias).toList();
   }
 
@@ -57,10 +68,9 @@ class SpaceRepository {
   }
 
   Future<String?> getMeta(String spaceId, String key) async {
-    final result = await db.select(db.spaceMeta)..where(
-      db.spaceMeta.spaceId.equals(spaceId).and(db.spaceMeta.key.equals(key)),
-    );
-    final rows = result.get();
-    return rows.isEmpty ? null : rows.first.value;
+    final result = await (db.select(db.spaceMeta)
+          ..where((t) => t.spaceId.equals(spaceId) & t.key.equals(key)))
+        .get();
+    return result.isEmpty ? null : result.first.value;
   }
 }

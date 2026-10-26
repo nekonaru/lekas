@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -244,6 +245,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 id: const Uuid().v4(),
                 taskId: taskId,
                 title: controller.text,
+                done: false,
+                sortOrder: 0,
                 updatedAt: DateTime.now().millisecondsSinceEpoch,
               ));
               if (mounted) Navigator.pop(context);

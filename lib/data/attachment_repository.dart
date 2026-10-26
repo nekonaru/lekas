@@ -1,17 +1,22 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class AttachmentRepository {
   final AppDatabase db;
   AttachmentRepository(this.db);
 
   Stream<List<Attachment>> watchAttachments(String taskId) {
-    return db.select(db.attachments)..where(db.attachments.taskId.equals(taskId)).watch();
+    return (db.select(db.attachments)
+          ..where((t) => t.taskId.equals(taskId))
+          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+        .watch();
   }
 
   Future<List<Attachment>> getAttachments(String taskId) async {
-    return db.select(db.attachments)..where(db.attachments.taskId.equals(taskId)).get();
+    return (db.select(db.attachments)
+          ..where((t) => t.taskId.equals(taskId))
+          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+        .get();
   }
 
   Future<void> insertAttachment(Attachment attachment) async {
@@ -19,6 +24,6 @@ class AttachmentRepository {
   }
 
   Future<void> deleteAttachment(String id) async {
-    await db.delete(db.attachments).delete(const Filter<Attachment>(db.attachments.id.equals(id)));
+    await (db.delete(db.attachments)..where((t) => t.id.equals(id))).go();
   }
 }

@@ -123,6 +123,8 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
                 name: _nameController.text,
                 code: _codeController.text.isEmpty ? null : _codeController.text,
                 color: AppTheme.containerColors[0].value,
+                kind: 'course',
+                archived: false,
                 createdAt: DateTime.now().millisecondsSinceEpoch,
                 updatedAt: DateTime.now().millisecondsSinceEpoch,
               ));

@@ -26,9 +26,9 @@ class _KontakKelasScreenState extends ConsumerState<KontakKelasScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         final space = snapshot.data!;
-        final lecturer = space.meta?.lecturer ?? '-';
-        final room = space.meta?.room ?? '-';
-        final link = space.meta?.link ?? '-';
+        final lecturer = '-';
+        final room = '-';
+        final link = '-';
 
         return Scaffold(
           appBar: AppBar(title: const Text('Kontak dan Tautan Kelas')),
@@ -68,8 +68,8 @@ class _KontakKelasScreenState extends ConsumerState<KontakKelasScreen> {
               ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

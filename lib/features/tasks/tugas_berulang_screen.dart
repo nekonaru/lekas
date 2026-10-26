@@ -10,7 +10,7 @@ class TugasBerulangScreen extends ConsumerStatefulWidget {
   ConsumerState<TugasBerulangScreen> createState() => _TugasBerulangScreenState();
 }
 
-class _TugasBerulangScreenState extends ConsumerState<TugasBerulangScreenState> {
+class _TugasBerulangScreenState extends ConsumerState<TugasBerulangScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

@@ -175,6 +175,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       code: _codeController.text.isEmpty ? null : _codeController.text,
       color: AppTheme.containerColors[0].value,
       level: _level,
+      kind: 'course',
+      archived: false,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );

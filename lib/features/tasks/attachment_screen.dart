@@ -49,7 +49,6 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
         onPressed: () async {
           final result = await FilePicker.platform.pickFiles(
             type: FileType.any,
-            maxSize: 10 * 1024 * 1024,
           );
           if (result != null && result.files.single.path != null) {
             final file = File(result.files.single.path!);

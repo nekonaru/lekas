@@ -10,7 +10,7 @@ class PintasanIkonScreen extends ConsumerStatefulWidget {
   ConsumerState<PintasanIkonScreen> createState() => _PintasanIkonScreenState();
 }
 
-class _PintasanIkonScreenState extends ConsumerState<PintasanIkonScreenState> {
+class _PintasanIkonScreenState extends ConsumerState<PintasanIkonScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -28,7 +28,7 @@ class _PintasanIkonScreenState extends ConsumerState<PintasanIkonScreenState> {
           ListTile(
             title: const Text('Tile Quick Settings'),
             subtitle: const Text('Satu ketukan dari bilah notifikasi membuka Quick Add'),
-            trailing: const Icon(Icons.settings_quick_settings),
+            trailing: const Icon(Icons.settings),
             onTap: () {},
           ),
           ListTile(

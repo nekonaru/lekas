@@ -1,34 +1,33 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class TaskRepository {
   final AppDatabase db;
   TaskRepository(this.db);
 
   Stream<List<Task>> watchTasks({String? spaceId, bool includeInbox = false}) {
-    final query = db.select(db.tasks)..where(db.tasks.deletedAt.isNull());
+    final query = db.select(db.tasks)..where((t) => t.deletedAt.isNull());
     if (spaceId != null) {
-      query..where(db.tasks.spaceId.equals(spaceId));
+      query.where((t) => t.spaceId.equals(spaceId));
     } else if (!includeInbox) {
-      query..where(db.tasks.inbox.equals(false));
+      query.where((t) => t.inbox.equals(false));
     }
     return query.watch();
   }
 
-  Future<List<Task>> getTasks({String? spaceId, bool includeInbox = false}) async {
-    final query = db.select(db.tasks)..where(db.tasks.deletedAt.isNull());
+  Future<List<Task>> getTasks(
+      {String? spaceId, bool includeInbox = false}) async {
+    final query = db.select(db.tasks)..where((t) => t.deletedAt.isNull());
     if (spaceId != null) {
-      query..where(db.tasks.spaceId.equals(spaceId));
+      query.where((t) => t.spaceId.equals(spaceId));
     } else if (!includeInbox) {
-      query..where(db.tasks.inbox.equals(false));
+      query.where((t) => t.inbox.equals(false));
     }
     return query.get();
   }
 
   Future<Task> getTask(String id) async {
-    final result = await db.select(db.tasks)..where(db.tasks.id.equals(id));
-    return result.getSingle();
+    return (db.select(db.tasks)..where((t) => t.id.equals(id))).getSingle();
   }
 
   Future<void> insertTask(Task task) async {
@@ -43,6 +42,11 @@ class TaskRepository {
     await db.update(db.tasks).replace(Task(
       id: id,
       title: '',
+      priority: 1,
+      status: 'todo',
+      isGroup: false,
+      pinned: false,
+      inbox: false,
       createdAt: 0,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deletedAt: DateTime.now().millisecondsSinceEpoch,
@@ -53,29 +57,29 @@ class TaskRepository {
     final existing = await getTask(id);
     await db.update(db.tasks).replace(existing.copyWith(
       updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: null,
+      deletedAt: const Value(null),
     ));
   }
 
   Future<void> markDone(String id, {int? completedAt}) async {
-    await db.update(db.tasks).replace(Task(
-      id: id,
-      title: '',
+    final existing = await getTask(id);
+    await db.update(db.tasks).replace(existing.copyWith(
       status: 'done',
-      completedAt: completedAt ?? DateTime.now().millisecondsSinceEpoch,
+      completedAt: Value(completedAt ?? DateTime.now().millisecondsSinceEpoch),
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     ));
   }
 
   Stream<List<Task>> watchInbox() {
-    return db.select(db.tasks)..where(
-      db.tasks.inbox.equals(true).and(db.tasks.deletedAt.isNull()),
-    ).watch();
+    return (db.select(db.tasks)
+          ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))
+        .watch();
   }
 
   Future<int> countInbox() async {
-    return db.select(db.tasks)..where(
-      db.tasks.inbox.equals(true).and(db.tasks.deletedAt.isNull()),
-    ).get().then((rows) => rows.length);
+    final rows = await (db.select(db.tasks)
+          ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))
+        .get();
+    return rows.length;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'database.dart';
-import 'models.dart';
 
 class TaskTemplateRepository {
   final AppDatabase db;
@@ -23,6 +22,6 @@ class TaskTemplateRepository {
   }
 
   Future<void> deleteTaskTemplate(String id) async {
-    await db.delete(db.taskTemplates).delete(const Filter<TaskTemplate>(db.taskTemplates.id.equals(id)));
+    await (db.delete(db.taskTemplates)..where((t) => t.id.equals(id))).go();
   }
 }
