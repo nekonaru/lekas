@@ -1,7 +1,10 @@
-/// Parser utama untuk Quick Add.
-/// Menggabungkan normalizer, time_extractor, matcher, dan type keywords.
-import 'package:intl/intl.dart';
-import '../data/models.dart';
+/// Main parser for Quick Add (design section 6.1).
+///
+/// Combines the normalizer, the time extractor, the space matcher and the
+/// type keywords into one pure Dart call with no Flutter dependency, so it
+/// can be tested against a large corpus.
+library;
+
 import 'normalizer.dart';
 import 'time_extractor.dart';
 import 'matcher.dart';
@@ -29,6 +32,8 @@ class ParsedTask {
   });
 }
 
+const String kUntitledTask = 'Untitled task';
+
 class ParserService {
   final TimeExtractor timeExtractor;
   final Matcher matcher;
@@ -40,57 +45,86 @@ class ParserService {
     required this.spaces,
   });
 
-  /// Parse teks mentah menjadi ParsedTask.
-  ParsedTask parse(String input, {String locale = 'id'}) {
-    final now = DateTime.now();
+  /// Builds a parser for the currently active spaces, aliases included.
+  factory ParserService.forSpaces(List<Map<String, String>> spaces) {
+    return ParserService(
+      timeExtractor: TimeExtractor(
+        days: idDays,
+        months: idMonths,
+        abbreviations: idAbbrev,
+      ),
+      matcher: Matcher(spaces),
+      spaces: spaces,
+    );
+  }
 
-    // Step 1: Normalize
+  /// Parses raw text into a [ParsedTask]. [now] is injectable so tests stay
+  /// deterministic.
+  ParsedTask parse(String input, {String locale = 'id', DateTime? now}) {
+    final moment = now ?? DateTime.now();
+
+    // Step 1: normalize case, spacing and abbreviations.
     var normalized = normalize(input, idAbbrev);
 
-    // Step 2: Extract type keywords
+    // Step 2: extract the task type.
     String? type;
-    idTypeKeywords.forEach((keyword, neutralType) {
-      if (normalized.contains(keyword)) {
-        type = neutralType;
-        normalized = normalized.replaceAll(keyword, '').trim();
+    for (final entry in idTypeKeywords.entries) {
+      if (_hasWord(normalized, entry.key)) {
+        type = entry.value;
+        normalized = _remove(normalized, entry.key);
+        break;
       }
-    });
+    }
 
-    // Step 3: Extract time
-    final timeResult = timeExtractor.extract(normalized, now);
-    normalized = timeResult.remainingText.trim();
+    // Step 3: extract time and date.
+    final timeResult = timeExtractor.extract(normalized, moment);
+    normalized = timeResult.remainingText;
 
-    // Step 4: Match space (wadah)
+    // Step 4: extract the work mode.
+    var isGroup = false;
+    for (final word in const ['kelompok', 'individu', 'sendiri', 'mandiri', 'group']) {
+      if (_hasWord(normalized, word)) {
+        isGroup = word == 'kelompok' || word == 'group';
+        normalized = _remove(normalized, word);
+        break;
+      }
+    }
+
+    // Step 5: match the space by name, code or alias.
     String? spaceId;
-    if (normalized.isNotEmpty) {
+    String? spaceName;
+    if (normalized.trim().isNotEmpty) {
       spaceId = matcher.match(normalized);
       if (spaceId != null) {
-        final space = spaces.firstWhere((s) => s['id'] == spaceId);
-        normalized = normalized.replaceAll(space['name']!, '').trim();
-        final code = space['code'];
-        if (code != null && code.isNotEmpty) {
-          normalized = normalized.replaceAll(code, '').trim();
+        final space = spaces.firstWhere(
+          (s) => s['id'] == spaceId,
+          orElse: () => const <String, String>{},
+        );
+        spaceName = space['name'];
+        final tokens = <String>[
+          if (space['name'] != null) space['name']!.toLowerCase(),
+          if (space['code'] != null) space['code']!.toLowerCase(),
+          ...?space['aliases']
+              ?.split(',')
+              .map((a) => a.trim().toLowerCase())
+              .where((a) => a.isNotEmpty),
+        ];
+        for (final token in tokens) {
+          normalized = _remove(normalized, token);
         }
       }
     }
 
-    // Step 5: Remaining text is title
-    final title = normalized.isEmpty ? 'Tugas Tanpa Judul' : normalized;
+    // Step 6: whatever is left becomes the title.
+    var title = _clean(normalized);
+    if (title.isEmpty) title = spaceName ?? kUntitledTask;
 
-    // Step 6: Detect group mode
-    final isGroup = input.toLowerCase().contains('kelompok') ||
-        input.toLowerCase().contains('group');
-
-    // Step 7: Priority detection
-    int priority = 1;
+    // Step 7: priority words.
+    var priority = 1;
     final lowerInput = input.toLowerCase();
-    if (lowerInput.contains('penting') || lowerInput.contains('urgent') ||
-        lowerInput.contains('tinggi') || lowerInput.contains('!tinggi') ||
-        lowerInput.contains('!high')) {
+    if (_hasAnyWord(lowerInput, const ['penting', 'urgent', 'tinggi', '!tinggi', '!high', 'high'])) {
       priority = 2;
-    } else if (lowerInput.contains('rendah') || lowerInput.contains('low') ||
-        lowerInput.contains('santai') || lowerInput.contains('!rendah') ||
-        lowerInput.contains('!low')) {
+    } else if (_hasAnyWord(lowerInput, const ['rendah', 'low', 'santai', '!rendah', '!low'])) {
       priority = 0;
     }
 
@@ -102,7 +136,23 @@ class ParserService {
       priority: priority,
       isGroup: isGroup,
       needsConfirmation: timeResult.needsConfirmation,
-      notes: input, // Store original text as notes
+      notes: input.trim(),
     );
+  }
+
+  static bool _hasWord(String text, String word) =>
+      RegExp('\\b${RegExp.escape(word)}\\b', caseSensitive: false).hasMatch(text);
+
+  static bool _hasAnyWord(String text, List<String> words) =>
+      words.any((word) => _hasWord(text, word));
+
+  static String _remove(String text, String token) =>
+      text.replaceAll(RegExp(RegExp.escape(token), caseSensitive: false), ' ');
+
+  static String _clean(String text) {
+    var out = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+    out = out.replaceAll(RegExp(r'^[\s,;:\-]+'), '');
+    out = out.replaceAll(RegExp(r'[\s,;:\-]+$'), '');
+    return out;
   }
 }

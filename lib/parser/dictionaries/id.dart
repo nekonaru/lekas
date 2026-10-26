@@ -10,6 +10,7 @@ const idMonths = {
 const idTypeKeywords = {
   'kuis': 'quiz', 'quiz': 'quiz',
   'laprak': 'lab_report', 'laporan praktikum': 'lab_report',
+  'praktikum': 'lab_report',
   'makalah': 'paper', 'paper': 'paper',
   'presentasi': 'presentation', 'presentation': 'presentation',
   'uts': 'midterm', 'midterm': 'midterm',
