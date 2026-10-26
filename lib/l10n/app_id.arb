@@ -417,5 +417,20 @@
   "bulkUpdated": "{count} tugas diperbarui",
   "@bulkUpdated": { "placeholders": { "count": { "type": "int" } } },
   "snoozeSet": "Pengingat ditunda ke {time}",
-  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } }
+  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } },
+  "reminderIn6Hours": "Deadline 6 jam lagi",
+  "reminderIn12Hours": "Deadline 12 jam lagi",
+  "reminderIn18Hours": "Deadline 18 jam lagi",
+  "groupedReminderTitle": "{count} tugas mendekati deadline",
+  "@groupedReminderTitle": { "placeholders": { "count": { "type": "int" } } },
+  "summaryReminderTitle": "Ringkasan pengingat",
+  "summaryReminderBody": "{count} pengingat digabung ke ringkasan ini",
+  "@summaryReminderBody": { "placeholders": { "count": { "type": "int" } } },
+  "reminderIntensity": "Intensitas pengingat",
+  "intensityCalm": "Tenang: H-1 dan 3 jam",
+  "intensityNormal": "Normal: H-3, H-1, 3 jam, 30 menit",
+  "intensityEager": "Gencar: ditambah tiap 6 jam di hari deadline",
+  "notificationBudget": "Anggaran notifikasi harian",
+  "budgetPerDay": "{count} notifikasi per hari",
+  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } }
 }

@@ -1248,4 +1248,46 @@ class AppLocalizationsId extends AppLocalizations {
   String snoozeSet(String time) {
     return 'Pengingat ditunda ke $time';
   }
+
+  @override
+  String get reminderIn6Hours => 'Deadline 6 jam lagi';
+
+  @override
+  String get reminderIn12Hours => 'Deadline 12 jam lagi';
+
+  @override
+  String get reminderIn18Hours => 'Deadline 18 jam lagi';
+
+  @override
+  String groupedReminderTitle(int count) {
+    return '$count tugas mendekati deadline';
+  }
+
+  @override
+  String get summaryReminderTitle => 'Ringkasan pengingat';
+
+  @override
+  String summaryReminderBody(int count) {
+    return '$count pengingat digabung ke ringkasan ini';
+  }
+
+  @override
+  String get reminderIntensity => 'Intensitas pengingat';
+
+  @override
+  String get intensityCalm => 'Tenang: H-1 dan 3 jam';
+
+  @override
+  String get intensityNormal => 'Normal: H-3, H-1, 3 jam, 30 menit';
+
+  @override
+  String get intensityEager => 'Gencar: ditambah tiap 6 jam di hari deadline';
+
+  @override
+  String get notificationBudget => 'Anggaran notifikasi harian';
+
+  @override
+  String budgetPerDay(int count) {
+    return '$count notifikasi per hari';
+  }
 }

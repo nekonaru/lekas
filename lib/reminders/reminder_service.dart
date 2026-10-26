@@ -17,28 +17,23 @@ import '../data/task_repository.dart';
 import '../l10n/app_localizations.dart';
 import 'class_quiet.dart';
 
-/// One reminder offset before a deadline (design section 4.6).
-class ReminderSpec {
-  const ReminderSpec(this.kind, this.offset);
+import 'notification_policy.dart';
 
-  /// Stable key stored in the reminders table, e.g. `d3`.
-  final String kind;
-
-  /// How long before the deadline this reminder fires.
-  final Duration offset;
-}
-
-/// Standard reminder ladder: H-3, H-1, 3 hours, 30 minutes.
-const List<ReminderSpec> kReminderSpecs = [
-  ReminderSpec('d3', Duration(days: 3)),
-  ReminderSpec('d1', Duration(days: 1)),
-  ReminderSpec('h3', Duration(hours: 3)),
-  ReminderSpec('m30', Duration(minutes: 30)),
-];
-
-/// Extra lead time for heavy tasks (weight at or above [kHeavyTaskWeight]).
-const ReminderSpec kHeavyTaskSpec = ReminderSpec('d7', Duration(days: 7));
-const double kHeavyTaskWeight = 60;
+/// Ladder, intensity, merging and budget rules of design section 5.21 are
+/// re-exported here so callers of the reminder service keep one entry point.
+export 'notification_policy.dart'
+    show
+        ReminderSpec,
+        kReminderSpecs,
+        kHeavyTaskSpec,
+        kHeavyTaskWeight,
+        ReminderIntensity,
+        intensityFromSetting,
+        specsForIntensity,
+        planNotifications,
+        NotificationCandidate,
+        PlannedNotification,
+        kDailyNotificationBudget;
 
 /// Only this many days ahead are ever scheduled (design section 4.6).
 const int kScheduleHorizonDays = 14;
@@ -110,11 +105,25 @@ DateTime moveOutOfQuietHours(DateTime fireAt, DateTime deadline) {
 }
 
 class _Desired {
-  const _Desired(this.fireAt, this.task, this.kind);
+  const _Desired(
+    this.fireAt,
+    this.task,
+    this.kind, {
+    this.mergedTitles = const [],
+    this.summary = false,
+  });
 
   final DateTime fireAt;
   final Task task;
   final String kind;
+
+  /// Titles of every reminder sharing this notification (design 5.21).
+  /// Empty when the notification covers a single reminder.
+  final List<String> mergedTitles;
+
+  /// True when this notification collects the reminders that did not fit
+  /// into the daily budget.
+  final bool summary;
 }
 
 /// Schedules a single notification, choosing exact or inexact alarms based on
@@ -127,6 +136,7 @@ Future<void> scheduleNotification({
   required String body,
   required String payload,
   String channelId = kChannelDeadline,
+  bool withActions = true,
   AppLocalizations? l10n,
 }) async {
   final plugin = FlutterLocalNotificationsPlugin();
@@ -147,7 +157,7 @@ Future<void> scheduleNotification({
       channelDescription: 'Lekas task reminders',
       importance: Importance.high,
       priority: Priority.high,
-      actions: l10n == null ? null : _notificationActions(l10n),
+      actions: (l10n == null || !withActions) ? null : _notificationActions(l10n),
     ),
   );
   final scheduled = tz.TZDateTime.from(when, tz.local);
@@ -468,16 +478,30 @@ class ReminderService {
     final exceptions = await classExceptionRepo.getClassExceptions();
     final slotsBySpace = <String, List<ClassSlot>>{};
 
-    final desired = <String, _Desired>{};
+    final settings = _ref.read(settingsRepositoryProvider);
+    final intensity =
+        intensityFromSetting(await settings.get('reminder_intensity'));
+    final budget = int.tryParse(await settings.get('notification_budget') ??
+            '') ??
+        kDailyNotificationBudget;
+
+    final rawDesired = <String, _Desired>{};
     for (final task in tasks) {
       if (task.deletedAt != null || task.status == 'done') continue;
       final deadlineMs = task.deadline;
       if (deadlineMs == null) continue;
       final deadline = DateTime.fromMillisecondsSinceEpoch(deadlineMs);
       DateTime? taken;
-      for (final spec in _specsFor(task)) {
+      for (final spec in _specsFor(task, intensity)) {
         final raw = deadline.subtract(spec.offset);
         if (!raw.isAfter(now) || raw.isAfter(horizon)) continue;
+        // The eager ladder only speaks on the day of the deadline itself.
+        if (spec.deadlineDayOnly &&
+            (raw.year != deadline.year ||
+                raw.month != deadline.month ||
+                raw.day != deadline.day)) {
+          continue;
+        }
         final fireAt = await _applyQuietAndClass(
           raw,
           deadline,
@@ -492,8 +516,36 @@ class ReminderService {
           continue;
         }
         taken = fireAt;
-        desired['${task.id}:${spec.kind}'] = _Desired(fireAt, task, spec.kind);
+        rawDesired['${task.id}:${spec.kind}'] =
+            _Desired(fireAt, task, spec.kind);
       }
+    }
+
+    // Design 5.21: join reminders ten minutes apart, keep at most [budget]
+    // non critical notifications per day and summarize the rest.
+    final plans = planNotifications([
+      for (final entry in rawDesired.entries)
+        NotificationCandidate(
+          key: entry.key,
+          fireAt: entry.value.fireAt,
+          deadline: DateTime.fromMillisecondsSinceEpoch(
+              entry.value.task.deadline!),
+          title: entry.value.task.title,
+        ),
+    ], budget: budget);
+
+    final desired = <String, _Desired>{};
+    for (final plan in plans) {
+      final base = rawDesired[plan.lead.key]!;
+      desired[plan.lead.key] = _Desired(
+        base.fireAt,
+        base.task,
+        base.kind,
+        mergedTitles: plan.merged
+            ? [for (final member in plan.members) member.title]
+            : const [],
+        summary: plan.summary,
+      );
     }
 
     final l10n = await _l10n();
@@ -576,16 +628,40 @@ class ReminderService {
     return quiet.isAfter(held) ? quiet : held;
   }
 
-  List<ReminderSpec> _specsFor(Task task) {
-    final specs = <ReminderSpec>[...kReminderSpecs];
-    final weight = task.weightPercent;
-    if (weight != null && weight >= kHeavyTaskWeight) {
-      specs.insert(0, kHeavyTaskSpec);
-    }
-    return specs;
+  /// The ladder for this task under the chosen intensity (design 5.21).
+  List<ReminderSpec> _specsFor(Task task, ReminderIntensity intensity) {
+    return specsForIntensity(intensity, weightPercent: task.weightPercent);
   }
 
   Future<void> _scheduleRow(_Desired desired, int notifId, AppLocalizations l10n) {
+    if (desired.summary) {
+      return scheduleNotification(
+        id: notifId,
+        when: desired.fireAt,
+        title: l10n.summaryReminderTitle,
+        body: '${l10n.summaryReminderBody(desired.mergedTitles.length)}\n'
+            '${desired.mergedTitles.join('\n')}',
+        payload: ReminderPayload(desired.task.id, ReminderPayload.actionOpen)
+            .encode(),
+        channelId: kChannelSummary,
+        withActions: false,
+        l10n: l10n,
+      );
+    }
+    if (desired.mergedTitles.isNotEmpty) {
+      // Several tasks share one notification, so a per task action button
+      // would be misleading; tapping opens the first task instead.
+      return scheduleNotification(
+        id: notifId,
+        when: desired.fireAt,
+        title: l10n.groupedReminderTitle(desired.mergedTitles.length),
+        body: desired.mergedTitles.join('\n'),
+        payload: ReminderPayload(desired.task.id, ReminderPayload.actionOpen)
+            .encode(),
+        withActions: false,
+        l10n: l10n,
+      );
+    }
     final payload = ReminderPayload(desired.task.id, ReminderPayload.actionOpen).encode();
     return scheduleNotification(
       id: notifId,
@@ -607,6 +683,12 @@ class ReminderService {
         return l10n.reminderIn1Day;
       case 'h3':
         return l10n.reminderIn3Hours;
+      case 'h6':
+        return l10n.reminderIn6Hours;
+      case 'h12':
+        return l10n.reminderIn12Hours;
+      case 'h18':
+        return l10n.reminderIn18Hours;
       case 'm30':
         return l10n.reminderIn30Minutes;
       case kKindSnooze:

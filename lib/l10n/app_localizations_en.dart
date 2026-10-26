@@ -1246,4 +1246,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String snoozeSet(String time) {
     return 'Reminder snoozed to $time';
   }
+
+  @override
+  String get reminderIn6Hours => 'Deadline in 6 hours';
+
+  @override
+  String get reminderIn12Hours => 'Deadline in 12 hours';
+
+  @override
+  String get reminderIn18Hours => 'Deadline in 18 hours';
+
+  @override
+  String groupedReminderTitle(int count) {
+    return '$count tasks due soon';
+  }
+
+  @override
+  String get summaryReminderTitle => 'Reminder digest';
+
+  @override
+  String summaryReminderBody(int count) {
+    return '$count reminders folded into this digest';
+  }
+
+  @override
+  String get reminderIntensity => 'Reminder intensity';
+
+  @override
+  String get intensityCalm => 'Calm: 1 day and 3 hours';
+
+  @override
+  String get intensityNormal => 'Normal: 3 days, 1 day, 3 hours, 30 minutes';
+
+  @override
+  String get intensityEager => 'Eager: plus every 6 hours on the deadline day';
+
+  @override
+  String get notificationBudget => 'Daily notification budget';
+
+  @override
+  String budgetPerDay(int count) {
+    return '$count notifications per day';
+  }
 }

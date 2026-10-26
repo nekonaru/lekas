@@ -417,5 +417,20 @@
   "bulkUpdated": "{count} tasks updated",
   "@bulkUpdated": { "placeholders": { "count": { "type": "int" } } },
   "snoozeSet": "Reminder snoozed to {time}",
-  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } }
+  "@snoozeSet": { "placeholders": { "time": { "type": "String" } } },
+  "reminderIn6Hours": "Deadline in 6 hours",
+  "reminderIn12Hours": "Deadline in 12 hours",
+  "reminderIn18Hours": "Deadline in 18 hours",
+  "groupedReminderTitle": "{count} tasks due soon",
+  "@groupedReminderTitle": { "placeholders": { "count": { "type": "int" } } },
+  "summaryReminderTitle": "Reminder digest",
+  "summaryReminderBody": "{count} reminders folded into this digest",
+  "@summaryReminderBody": { "placeholders": { "count": { "type": "int" } } },
+  "reminderIntensity": "Reminder intensity",
+  "intensityCalm": "Calm: 1 day and 3 hours",
+  "intensityNormal": "Normal: 3 days, 1 day, 3 hours, 30 minutes",
+  "intensityEager": "Eager: plus every 6 hours on the deadline day",
+  "notificationBudget": "Daily notification budget",
+  "budgetPerDay": "{count} notifications per day",
+  "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } }
 }

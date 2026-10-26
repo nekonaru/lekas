@@ -2365,6 +2365,78 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pengingat ditunda ke {time}'**
   String snoozeSet(String time);
+
+  /// No description provided for @reminderIn6Hours.
+  ///
+  /// In id, this message translates to:
+  /// **'Deadline 6 jam lagi'**
+  String get reminderIn6Hours;
+
+  /// No description provided for @reminderIn12Hours.
+  ///
+  /// In id, this message translates to:
+  /// **'Deadline 12 jam lagi'**
+  String get reminderIn12Hours;
+
+  /// No description provided for @reminderIn18Hours.
+  ///
+  /// In id, this message translates to:
+  /// **'Deadline 18 jam lagi'**
+  String get reminderIn18Hours;
+
+  /// No description provided for @groupedReminderTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas mendekati deadline'**
+  String groupedReminderTitle(int count);
+
+  /// No description provided for @summaryReminderTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan pengingat'**
+  String get summaryReminderTitle;
+
+  /// No description provided for @summaryReminderBody.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} pengingat digabung ke ringkasan ini'**
+  String summaryReminderBody(int count);
+
+  /// No description provided for @reminderIntensity.
+  ///
+  /// In id, this message translates to:
+  /// **'Intensitas pengingat'**
+  String get reminderIntensity;
+
+  /// No description provided for @intensityCalm.
+  ///
+  /// In id, this message translates to:
+  /// **'Tenang: H-1 dan 3 jam'**
+  String get intensityCalm;
+
+  /// No description provided for @intensityNormal.
+  ///
+  /// In id, this message translates to:
+  /// **'Normal: H-3, H-1, 3 jam, 30 menit'**
+  String get intensityNormal;
+
+  /// No description provided for @intensityEager.
+  ///
+  /// In id, this message translates to:
+  /// **'Gencar: ditambah tiap 6 jam di hari deadline'**
+  String get intensityEager;
+
+  /// No description provided for @notificationBudget.
+  ///
+  /// In id, this message translates to:
+  /// **'Anggaran notifikasi harian'**
+  String get notificationBudget;
+
+  /// No description provided for @budgetPerDay.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} notifikasi per hari'**
+  String budgetPerDay(int count);
 }
 
 class _AppLocalizationsDelegate

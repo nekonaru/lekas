@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
+import '../../reminders/reminder_service.dart';
 import 'backup_screen.dart';
 import 'diagnostic_screen.dart';
 
@@ -15,6 +16,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _language;
   ThemeMode? _themeMode;
+  String _intensity = 'normal';
+  int _budget = kDailyNotificationBudget;
 
   @override
   void initState() {
@@ -23,13 +26,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _load() async {
-    final language =
-        await ref.read(settingsRepositoryProvider).getLanguage();
+    final settings = ref.read(settingsRepositoryProvider);
+    final language = await settings.getLanguage();
     final themeMode = await ref.read(themeModeProvider.future);
+    final intensity = await settings.get('reminder_intensity');
+    final budget = int.tryParse(await settings.get('notification_budget') ?? '');
     if (!mounted) return;
     setState(() {
       _language = language;
       _themeMode = themeMode;
+      _intensity = intensity ?? 'normal';
+      _budget = budget ?? kDailyNotificationBudget;
     });
   }
 
@@ -81,6 +88,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }
 
+  String _intensityLabel(AppLocalizations l10n, String value) {
+    switch (value) {
+      case 'calm':
+        return l10n.intensityCalm;
+      case 'eager':
+        return l10n.intensityEager;
+      default:
+        return l10n.intensityNormal;
+    }
+  }
+
+  /// Design section 5.21: calm, normal or eager reminders.
+  Future<void> _pickIntensity() async {
+    final l10n = AppLocalizations.of(context)!;
+    final selected = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.reminderIntensity),
+        children: [
+          for (final value in const ['calm', 'normal', 'eager'])
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(dialogContext, value),
+              child: Text(_intensityLabel(l10n, value)),
+            ),
+        ],
+      ),
+    );
+    if (selected == null || selected == _intensity) return;
+    await ref.read(settingsRepositoryProvider).set('reminder_intensity', selected);
+    if (!mounted) return;
+    setState(() => _intensity = selected);
+    await ref.read(reminderServiceProvider).syncAll();
+  }
+
+  /// Design section 5.21: how many non critical notifications a day may use.
+  Future<void> _pickBudget() async {
+    final l10n = AppLocalizations.of(context)!;
+    final selected = await showDialog<int>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.notificationBudget),
+        children: [
+          for (final value in const [4, 8, 12, 16])
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(dialogContext, value),
+              child: Text(l10n.budgetPerDay(value)),
+            ),
+        ],
+      ),
+    );
+    if (selected == null || selected == _budget) return;
+    await ref.read(settingsRepositoryProvider).set('notification_budget', '$selected');
+    if (!mounted) return;
+    setState(() => _budget = selected);
+    await ref.read(reminderServiceProvider).syncAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -100,6 +164,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.darkMode),
             subtitle: Text(themeMode.name),
             onTap: _pickThemeMode,
+          ),
+          const Divider(),
+          ListTile(
+            title: Text(l10n.reminderIntensity),
+            subtitle: Text(_intensityLabel(l10n, _intensity)),
+            onTap: _pickIntensity,
+          ),
+          ListTile(
+            title: Text(l10n.notificationBudget),
+            subtitle: Text(l10n.budgetPerDay(_budget)),
+            onTap: _pickBudget,
           ),
           const Divider(),
           ListTile(
