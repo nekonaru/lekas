@@ -123,15 +123,27 @@ bool countsAsFreshOverdue({required DateTime deadline, required DateTime now}) {
   return now.isBefore(deadline.add(const Duration(days: 3)));
 }
 
-/// The next 09:00 that is still in the future: when the daily overdue
-/// digest fires (design section 5.22).
-DateTime nextDigestAt(DateTime now) {
-  var moment = DateTime(now.year, now.month, now.day, 9);
+/// True when both moments fall on the same calendar day.
+bool sameCalendarDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+/// Whether [deadline] lands on [day], used by the morning and evening
+/// summaries (design section 5.12).
+bool dueOnDay({required DateTime deadline, required DateTime day}) =>
+    sameCalendarDay(deadline, day);
+
+/// The next time [hour]:[minute] is still in the future.
+DateTime nextMomentAt(DateTime now, int hour, [int minute = 0]) {
+  var moment = DateTime(now.year, now.month, now.day, hour, minute);
   if (!moment.isAfter(now)) {
     moment = moment.add(const Duration(days: 1));
   }
   return moment;
 }
+
+/// The next 09:00 that is still in the future: when the daily overdue
+/// digest fires (design section 5.22).
+DateTime nextDigestAt(DateTime now) => nextMomentAt(now, 9);
 
 /// Reminders closer together than this become one notification.
 const Duration kMergeWindow = Duration(minutes: 10);

@@ -435,5 +435,13 @@
   "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } },
   "overdueDigestBody": "{count} tasks passed their deadline. Tap to review the list.",
   "@overdueDigestBody": { "placeholders": { "count": { "type": "int" } } },
-  "overdueReminderToggle": "One notification a day at 09:00"
+  "overdueReminderToggle": "One notification a day at 09:00",
+  "morningSummaryNotificationTitle": "Morning summary",
+  "morningSummaryMostUrgent": "Most urgent: {title} (due {time})",
+  "@morningSummaryMostUrgent": { "placeholders": { "title": { "type": "String" }, "time": { "type": "String" } } },
+  "summaryMorningToggle": "Sent at 07:00",
+  "eveningSummaryTitle": "Evening wrap-up",
+  "eveningSummaryBody": "{count} tasks are due tomorrow. Check now?",
+  "@eveningSummaryBody": { "placeholders": { "count": { "type": "int" } } },
+  "summaryEveningToggle": "Sent at 20:30 when tasks are due tomorrow"
 }

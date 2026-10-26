@@ -1298,4 +1298,26 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get overdueReminderToggle => 'Satu notifikasi per hari pukul 09.00';
+
+  @override
+  String get morningSummaryNotificationTitle => 'Ringkasan pagi';
+
+  @override
+  String morningSummaryMostUrgent(String title, String time) {
+    return 'Paling mendesak: $title (deadline $time)';
+  }
+
+  @override
+  String get summaryMorningToggle => 'Dikirim pukul 07.00';
+
+  @override
+  String get eveningSummaryTitle => 'Penutup malam';
+
+  @override
+  String eveningSummaryBody(int count) {
+    return 'Ada $count tugas besok. Mau cek sekarang?';
+  }
+
+  @override
+  String get summaryEveningToggle => 'Dikirim pukul 20.30 bila ada tugas besok';
 }

@@ -1296,4 +1296,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overdueReminderToggle => 'One notification a day at 09:00';
+
+  @override
+  String get morningSummaryNotificationTitle => 'Morning summary';
+
+  @override
+  String morningSummaryMostUrgent(String title, String time) {
+    return 'Most urgent: $title (due $time)';
+  }
+
+  @override
+  String get summaryMorningToggle => 'Sent at 07:00';
+
+  @override
+  String get eveningSummaryTitle => 'Evening wrap-up';
+
+  @override
+  String eveningSummaryBody(int count) {
+    return '$count tasks are due tomorrow. Check now?';
+  }
+
+  @override
+  String get summaryEveningToggle =>
+      'Sent at 20:30 when tasks are due tomorrow';
 }

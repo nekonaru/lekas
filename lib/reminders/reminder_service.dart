@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../core/date_util.dart';
 import '../data/models.dart';
 import '../data/class_slot_repository.dart';
 import '../data/providers.dart';
@@ -592,6 +593,124 @@ class ReminderService {
     }
 
     await _syncOverdueDigest(tasks, now, l10n);
+    await _syncSummaries(tasks, now, exceptions, l10n);
+  }
+
+  /// Allocates a notification id that is remembered under [key], so the
+  /// daily summary notifications keep their id across syncs.
+  Future<int> _summarizedNotifId(SettingsRepository settings, String key) async {
+    final stored = int.tryParse(await settings.get(key) ?? '');
+    if (stored != null) return stored;
+    final id = await _nextNotifId(settings);
+    await settings.set('notif_id_seq', '${id + 1}');
+    await settings.set(key, '$id');
+    return id;
+  }
+
+  /// Morning summary at 07:00 and evening wrap-up at 20:30, both computed
+  /// locally (design section 5.12). The evening one only appears when tasks
+  /// are due tomorrow.
+  Future<void> _syncSummaries(
+    List<Task> tasks,
+    DateTime now,
+    List<ClassException> exceptions,
+    AppLocalizations l10n,
+  ) async {
+    final settings = _ref.read(settingsRepositoryProvider);
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
+    final dueToday = <Task>[];
+    final dueTomorrow = <Task>[];
+    for (final task in tasks) {
+      if (task.deletedAt != null ||
+          task.status == 'done' ||
+          task.deadline == null) {
+        continue;
+      }
+      final deadline = DateTime.fromMillisecondsSinceEpoch(task.deadline!);
+      if (dueOnDay(deadline: deadline, day: today)) dueToday.add(task);
+      if (dueOnDay(deadline: deadline, day: tomorrow)) dueTomorrow.add(task);
+    }
+    dueToday.sort((a, b) => (a.deadline ?? 0).compareTo(b.deadline ?? 0));
+    dueTomorrow.sort((a, b) => (a.deadline ?? 0).compareTo(b.deadline ?? 0));
+
+    // Morning summary.
+    final morningOn = await settings.get('summary_morning_enabled') != '0';
+    final morningId =
+        int.tryParse(await settings.get('summary_morning_notif_id') ?? '');
+    if (!morningOn) {
+      if (morningId != null) await _plugin.cancel(morningId);
+    } else {
+      final id = await _summarizedNotifId(settings, 'summary_morning_notif_id');
+      final classes = await _countClassesOn(today, exceptions);
+      final buffer = StringBuffer(
+        l10n.morningSummary(classes, dueToday.length),
+      );
+      if (dueToday.isNotEmpty) {
+        final deadline =
+            DateTime.fromMillisecondsSinceEpoch(dueToday.first.deadline!);
+        final time = DateUtil.formatTime(deadline, l10n.localeName);
+        buffer.write('\n${l10n.morningSummaryMostUrgent(dueToday.first.title, time)}');
+      }
+      await scheduleNotification(
+        id: id,
+        when: nextMomentAt(now, 7),
+        title: l10n.morningSummaryNotificationTitle,
+        body: buffer.toString(),
+        payload: dueToday.isEmpty
+            ? 'task||open'
+            : ReminderPayload(dueToday.first.id, ReminderPayload.actionOpen)
+                .encode(),
+        channelId: kChannelSummary,
+        withActions: false,
+        l10n: l10n,
+      );
+    }
+
+    // Evening wrap-up: only when something is due tomorrow.
+    final eveningOn = await settings.get('summary_evening_enabled') != '0';
+    final eveningId =
+        int.tryParse(await settings.get('summary_evening_notif_id') ?? '');
+    if (!eveningOn || dueTomorrow.isEmpty) {
+      if (eveningId != null) await _plugin.cancel(eveningId);
+      return;
+    }
+    final id = await _summarizedNotifId(settings, 'summary_evening_notif_id');
+    await scheduleNotification(
+      id: id,
+      when: nextMomentAt(now, 20, 30),
+      title: l10n.eveningSummaryTitle,
+      body: l10n.eveningSummaryBody(dueTomorrow.length),
+      payload:
+          ReminderPayload(dueTomorrow.first.id, ReminderPayload.actionOpen)
+              .encode(),
+      channelId: kChannelSummary,
+      withActions: false,
+      l10n: l10n,
+    );
+  }
+
+  /// Class periods of the whole day, counted across every space.
+  Future<int> _countClassesOn(
+    DateTime day,
+    List<ClassException> exceptions,
+  ) async {
+    final slots = await _ref.read(classSlotRepositoryProvider).getAllClassSlots();
+    final bySpace = <String, List<ClassSlot>>{};
+    for (final slot in slots) {
+      bySpace.putIfAbsent(slot.spaceId, () => []).add(slot);
+    }
+    var count = 0;
+    for (final entry in bySpace.entries) {
+      count += classWindowsFor(
+        date: day,
+        spaceId: entry.key,
+        slots: entry.value,
+        exceptions: exceptions,
+      ).length;
+    }
+    return count;
   }
 
   /// One notification a day at 09:00 listing every overdue task

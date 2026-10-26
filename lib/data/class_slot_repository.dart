@@ -17,6 +17,12 @@ class ClassSlotRepository {
         .get();
   }
 
+  /// Every slot of every space, used by the summaries that count the classes
+  /// of a whole day (design section 5.12).
+  Future<List<ClassSlot>> getAllClassSlots() async {
+    return (db.select(db.classSlots)..where((t) => t.deletedAt.isNull())).get();
+  }
+
   Future<void> insertClassSlot(ClassSlot slot) async {
     await db.into(db.classSlots).insert(slot);
   }

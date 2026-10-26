@@ -435,5 +435,13 @@
   "@budgetPerDay": { "placeholders": { "count": { "type": "int" } } },
   "overdueDigestBody": "{count} tugas melewati deadline. Ketuk untuk melihat daftarnya.",
   "@overdueDigestBody": { "placeholders": { "count": { "type": "int" } } },
-  "overdueReminderToggle": "Satu notifikasi per hari pukul 09.00"
+  "overdueReminderToggle": "Satu notifikasi per hari pukul 09.00",
+  "morningSummaryNotificationTitle": "Ringkasan pagi",
+  "morningSummaryMostUrgent": "Paling mendesak: {title} (deadline {time})",
+  "@morningSummaryMostUrgent": { "placeholders": { "title": { "type": "String" }, "time": { "type": "String" } } },
+  "summaryMorningToggle": "Dikirim pukul 07.00",
+  "eveningSummaryTitle": "Penutup malam",
+  "eveningSummaryBody": "Ada {count} tugas besok. Mau cek sekarang?",
+  "@eveningSummaryBody": { "placeholders": { "count": { "type": "int" } } },
+  "summaryEveningToggle": "Dikirim pukul 20.30 bila ada tugas besok"
 }

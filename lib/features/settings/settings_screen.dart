@@ -19,6 +19,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String _intensity = 'normal';
   int _budget = kDailyNotificationBudget;
   bool _overdueDigest = true;
+  bool _morningSummary = true;
+  bool _eveningSummary = true;
 
   @override
   void initState() {
@@ -33,6 +35,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final intensity = await settings.get('reminder_intensity');
     final budget = int.tryParse(await settings.get('notification_budget') ?? '');
     final digest = await settings.get('overdue_digest_enabled');
+    final morning = await settings.get('summary_morning_enabled');
+    final evening = await settings.get('summary_evening_enabled');
     if (!mounted) return;
     setState(() {
       _language = language;
@@ -40,6 +44,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _intensity = intensity ?? 'normal';
       _budget = budget ?? kDailyNotificationBudget;
       _overdueDigest = digest != '0';
+      _morningSummary = morning != '0';
+      _eveningSummary = evening != '0';
     });
   }
 
@@ -148,14 +154,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await ref.read(reminderServiceProvider).syncAll();
   }
 
-  /// Design section 5.22: the daily overdue digest can be switched off.
-  Future<void> _setOverdueDigest(bool value) async {
-    await ref.read(settingsRepositoryProvider).set(
-          'overdue_digest_enabled',
-          value ? '1' : '0',
-        );
+  /// Any daily notification can be switched off (design sections 5.12 and
+  /// 5.22); the flag is stored and the schedule is rebuilt right away.
+  Future<void> _setFlag(
+    String key,
+    bool value,
+    void Function(bool) assign,
+  ) async {
+    await ref.read(settingsRepositoryProvider).set(key, value ? '1' : '0');
     if (!mounted) return;
-    setState(() => _overdueDigest = value);
+    setState(() => assign(value));
     await ref.read(reminderServiceProvider).syncAll();
   }
 
@@ -194,7 +202,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.overdueTaskReminderTitle),
             subtitle: Text(l10n.overdueReminderToggle),
             value: _overdueDigest,
-            onChanged: _setOverdueDigest,
+            onChanged: (value) => _setFlag(
+              'overdue_digest_enabled',
+              value,
+              (next) => _overdueDigest = next,
+            ),
+          ),
+          SwitchListTile(
+            title: Text(l10n.morningSummaryNotificationTitle),
+            subtitle: Text(l10n.summaryMorningToggle),
+            value: _morningSummary,
+            onChanged: (value) => _setFlag(
+              'summary_morning_enabled',
+              value,
+              (next) => _morningSummary = next,
+            ),
+          ),
+          SwitchListTile(
+            title: Text(l10n.eveningSummaryTitle),
+            subtitle: Text(l10n.summaryEveningToggle),
+            value: _eveningSummary,
+            onChanged: (value) => _setFlag(
+              'summary_evening_enabled',
+              value,
+              (next) => _eveningSummary = next,
+            ),
           ),
           const Divider(),
           ListTile(

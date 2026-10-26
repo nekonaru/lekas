@@ -47,6 +47,41 @@ void main() {
     });
   });
 
+  group('summaries (design section 5.12)', () {
+    final day = DateTime(2026, 10, 20, 12);
+
+    test('the next morning summary waits for 07:00', () {
+      expect(nextMomentAt(DateTime(2026, 10, 20, 6, 59), 7),
+          DateTime(2026, 10, 20, 7));
+      expect(nextMomentAt(DateTime(2026, 10, 20, 7, 1), 7),
+          DateTime(2026, 10, 21, 7));
+    });
+
+    test('the evening wrap-up sits at 20:30', () {
+      expect(nextMomentAt(DateTime(2026, 10, 20, 9), 20, 30),
+          DateTime(2026, 10, 20, 20, 30));
+      expect(nextMomentAt(DateTime(2026, 10, 20, 21), 20, 30),
+          DateTime(2026, 10, 21, 20, 30));
+    });
+
+    test('a deadline counts on its own calendar day', () {
+      expect(
+        dueOnDay(
+          deadline: DateTime(2026, 10, 20, 23, 59),
+          day: day,
+        ),
+        isTrue,
+      );
+      expect(
+        dueOnDay(
+          deadline: DateTime(2026, 10, 21, 0, 1),
+          day: day,
+        ),
+        isFalse,
+      );
+    });
+  });
+
   group('daily overdue digest (design section 5.22)', () {
     final now = DateTime(2026, 10, 20, 9);
 

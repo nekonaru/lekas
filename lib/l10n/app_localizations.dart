@@ -2449,6 +2449,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Satu notifikasi per hari pukul 09.00'**
   String get overdueReminderToggle;
+
+  /// No description provided for @morningSummaryNotificationTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan pagi'**
+  String get morningSummaryNotificationTitle;
+
+  /// No description provided for @morningSummaryMostUrgent.
+  ///
+  /// In id, this message translates to:
+  /// **'Paling mendesak: {title} (deadline {time})'**
+  String morningSummaryMostUrgent(String title, String time);
+
+  /// No description provided for @summaryMorningToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim pukul 07.00'**
+  String get summaryMorningToggle;
+
+  /// No description provided for @eveningSummaryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Penutup malam'**
+  String get eveningSummaryTitle;
+
+  /// No description provided for @eveningSummaryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada {count} tugas besok. Mau cek sekarang?'**
+  String eveningSummaryBody(int count);
+
+  /// No description provided for @summaryEveningToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim pukul 20.30 bila ada tugas besok'**
+  String get summaryEveningToggle;
 }
 
 class _AppLocalizationsDelegate
