@@ -1,6 +1,11 @@
 import 'package:drift/drift.dart';
 
-class Space extends DataClass {
+abstract class LekasDataClass extends LekasDataClass {
+  @override
+  Map<String, dynamic> toJson() => {};
+}
+
+class Space extends LekasDataClass {
   final String id;
   final String name;
   final String? code;
@@ -116,7 +121,7 @@ class Space extends DataClass {
   }
 }
 
-class SpaceAlias extends DataClass {
+class SpaceAlias extends LekasDataClass {
   final String spaceId;
   final String alias;
 
@@ -141,7 +146,7 @@ class SpaceAlias extends DataClass {
   }
 }
 
-class SpaceMetaData extends DataClass {
+class SpaceMetaData extends LekasDataClass {
   final String spaceId;
   final String key;
   final String? value;
@@ -169,7 +174,7 @@ class SpaceMetaData extends DataClass {
   }
 }
 
-class Task extends DataClass {
+class Task extends LekasDataClass {
   final String id;
   final String? spaceId;
   final String title;
@@ -335,7 +340,7 @@ class Task extends DataClass {
   }
 }
 
-class Subtask extends DataClass {
+class Subtask extends LekasDataClass {
   final String id;
   final String taskId;
   final String title;
@@ -391,7 +396,7 @@ class Subtask extends DataClass {
   }
 }
 
-class ClassSlot extends DataClass {
+class ClassSlot extends LekasDataClass {
   final String id;
   final String spaceId;
   final int weekday;
@@ -457,7 +462,7 @@ class ClassSlot extends DataClass {
   }
 }
 
-class Tag extends DataClass {
+class Tag extends LekasDataClass {
   final String id;
   final String name;
 
@@ -479,7 +484,7 @@ class Tag extends DataClass {
   }
 }
 
-class TaskTag extends DataClass {
+class TaskTag extends LekasDataClass {
   final String taskId;
   final String tagId;
 
@@ -501,7 +506,7 @@ class TaskTag extends DataClass {
   }
 }
 
-class Attachment extends DataClass {
+class Attachment extends LekasDataClass {
   final String id;
   final String taskId;
   final String kind;
@@ -557,7 +562,7 @@ class Attachment extends DataClass {
   }
 }
 
-class Reminder extends DataClass {
+class Reminder extends LekasDataClass {
   final String id;
   final String? taskId;
   final String? classSlotId;
@@ -618,7 +623,7 @@ class Reminder extends DataClass {
   }
 }
 
-class TaskEvent extends DataClass {
+class TaskEvent extends LekasDataClass {
   final String id;
   final String taskId;
   final String kind;
@@ -674,7 +679,7 @@ class TaskEvent extends DataClass {
   }
 }
 
-class FocusSession extends DataClass {
+class FocusSession extends LekasDataClass {
   final String id;
   final String taskId;
   final int startedAt;
@@ -715,7 +720,7 @@ class FocusSession extends DataClass {
   }
 }
 
-class TaskTemplate extends DataClass {
+class TaskTemplate extends LekasDataClass {
   final String id;
   final String name;
   final String? type;
@@ -766,7 +771,7 @@ class TaskTemplate extends DataClass {
   }
 }
 
-class ParserPref extends DataClass {
+class ParserPref extends LekasDataClass {
   final String key;
   final String? value;
 
@@ -788,7 +793,7 @@ class ParserPref extends DataClass {
   }
 }
 
-class Setting extends DataClass {
+class Setting extends LekasDataClass {
   final String key;
   final String? value;
 
@@ -810,7 +815,7 @@ class Setting extends DataClass {
   }
 }
 
-class TaskDep extends DataClass {
+class TaskDep extends LekasDataClass {
   final String taskId;
   final String dependsOn;
 
@@ -832,7 +837,7 @@ class TaskDep extends DataClass {
   }
 }
 
-class ClassException extends DataClass {
+class ClassException extends LekasDataClass {
   final String id;
   final String? classSlotId;
   final String date;
@@ -903,7 +908,7 @@ class ClassException extends DataClass {
   }
 }
 
-class SpaceItem extends DataClass {
+class SpaceItem extends LekasDataClass {
   final String id;
   final String spaceId;
   final String title;
@@ -959,7 +964,7 @@ class SpaceItem extends DataClass {
   }
 }
 
-class QuickLink extends DataClass {
+class QuickLink extends LekasDataClass {
   final String id;
   final String title;
   final String url;
@@ -1010,7 +1015,7 @@ class QuickLink extends DataClass {
   }
 }
 
-class ClassNote extends DataClass {
+class ClassNote extends LekasDataClass {
   final String id;
   final String spaceId;
   final int? meetingNo;
@@ -1076,7 +1081,7 @@ class ClassNote extends DataClass {
   }
 }
 
-class Diagnostic extends DataClass {
+class Diagnostic extends LekasDataClass {
   final String id;
   final String kind;
   final int createdAt;
@@ -1116,7 +1121,7 @@ class Diagnostic extends DataClass {
   }
 }
 
-class GradeComponent extends DataClass {
+class GradeComponent extends LekasDataClass {
   final String spaceId;
   final String key;
   final double weightPercent;
@@ -1148,7 +1153,7 @@ class GradeComponent extends DataClass {
   }
 }
 
-class SavedFilter extends DataClass {
+class SavedFilter extends LekasDataClass {
   final String id;
   final String name;
   final String queryJson;
