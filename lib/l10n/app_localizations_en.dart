@@ -1361,4 +1361,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get duplicatedToast => 'Task copy created';
+
+  @override
+  String get taskTemplatesTitle => 'Task Templates';
+
+  @override
+  String get emptyTemplates =>
+      'No templates yet. Open a task detail and choose Save as template.';
+
+  @override
+  String templateSummary(int subtasks, int minutes) {
+    return '$subtasks subtasks, $minutes minutes estimated';
+  }
+
+  @override
+  String templateSubtaskCount(int count) {
+    return '$count subtasks';
+  }
+
+  @override
+  String get saveAsTemplate => 'Save as template';
+
+  @override
+  String get templateNameLabel => 'Template name';
+
+  @override
+  String get templateUsedToast => 'New task created from the template';
+
+  @override
+  String get templateSavedToast => 'Template saved';
 }

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'database.dart';
+import 'task_template_repository.dart' show decodeSubtaskTitles;
 
 class TaskRepository {
   final AppDatabase db;
@@ -121,6 +122,48 @@ class TaskRepository {
           );
     }
     return copy;
+  }
+
+  /// Builds a new task from a template: the name, type and estimate are
+  /// copied and every subtask of the template is added, unchecked, so a new
+  /// task comes pre filled (design section 5.9).
+  Future<Task> createFromTemplate(
+    TaskTemplate template, {
+    String? spaceId,
+    int? deadline,
+  }) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final task = Task(
+      id: const Uuid().v4(),
+      spaceId: spaceId,
+      title: template.name,
+      type: template.type,
+      estimateMinutes: template.estimateMinutes,
+      deadline: deadline,
+      priority: 1,
+      status: 'todo',
+      isGroup: false,
+      pinned: false,
+      inbox: spaceId == null,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await insertTask(task);
+
+    var order = 0;
+    for (final title in decodeSubtaskTitles(template.subtasksJson)) {
+      await db.into(db.subtasks).insert(
+            Subtask(
+              id: const Uuid().v4(),
+              taskId: task.id,
+              title: title,
+              done: false,
+              sortOrder: order++,
+              updatedAt: now,
+            ),
+          );
+    }
+    return task;
   }
 
   Stream<List<Task>> watchInbox() {

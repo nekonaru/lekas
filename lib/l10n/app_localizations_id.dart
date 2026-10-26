@@ -1362,4 +1362,33 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get duplicatedToast => 'Salinan tugas dibuat';
+
+  @override
+  String get taskTemplatesTitle => 'Templat Tugas';
+
+  @override
+  String get emptyTemplates =>
+      'Belum ada templat. Buka detail tugas lalu pilih Simpan sebagai templat.';
+
+  @override
+  String templateSummary(int subtasks, int minutes) {
+    return '$subtasks subtugas, estimasi $minutes menit';
+  }
+
+  @override
+  String templateSubtaskCount(int count) {
+    return '$count subtugas';
+  }
+
+  @override
+  String get saveAsTemplate => 'Simpan sebagai templat';
+
+  @override
+  String get templateNameLabel => 'Nama templat';
+
+  @override
+  String get templateUsedToast => 'Tugas baru dibuat dari templat';
+
+  @override
+  String get templateSavedToast => 'Templat disimpan';
 }

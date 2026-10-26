@@ -9,6 +9,7 @@ import '../settings/diagnostic_screen.dart';
 import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/search_filter_screen.dart';
+import '../tasks/task_template_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../inbox/inbox_screen.dart';
@@ -154,6 +155,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             leading: const Icon(Icons.search),
             title: Text(l10n.searchFilterTitle),
             onTap: () => _push(const SearchFilterScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: Text(l10n.taskTemplatesTitle),
+            onTap: () => _push(const TaskTemplateScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.access_time),

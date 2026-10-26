@@ -458,5 +458,15 @@
   "sectionPinned": "Pinned",
   "pinTaskLabel": "Pin to the top of Today",
   "duplicateTask": "Duplicate task",
-  "duplicatedToast": "Task copy created"
+  "duplicatedToast": "Task copy created",
+  "taskTemplatesTitle": "Task Templates",
+  "emptyTemplates": "No templates yet. Open a task detail and choose Save as template.",
+  "templateSummary": "{subtasks} subtasks, {minutes} minutes estimated",
+  "@templateSummary": { "placeholders": { "subtasks": { "type": "int" }, "minutes": { "type": "int" } } },
+  "templateSubtaskCount": "{count} subtasks",
+  "@templateSubtaskCount": { "placeholders": { "count": { "type": "int" } } },
+  "saveAsTemplate": "Save as template",
+  "templateNameLabel": "Template name",
+  "templateUsedToast": "New task created from the template",
+  "templateSavedToast": "Template saved"
 }

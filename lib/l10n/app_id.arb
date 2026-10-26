@@ -458,5 +458,15 @@
   "sectionPinned": "Disematkan",
   "pinTaskLabel": "Sematkan di atas layar Hari Ini",
   "duplicateTask": "Duplikat tugas",
-  "duplicatedToast": "Salinan tugas dibuat"
+  "duplicatedToast": "Salinan tugas dibuat",
+  "taskTemplatesTitle": "Templat Tugas",
+  "emptyTemplates": "Belum ada templat. Buka detail tugas lalu pilih Simpan sebagai templat.",
+  "templateSummary": "{subtasks} subtugas, estimasi {minutes} menit",
+  "@templateSummary": { "placeholders": { "subtasks": { "type": "int" }, "minutes": { "type": "int" } } },
+  "templateSubtaskCount": "{count} subtugas",
+  "@templateSubtaskCount": { "placeholders": { "count": { "type": "int" } } },
+  "saveAsTemplate": "Simpan sebagai templat",
+  "templateNameLabel": "Nama templat",
+  "templateUsedToast": "Tugas baru dibuat dari templat",
+  "templateSavedToast": "Templat disimpan"
 }

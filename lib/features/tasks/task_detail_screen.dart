@@ -189,6 +189,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => _duplicate(task),
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.save_alt),
+                    title: Text(l10n.saveAsTemplate),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _saveAsTemplate(task, subtasks),
+                  ),
                   SwitchListTile(
                     secondary: const Icon(Icons.push_pin),
                     title: Text(l10n.pinTaskLabel),
@@ -283,6 +289,44 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       context,
       MaterialPageRoute(builder: (_) => TaskDetailScreen(taskId: copy.id)),
     );
+  }
+
+  /// Design section 5.9: keep the shape of this task, name and subtasks,
+  /// so the next weekly report starts pre filled.
+  Future<void> _saveAsTemplate(Task task, List<Subtask> subtasks) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(text: task.title);
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.saveAsTemplate),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(labelText: l10n.templateNameLabel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    if (saved != true || controller.text.isEmpty || !mounted) return;
+    await ref.read(taskTemplateRepositoryProvider).saveFromTask(
+          task,
+          controller.text,
+          [for (final subtask in subtasks) subtask.title],
+        );
+    controller.dispose();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.templateSavedToast)));
   }
 
   /// Design section 5.9: free tags, edited as a comma separated list.

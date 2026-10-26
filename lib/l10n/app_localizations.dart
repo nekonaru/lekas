@@ -2557,6 +2557,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Salinan tugas dibuat'**
   String get duplicatedToast;
+
+  /// No description provided for @taskTemplatesTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Templat Tugas'**
+  String get taskTemplatesTitle;
+
+  /// No description provided for @emptyTemplates.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada templat. Buka detail tugas lalu pilih Simpan sebagai templat.'**
+  String get emptyTemplates;
+
+  /// No description provided for @templateSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'{subtasks} subtugas, estimasi {minutes} menit'**
+  String templateSummary(int subtasks, int minutes);
+
+  /// No description provided for @templateSubtaskCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} subtugas'**
+  String templateSubtaskCount(int count);
+
+  /// No description provided for @saveAsTemplate.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan sebagai templat'**
+  String get saveAsTemplate;
+
+  /// No description provided for @templateNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama templat'**
+  String get templateNameLabel;
+
+  /// No description provided for @templateUsedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas baru dibuat dari templat'**
+  String get templateUsedToast;
+
+  /// No description provided for @templateSavedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Templat disimpan'**
+  String get templateSavedToast;
 }
 
 class _AppLocalizationsDelegate
