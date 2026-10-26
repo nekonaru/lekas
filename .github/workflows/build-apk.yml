@@ -40,6 +40,17 @@ jobs:
           sed -i 's#<manifest xmlns:android="http://schemas.android.com/apk/res/android">#<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />#' "$MANIFEST"
           sed -i 's/android:label="lekas"/android:label="Lekas"/' "$MANIFEST"
 
+      - name: Alias Android SDK platform 37.0 as android-37
+        run: |
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "SDK platform dirs:"
+          ls -la "$SDK/platforms" || true
+          if [ ! -e "$SDK/platforms/android-37" ] && [ -d "$SDK/platforms/android-37.0" ]; then
+            sudo ln -sfn android-37.0 "$SDK/platforms/android-37"
+            echo "Created alias android-37 -> android-37.0"
+          fi
+          ls -la "$SDK/platforms"
+
       - name: Install dependencies
         run: flutter pub get
 
