@@ -50,3 +50,7 @@ app.*.map.json
 # Kotlin/Gradle session files
 .kotlin/
 android/.gradle/
+
+# Local-only planning notes (rules.md section 13)
+rules.md
+rancangan.md
