@@ -14,9 +14,10 @@ Terakhir diperbarui: Sun Oct 26 2026
   sudah memakai ARB + `generate: true`. Rancangan bagian 8.2 (dua bahasa lewat ARB) menang
   untuk arsitektur; `rules.md` menang untuk gaya kode, commit, dan push. Kunci ARB hidup di
   `lib/l10n/app_id.arb` dan `app_en.arb`, lalu `flutter gen-l10n` dijalankan.
-- **Banyak layar masih rangka.** Sekitar 66 `onTap: () {}` / `onPressed: () {}` masih kosong
-  (terbanyak di `home_shell.dart` dan layar Fase B). Layar sudah bisa dibuka dan
-  sudah dilokalisasi, tetapi tombolnya belum beraksi. Status jujur per bagian ada di bawah.
+- **Semua tombol sudah beraksi.** Tidak ada lagi `onTap: () {}` / `onPressed: () {}`
+  di `lib/features/` (dari 66 placeholder menjadi 0). Setiap tombol kini membuka layar,
+  dialog, bottom sheet, atau memanggil repository. Pengecualian: Quick Add suara masih
+  menampilkan pesan `featureNotAvailable` karena plugin speech tidak ada di `pubspec.yaml`.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -142,7 +143,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Timer fokus (TimerFokusScreen)
 - [ ] Pin, tag, duplikat, templat
 - [x] Kontak dan tautan kelas (KontakKelasScreen)
-- [x] Quick Add suara (QuickAddSuaraScreen)
+- [ ] Quick Add suara (layarnya ada, input suara butuh plugin speech yang belum ada di pubspec)
 - [x] Pintasan ikon dan Quick Settings (PintasanIkonScreen)
 - [x] Saran waktu kosong (SaranWaktuKosongScreen)
 - [x] Kalender minggu, agenda, ICS (KalenderLengkapScreen)
@@ -168,7 +169,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (363 kunci, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (354 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -274,16 +275,17 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 363 kunci per bahasa
+1. `flutter gen-l10n` - sukses, 354 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
 3. `flutter test` - 149 tes lulus (136 parser, 13 pengingat, urgensi)
-4. `flutter build apk` - sukses, `app-release.apk` 60.7 MB
-5. Push ke `main` dan CI GitHub Actions hijau
+4. `flutter build apk` - sukses, `app-release.apk` 61.9 MB
+5. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
+6. Push ke `main` dan CI GitHub Actions hijau
 
 ## Masalah terbuka (perlu native Android / Flutter)
 
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
-- Sekitar 66 placeholder `onTap: () {}` / `onPressed: () {}` belum beraksi (urutan 1 sisa)
+- Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - database.g.dart ditulis manual, perlu divalidasi dengan build_runner
 - Widget layar utama (home_widget package)
 - Geser kartu dan aksi massal (gesture detector)
