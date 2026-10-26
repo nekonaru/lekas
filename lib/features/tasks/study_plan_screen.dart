@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class StudyPlanScreen extends ConsumerStatefulWidget {
@@ -15,8 +14,8 @@ class _StudyPlanScreenState extends ConsumerState<StudyPlanScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Rencana Belajar Ujian')),
-      body: const Center(child: Text('Rencana belajar otomatis untuk ujian.')),
+      appBar: AppBar(title: Text(l10n.examStudyPlanTitle)),
+      body: Center(child: Text(l10n.examStudyPlanBody)),
     );
   }
 }

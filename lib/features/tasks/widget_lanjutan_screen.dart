@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class WidgetLanjutanScreen extends ConsumerStatefulWidget {
@@ -15,31 +14,31 @@ class _WidgetLanjutanScreenState extends ConsumerState<WidgetLanjutanScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Widget Lanjutan')),
+      appBar: AppBar(title: Text(l10n.advancedWidgetsTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Daftar Tugas'),
-            subtitle: const Text('3-6 baris dengan kotak centang'),
+            title: Text(l10n.taskListTitle),
+            subtitle: Text(l10n.widgetTaskListSubtitle),
             trailing: const Icon(Icons.list),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Kelas Hari Ini'),
-            subtitle: const Text('Jadwal singkat'),
+            title: Text(l10n.widgetTodayClasses),
+            subtitle: Text(l10n.widgetTodayClassesSubtitle),
             trailing: const Icon(Icons.school),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Hitung Mundur Ujian'),
-            subtitle: const Text('Countdown ke ujian berikutnya'),
+            title: Text(l10n.widgetExamCountdown),
+            subtitle: Text(l10n.widgetExamCountdownSubtitle),
             trailing: const Icon(Icons.timer),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Fokus Hari Ini'),
-            subtitle: const Text('Tiga tugas fokus dengan kotak centang'),
+            title: Text(l10n.widgetTodayFocus),
+            subtitle: Text(l10n.widgetTodayFocusSubtitle),
             trailing: const Icon(Icons.star),
             onTap: () {},
           ),

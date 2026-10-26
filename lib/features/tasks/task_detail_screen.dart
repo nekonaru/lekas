@@ -1,14 +1,10 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
-import '../../core/theme.dart';
 import '../../core/date_util.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
-import 'subtask_screen.dart';
 import 'deadline_history_screen.dart';
 import 'submission_screen.dart';
 import 'task_form_sheet.dart';
@@ -70,7 +66,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                             children: [
                               _badge(task.type ?? '-'),
                               const SizedBox(width: 8),
-                              _badge('Prioritas ${_priorityLabel(task.priority)}'),
+                              _badge(
+                                l10n.priorityBadgeLabel(_priorityLabel(task.priority)),
+                              ),
                               const SizedBox(width: 8),
                               _badge(_statusLabel(task.status)),
                             ],
@@ -82,7 +80,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                                 const Icon(Icons.access_time, size: 16),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Deadline: ${DateUtil.formatDateTime(DateTime.fromMillisecondsSinceEpoch(task.deadline!), locale)}',
+                                  l10n.deadlineAtLabel(
+                                    DateUtil.formatDateTime(
+                                      DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+                                      locale,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -93,7 +96,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                               children: [
                                 const Icon(Icons.timer, size: 16),
                                 const SizedBox(width: 8),
-                                Text('Estimasi: ${task.estimateMinutes} menit'),
+                                Text(l10n.estimateMinutesLabel(task.estimateMinutes!)),
                               ],
                             ),
                           ],
@@ -107,13 +110,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       child: Row(
                         children: [
                           Text(
-                            'Subtugas ($doneCount/${subtasks.length})',
+                            l10n.subtaskProgressLabel(doneCount, subtasks.length),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const Spacer(),
                           TextButton(
                             onPressed: () => _addSubtask(context, task.id),
-                            child: const Text('Tambah'),
+                            child: Text(l10n.addLabel),
                           ),
                         ],
                       ),
@@ -131,11 +134,11 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         },
                         secondary: const Icon(Icons.check_box),
                       );
-                    }).toList(),
+                    }),
                   ],
                   const Divider(),
                   ListTile(
-                    title: const Text('Riwayat Deadline'),
+                    title: Text(l10n.deadlineHistoryTitle),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.push(
@@ -147,7 +150,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     },
                   ),
                   ListTile(
-                    title: const Text('Cara Kumpul'),
+                    title: Text(l10n.submissionMethodTitle),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.push(
@@ -159,7 +162,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     },
                   ),
                   ListTile(
-                    title: const Text('Edit Tugas'),
+                    title: Text(l10n.editTask),
                     trailing: const Icon(Icons.edit),
                     onTap: () {
                       showModalBottomSheet(
@@ -180,10 +183,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                           : null);
                   Navigator.pop(context);
                 },
+                tooltip: task.status == 'done' ? l10n.reopenTooltip : l10n.markDoneTooltip,
                 child: Icon(
                   task.status == 'done' ? Icons.restore : Icons.check,
                 ),
-                tooltip: task.status == 'done' ? 'Buka kembali' : 'Tandai selesai',
               ),
             );
           },
@@ -204,43 +207,47 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   }
 
   String _priorityLabel(int priority) {
+    final l10n = AppLocalizations.of(context)!;
     switch (priority) {
-      case 0: return 'Rendah';
-      case 1: return 'Sedang';
-      case 2: return 'Tinggi';
-      default: return 'Sedang';
+      case 0: return l10n.priorityLow;
+      case 1: return l10n.priorityMedium;
+      case 2: return l10n.priorityHigh;
+      default: return l10n.priorityMedium;
     }
   }
 
   String _statusLabel(String status) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
-      case 'todo': return 'Belum';
-      case 'doing': return 'Dikerjakan';
-      case 'revision': return 'Revisi';
-      case 'done': return 'Selesai';
-      default: return 'Belum';
+      case 'todo': return l10n.statusTodo;
+      case 'doing': return l10n.statusDoing;
+      case 'revision': return l10n.statusRevision;
+      case 'done': return l10n.done;
+      default: return l10n.statusTodo;
     }
   }
 
   Future<void> _addSubtask(BuildContext context, String taskId) async {
     final controller = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Tambah Subtugas'),
+        title: Text(l10n.addSubtaskTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Judul subtugas'),
+          decoration: InputDecoration(hintText: l10n.subtaskTitleHint),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () async {
               if (controller.text.isEmpty) return;
+              final navigator = Navigator.of(context);
               await ref.read(subtaskRepositoryProvider).insertSubtask(Subtask(
                 id: const Uuid().v4(),
                 taskId: taskId,
@@ -249,10 +256,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 sortOrder: 0,
                 updatedAt: DateTime.now().millisecondsSinceEpoch,
               ));
-              if (mounted) Navigator.pop(context);
+              navigator.pop();
               if (mounted) setState(() {});
             },
-            child: const Text('Simpan'),
+            child: Text(l10n.save),
           ),
         ],
       ),

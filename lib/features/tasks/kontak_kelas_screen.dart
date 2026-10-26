@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -31,38 +30,38 @@ class _KontakKelasScreenState extends ConsumerState<KontakKelasScreen> {
         final link = '-';
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Kontak dan Tautan Kelas')),
+          appBar: AppBar(title: Text(l10n.classContactsLinksTitle)),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               Text(space.name, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 24),
               ListTile(
-                title: const Text('Dosen / Pengajar'),
+                title: Text(l10n.lecturerLabel),
                 subtitle: Text(lecturer),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Ruangan'),
+                title: Text(l10n.roomLabel),
                 subtitle: Text(room),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Tautan Kelas'),
+                title: Text(l10n.classLinkLabel),
                 subtitle: Text(link),
                 trailing: const Icon(Icons.launch),
                 onTap: () {},
               ),
               const Divider(),
               ListTile(
-                title: const Text('Buka WhatsApp Dosen'),
+                title: Text(l10n.openLecturerWhatsApp),
                 trailing: const Icon(Icons.chat),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Salin Nomor Ruangan'),
+                title: Text(l10n.copyRoomNumber),
                 trailing: const Icon(Icons.copy),
                 onTap: () {},
               ),

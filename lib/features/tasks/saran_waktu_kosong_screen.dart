@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class SaranWaktuKosongScreen extends ConsumerStatefulWidget {
@@ -15,8 +14,8 @@ class _SaranWaktuKosongScreenState extends ConsumerState<SaranWaktuKosongScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Saran Waktu Kosong')),
-      body: const Center(child: Text('Saran celah waktu untuk fokus belajar.')),
+      appBar: AppBar(title: Text(l10n.freeTimeSuggestionTitle)),
+      body: Center(child: Text(l10n.freeTimeSuggestionBody)),
     );
   }
 }

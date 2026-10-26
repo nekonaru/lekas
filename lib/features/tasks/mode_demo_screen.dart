@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class ModeDemoScreen extends ConsumerStatefulWidget {
@@ -15,19 +14,19 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Mode Demo')),
+      appBar: AppBar(title: Text(l10n.demoModeTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Coba dengan Data Contoh'),
-            subtitle: const Text('3 matkul, 8 tugas, jadwal contoh'),
+            title: Text(l10n.trySampleData),
+            subtitle: Text(l10n.trySampleDataSubtitle),
             trailing: const Icon(Icons.description),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Hapus Data Contoh'),
-            subtitle: const Text('Hapus semua data contoh'),
+            title: Text(l10n.deleteSampleData),
+            subtitle: Text(l10n.deleteSampleDataSubtitle),
             trailing: const Icon(Icons.delete),
             onTap: () {},
           ),

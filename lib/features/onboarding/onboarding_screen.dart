@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/theme.dart';
 import '../../data/providers.dart';
@@ -46,9 +45,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                _step == 0
-                    ? 'Lekas membantu kamu mencatat tugas dan deadline kuliah.'
-                    : 'Masukkan nama matkul pertama kamu.',
+                _step == 0 ? l10n.welcomeSubtitle : l10n.enterFirstCourseSubtitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
@@ -70,9 +67,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 const SizedBox(height: 12),
                 TextField(
                   controller: _codeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Kode (opsional)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.spaceCode,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -169,11 +166,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _saveSpace() async {
     final spaceRepo = ref.read(spaceRepositoryProvider);
     final settingsRepo = ref.read(settingsRepositoryProvider);
+    final fallbackName = AppLocalizations.of(context)!.firstCourseFallback;
     final space = Space(
       id: const Uuid().v4(),
-      name: _nameController.text.isEmpty ? 'Matkul Pertama' : _nameController.text,
+      name: _nameController.text.isEmpty ? fallbackName : _nameController.text,
       code: _codeController.text.isEmpty ? null : _codeController.text,
-      color: AppTheme.containerColors[0].value,
+      color: AppTheme.containerColors[0].toARGB32(),
       level: _level,
       kind: 'course',
       archived: false,

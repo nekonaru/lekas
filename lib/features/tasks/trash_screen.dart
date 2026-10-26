@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
-import '../../core/components/undo_snackbar.dart';
 
 class TrashScreen extends ConsumerStatefulWidget {
   const TrashScreen({super.key});
@@ -28,7 +26,7 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
         final deletedTasks = snapshot.data?.where((t) => t.deletedAt != null).toList() ?? [];
 
         if (deletedTasks.isEmpty) {
-          return const Center(child: Text('Sampah kosong.'));
+          return Center(child: Text(l10n.emptyTrash));
         }
 
         return ListView.builder(
@@ -37,7 +35,11 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
             final task = deletedTasks[index];
             return ListTile(
               title: Text(task.title),
-              subtitle: Text('Dihapus: ${DateTime.fromMillisecondsSinceEpoch(task.deletedAt!)}'),
+              subtitle: Text(
+                l10n.deletedAtLabel(
+                  DateTime.fromMillisecondsSinceEpoch(task.deletedAt!).toString(),
+                ),
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

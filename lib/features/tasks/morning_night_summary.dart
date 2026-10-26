@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/intl.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/date_util.dart';
@@ -18,11 +16,10 @@ class _MorningNightSummaryScreenState extends ConsumerState<MorningNightSummaryS
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final locale = Localizations.localeOf(context).languageCode;
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ringkasan Pagi dan Malam')),
+      appBar: AppBar(title: Text(l10n.morningNightSummaryTitle)),
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(includeInbox: false),
         builder: (context, snapshot) {
@@ -49,22 +46,23 @@ class _MorningNightSummaryScreenState extends ConsumerState<MorningNightSummaryS
             children: [
               const SizedBox(height: 40),
               Text(
-                'Ringkasan Hari Ini',
+                l10n.todaySummary,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              _summaryCard(context, 'Tugas hari ini', todayTasks.toString(), Icons.today),
+              _summaryCard(context, l10n.todayTasksLabel, todayTasks.toString(), Icons.today),
               const SizedBox(height: 12),
-              _summaryCard(context, 'Tugas besok', tomorrowTasks.toString(), Icons.calendar_today),
+              _summaryCard(context, l10n.tomorrowTasksLabel, tomorrowTasks.toString(),
+                  Icons.calendar_today),
               const SizedBox(height: 12),
-              _summaryCard(context, 'Tugas terlambat', overdue.toString(), Icons.warning),
+              _summaryCard(
+                  context, l10n.overdueTasksLabel, overdue.toString(), Icons.warning),
               const SizedBox(height: 40),
-              const Text(
-                'Ringkasan pagi dikirim pukul 07.00\n'
-                'Penutup malam dikirim pukul 20.30',
+              Text(
+                l10n.summaryScheduleNote,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ],
           );

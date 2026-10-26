@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class PetaBebanScreen extends ConsumerStatefulWidget {
@@ -15,8 +14,8 @@ class _PetaBebanScreenState extends ConsumerState<PetaBebanScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Peta Beban Mingguan')),
-      body: const Center(child: Text('Peta beban mingguan dan jam efektif tersedia.')),
+      appBar: AppBar(title: Text(l10n.weeklyLoadMapTitle)),
+      body: Center(child: Text(l10n.weeklyLoadMapBody)),
     );
   }
 }

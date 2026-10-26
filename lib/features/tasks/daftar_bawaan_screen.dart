@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class DaftarBawaanScreen extends ConsumerStatefulWidget {
@@ -15,20 +14,20 @@ class _DaftarBawaanScreenState extends ConsumerState<DaftarBawaanScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar Bawaan per Matkul')),
+      appBar: AppBar(title: Text(l10n.defaultChecklistTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Laptop'),
+            title: Text(l10n.checklistLaptop),
             trailing: Checkbox(value: false, onChanged: (v) {}),
           ),
           ListTile(
-            title: const Text('Kabel LAN'),
+            title: Text(l10n.checklistLanCable),
             trailing: Checkbox(value: false, onChanged: (v) {}),
           ),
           ListTile(
-            title: const Text('Laprak Cetak'),
+            title: Text(l10n.checklistPrintReport),
             trailing: Checkbox(value: false, onChanged: (v) {}),
           ),
         ],

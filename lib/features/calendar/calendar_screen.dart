@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -29,10 +28,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.chevron_left),
+            tooltip: l10n.previousMonth,
             onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1)),
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right),
+            tooltip: l10n.nextMonth,
             onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1)),
           ),
         ],

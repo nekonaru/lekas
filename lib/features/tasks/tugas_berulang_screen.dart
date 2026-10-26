@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class TugasBerulangScreen extends ConsumerStatefulWidget {
@@ -15,25 +14,25 @@ class _TugasBerulangScreenState extends ConsumerState<TugasBerulangScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Tugas Berulang Sederhana')),
+      appBar: AppBar(title: Text(l10n.simpleRecurringTasksTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Harian'),
-            subtitle: const Text('Setiap hari'),
+            title: Text(l10n.repeatDaily),
+            subtitle: Text(l10n.repeatDailySubtitle),
             trailing: const Icon(Icons.repeat),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Mingguan'),
-            subtitle: const Text('Hari tertentu setiap minggu'),
+            title: Text(l10n.repeatWeekly),
+            subtitle: Text(l10n.repeatWeeklySubtitle),
             trailing: const Icon(Icons.repeat),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Bulanan'),
-            subtitle: const Text('Tanggal tertentu setiap bulan'),
+            title: Text(l10n.repeatMonthly),
+            subtitle: Text(l10n.repeatMonthlySubtitle),
             trailing: const Icon(Icons.repeat),
             onTap: () {},
           ),

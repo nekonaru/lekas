@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -28,7 +27,7 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
     final repo = ref.watch(savedFilterRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tampilan Tersimpan')),
+      appBar: AppBar(title: Text(l10n.savedViewsTitle)),
       body: FutureBuilder<List<SavedFilter>>(
         future: repo.getSavedFilters(),
         builder: (context, snapshot) {
@@ -55,20 +54,21 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Simpan Tampilan'),
+              title: Text(l10n.saveViewTitle),
               content: TextField(
                 controller: _nameController,
                 autofocus: true,
-                decoration: const InputDecoration(labelText: 'Nama tampilan'),
+                decoration: InputDecoration(labelText: l10n.viewNameLabel),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal'),
+                  child: Text(l10n.cancel),
                 ),
                 TextButton(
                   onPressed: () async {
                     if (_nameController.text.isEmpty) return;
+                    final navigator = Navigator.of(context);
                     await repo.insertSavedFilter(SavedFilter(
                       id: const Uuid().v4(),
                       name: _nameController.text,
@@ -76,10 +76,10 @@ class _SavedFilterScreenState extends ConsumerState<SavedFilterScreen> {
                       sortOrder: 0,
                       updatedAt: DateTime.now().millisecondsSinceEpoch,
                     ));
-                    if (mounted) Navigator.pop(context);
+                    navigator.pop();
                     if (mounted) setState(() {});
                   },
-                  child: const Text('Simpan'),
+                  child: Text(l10n.save),
                 ),
               ],
             ),

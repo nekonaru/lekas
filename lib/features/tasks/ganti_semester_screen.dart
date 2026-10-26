@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -26,39 +25,40 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final repo = ref.watch(spaceRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ganti Semester')),
+      appBar: AppBar(title: Text(l10n.changeSemesterTitle)),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Semester Baru', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(l10n.newSemester,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             TextField(
               controller: _periodController,
-              decoration: const InputDecoration(
-                labelText: 'Contoh: Ganjil 2026/2027',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.semesterPeriodExample,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
-            const Text('Pilih opsi untuk tugas belum selesai:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(l10n.unfinishedTasksOptionsLabel,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             ListTile(
-              title: const Text('Biarkan di arsip'),
+              title: Text(l10n.keepInArchive),
               leading: const Icon(Icons.archive),
               onTap: () {},
             ),
             ListTile(
-              title: const Text('Pindahkan ke wadah baru'),
+              title: Text(l10n.moveToNewSpace),
               leading: const Icon(Icons.folder_copy),
               onTap: () {},
             ),
             ListTile(
-              title: const Text('Hapus'),
+              title: Text(l10n.deleteLabel),
               leading: const Icon(Icons.delete, color: Colors.red),
               onTap: () {},
             ),
@@ -66,19 +66,23 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
             ElevatedButton(
               onPressed: () async {
                 final repo = ref.read(spaceRepositoryProvider);
+                final period = _periodController.text.isEmpty
+                    ? l10n.newSemester
+                    : _periodController.text;
                 await repo.insertSpace(Space(
                   id: const Uuid().v4(),
-                  name: _periodController.text.isEmpty ? 'Semester Baru' : _periodController.text,
-                  period: _periodController.text.isEmpty ? 'Semester Baru' : _periodController.text,
-                  color: AppTheme.containerColors[0].value,
+                  name: period,
+                  period: period,
+                  color: AppTheme.containerColors[0].toARGB32(),
                   kind: 'course',
                   archived: false,
                   createdAt: DateTime.now().millisecondsSinceEpoch,
                   updatedAt: DateTime.now().millisecondsSinceEpoch,
                 ));
-                if (mounted) Navigator.pop(context);
+                if (!context.mounted) return;
+                Navigator.pop(context);
               },
-              child: const Text('Buat Semester Baru'),
+              child: Text(l10n.createNewSemester),
             ),
           ],
         ),

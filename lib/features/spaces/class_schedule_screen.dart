@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -20,7 +19,6 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
   final _endController = TextEditingController();
   final _roomController = TextEditingController();
 
-  final weekdays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
   int _selectedWeekday = 1;
 
   @override
@@ -34,10 +32,20 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
     final repo = ref.watch(classSlotRepositoryProvider);
+    final weekdays = [
+      l10n.monday,
+      l10n.tuesday,
+      l10n.wednesday,
+      l10n.thursday,
+      l10n.friday,
+      l10n.saturday,
+      l10n.sunday,
+    ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Jadwal Kelas')),
+      appBar: AppBar(title: Text(l10n.classScheduleTitle)),
       body: FutureBuilder<List<ClassSlot>>(
         future: repo.getClassSlots(widget.spaceId),
         builder: (context, snapshot) {
@@ -65,24 +73,24 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                     const SizedBox(height: 12),
                     TextField(
                       controller: _startController,
-                      decoration: const InputDecoration(labelText: 'Jam Mulai (HH:MM)'),
+                      decoration: InputDecoration(labelText: l10n.startTimeLabel),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: _endController,
-                      decoration: const InputDecoration(labelText: 'Jam Selesai (HH:MM)'),
+                      decoration: InputDecoration(labelText: l10n.endTimeLabel),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: _roomController,
-                      decoration: const InputDecoration(labelText: 'Ruangan'),
+                      decoration: InputDecoration(labelText: l10n.roomLabel),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
                         TextButton(
                           onPressed: () {},
-                          child: const Text('Batal'),
+                          child: Text(l10n.cancel),
                         ),
                         const Spacer(),
                         ElevatedButton(
@@ -101,7 +109,7 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                             ));
                             if (mounted) setState(() {});
                           },
-                          child: const Text('Tambah'),
+                          child: Text(l10n.addLabel),
                         ),
                       ],
                     ),
@@ -110,15 +118,17 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
               ),
               Expanded(
                 child: slots.isEmpty
-                    ? const Center(child: Text('Belum ada jadwal kelas.'))
+                    ? Center(child: Text(l10n.emptyClassSchedule))
                     : ListView.builder(
                         itemCount: slots.length,
                         itemBuilder: (context, index) {
                           final slot = slots[index];
                           final start = DateUtil.formatTime(
-                            DateTime(2026, 1, 1, slot.startMin ~/ 60, slot.startMin % 60), 'id');
+                            DateTime(2026, 1, 1, slot.startMin ~/ 60, slot.startMin % 60),
+                            locale);
                           final end = DateUtil.formatTime(
-                            DateTime(2026, 1, 1, slot.endMin ~/ 60, slot.endMin % 60), 'id');
+                            DateTime(2026, 1, 1, slot.endMin ~/ 60, slot.endMin % 60),
+                            locale);
                           return ListTile(
                             title: Text('${weekdays[slot.weekday - 1]}: $start - $end'),
                             subtitle: Text(slot.room ?? '-'),

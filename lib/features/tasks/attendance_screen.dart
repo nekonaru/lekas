@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -28,7 +27,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
         final space = snapshot.data!;
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Kehadiran')),
+          appBar: AppBar(title: Text(l10n.attendanceTitle)),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -36,45 +35,46 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
               const SizedBox(height: 16),
               Card(
                 child: ListTile(
-                  title: const Text('Hadir'),
-                  trailing: Text('9 / 11', style: const TextStyle(fontSize: 20)),
+                  title: Text(l10n.presentLabel),
+                  trailing: const Text('9 / 11', style: TextStyle(fontSize: 20)),
                 ),
               ),
               const SizedBox(height: 8),
               Card(
                 child: ListTile(
-                  title: const Text('Sisa Jatah Absen'),
-                  trailing: Text('2', style: const TextStyle(fontSize: 20, color: Colors.orange)),
+                  title: Text(l10n.remainingAbsenceQuota),
+                  trailing:
+                      const Text('2', style: TextStyle(fontSize: 20, color: Colors.orange)),
                 ),
               ),
               const Divider(),
               ListTile(
-                title: const Text('Hadir'),
+                title: Text(l10n.presentLabel),
                 trailing: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Tandai'),
+                  child: Text(l10n.markLabel),
                 ),
               ),
               ListTile(
-                title: const Text('Absen'),
+                title: Text(l10n.absentLabel),
                 trailing: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Tandai'),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: Text(l10n.markLabel),
                 ),
               ),
               ListTile(
-                title: const Text('Izin'),
+                title: Text(l10n.excusedLabel),
                 trailing: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Tandai'),
+                  child: Text(l10n.markLabel),
                 ),
               ),
               ListTile(
-                title: const Text('Sakit'),
+                title: Text(l10n.sickLabel),
                 trailing: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Tandai'),
+                  child: Text(l10n.markLabel),
                 ),
               ),
             ],

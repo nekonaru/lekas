@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class ImporJadwalOCRScreen extends ConsumerStatefulWidget {
@@ -15,8 +14,8 @@ class _ImporJadwalOCRScreenState extends ConsumerState<ImporJadwalOCRScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Impor Jadwal dari Tangkapan Layar')),
-      body: const Center(child: Text('Impor jadwal KRS dari tangkapan layar atau teks portal.')),
+      appBar: AppBar(title: Text(l10n.importScheduleOcrTitle)),
+      body: Center(child: Text(l10n.importScheduleOcrBody)),
     );
   }
 }

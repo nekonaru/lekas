@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../today/today_screen.dart';
 import '../inbox/inbox_screen.dart';
 import '../spaces/spaces_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../settings/settings_screen.dart';
-import '../tasks/morning_night_summary.dart';
-import '../tasks/overdue_reminder_screen.dart';
-import '../tasks/search_filter_screen.dart';
-import '../tasks/attachment_screen.dart';
-import '../tasks/prediksi_nilai_screen.dart';
-import '../tasks/tunda_smart_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class HomeShell extends StatefulWidget {
@@ -27,7 +20,6 @@ class _HomeShellState extends State<HomeShell> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final l10n = AppLocalizations.of(context)!;
     _pages = [
       TodayScreen(),
       InboxScreen(),
@@ -67,43 +59,43 @@ class _HomeShellState extends State<HomeShell> {
           ),
           ListTile(
             leading: const Icon(Icons.add_circle),
-            title: const Text('Tambah Tugas Cepat'),
+            title: Text(l10n.quickAddMenuLabel),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.snooze),
-            title: const Text('Tunda Cerdas'),
+            title: Text(l10n.smartSnoozeLabel),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.search),
-            title: const Text('Pencarian dan Penyaring'),
+            title: Text(l10n.searchFilterTitle),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.access_time),
-            title: const Text('Ringkasan Pagi/Malam'),
+            title: Text(l10n.morningNightSummaryShort),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.warning),
-            title: const Text('Tugas Terlambat'),
+            title: Text(l10n.overdueTasksMenuLabel),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.file_download),
-            title: const Text('Ekspor Cadangan'),
+            title: Text(l10n.exportBackupShort),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.file_upload),
-            title: const Text('Impor Cadangan'),
+            title: Text(l10n.importBackupShort),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.notifications),
-            title: const Text('Cek Pengingat'),
+            title: Text(l10n.checkReminder),
             onTap: () {},
           ),
         ],

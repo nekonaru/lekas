@@ -1,23 +1,23 @@
 import 'dart:math';
 import '../core/scoring_config.dart';
 
-/// Menghitung skor urgensi tugas untuk pengurutan dalam bagian layar Hari Ini.
-/// Skor dihitung saat ditampilkan, tidak disimpan di database.
+/// Computes the urgency score of a task for sorting inside the Today screen.
+/// The score is computed at display time and never stored in the database.
 ///
-/// Rumus dasar:
-///   Skor = (U x uw) + P + (B x bw) + (T x tFactor)
+/// Base formula:
+///   score = (U x uw) + P + (B x bw) + (T x tFactor)
 ///
-///   U = 100 x e^(-jam_tersisa / 48)        (maks 100)
-///   P = rendah 0 | sedang 10 | tinggi 25
-///   B = bobot_persen x 0.6                  (maks sekitar 30)
-///   T = estimasi_jam / jam_efektif_tersisa  (dibatasi 0 sampai 2)
+///   U = 100 x e^(-hours_left / 48)              (max 100)
+///   P = low 0 | medium 10 | high 25
+///   B = weight_percent x 0.6                    (max about 30)
+///   T = estimate_hours / effective_hours_left   (clamped between 0 and 2)
 ///
-/// Penyesuaian dari fitur tambahan:
-/// - Jadwal kuliah diisi: jam kuliah dikurangkan dari jam efektif
-/// - Subtugas ada: estimasi sisa waktu untuk T dikurangi sesuai persentase selesai
-/// - Target pribadi ada: komponen U dihitung dari target selesai, bukan deadline resmi
-/// - Bobot komponen diisi: komponen B memakai bobot efektif
-/// - Tugas menunggu tugas lain: tidak ikut diurutkan (bagian Menunggu)
+/// Adjustments from the extra features:
+/// - Class schedule filled in: class hours are subtracted from effective hours
+/// - Subtasks exist: the remaining estimate for T shrinks with the progress
+/// - Personal target exists: U uses the target date instead of the deadline
+/// - Component weight filled in: B uses the effective weight
+/// - Task waits for another task: not sorted (Waiting section)
 
 double urgencyScore({
   required DateTime now,
@@ -27,20 +27,20 @@ double urgencyScore({
   double? weightPercent,
   int? estimateMinutes,
   int? remainingEstimateMinutes,
-  double? effectiveHoursAvailable, // jam efektif tersisa (dari jadwal kuliah, dll.)
-  double? subtaskProgress, // 0.0 sampai 1.0
+  double? effectiveHoursAvailable, // effective hours left (from class schedule, etc.)
+  double? subtaskProgress, // 0.0 to 1.0
   bool useTargetForUrgency = false,
-  double? effectiveWeightPercent, // bobot efektif dari 5.18
+  double? effectiveWeightPercent, // effective weight from design 5.18
 }) {
-  // Tugas tanpa deadline dan tanpa target: skor 0
+  // No deadline and no target: score 0
   if (deadline == null && targetAt == null) return 0;
 
-  // Tentukan waktu referensi untuk komponen U (deadline atau target)
+  // Pick the reference time for component U (deadline or target)
   final referenceTime = useTargetForUrgency && targetAt != null ? targetAt : deadline;
   if (referenceTime == null) return 0;
 
   final hoursLeft = referenceTime.difference(now).inMinutes / 60.0;
-  if (hoursLeft <= 0) return 0; // terlambat dipakai bagian Terlambat terpisah
+  if (hoursLeft <= 0) return 0; // late tasks live in the separate Overdue section
 
   final u = 100 * exp(-hoursLeft / 48);
 
@@ -50,12 +50,12 @@ double urgencyScore({
           ? ScoringConfig.pMed
           : ScoringConfig.pHigh;
 
-  // Komponen B: bobot efektif bila tersedia, bobot manual bila tidak
+  // Component B: effective weight when available, manual weight otherwise
   final b = (effectiveWeightPercent ?? weightPercent ?? 0) * ScoringConfig.bFactor;
 
   double t = 0;
   if (estimateMinutes != null && estimateMinutes > 0) {
-    // Jika ada subtugas, kurangi estimasi sisa waktu sesuai progres
+    // With subtasks, shrink the remaining estimate by the progress made
     final effectiveEstimate = estimateMinutes;
     final remaining = remainingEstimateMinutes ?? effectiveEstimate;
     final remainingAfterProgress = subtaskProgress != null
@@ -74,7 +74,7 @@ double urgencyScore({
   return (u * uw) + p + (b * bw) + (t * ScoringConfig.tFactor);
 }
 
-/// Kembalikan bagian layar tempat tugas seharusnya tampil berdasarkan status dan kondisi.
+/// The screen section where a task should appear, based on status and conditions.
 enum TaskSection { today, overdue, doing, upcoming, thisWeek, waiting, someday, inbox }
 
 TaskSection classifySection({
@@ -87,7 +87,7 @@ TaskSection classifySection({
   bool isPinned = false,
 }) {
   if (status == 'doing') return TaskSection.doing;
-  if (isPinned) return TaskSection.today; // pin muncul di bagian atas
+  if (isPinned) return TaskSection.today; // pinned tasks show at the top
   if (isOverdue) return TaskSection.overdue;
   if (deadline == null && targetAt == null) return TaskSection.someday;
   if (isWaiting) return TaskSection.waiting;

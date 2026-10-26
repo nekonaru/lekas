@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -19,7 +18,7 @@ class _DuplicateDetectionScreenState extends ConsumerState<DuplicateDetectionScr
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Deteksi Duplikat')),
+      appBar: AppBar(title: Text(l10n.duplicateDetectionTitle)),
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(includeInbox: false),
         builder: (context, snapshot) {
@@ -33,7 +32,7 @@ class _DuplicateDetectionScreenState extends ConsumerState<DuplicateDetectionScr
               final task = tasks[index];
               return ListTile(
                 title: Text(task.title),
-                subtitle: Text('Deteksi duplikat untuk tugas ini'),
+                subtitle: Text(l10n.duplicateDetectionItemSubtitle),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               );

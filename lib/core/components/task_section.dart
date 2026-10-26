@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/models.dart';
 import '../../domain/urgency.dart';
 import '../../core/date_util.dart';
-import '../../l10n/app_localizations.dart';
 
 enum TodaySection {
   overdue,
@@ -114,7 +111,7 @@ class TaskSection extends StatelessWidget {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('${score.toStringAsFixed(0)}'),
+                  Text(score.toStringAsFixed(0)),
                   const SizedBox(width: 8),
                   const Icon(Icons.chevron_right),
                 ],
@@ -122,7 +119,7 @@ class TaskSection extends StatelessWidget {
               onTap: onTaskTap != null ? () => onTaskTap!(task) : null,
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }

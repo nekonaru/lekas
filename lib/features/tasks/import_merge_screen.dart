@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../../data/providers.dart';
@@ -20,15 +19,16 @@ class _ImportMergeScreenState extends ConsumerState<ImportMergeScreen> {
     final backup = ref.watch(backupServiceProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Impor Gabung')),
+      appBar: AppBar(title: Text(l10n.mergeImportTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Impor dan Gabung Cadangan'),
-            subtitle: const Text('Gabungkan data dari cadangan dengan data saat ini'),
+            title: Text(l10n.importAndMergeBackup),
+            subtitle: Text(l10n.importAndMergeBackupSubtitle),
             trailing: const Icon(Icons.file_upload),
             onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
               final result = await FilePicker.platform.pickFiles(
                 type: FileType.any,
                 allowedExtensions: ['json'],
@@ -37,17 +37,14 @@ class _ImportMergeScreenState extends ConsumerState<ImportMergeScreen> {
                 final file = File(result.files.single.path!);
                 try {
                   final stats = await backup.importFromJson(file, mode: 'merge');
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Digabung: ${stats['tasks'] ?? 0} tugas')),
-                    );
-                  }
+                  final merged = int.tryParse('${stats['tasks']}') ?? 0;
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.mergedTasks(merged))),
+                  );
                 } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Gagal: $e')),
-                    );
-                  }
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.actionFailed('$e'))),
+                  );
                 }
               }
             },

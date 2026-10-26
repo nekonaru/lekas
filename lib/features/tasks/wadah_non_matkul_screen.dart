@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class WadahNonMatkulScreen extends ConsumerStatefulWidget {
@@ -15,31 +14,31 @@ class _WadahNonMatkulScreenState extends ConsumerState<WadahNonMatkulScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Wadah Non-Matkul')),
+      appBar: AppBar(title: Text(l10n.nonCourseSpaceTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Organisasi'),
-            subtitle: const Text('Organisasi kampus'),
+            title: Text(l10n.orgSpace),
+            subtitle: Text(l10n.orgSpaceSubtitle),
             trailing: const Icon(Icons.group),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Proyek'),
-            subtitle: const Text('Proyek kampus'),
+            title: Text(l10n.projectSpace),
+            subtitle: Text(l10n.projectSpaceSubtitle),
             trailing: const Icon(Icons.work),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Pribadi'),
-            subtitle: const Text('Kegiatan pribadi'),
+            title: Text(l10n.personalSpace),
+            subtitle: Text(l10n.personalSpaceSubtitle),
             trailing: const Icon(Icons.person),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Lainnya'),
-            subtitle: const Text('Wadah lainnya'),
+            title: Text(l10n.otherSpace),
+            subtitle: Text(l10n.otherSpaceSubtitle),
             trailing: const Icon(Icons.folder),
             onTap: () {},
           ),

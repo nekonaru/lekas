@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -18,32 +17,33 @@ class _BackupAutoScreenState extends ConsumerState<BackupAutoScreen> {
     final backup = ref.watch(backupServiceProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadangan Otomatis')),
+      appBar: AppBar(title: Text(l10n.autoBackupTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Cadangan Mingguan'),
-            subtitle: const Text('Cadangan otomatis ke folder yang dipilih'),
+            title: Text(l10n.weeklyBackup),
+            subtitle: Text(l10n.weeklyBackupSubtitle),
             trailing: const Icon(Icons.schedule),
             onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
               final folder = await backup.pickBackupFolder();
-              if (folder != null && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Folder cadangan: $folder')),
+              if (folder != null) {
+                messenger.showSnackBar(
+                  SnackBar(content: Text(l10n.backupFolderPicked(folder))),
                 );
               }
             },
           ),
           ListTile(
-            title: const Text('Simpan 4 Cadangan Terakhir'),
-            subtitle: const Text('Cadangan lebih lama akan dihapus otomatis'),
+            title: Text(l10n.keepLast4Backups),
+            subtitle: Text(l10n.keepLast4BackupsSubtitle),
             trailing: const Icon(Icons.history),
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Peringatan Bila > 14 Hari'),
-            subtitle: const Text('Peringatkan bila cadangan terakhir lebih dari 14 hari'),
+            title: Text(l10n.warnOlderThan14Days),
+            subtitle: Text(l10n.warnOlderThan14DaysSubtitle),
             trailing: const Icon(Icons.warning),
             onTap: () {},
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/task_repository.dart';
 import '../../data/models.dart';
@@ -29,26 +28,26 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
         final task = snapshot.data!;
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Tunda Pengingat')),
+          appBar: AppBar(title: Text(l10n.snoozeReminderTitle)),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               Text(task.title, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 24),
-              const Text('Pilih waktu tunda:'),
+              Text(l10n.pickSnoozeTimeLabel),
               const SizedBox(height: 16),
-              _tundaButton(context, '1 jam', Duration(hours: 1), repo, task),
+              _tundaButton(context, l10n.oneHourLabel, Duration(hours: 1), repo, task),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Nanti malam 19.00', null, repo, task,
+              _tundaButton(context, l10n.tonight7pmLabel, null, repo, task,
                   customTime: const TimeOfDay(hour: 19, minute: 0)),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Besok pagi 07.00', null, repo, task,
+              _tundaButton(context, l10n.tomorrow7amLabel, null, repo, task,
                   customTime: const TimeOfDay(hour: 7, minute: 0),
                   isTomorrow: true),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Akhir pekan', null, repo, task),
+              _tundaButton(context, l10n.weekendLabel, null, repo, task),
               const SizedBox(height: 8),
-              _tundaButton(context, 'Pilih waktu', null, repo, task),
+              _tundaButton(context, l10n.pickTimeLabel, null, repo, task),
             ],
           ),
         );
@@ -83,7 +82,8 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
                   updatedAt: DateTime.now().millisecondsSinceEpoch,
                 ),
               );
-          if (mounted) Navigator.pop(context);
+          if (!context.mounted) return;
+          Navigator.pop(context, fireAt);
         },
       ),
     );

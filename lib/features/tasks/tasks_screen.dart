@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import '../../core/theme.dart';
-import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 
 class TasksScreen extends ConsumerStatefulWidget {
@@ -17,8 +14,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar Tugas')),
-      body: const Center(child: Text('Daftar tugas.')),
+      appBar: AppBar(title: Text(l10n.taskListTitle)),
+      body: Center(child: Text(l10n.taskListBody)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.add),

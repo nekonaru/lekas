@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -40,32 +39,32 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
         final task = snapshot.data!;
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Cara Kumpul')),
+          appBar: AppBar(title: Text(l10n.submissionMethodTitle)),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               DropdownButtonFormField<String>(
-                value: _submitMethod,
-                decoration: const InputDecoration(labelText: 'Cara Kumpul'),
-                items: const [
-                  DropdownMenuItem(value: 'email', child: Text('Email')),
-                  DropdownMenuItem(value: 'lms', child: Text('LMS / Classroom')),
-                  DropdownMenuItem(value: 'paper', child: Text('Kertas / Hard Copy')),
-                  DropdownMenuItem(value: 'drive', child: Text('Google Drive')),
-                  DropdownMenuItem(value: 'other', child: Text('Lainnya')),
+                initialValue: _submitMethod,
+                decoration: InputDecoration(labelText: l10n.submissionMethodLabel),
+                items: [
+                  const DropdownMenuItem(value: 'email', child: Text('Email')),
+                  const DropdownMenuItem(value: 'lms', child: Text('LMS / Classroom')),
+                  DropdownMenuItem(value: 'paper', child: Text(l10n.submitMethodPaper)),
+                  const DropdownMenuItem(value: 'drive', child: Text('Google Drive')),
+                  DropdownMenuItem(value: 'other', child: Text(l10n.othersLabel)),
                 ],
                 onChanged: (v) => setState(() => _submitMethod = v),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _submitTargetController,
-                decoration: const InputDecoration(labelText: 'Tujuan (email, kelas LMS, ruangan)'),
+                decoration: InputDecoration(labelText: l10n.submitTargetLabel),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _filenamePatternController,
-                decoration: const InputDecoration(
-                  labelText: 'Pola Nama Berkas',
+                decoration: InputDecoration(
+                  labelText: l10n.filenamePatternLabel,
                   hintText: '{nim}_{nama}_{matkul}_{judul}',
                 ),
               ),
@@ -74,11 +73,12 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Batal'),
+                    child: Text(l10n.cancel),
                   ),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () async {
+                      final navigator = Navigator.of(context);
                       await repo.updateTask(task.copyWith(
                         submitMethod: Value(_submitMethod),
                         submitTarget: Value(_submitTargetController.text.isEmpty
@@ -89,9 +89,9 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
                             : _filenamePatternController.text),
                         updatedAt: DateTime.now().millisecondsSinceEpoch,
                       ));
-                      if (mounted) Navigator.pop(context);
+                      navigator.pop();
                     },
-                    child: const Text('Simpan'),
+                    child: Text(l10n.save),
                   ),
                 ],
               ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/date_util.dart';
@@ -22,7 +21,7 @@ class _DeadlineHistoryScreenState extends ConsumerState<DeadlineHistoryScreen> {
     final repo = ref.watch(taskEventRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Riwayat Deadline')),
+      appBar: AppBar(title: Text(l10n.deadlineHistoryTitle)),
       body: FutureBuilder<List<TaskEvent>>(
         future: repo.getTaskEvents(widget.taskId),
         builder: (context, snapshot) {
@@ -32,7 +31,7 @@ class _DeadlineHistoryScreenState extends ConsumerState<DeadlineHistoryScreen> {
           final events = snapshot.data?.where((e) => e.kind == 'deadline_changed').toList() ?? [];
 
           if (events.isEmpty) {
-            return const Center(child: Text('Belum ada riwayat perubahan deadline.'));
+            return Center(child: Text(l10n.emptyDeadlineHistory));
           }
 
           return ListView.builder(
@@ -40,7 +39,12 @@ class _DeadlineHistoryScreenState extends ConsumerState<DeadlineHistoryScreen> {
             itemBuilder: (context, index) {
               final event = events[index];
               return ListTile(
-                title: Text('${event.oldValue ?? '-'} → ${event.newValue ?? '-'}'),
+                title: Text(
+                  l10n.deadlineChangeLabel(
+                    event.oldValue ?? '-',
+                    event.newValue ?? '-',
+                  ),
+                ),
                 subtitle: Text(
                   '${DateUtil.formatDateTime(DateTime.fromMillisecondsSinceEpoch(event.createdAt), locale)}\n${event.note ?? ''}',
                 ),

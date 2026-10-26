@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -29,7 +28,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
     final repo = ref.watch(subtaskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Subtugas')),
+      appBar: AppBar(title: Text(l10n.subtasksTitle)),
       body: FutureBuilder<List<Subtask>>(
         future: repo.getSubtasks(widget.taskId),
         builder: (context, snapshot) {
@@ -39,7 +38,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
           final subtasks = snapshot.data ?? [];
 
           if (subtasks.isEmpty) {
-            return const Center(child: Text('Belum ada subtugas.'));
+            return Center(child: Text(l10n.noSubtasksYet));
           }
 
           return ListView.builder(
@@ -63,7 +62,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                         await showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Edit Subtugas'),
+                            title: Text(l10n.editSubtaskTitle),
                             content: TextField(
                               controller: _titleController,
                               autofocus: true,
@@ -71,18 +70,19 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Batal'),
+                                child: Text(l10n.cancel),
                               ),
                               TextButton(
                                 onPressed: () async {
+                                  final navigator = Navigator.of(context);
                                   await repo.updateSubtask(subtask.copyWith(
                                     title: _titleController.text,
                                     updatedAt: DateTime.now().millisecondsSinceEpoch,
                                   ));
-                                  if (mounted) Navigator.pop(context);
+                                  navigator.pop();
                                   if (mounted) setState(() {});
                                 },
-                                child: const Text('Simpan'),
+                                child: Text(l10n.save),
                               ),
                             ],
                           ),

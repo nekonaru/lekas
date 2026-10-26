@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -26,10 +24,10 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final tasks = snapshot.data?.where((t) => t.inbox == 1).toList() ?? [];
+        final tasks = snapshot.data?.where((t) => t.inbox).toList() ?? [];
 
         if (tasks.isEmpty) {
-          return const Center(child: Text('Belum ada catatan.'));
+          return Center(child: Text(l10n.emptyInboxNote));
         }
 
         return ListView.builder(
@@ -38,7 +36,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
             final task = tasks[index];
             return ListTile(
               title: Text(task.title),
-              subtitle: Text(task.notes ?? 'Tanpa catatan'),
+              subtitle: Text(task.notes ?? l10n.noNotesLabel),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(

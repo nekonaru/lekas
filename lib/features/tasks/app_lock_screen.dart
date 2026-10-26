@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class AppLockScreen extends ConsumerStatefulWidget {
@@ -15,21 +14,21 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Kunci Aplikasi')),
+      appBar: AppBar(title: Text(l10n.appLockTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           ListTile(
-            title: const Text('Aktifkan Kunci Aplikasi'),
-            subtitle: const Text('Sidik jari atau PIN'),
+            title: Text(l10n.enableAppLock),
+            subtitle: Text(l10n.appLockMethod),
             trailing: Switch(
               value: false,
               onChanged: (v) {},
             ),
           ),
           ListTile(
-            title: const Text('Tema Mode SMA'),
-            subtitle: const Text('Ubah terminologi ke SMA'),
+            title: Text(l10n.schoolModeTheme),
+            subtitle: Text(l10n.schoolModeThemeSubtitle),
             trailing: Switch(
               value: false,
               onChanged: (v) {},

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../../data/providers.dart';
@@ -22,7 +21,7 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
     final repo = ref.watch(attachmentRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Lampiran')),
+      appBar: AppBar(title: Text(l10n.attachmentsTitle)),
       body: FutureBuilder<List<Attachment>>(
         future: repo.getAttachments(widget.taskId),
         builder: (context, snapshot) {

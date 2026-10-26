@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -44,21 +43,21 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                       ),
                       const SizedBox(height: 8),
                       if (space.code != null)
-                        Text('Kode: ${space.code}'),
+                        Text(l10n.spaceCodeValue(space.code!)),
                       if (space.level != null)
-                        Text('Jenjang: ${space.level}'),
+                        Text(l10n.spaceLevelValue(space.level!)),
                       if (space.period != null)
-                        Text('Semester: ${space.period}'),
+                        Text(l10n.spacePeriodValue(space.period!)),
                       if (space.sks != null)
-                        Text('SKS: ${space.sks}'),
+                        Text(l10n.spaceSksValue('${space.sks}')),
                       if (space.targetGrade != null)
-                        Text('Target Nilai: ${space.targetGrade}'),
+                        Text(l10n.spaceTargetGradeValue('${space.targetGrade}')),
                     ],
                   ),
                 ),
               ),
               ListTile(
-                title: const Text('Jadwal Kelas'),
+                title: Text(l10n.classScheduleTitle),
                 leading: const Icon(Icons.schedule),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
@@ -71,37 +70,37 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 },
               ),
               ListTile(
-                title: const Text('Tugas'),
+                title: Text(l10n.tasksMenuLabel),
                 leading: const Icon(Icons.task),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Kehadiran'),
+                title: Text(l10n.attendanceTitle),
                 leading: const Icon(Icons.check_circle),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Bobot Komponen'),
+                title: Text(l10n.componentWeightLabel),
                 leading: const Icon(Icons.percent),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Catatan Pertemuan'),
+                title: Text(l10n.meetingNotesTitle),
                 leading: const Icon(Icons.note),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Kontak dan Tautan Kelas'),
+                title: Text(l10n.classContactsLinksTitle),
                 leading: const Icon(Icons.contact_phone),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               ListTile(
-                title: const Text('Daftar Bawaan'),
+                title: Text(l10n.defaultChecklistShort),
                 leading: const Icon(Icons.inventory),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},

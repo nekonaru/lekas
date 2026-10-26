@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -23,7 +22,7 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Target Pribadi')),
+      appBar: AppBar(title: Text(l10n.personalTargetTitle)),
       body: FutureBuilder<Task>(
         future: repo.getTask(widget.taskId),
         builder: (context, snapshot) {
@@ -38,10 +37,10 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
               Text(task.title, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 24),
               ListTile(
-                title: const Text('Target Selesai'),
+                title: Text(l10n.targetCompletionDate),
                 subtitle: Text(_targetAt != null
                     ? '${_targetAt!.day}/${_targetAt!.month}/${_targetAt!.year}'
-                    : 'Belum diatur'),
+                    : l10n.notSetYet),
                 trailing: const Icon(Icons.calendar_today),
                 onTap: () async {
                   final date = await showDatePicker(
@@ -61,18 +60,19 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Batal'),
+                    child: Text(l10n.cancel),
                   ),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () async {
+                      final navigator = Navigator.of(context);
                       await repo.updateTask(task.copyWith(
                         targetAt: Value(_targetAt?.millisecondsSinceEpoch),
                         updatedAt: DateTime.now().millisecondsSinceEpoch,
                       ));
-                      if (mounted) Navigator.pop(context);
+                      navigator.pop();
                     },
-                    child: const Text('Simpan'),
+                    child: Text(l10n.save),
                   ),
                 ],
               ),

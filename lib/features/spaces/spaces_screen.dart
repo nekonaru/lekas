@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import 'space_detail_screen.dart';
-import 'class_schedule_screen.dart';
 
 class SpacesScreen extends ConsumerStatefulWidget {
   const SpacesScreen({super.key});
@@ -51,8 +49,8 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           }
           final spaces = snapshot.data ?? [];
           if (spaces.isEmpty) {
-            return const Center(
-              child: Text('Belum ada wadah (matkul).'),
+            return Center(
+              child: Text(l10n.emptySpaces),
             );
           }
           return ListView.builder(
@@ -117,18 +115,19 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           TextButton(
             onPressed: () async {
               if (_nameController.text.isEmpty) return;
+              final navigator = Navigator.of(context);
               final repo = ref.read(spaceRepositoryProvider);
               await repo.insertSpace(Space(
                 id: const Uuid().v4(),
                 name: _nameController.text,
                 code: _codeController.text.isEmpty ? null : _codeController.text,
-                color: AppTheme.containerColors[0].value,
+                color: AppTheme.containerColors[0].toARGB32(),
                 kind: 'course',
                 archived: false,
                 createdAt: DateTime.now().millisecondsSinceEpoch,
                 updatedAt: DateTime.now().millisecondsSinceEpoch,
               ));
-              if (mounted) Navigator.pop(context);
+              navigator.pop();
               setState(() {});
             },
             child: Text(l10n.save),

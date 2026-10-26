@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/date_util.dart';
@@ -22,7 +21,7 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ujian dan Materi Belajar')),
+      appBar: AppBar(title: Text(l10n.examStudyMaterialsTitle)),
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(spaceId: widget.spaceId),
         builder: (context, snapshot) {
@@ -33,7 +32,7 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
               t.type == 'quiz' || t.type == 'midterm' || t.type == 'final').toList() ?? [];
 
           if (exams.isEmpty) {
-            return const Center(child: Text('Belum ada ujian.'));
+            return Center(child: Text(l10n.noExamsYet));
           }
 
           return ListView.builder(
@@ -43,9 +42,7 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
               final deadline = exam.deadline != null
                   ? DateTime.fromMillisecondsSinceEpoch(exam.deadline!)
                   : null;
-              final daysLeft = deadline != null
-                  ? deadline.difference(DateTime.now()).inDays
-                  : null;
+              final daysLeft = deadline?.difference(DateTime.now()).inDays;
 
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -53,16 +50,19 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
                   title: Text(exam.title),
                   subtitle: Text(
                     deadline != null
-                        ? '${DateUtil.formatDate(deadline!, 'id')}\n${daysLeft!} hari lagi'
-                        : 'Kapan-kapan',
+                        ? '${DateUtil.formatDate(deadline, locale)}\n${l10n.daysRemaining(daysLeft!)}'
+                        : l10n.examNoDeadline,
                   ),
                   trailing: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        exam.type == 'quiz' ? 'Kuis' :
-                        exam.type == 'midterm' ? 'UTS' : 'UAS',
+                        exam.type == 'quiz'
+                            ? l10n.quizLabel
+                            : exam.type == 'midterm'
+                                ? l10n.midtermLabel
+                                : l10n.finalExamLabel,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       if (daysLeft != null && daysLeft < 14)

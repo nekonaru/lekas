@@ -12,7 +12,7 @@ class BackupService {
 
   static const String backupVersion = '1.0';
 
-  /// Ekspor semua data ke berkas JSON.
+  /// Exports all data to a JSON file.
   Future<File> exportToJson() async {
     final data = <String, dynamic>{};
     data['version'] = backupVersion;
@@ -50,7 +50,7 @@ class BackupService {
     return file;
   }
 
-  /// Impor data dari berkas JSON. Mode: 'replace' (timpa) atau 'merge' (gabung).
+  /// Imports data from a JSON file. Mode is 'replace' or 'merge'.
   Future<Map<String, int>> importFromJson(File file, {String mode = 'replace'}) async {
     final jsonString = await file.readAsString();
     final data = jsonDecode(jsonString) as Map<String, dynamic>;
@@ -255,7 +255,7 @@ class BackupService {
     return stats;
   }
 
-  /// Pilih folder untuk cadangan otomatis (Storage Access Framework).
+  /// Picks the folder used for automatic backups (Storage Access Framework).
   Future<String?> pickBackupFolder() async {
     final result = await FilePicker.platform.getDirectoryPath();
     return result;

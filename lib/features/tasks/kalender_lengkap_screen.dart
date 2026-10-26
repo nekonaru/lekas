@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class KalenderLengkapScreen extends ConsumerStatefulWidget {
@@ -18,20 +17,20 @@ class _KalenderLengkapScreenState extends ConsumerState<KalenderLengkapScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Kalender Lengkap'),
-          bottom: const TabBar(
+          title: Text(l10n.fullCalendarTitle),
+          bottom: TabBar(
             tabs: [
-              Tab(text: 'Bulan', icon: Icon(Icons.calendar_month)),
-              Tab(text: 'Minggu', icon: Icon(Icons.calendar_view_week)),
-              Tab(text: 'Agenda', icon: Icon(Icons.schedule)),
+              Tab(text: l10n.tabMonth, icon: const Icon(Icons.calendar_month)),
+              Tab(text: l10n.tabWeek, icon: const Icon(Icons.calendar_view_week)),
+              Tab(text: l10n.tabAgenda, icon: const Icon(Icons.schedule)),
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            Center(child: Text('Tampilan bulan')),
-            Center(child: Text('Tampilan minggu')),
-            Center(child: Text('Agenda kronologis')),
+            Center(child: Text(l10n.monthView)),
+            Center(child: Text(l10n.weekView)),
+            Center(child: Text(l10n.agendaView)),
           ],
         ),
       ),

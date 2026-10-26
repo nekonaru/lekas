@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:drift/drift.dart' show Value;
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -22,7 +21,7 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pengingat Tugas Terlambat')),
+      appBar: AppBar(title: Text(l10n.overdueTaskReminderTitle)),
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(includeInbox: false),
         builder: (context, snapshot) {
@@ -37,7 +36,7 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
               DateTime.fromMillisecondsSinceEpoch(t.deadline!).isBefore(today)).toList() ?? [];
 
           if (overdue.isEmpty) {
-            return const Center(child: Text('Tidak ada tugas terlambat.'));
+            return Center(child: Text(l10n.noOverdueTasks));
           }
 
           return ListView.builder(
@@ -52,7 +51,10 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
                 child: ListTile(
                   title: Text(task.title),
                   subtitle: Text(
-                    'Terlambat $daysLate hari. Deadline: ${DateUtil.formatDate(deadline, locale)}',
+                    l10n.overdueDaysLabel(
+                      daysLate,
+                      DateUtil.formatDate(deadline, locale),
+                    ),
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -62,11 +64,11 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
                           await repo.markDone(task.id);
                           if (mounted) setState(() {});
                         },
-                        child: const Text('Selesai'),
+                        child: Text(l10n.done),
                       ),
                       TextButton(
                         onPressed: () => _resetDeadline(context, task),
-                        child: const Text('Atur ulang'),
+                        child: Text(l10n.resetDeadlineLabel),
                       ),
                     ],
                   ),

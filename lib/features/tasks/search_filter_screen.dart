@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -29,35 +28,37 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pencarian dan Penyaring')),
+      appBar: AppBar(title: Text(l10n.searchFilterTitle)),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Cari judul atau catatan',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                labelText: l10n.searchTitleOrNotesLabel,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
           const Divider(),
           ListTile(
-            title: const Text('Penyaring'),
-            subtitle: const Text('Wadah, jenis, status'),
+            title: Text(l10n.filterLabel),
+            subtitle: Text(l10n.filterSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {},
           ),
           Expanded(
             child: FutureBuilder<List<Task>>(
-              future: repo.getTasks(includeInbox: false),
+              future: repo.getTasks(spaceId: _spaceFilter, includeInbox: false),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final tasks = snapshot.data ?? [];
+                final tasks = (snapshot.data ?? [])
+                    .where((t) => _typeFilter == null || t.type == _typeFilter)
+                    .toList();
                 return ListView.builder(
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {

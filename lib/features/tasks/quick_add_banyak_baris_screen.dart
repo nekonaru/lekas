@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 class QuickAddBanyakBarisScreen extends ConsumerStatefulWidget {
@@ -23,7 +22,7 @@ class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisS
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Quick Add Banyak Baris')),
+      appBar: AppBar(title: Text(l10n.multiLineQuickAddTitle)),
       body: Column(
         children: [
           Expanded(
@@ -33,9 +32,9 @@ class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisS
                 controller: _textController,
                 maxLines: null,
                 expands: true,
-                decoration: const InputDecoration(
-                  labelText: 'Tempel beberapa baris (satu baris = satu tugas)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.pasteMultipleLinesLabel,
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -47,10 +46,10 @@ class _QuickAddBanyakBarisScreenState extends ConsumerState<QuickAddBanyakBarisS
                 if (_textController.text.isEmpty) return;
                 final lines = _textController.text.split('\n');
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${lines.length} tugas akan dibuat')),
+                  SnackBar(content: Text(l10n.tasksWillBeCreated(lines.length))),
                 );
               },
-              child: const Text('Buat Tugas'),
+              child: Text(l10n.createTasks),
             ),
           ),
         ],

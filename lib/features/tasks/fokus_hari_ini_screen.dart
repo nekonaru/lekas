@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -19,7 +18,7 @@ class _FokusHariIniScreenState extends ConsumerState<FokusHariIniScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Fokus Hari Ini')),
+      appBar: AppBar(title: Text(l10n.todayFocusTitle)),
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(includeInbox: false),
         builder: (context, snapshot) {

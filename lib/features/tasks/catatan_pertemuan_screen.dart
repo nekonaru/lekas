@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -31,7 +30,7 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
     final repo = ref.watch(classNoteRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Catatan Pertemuan')),
+      appBar: AppBar(title: Text(l10n.meetingNotesTitle)),
       body: Column(
         children: [
           Padding(
@@ -40,12 +39,12 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
               children: [
                 TextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'Judul catatan'),
+                  decoration: InputDecoration(labelText: l10n.noteTitleLabel),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _bodyController,
-                  decoration: const InputDecoration(labelText: 'Isi catatan'),
+                  decoration: InputDecoration(labelText: l10n.noteBodyLabel),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 12),
@@ -64,7 +63,7 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
                     _bodyController.clear();
                     if (mounted) setState(() {});
                   },
-                  child: const Text('Simpan'),
+                  child: Text(l10n.save),
                 ),
               ],
             ),
@@ -78,14 +77,14 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
                 }
                 final notes = snapshot.data ?? [];
                 if (notes.isEmpty) {
-                  return const Center(child: Text('Belum ada catatan pertemuan.'));
+                  return Center(child: Text(l10n.noMeetingNotesYet));
                 }
                 return ListView.builder(
                   itemCount: notes.length,
                   itemBuilder: (context, index) {
                     final note = notes[index];
                     return ListTile(
-                      title: Text(note.title ?? 'Tanpa judul'),
+                      title: Text(note.title ?? l10n.untitledNote),
                       subtitle: Text(note.body ?? ''),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {},
