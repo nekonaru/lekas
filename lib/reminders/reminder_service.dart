@@ -594,6 +594,7 @@ class ReminderService {
 
     await _syncOverdueDigest(tasks, now, l10n);
     await _syncSummaries(tasks, now, exceptions, l10n);
+    await _syncWeeklySummary(tasks, now, l10n);
   }
 
   /// Allocates a notification id that is remembered under [key], so the
@@ -711,6 +712,88 @@ class ReminderService {
       ).length;
     }
     return count;
+  }
+
+  /// Weekly summary on Sunday night: on time finishes, the busiest course of
+  /// the week ahead and the age of the last backup (design section 13,
+  /// "Minggu malam").
+  Future<void> _syncWeeklySummary(
+    List<Task> tasks,
+    DateTime now,
+    AppLocalizations l10n,
+  ) async {
+    final settings = _ref.read(settingsRepositoryProvider);
+    final enabled = await settings.get('summary_weekly_enabled') != '0';
+    final storedId =
+        int.tryParse(await settings.get('summary_weekly_notif_id') ?? '');
+    if (!enabled) {
+      if (storedId != null) await _plugin.cancel(storedId);
+      return;
+    }
+
+    final onTime = tasks
+        .where(
+          (task) => finishedOnTimeThisWeek(
+            now: now,
+            completedAt: task.completedAt == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(task.completedAt!),
+            deadline: task.deadline == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+          ),
+        )
+        .length;
+
+    final weekStart = nextWeekStart(now);
+    final busiest = busiestSpace(
+      tasks: [
+        for (final task in tasks)
+          (
+            spaceId: task.spaceId,
+            deadline: task.deadline == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+          ),
+      ],
+      from: weekStart,
+      to: weekStart.add(const Duration(days: 7)),
+    );
+
+    final lines = <String>[l10n.weeklySummaryOnTime(onTime)];
+    if (busiest != null) {
+      final spaces = await _ref.read(spaceRepositoryProvider).getSpaces();
+      String? name;
+      for (final space in spaces) {
+        if (space.id == busiest.spaceId) {
+          name = space.name;
+          break;
+        }
+      }
+      if (name != null) {
+        lines.add(l10n.weeklySummaryBusiest(name, busiest.count));
+      }
+    }
+
+    final backupAt =
+        int.tryParse(await settings.get('last_backup_at') ?? '');
+    if (backupAt != null) {
+      final days =
+          now.difference(DateTime.fromMillisecondsSinceEpoch(backupAt)).inDays;
+      lines.add(l10n.weeklySummaryBackup(days < 0 ? 0 : days));
+    }
+
+    final id = await _summarizedNotifId(settings, 'summary_weekly_notif_id');
+    await scheduleNotification(
+      id: id,
+      when: nextWeeklySummaryAt(now),
+      title: l10n.weeklySummaryTitle,
+      body: lines.join('\n'),
+      payload: 'task||open',
+      channelId: kChannelSummary,
+      withActions: false,
+      l10n: l10n,
+    );
   }
 
   /// One notification a day at 09:00 listing every overdue task

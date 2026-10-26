@@ -1320,4 +1320,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get summaryEveningToggle => 'Dikirim pukul 20.30 bila ada tugas besok';
+
+  @override
+  String get weeklySummaryTitle => 'Ringkasan minggu';
+
+  @override
+  String weeklySummaryOnTime(int count) {
+    return '$count tugas selesai tepat waktu minggu ini.';
+  }
+
+  @override
+  String weeklySummaryBusiest(String name, int count) {
+    return 'Matkul terpadat minggu depan: $name ($count tugas).';
+  }
+
+  @override
+  String weeklySummaryBackup(int days) {
+    return 'Cadangan terakhir $days hari lalu.';
+  }
+
+  @override
+  String get summaryWeeklyToggle => 'Minggu malam pukul 20.30';
 }

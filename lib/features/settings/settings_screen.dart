@@ -21,6 +21,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _overdueDigest = true;
   bool _morningSummary = true;
   bool _eveningSummary = true;
+  bool _weeklySummary = true;
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final digest = await settings.get('overdue_digest_enabled');
     final morning = await settings.get('summary_morning_enabled');
     final evening = await settings.get('summary_evening_enabled');
+    final weekly = await settings.get('summary_weekly_enabled');
     if (!mounted) return;
     setState(() {
       _language = language;
@@ -46,6 +48,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _overdueDigest = digest != '0';
       _morningSummary = morning != '0';
       _eveningSummary = evening != '0';
+      _weeklySummary = weekly != '0';
     });
   }
 
@@ -226,6 +229,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               'summary_evening_enabled',
               value,
               (next) => _eveningSummary = next,
+            ),
+          ),
+          SwitchListTile(
+            title: Text(l10n.weeklySummaryTitle),
+            subtitle: Text(l10n.summaryWeeklyToggle),
+            value: _weeklySummary,
+            onChanged: (value) => _setFlag(
+              'summary_weekly_enabled',
+              value,
+              (next) => _weeklySummary = next,
             ),
           ),
           const Divider(),

@@ -47,6 +47,90 @@ void main() {
     });
   });
 
+  group('weekly summary (design note "Minggu malam")', () {
+    test('the next weekly summary is a Sunday at 20:30', () {
+      expect(
+        nextWeeklySummaryAt(DateTime(2026, 10, 21, 12)),
+        DateTime(2026, 10, 25, 20, 30),
+      );
+      expect(
+        nextWeeklySummaryAt(DateTime(2026, 10, 25, 19)),
+        DateTime(2026, 10, 25, 20, 30),
+      );
+      expect(
+        nextWeeklySummaryAt(DateTime(2026, 10, 25, 21)),
+        DateTime(2026, 11, 1, 20, 30),
+      );
+    });
+
+    test('the week ahead starts on the coming Monday', () {
+      expect(nextWeekStart(DateTime(2026, 10, 21, 12)),
+          DateTime(2026, 10, 26));
+      expect(nextWeekStart(DateTime(2026, 10, 26, 8)),
+          DateTime(2026, 11, 2));
+    });
+
+    test('on time means finished before the deadline in the last week', () {
+      final now = DateTime(2026, 10, 26, 12);
+      expect(
+        finishedOnTimeThisWeek(
+          now: now,
+          completedAt: DateTime(2026, 10, 25, 10),
+          deadline: DateTime(2026, 10, 26, 23, 59),
+        ),
+        isTrue,
+      );
+      expect(
+        finishedOnTimeThisWeek(
+          now: now,
+          completedAt: DateTime(2026, 10, 25, 10),
+          deadline: DateTime(2026, 10, 24, 23, 59),
+        ),
+        isFalse,
+      );
+      expect(
+        finishedOnTimeThisWeek(
+          now: now,
+          completedAt: DateTime(2026, 10, 10, 10),
+          deadline: DateTime(2026, 10, 20, 23, 59),
+        ),
+        isFalse,
+      );
+      expect(
+        finishedOnTimeThisWeek(now: now, completedAt: null, deadline: null),
+        isFalse,
+      );
+    });
+
+    test('the busiest course only counts deadlines of the week ahead', () {
+      final from = DateTime(2026, 10, 26);
+      final to = DateTime(2026, 11, 2);
+      final busiest = busiestSpace(
+        tasks: [
+          (spaceId: 'a', deadline: DateTime(2026, 10, 27)),
+          (spaceId: 'a', deadline: DateTime(2026, 10, 28)),
+          (spaceId: 'b', deadline: DateTime(2026, 10, 30)),
+          (spaceId: 'a', deadline: DateTime(2026, 11, 3)),
+          (spaceId: null, deadline: DateTime(2026, 10, 27)),
+          (spaceId: 'b', deadline: null),
+        ],
+        from: from,
+        to: to,
+      );
+      expect(busiest, isNotNull);
+      expect(busiest!.spaceId, 'a');
+      expect(busiest.count, 2);
+      expect(
+        busiestSpace(
+          tasks: [(spaceId: 'a', deadline: DateTime(2026, 10, 20))],
+          from: from,
+          to: to,
+        ),
+        isNull,
+      );
+    });
+  });
+
   group('summaries (design section 5.12)', () {
     final day = DateTime(2026, 10, 20, 12);
 

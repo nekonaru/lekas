@@ -2485,6 +2485,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dikirim pukul 20.30 bila ada tugas besok'**
   String get summaryEveningToggle;
+
+  /// No description provided for @weeklySummaryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan minggu'**
+  String get weeklySummaryTitle;
+
+  /// No description provided for @weeklySummaryOnTime.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas selesai tepat waktu minggu ini.'**
+  String weeklySummaryOnTime(int count);
+
+  /// No description provided for @weeklySummaryBusiest.
+  ///
+  /// In id, this message translates to:
+  /// **'Matkul terpadat minggu depan: {name} ({count} tugas).'**
+  String weeklySummaryBusiest(String name, int count);
+
+  /// No description provided for @weeklySummaryBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan terakhir {days} hari lalu.'**
+  String weeklySummaryBackup(int days);
+
+  /// No description provided for @summaryWeeklyToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu malam pukul 20.30'**
+  String get summaryWeeklyToggle;
 }
 
 class _AppLocalizationsDelegate

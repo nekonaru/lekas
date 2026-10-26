@@ -145,6 +145,58 @@ DateTime nextMomentAt(DateTime now, int hour, [int minute = 0]) {
 /// digest fires (design section 5.22).
 DateTime nextDigestAt(DateTime now) => nextMomentAt(now, 9);
 
+/// The next Sunday 20:30 that is still in the future: the weekly summary
+/// of the design notes ("Minggu malam").
+DateTime nextWeeklySummaryAt(DateTime now) {
+  final current = nextMomentAt(now, 20, 30);
+  if (current.weekday == DateTime.sunday) return current;
+  final ahead = (DateTime.sunday - current.weekday + 7) % 7;
+  return DateTime(current.year, current.month, current.day + ahead, 20, 30);
+}
+
+/// True when a task was finished on time within the last seven days, the
+/// figure the weekly summary reports.
+bool finishedOnTimeThisWeek({
+  required DateTime now,
+  required DateTime? completedAt,
+  required DateTime? deadline,
+}) {
+  if (completedAt == null || deadline == null) return false;
+  if (completedAt.isAfter(deadline)) return false;
+  return !completedAt.isBefore(now.subtract(const Duration(days: 7)));
+}
+
+/// The space with the most deadlines in [from, to), or null when nothing is
+/// due: the busiest course of the week ahead.
+({String spaceId, int count})? busiestSpace({
+  required Iterable<({String? spaceId, DateTime? deadline})> tasks,
+  required DateTime from,
+  required DateTime to,
+}) {
+  final counts = <String, int>{};
+  for (final task in tasks) {
+    final spaceId = task.spaceId;
+    final deadline = task.deadline;
+    if (spaceId == null || deadline == null) continue;
+    if (deadline.isBefore(from) || !deadline.isBefore(to)) continue;
+    counts[spaceId] = (counts[spaceId] ?? 0) + 1;
+  }
+  ({String spaceId, int count})? best;
+  for (final entry in counts.entries) {
+    if (best == null || entry.value > best.count) {
+      best = (spaceId: entry.key, count: entry.value);
+    }
+  }
+  return best;
+}
+
+/// Monday 00:00 of the week that starts next, used to look ahead.
+DateTime nextWeekStart(DateTime now) {
+  final today = DateTime(now.year, now.month, now.day);
+  final ahead = (DateTime.monday - today.weekday + 7) % 7;
+  return today.add(Duration(days: ahead == 0 ? 7 : ahead));
+}
+
 /// Reminders closer together than this become one notification.
 const Duration kMergeWindow = Duration(minutes: 10);
 

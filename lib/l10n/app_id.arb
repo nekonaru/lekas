@@ -443,5 +443,13 @@
   "eveningSummaryTitle": "Penutup malam",
   "eveningSummaryBody": "Ada {count} tugas besok. Mau cek sekarang?",
   "@eveningSummaryBody": { "placeholders": { "count": { "type": "int" } } },
-  "summaryEveningToggle": "Dikirim pukul 20.30 bila ada tugas besok"
+  "summaryEveningToggle": "Dikirim pukul 20.30 bila ada tugas besok",
+  "weeklySummaryTitle": "Ringkasan minggu",
+  "weeklySummaryOnTime": "{count} tugas selesai tepat waktu minggu ini.",
+  "@weeklySummaryOnTime": { "placeholders": { "count": { "type": "int" } } },
+  "weeklySummaryBusiest": "Matkul terpadat minggu depan: {name} ({count} tugas).",
+  "@weeklySummaryBusiest": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
+  "weeklySummaryBackup": "Cadangan terakhir {days} hari lalu.",
+  "@weeklySummaryBackup": { "placeholders": { "days": { "type": "int" } } },
+  "summaryWeeklyToggle": "Minggu malam pukul 20.30"
 }

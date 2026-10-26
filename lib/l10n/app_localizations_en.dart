@@ -1319,4 +1319,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get summaryEveningToggle =>
       'Sent at 20:30 when tasks are due tomorrow';
+
+  @override
+  String get weeklySummaryTitle => 'Weekly summary';
+
+  @override
+  String weeklySummaryOnTime(int count) {
+    return '$count tasks finished on time this week.';
+  }
+
+  @override
+  String weeklySummaryBusiest(String name, int count) {
+    return 'Busiest course next week: $name ($count tasks).';
+  }
+
+  @override
+  String weeklySummaryBackup(int days) {
+    return 'Last backup $days days ago.';
+  }
+
+  @override
+  String get summaryWeeklyToggle => 'Sunday night at 20:30';
 }

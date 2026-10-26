@@ -443,5 +443,13 @@
   "eveningSummaryTitle": "Evening wrap-up",
   "eveningSummaryBody": "{count} tasks are due tomorrow. Check now?",
   "@eveningSummaryBody": { "placeholders": { "count": { "type": "int" } } },
-  "summaryEveningToggle": "Sent at 20:30 when tasks are due tomorrow"
+  "summaryEveningToggle": "Sent at 20:30 when tasks are due tomorrow",
+  "weeklySummaryTitle": "Weekly summary",
+  "weeklySummaryOnTime": "{count} tasks finished on time this week.",
+  "@weeklySummaryOnTime": { "placeholders": { "count": { "type": "int" } } },
+  "weeklySummaryBusiest": "Busiest course next week: {name} ({count} tasks).",
+  "@weeklySummaryBusiest": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
+  "weeklySummaryBackup": "Last backup {days} days ago.",
+  "@weeklySummaryBackup": { "placeholders": { "days": { "type": "int" } } },
+  "summaryWeeklyToggle": "Sunday night at 20:30"
 }

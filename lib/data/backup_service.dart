@@ -47,6 +47,11 @@ class BackupService {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/lekas_backup_${DateTime.now().millisecondsSinceEpoch}.json');
     await file.writeAsString(jsonString);
+    // Remembered for the weekly summary card about the last backup.
+    await db.into(db.settings).insertOnConflictUpdate(Setting(
+      key: 'last_backup_at',
+      value: '${DateTime.now().millisecondsSinceEpoch}',
+    ));
     return file;
   }
 
