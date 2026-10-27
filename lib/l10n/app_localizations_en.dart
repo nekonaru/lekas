@@ -1484,4 +1484,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String eveningBringMore(Object count) {
     return '(+$count more)';
   }
+
+  @override
+  String chipEstimateHours(int hours) {
+    return 'Estimate: $hours hours';
+  }
+
+  @override
+  String get chipSubmitLms => 'Submit via LMS';
+
+  @override
+  String get chipSubmitEmail => 'Submit via email';
+
+  @override
+  String get chipSubmitPaper => 'Submit printed';
+
+  @override
+  String chipFilename(String pattern) {
+    return 'Check pattern: $pattern';
+  }
+
+  @override
+  String chipSubtasks(int count) {
+    return '$count subtasks';
+  }
+
+  @override
+  String chipLinks(int count) {
+    return '$count links';
+  }
+
+  @override
+  String chipNote(String note) {
+    return 'Note: $note';
+  }
+
+  @override
+  String get chipPriorityConflict => 'Mixed priority';
 }

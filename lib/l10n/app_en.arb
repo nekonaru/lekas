@@ -501,5 +501,19 @@
   "continueFocusAction": "Carry over",
   "eveningBringLine": "Bring tomorrow: {items}",
   "@eveningBringLine": { "placeholders": { "items": { "type": "String" } } },
-  "eveningBringMore": "(+{count} more)"
+  "eveningBringMore": "(+{count} more)",
+  "chipEstimateHours": "Estimate: {hours} hours",
+  "@chipEstimateHours": { "placeholders": { "hours": { "type": "int" } } },
+  "chipSubmitLms": "Submit via LMS",
+  "chipSubmitEmail": "Submit via email",
+  "chipSubmitPaper": "Submit printed",
+  "chipFilename": "Check pattern: {pattern}",
+  "@chipFilename": { "placeholders": { "pattern": { "type": "String" } } },
+  "chipSubtasks": "{count} subtasks",
+  "@chipSubtasks": { "placeholders": { "count": { "type": "int" } } },
+  "chipLinks": "{count} links",
+  "@chipLinks": { "placeholders": { "count": { "type": "int" } } },
+  "chipNote": "Note: {note}",
+  "@chipNote": { "placeholders": { "note": { "type": "String" } } },
+  "chipPriorityConflict": "Mixed priority"
 }

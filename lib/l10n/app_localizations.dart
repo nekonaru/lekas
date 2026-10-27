@@ -2755,6 +2755,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'(+{count} lagi)'**
   String eveningBringMore(Object count);
+
+  /// No description provided for @chipEstimateHours.
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi: {hours} jam'**
+  String chipEstimateHours(int hours);
+
+  /// No description provided for @chipSubmitLms.
+  ///
+  /// In id, this message translates to:
+  /// **'Kumpul lewat LMS'**
+  String get chipSubmitLms;
+
+  /// No description provided for @chipSubmitEmail.
+  ///
+  /// In id, this message translates to:
+  /// **'Kumpul lewat email'**
+  String get chipSubmitEmail;
+
+  /// No description provided for @chipSubmitPaper.
+  ///
+  /// In id, this message translates to:
+  /// **'Kumpul dicetak'**
+  String get chipSubmitPaper;
+
+  /// No description provided for @chipFilename.
+  ///
+  /// In id, this message translates to:
+  /// **'Cek pola: {pattern}'**
+  String chipFilename(String pattern);
+
+  /// No description provided for @chipSubtasks.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} subtugas'**
+  String chipSubtasks(int count);
+
+  /// No description provided for @chipLinks.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tautan'**
+  String chipLinks(int count);
+
+  /// No description provided for @chipNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan: {note}'**
+  String chipNote(String note);
+
+  /// No description provided for @chipPriorityConflict.
+  ///
+  /// In id, this message translates to:
+  /// **'Prioritas campur'**
+  String get chipPriorityConflict;
 }
 
 class _AppLocalizationsDelegate

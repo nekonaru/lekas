@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../data/models.dart';
+import '../../data/parsed_task_extras.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../parser/parser_service.dart';
@@ -36,6 +37,11 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   bool _spaceTouched = false;
   bool _typeTouched = false;
   bool _saving = false;
+
+  /// The full parse result behind the extra chips of design section 7.15,
+  /// and the chips the user has already dismissed for this text.
+  ParsedTask? _parsed;
+  final Set<String> _dismissed = <String>{};
 
   @override
   void initState() {
@@ -79,6 +85,8 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     if (text.trim().isEmpty) {
       setState(() {
         _title = null;
+        _parsed = null;
+        _dismissed.clear();
         if (!_deadlineTouched) _deadline = null;
         if (!_spaceTouched) {
           _spaceId = null;
@@ -90,6 +98,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     }
     final parsed = parser.parse(text);
     setState(() {
+      _parsed = parsed;
       _title = parsed.title;
       if (!_deadlineTouched) _deadline = parsed.deadline;
       if (!_spaceTouched) {
@@ -108,6 +117,99 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
       if (space['id'] == id) return space['name'];
     }
     return null;
+  }
+
+  /// True while the chip behind [id] has not been dismissed, so a value
+  /// the user threw away never reaches the saved task.
+  bool _stillWanted(String id) => !_dismissed.contains(id);
+
+  void _dismiss(String id) => setState(() => _dismissed.add(id));
+
+  /// The chips of design section 7.15: every guess the advanced parser
+  /// makes is shown and can be corrected before saving.
+  List<Widget> _extraChips(AppLocalizations l10n) {
+    final parsed = _parsed;
+    if (parsed == null) return const [];
+    final chips = <Widget>[];
+
+    final estimate = parsed.estimateMinutes;
+    if (estimate != null && estimate > 0 && _stillWanted('estimate')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.timer_outlined, size: 18),
+        label: Text(estimate >= 60 && estimate % 60 == 0
+            ? l10n.chipEstimateHours(estimate ~/ 60)
+            : l10n.estimateMinutesLabel(estimate)),
+        onDeleted: () => _dismiss('estimate'),
+      ));
+    }
+
+    final submit = parsed.submitMethod;
+    if (submit != null && _stillWanted('submit')) {
+      final label = switch (submit) {
+        'lms' => l10n.chipSubmitLms,
+        'email' => l10n.chipSubmitEmail,
+        'paper' => l10n.chipSubmitPaper,
+        _ => submit,
+      };
+      chips.add(InputChip(
+        avatar: const Icon(Icons.upload_file, size: 18),
+        label: Text(label),
+        onDeleted: () => _dismiss('submit'),
+      ));
+    }
+
+    final pattern = parsed.filenamePattern;
+    if (pattern != null && _stillWanted('filename')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.badge_outlined, size: 18),
+        label: Text(l10n.chipFilename(pattern)),
+        onDeleted: () => _dismiss('filename'),
+      ));
+    }
+
+    final tag = parsed.tag;
+    if (tag != null && _stillWanted('tag')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.label_outline, size: 18),
+        label: Text('#$tag'),
+        onDeleted: () => _dismiss('tag'),
+      ));
+    }
+
+    if (parsed.subtasks.isNotEmpty && _stillWanted('subtasks')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.checklist, size: 18),
+        label: Text(l10n.chipSubtasks(parsed.subtasks.length)),
+        onDeleted: () => _dismiss('subtasks'),
+      ));
+    }
+
+    if (parsed.links.isNotEmpty && _stillWanted('links')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.link, size: 18),
+        label: Text(l10n.chipLinks(parsed.links.length)),
+        onDeleted: () => _dismiss('links'),
+      ));
+    }
+
+    final note = parsed.inlineNote;
+    if (note != null && _stillWanted('note')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.notes, size: 18),
+        label: Text(l10n.chipNote(note)),
+        onDeleted: () => _dismiss('note'),
+      ));
+    }
+
+    if (parsed.priorityConflict && _stillWanted('conflict')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.priority_high, size: 18),
+        label: Text(l10n.chipPriorityConflict),
+        onDeleted: () => _dismiss('conflict'),
+      ));
+    }
+
+    return chips;
   }
 
   Future<void> _pickDeadline() async {
@@ -171,8 +273,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     setState(() => _saving = true);
 
     final now = DateTime.now();
+    final parsed = _parsed;
+    final taskId = const Uuid().v4();
     await ref.read(taskRepositoryProvider).insertTask(Task(
-          id: const Uuid().v4(),
+          id: taskId,
           spaceId: _spaceId,
           title: (_title ?? text).trim(),
           notes: text,
@@ -184,9 +288,31 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
           pinned: false,
           inbox: _spaceId == null,
           sourceText: text,
+          estimateMinutes: _stillWanted('estimate')
+              ? parsed?.estimateMinutes
+              : null,
+          submitMethod: _stillWanted('submit') ? parsed?.submitMethod : null,
+          submitTarget: _stillWanted('submit') && parsed?.submitMethod == 'email'
+              ? parsed?.submitTarget
+              : null,
+          filenamePattern:
+              _stillWanted('filename') ? parsed?.filenamePattern : null,
           createdAt: now.millisecondsSinceEpoch,
           updatedAt: now.millisecondsSinceEpoch,
         ));
+
+    // Design section 7.15: tag, subtasks and links live beside the row.
+    await saveParsedExtras(
+      taskId: taskId,
+      tags: ref.read(tagRepositoryProvider),
+      subtasks: ref.read(subtaskRepositoryProvider),
+      attachments: ref.read(attachmentRepositoryProvider),
+      tag: _stillWanted('tag') ? parsed?.tag : null,
+      subtaskTitles: _stillWanted('subtasks')
+          ? parsed?.subtasks ?? const []
+          : const [],
+      links: _stillWanted('links') ? parsed?.links ?? const [] : const [],
+    );
 
     if (_deadline != null) {
       // Design 4.1: notification permission is asked the first time a task
@@ -281,6 +407,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
                 selected: _isGroup,
                 onSelected: (value) => setState(() => _isGroup = value),
               ),
+              ..._extraChips(l10n),
             ],
           ),
           const SizedBox(height: 16),

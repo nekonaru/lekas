@@ -501,5 +501,19 @@
   "continueFocusAction": "Lanjutkan",
   "eveningBringLine": "Besok bawa: {items}",
   "@eveningBringLine": { "placeholders": { "items": { "type": "String" } } },
-  "eveningBringMore": "(+{count} lagi)"
+  "eveningBringMore": "(+{count} lagi)",
+  "chipEstimateHours": "Estimasi: {hours} jam",
+  "@chipEstimateHours": { "placeholders": { "hours": { "type": "int" } } },
+  "chipSubmitLms": "Kumpul lewat LMS",
+  "chipSubmitEmail": "Kumpul lewat email",
+  "chipSubmitPaper": "Kumpul dicetak",
+  "chipFilename": "Cek pola: {pattern}",
+  "@chipFilename": { "placeholders": { "pattern": { "type": "String" } } },
+  "chipSubtasks": "{count} subtugas",
+  "@chipSubtasks": { "placeholders": { "count": { "type": "int" } } },
+  "chipLinks": "{count} tautan",
+  "@chipLinks": { "placeholders": { "count": { "type": "int" } } },
+  "chipNote": "Catatan: {note}",
+  "@chipNote": { "placeholders": { "note": { "type": "String" } } },
+  "chipPriorityConflict": "Prioritas campur"
 }

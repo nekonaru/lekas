@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../data/models.dart';
+import '../../data/parsed_task_extras.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../parser/parser_service.dart';
@@ -61,6 +62,11 @@ class _Candidate {
   String? spaceName;
   int priority = 1;
   bool isGroup = false;
+
+  /// The full parse result behind the extra chips of design section 7.15,
+  /// and the chips the user has dismissed for this candidate.
+  ParsedTask? parsed;
+  final Set<String> dismissed = <String>{};
 }
 
 class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
@@ -94,6 +100,7 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
     for (final text in splitShareCandidates(widget.message)) {
       final parsed = parser.parse(text);
       _candidates.add(_Candidate(text)
+        ..parsed = parsed
         ..title = parsed.title == kUntitledTask ? text : parsed.title
         ..deadline = parsed.deadline
         ..spaceId = parsed.spaceId
@@ -183,8 +190,11 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
       if (!candidate.checked) continue;
       final title = (candidate.title ?? candidate.text).trim();
       if (title.isEmpty) continue;
+      final parsed = candidate.parsed;
+      final taskId = const Uuid().v4();
+      bool wanted(String id) => !candidate.dismissed.contains(id);
       await repository.insertTask(Task(
-        id: const Uuid().v4(),
+        id: taskId,
         spaceId: candidate.spaceId,
         title: title,
         notes: widget.message.trim(),
@@ -195,9 +205,29 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         inbox: candidate.spaceId == null,
         deadline: candidate.deadline?.millisecondsSinceEpoch,
         sourceText: widget.message.trim(),
+        // Design section 7.15: the values of the extra chips.
+        estimateMinutes:
+            wanted('estimate') ? parsed?.estimateMinutes : null,
+        submitMethod: wanted('submit') ? parsed?.submitMethod : null,
+        submitTarget:
+            wanted('submit') && parsed?.submitMethod == 'email'
+                ? parsed?.submitTarget
+                : null,
+        filenamePattern: wanted('filename') ? parsed?.filenamePattern : null,
         createdAt: now,
         updatedAt: now,
       ));
+      await saveParsedExtras(
+        taskId: taskId,
+        tags: ref.read(tagRepositoryProvider),
+        subtasks: ref.read(subtaskRepositoryProvider),
+        attachments: ref.read(attachmentRepositoryProvider),
+        tag: wanted('tag') ? parsed?.tag : null,
+        subtaskTitles:
+            wanted('subtasks') ? parsed?.subtasks ?? const [] : const [],
+        links: wanted('links') ? parsed?.links ?? const [] : const [],
+        nowMs: now,
+      );
       saved++;
     }
     if (!mounted) return;
@@ -237,6 +267,86 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         ),
       ),
     );
+  }
+
+  /// The chips of design section 7.15: every guess the advanced parser
+  /// made for this candidate, shown so it can be corrected before saving.
+  List<Widget> _extraChips(AppLocalizations l10n, _Candidate candidate) {
+    final parsed = candidate.parsed;
+    if (parsed == null) return const [];
+    bool wanted(String id) => !candidate.dismissed.contains(id);
+    void dismiss(String id) => setState(() => candidate.dismissed.add(id));
+    final chips = <Widget>[];
+
+    final estimate = parsed.estimateMinutes;
+    if (estimate != null && estimate > 0 && wanted('estimate')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.timer_outlined, size: 18),
+        label: Text(estimate >= 60 && estimate % 60 == 0
+            ? l10n.chipEstimateHours(estimate ~/ 60)
+            : l10n.estimateMinutesLabel(estimate)),
+        onDeleted: () => dismiss('estimate'),
+      ));
+    }
+
+    final submit = parsed.submitMethod;
+    if (submit != null && wanted('submit')) {
+      final label = switch (submit) {
+        'lms' => l10n.chipSubmitLms,
+        'email' => l10n.chipSubmitEmail,
+        'paper' => l10n.chipSubmitPaper,
+        _ => submit,
+      };
+      chips.add(InputChip(
+        avatar: const Icon(Icons.upload_file, size: 18),
+        label: Text(label),
+        onDeleted: () => dismiss('submit'),
+      ));
+    }
+
+    final pattern = parsed.filenamePattern;
+    if (pattern != null && wanted('filename')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.badge_outlined, size: 18),
+        label: Text(l10n.chipFilename(pattern)),
+        onDeleted: () => dismiss('filename'),
+      ));
+    }
+
+    final tag = parsed.tag;
+    if (tag != null && wanted('tag')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.label_outline, size: 18),
+        label: Text('#$tag'),
+        onDeleted: () => dismiss('tag'),
+      ));
+    }
+
+    if (parsed.subtasks.isNotEmpty && wanted('subtasks')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.checklist, size: 18),
+        label: Text(l10n.chipSubtasks(parsed.subtasks.length)),
+        onDeleted: () => dismiss('subtasks'),
+      ));
+    }
+
+    if (parsed.links.isNotEmpty && wanted('links')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.link, size: 18),
+        label: Text(l10n.chipLinks(parsed.links.length)),
+        onDeleted: () => dismiss('links'),
+      ));
+    }
+
+    if (parsed.priorityConflict && wanted('conflict')) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.priority_high, size: 18),
+        label: Text(l10n.chipPriorityConflict),
+        onDeleted: () => dismiss('conflict'),
+      ));
+    }
+
+    return chips;
   }
 
   Widget _buildCandidate(AppLocalizations l10n, int index) {
@@ -279,6 +389,7 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
                   label: Text(candidate.spaceName ?? l10n.taskContainer),
                   onPressed: () => _pickSpace(index),
                 ),
+                ..._extraChips(l10n, candidate),
               ],
             ),
           ],
