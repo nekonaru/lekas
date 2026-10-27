@@ -16,6 +16,7 @@ import '../data/reminder_repository.dart';
 import '../data/settings_repository.dart';
 import '../data/task_repository.dart';
 import '../domain/attendance.dart';
+import '../domain/bring_list.dart';
 import '../domain/focus.dart';
 import '../l10n/app_localizations.dart';
 import 'class_quiet.dart';
@@ -841,6 +842,43 @@ class ReminderService {
     return id;
   }
 
+  /// The "Besok bawa: ..." line of the evening wrap-up (design section
+  /// 5.32): only a course that has a class tomorrow and a filled bring list
+  /// gets to speak, and only its items do.
+  Future<String?> _bringLine(
+    DateTime tomorrow,
+    List<ClassException> exceptions,
+    AppLocalizations l10n,
+  ) async {
+    final slots =
+        await _ref.read(classSlotRepositoryProvider).getAllClassSlots();
+    final spaces =
+        await _ref.read(spaceRepositoryProvider).getSpaces(includeArchived: false);
+    final itemRepository = _ref.read(spaceItemRepositoryProvider);
+
+    final lists = <List<String>>[];
+    for (final space in spaces) {
+      if (space.deletedAt != null) continue;
+      final windows = classWindowsFor(
+        date: tomorrow,
+        spaceId: space.id,
+        slots: slots,
+        exceptions: exceptions,
+      );
+      if (windows.isEmpty) continue;
+      final items = await itemRepository.getSpaceItems(space.id);
+      if (items.isEmpty) continue;
+      lists.add([for (final item in items) item.title]);
+    }
+    if (lists.isEmpty) return null;
+
+    final plan = bringLinePlan(lists);
+    if (plan.shown.isEmpty) return null;
+    final line = l10n.eveningBringLine(plan.shown.join(', '));
+    if (plan.hidden == 0) return line;
+    return '$line ${l10n.eveningBringMore(plan.hidden)}';
+  }
+
   /// The morning summary lines for courses whose absence quota is down to
   /// its last one or used up (design sections 5.12 and 5.19).
   Future<List<String>> _absenceQuotaLines(AppLocalizations l10n) async {
@@ -951,11 +989,18 @@ class ReminderService {
       return;
     }
     final id = await _summarizedNotifId(settings, 'summary_evening_notif_id');
+    // Design section 5.32: name what to pack when tomorrow has a class
+    // with a filled bring list.
+    final bring = await _bringLine(tomorrow, exceptions, l10n);
+    final eveningBody = StringBuffer(l10n.eveningSummaryBody(dueTomorrow.length));
+    if (bring != null) {
+      eveningBody.write('\n$bring');
+    }
     await scheduleNotification(
       id: id,
       when: nextMomentAt(now, 20, 30),
       title: l10n.eveningSummaryTitle,
-      body: l10n.eveningSummaryBody(dueTomorrow.length),
+      body: eveningBody.toString(),
       payload:
           ReminderPayload(dueTomorrow.first.id, ReminderPayload.actionOpen)
               .encode(),

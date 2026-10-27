@@ -498,5 +498,8 @@
   "attendPromptToggleHint": "Muncul 10 menit setelah kelas selesai",
   "continueFocusQuestion": "Lanjutkan {count} tugas fokus kemarin?",
   "@continueFocusQuestion": { "placeholders": { "count": { "type": "int" } } },
-  "continueFocusAction": "Lanjutkan"
+  "continueFocusAction": "Lanjutkan",
+  "eveningBringLine": "Besok bawa: {items}",
+  "@eveningBringLine": { "placeholders": { "items": { "type": "String" } } },
+  "eveningBringMore": "(+{count} lagi)"
 }

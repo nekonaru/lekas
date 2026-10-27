@@ -2743,6 +2743,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lanjutkan'**
   String get continueFocusAction;
+
+  /// No description provided for @eveningBringLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Besok bawa: {items}'**
+  String eveningBringLine(String items);
+
+  /// No description provided for @eveningBringMore.
+  ///
+  /// In id, this message translates to:
+  /// **'(+{count} lagi)'**
+  String eveningBringMore(Object count);
 }
 
 class _AppLocalizationsDelegate

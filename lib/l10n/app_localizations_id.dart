@@ -1475,4 +1475,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get continueFocusAction => 'Lanjutkan';
+
+  @override
+  String eveningBringLine(String items) {
+    return 'Besok bawa: $items';
+  }
+
+  @override
+  String eveningBringMore(Object count) {
+    return '(+$count lagi)';
+  }
 }

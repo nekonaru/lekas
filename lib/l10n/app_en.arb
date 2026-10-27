@@ -498,5 +498,8 @@
   "attendPromptToggleHint": "Appears 10 minutes after class ends",
   "continueFocusQuestion": "Carry over {count} focus tasks from yesterday?",
   "@continueFocusQuestion": { "placeholders": { "count": { "type": "int" } } },
-  "continueFocusAction": "Carry over"
+  "continueFocusAction": "Carry over",
+  "eveningBringLine": "Bring tomorrow: {items}",
+  "@eveningBringLine": { "placeholders": { "items": { "type": "String" } } },
+  "eveningBringMore": "(+{count} more)"
 }

@@ -1474,4 +1474,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continueFocusAction => 'Carry over';
+
+  @override
+  String eveningBringLine(String items) {
+    return 'Bring tomorrow: $items';
+  }
+
+  @override
+  String eveningBringMore(Object count) {
+    return '(+$count more)';
+  }
 }
