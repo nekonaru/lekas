@@ -9,8 +9,8 @@ void main() {
   final parser = ParserService.forSpaces(spaces);
   final now = DateTime(2026, 10, 20, 10, 0);
 
-  ParsedTask parse(String input, {DateTime? at}) =>
-      parser.parse(input, now: at ?? now);
+  ParsedTask parse(String input, {DateTime? at, String locale = 'id'}) =>
+      parser.parse(input, locale: locale, now: at ?? now);
 
   group('edge cases from the design table', () {
     test('jumat on a Friday means next Friday', () {
@@ -323,6 +323,626 @@ void main() {
 
     test('the corpus covers more than one hundred sentences', () {
       expect(cases.length, greaterThanOrEqualTo(100));
+    });
+  });
+
+  group('advanced parser (design section 7.15)', () {
+    // Every entry checks all six fields at once, so a new token never
+    // quietly steals something from an older one.
+    final cases = <({
+      String input,
+      DateTime? deadline,
+      String? spaceId,
+      int priority,
+      int? estimate,
+      String? submit,
+      String? tag,
+    })>[
+      (
+        input: 'laprak basdat senin pagi jam 9',
+        deadline: DateTime(2026, 10, 26, 9, 0),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kuis pemweb besok jam 10',
+        deadline: DateTime(2026, 10, 21, 10, 0),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'tugas penting basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 2,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'tugas santai kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 0,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'laporan wajib dikumpul statistika senin',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's3',
+        priority: 2,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul berkas mendesak basdat kamis',
+        deadline: DateTime(2026, 10, 22, 23, 59),
+        spaceId: 's1',
+        priority: 2,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'baca buku kalau sempat kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 0,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'hadir webinar opsional statistika besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's3',
+        priority: 0,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'estimasi 2 jam bikin slide basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: 120,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'sekitar 30 menit baca bab 4 kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: 30,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'butuh 3 jam susun soal basdat jumat',
+        deadline: DateTime(2026, 10, 23, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: 180,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '~45m tugas basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: 45,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '~2j bikin modul kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: 120,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'perkiraan 5 jam bikin proposal basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: 300,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'needs 2 hours write report basdat',
+        deadline: null,
+        spaceId: 's1',
+        priority: 1,
+        estimate: 120,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'about 90 minutes review slide basdat',
+        deadline: null,
+        spaceId: 's1',
+        priority: 1,
+        estimate: 90,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kirim data basdat 3 jam lagi',
+        deadline: DateTime(2026, 10, 20, 13, 0),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'butuh 45 menit lagi siapkan absen basdat',
+        deadline: DateTime(2026, 10, 20, 10, 45),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul lewat lms basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: 'lms',
+        tag: null,
+      ),
+      (
+        input: 'kirim berkas ke classroom pemweb besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: 'lms',
+        tag: null,
+      ),
+      (
+        input: 'kirim ke drive tugas basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: 'lms',
+        tag: null,
+      ),
+      (
+        input: 'kumpul makalah kalkulus lewat e-learning besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: 'lms',
+        tag: null,
+      ),
+      (
+        input: 'laporan dicetak disetor kalkulus senin',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: 'paper',
+        tag: null,
+      ),
+      (
+        input: 'hardcopy berkas statistika kamis',
+        deadline: DateTime(2026, 10, 22, 23, 59),
+        spaceId: 's3',
+        priority: 1,
+        estimate: null,
+        submit: 'paper',
+        tag: null,
+      ),
+      (
+        input: 'laporan praktikum dicetak basdat senin',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: 'paper',
+        tag: null,
+      ),
+      (
+        input: 'kirim laporan ke dosen@kampus.ac.id besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: null,
+        priority: 1,
+        estimate: null,
+        submit: 'email',
+        tag: null,
+      ),
+      (
+        input: 'berkas #tugas basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: 'tugas',
+      ),
+      (
+        input: 'kumpul #kelompok basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: 'kelompok',
+      ),
+      (
+        input: '@basdat kumpul revisi besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '@pw kumpul tugas kamis',
+        deadline: DateTime(2026, 10, 22, 23, 59),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '@stat kuis besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's3',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul @kalkulus berkas senin',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '@halo kumpul besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: null,
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '!tinggi laprak basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 3,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '! kumpul basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 2,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: '!rendah tugas kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 0,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'laporan (kirim ke bu sari) basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'cek https://classroom.google.com/c/abc basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'unduh https://drive.google.com/file/d/1 kalkulus besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'buka www.contoh.ac.id/id tugas basdat jumat',
+        deadline: DateTime(2026, 10, 23, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul berkas basdat besok format nama file: nama_nim_tugas',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'laporan kalkulus senin penamaan file: laporan_12345',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul laporan basdat senin pagi',
+        deadline: DateTime(2026, 10, 26, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'baca modul kalkulus selasa depan',
+        deadline: DateTime(2026, 10, 27, 23, 59),
+        spaceId: 's5',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kirim slide presentasi pemweb kamis 16.00',
+        deadline: DateTime(2026, 10, 22, 16, 0),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'jawab kuis statistika besok jam 13.00',
+        deadline: DateTime(2026, 10, 21, 13, 0),
+        spaceId: 's3',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kirim email dosen basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'beli buku tulis besok jam 12',
+        deadline: DateTime(2026, 10, 21, 12, 0),
+        spaceId: null,
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'presentasi kelompok statistika lusa 16.00',
+        deadline: DateTime(2026, 10, 22, 16, 0),
+        spaceId: 's3',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'revisi makalah pemweb minggu depan',
+        deadline: DateTime(2026, 10, 27, 23, 59),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'jadwal praktikum dbms sabtu jam 10 pagi',
+        deadline: DateTime(2026, 10, 24, 10, 0),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'absensi webdev senin 7 pagi',
+        deadline: DateTime(2026, 10, 26, 7, 0),
+        spaceId: 's2',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'tugas kelompok basdat besok',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+      (
+        input: 'kumpul berkas dbms 4 hari lagi',
+        deadline: DateTime(2026, 10, 24, 23, 59),
+        spaceId: 's1',
+        priority: 1,
+        estimate: null,
+        submit: null,
+        tag: null,
+      ),
+    ];
+
+    for (final entry in cases) {
+      test('"${entry.input}"', () {
+        final result = parse(entry.input);
+        expect(result.deadline, entry.deadline,
+            reason: 'deadline for "${entry.input}"');
+        expect(result.spaceId, entry.spaceId,
+            reason: 'space for "${entry.input}"');
+        expect(result.priority, entry.priority,
+            reason: 'priority for "${entry.input}"');
+        expect(result.estimateMinutes, entry.estimate,
+            reason: 'estimate for "${entry.input}"');
+        expect(result.submitMethod, entry.submit,
+            reason: 'submission for "${entry.input}"');
+        expect(result.tag, entry.tag, reason: 'tag for "${entry.input}"');
+        expect(result.title, isNotEmpty, reason: 'title for "${entry.input}"');
+        expect(result.notes, entry.input.trim());
+      });
+    }
+
+    test('the advanced corpus carries fifty sentences', () {
+      expect(cases.length, greaterThanOrEqualTo(50));
+    });
+
+    test('a numbered list becomes subtasks and keeps the title', () {
+      final result = parse('beli bahan\n1. tepung\n2. gula\n3. fermipan');
+      expect(result.subtasks, ['tepung', 'gula', 'fermipan']);
+      expect(result.title, 'beli bahan');
+    });
+
+    test('a bulleted list becomes subtasks', () {
+      final result = parse('siapkan bahan\n- buka slide\n- cek suara');
+      expect(result.subtasks, ['buka slide', 'cek suara']);
+      expect(result.title, 'siapkan bahan');
+    });
+
+    test('a list written on one line is split at its markers', () {
+      final result = parse('revisi laporan 1. bab pendahuluan 2. bab isi');
+      expect(result.subtasks, ['bab pendahuluan', 'bab isi']);
+      expect(result.title, contains('revisi laporan'));
+      expect(result.title, isNot(contains('1.')));
+    });
+
+    test('the file name pattern is kept raw for its chip', () {
+      final result = parse('kumpul berkas besok format nama file: Nama_NIM');
+      expect(result.filenamePattern, 'Nama_NIM');
+      expect(result.title, isNot(contains('format nama file')));
+      expect(result.deadline, DateTime(2026, 10, 21, 23, 59));
+    });
+
+    test('links leave the title and keep their address', () {
+      final result =
+          parse('cek https://classroom.google.com/c/xyz basdat besok');
+      expect(result.links, ['https://classroom.google.com/c/xyz']);
+      expect(result.title, isNot(contains('https')));
+      expect(result.submitMethod, isNull);
+    });
+
+    test('an email becomes the target of the email method', () {
+      final result = parse('kirim ke dosen@kampus.ac.id besok');
+      expect(result.submitMethod, 'email');
+      expect(result.submitTarget, 'dosen@kampus.ac.id');
+      expect(result.title, isNot(contains('dosen@')));
+    });
+
+    test('a note in brackets leaves the title', () {
+      final result = parse('kumpul berkas (kirim ke bu sari) besok');
+      expect(result.inlineNote, 'kirim ke bu sari');
+      expect(result.title, isNot(contains('(')));
+      expect(result.deadline, DateTime(2026, 10, 21, 23, 59));
+    });
+
+    test('a marker wins over the priority words around it', () {
+      final result = parse('tugas santai !tinggi basdat besok');
+      expect(result.priority, 3);
+      expect(result.title, isNot(contains('!')));
+    });
+
+    test('a high word with a low word leaves the choice to the chip', () {
+      final result = parse('tugas santai penting basdat besok');
+      expect(result.priority, 1);
+      expect(result.priorityConflict, isTrue);
+    });
+
+    test('an unknown @token belongs to the title', () {
+      final result = parse('@halo kumpul besok');
+      expect(result.spaceId, isNull);
+      expect(result.title, contains('@halo'));
+    });
+
+    test('english priority words work with the english locale', () {
+      final result = parse('basdat report important tomorrow',
+          locale: 'en', at: DateTime(2026, 10, 20, 10, 0));
+      expect(result.priority, 2);
+      final relaxed =
+          parse('basdat report optional', locale: 'en', at: now);
+      expect(relaxed.priority, 0);
+    });
+
+    test('the relative moment is never read as an estimate', () {
+      final result = parse('kirim data basdat 3 jam lagi');
+      expect(result.estimateMinutes, isNull);
+      expect(result.deadline, DateTime(2026, 10, 20, 13, 0));
+    });
+
+    test('a share message keeps every part at once', () {
+      final result = parse(
+          '@basdat laprak #kelompok !tinggi sekitar 45 menit besok jam 20.00 format nama file: nama_nim');
+      expect(result.spaceId, 's1');
+      expect(result.type, 'lab_report');
+      expect(result.tag, 'kelompok');
+      expect(result.priority, 3);
+      expect(result.estimateMinutes, 45);
+      expect(result.deadline, DateTime(2026, 10, 21, 20, 0));
+      expect(result.filenamePattern, 'nama_nim');
+      expect(result.title, isNotEmpty);
+      expect(result.title, isNot(contains('!')));
+      expect(result.title, isNot(contains('#')));
     });
   });
 }
