@@ -97,8 +97,13 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         },
     ]);
 
+    // The active language decides which dictionary leads (design section
+    // 8.5); until the setting is loaded the parser falls back to Indonesian.
+    final language =
+        ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
+
     for (final text in splitShareCandidates(widget.message)) {
-      final parsed = parser.parse(text);
+      final parsed = parser.parse(text, locale: language);
       _candidates.add(_Candidate(text)
         ..parsed = parsed
         ..title = parsed.title == kUntitledTask ? text : parsed.title

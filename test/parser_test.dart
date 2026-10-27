@@ -945,6 +945,190 @@ void main() {
       expect(result.title, isNot(contains('#')));
     });
   });
+
+  group('english and mixed parser (design section 8.5)', () {
+    // The active language leads, the other one still reads, so every entry
+    // says which language was used.
+    final cases = <({String input, String locale, DateTime? deadline,
+        String? spaceId, String? type, bool? confirm})>[
+      (
+        input: 'lab report db friday 11:59pm',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 23, 23, 59),
+        spaceId: 's1',
+        type: 'lab_report',
+        confirm: true,
+      ),
+      (
+        input: 'quiz web tomorrow 8am',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 21, 8, 0),
+        spaceId: null,
+        type: 'quiz',
+        confirm: false,
+      ),
+      (
+        input: 'kuis english tomorrow',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's4',
+        type: 'quiz',
+        confirm: false,
+      ),
+      (
+        input: 'submit laprak friday 23.59',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 23, 23, 59),
+        spaceId: null,
+        type: 'lab_report',
+        confirm: true,
+      ),
+      (
+        input: 'sunday english',
+        locale: 'id',
+        deadline: DateTime(2026, 10, 25, 23, 59),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+      (
+        input: 'next friday english',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 30, 23, 59),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+      (
+        input: 'turn in essay english 19.00',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 20, 19, 0),
+        spaceId: 's4',
+        type: 'paper',
+        confirm: true,
+      ),
+      (
+        input: 'call english 7pm',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 20, 19, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+      (
+        input: 'meeting english 7:00 PM',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 20, 19, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+      (
+        input: 'call english at 7',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 21, 7, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+      (
+        input: 'submit english in 3 hours',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 20, 13, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: false,
+      ),
+      (
+        input: 'submit english 3 jam lagi',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 20, 13, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: false,
+      ),
+      (
+        input: 'submit english the 25th',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 25, 23, 59),
+        spaceId: 's4',
+        type: null,
+        confirm: false,
+      ),
+      (
+        input: 'submit english october 25',
+        locale: 'en',
+        deadline: DateTime(2026, 10, 25, 23, 59),
+        spaceId: 's4',
+        type: null,
+        confirm: false,
+      ),
+      (
+        input: 'submit english tmrw',
+        locale: 'id',
+        deadline: DateTime(2026, 10, 21, 23, 59),
+        spaceId: 's4',
+        type: null,
+        confirm: false,
+      ),
+      (
+        input: 'turn in english fri 8am',
+        locale: 'id',
+        deadline: DateTime(2026, 10, 23, 8, 0),
+        spaceId: 's4',
+        type: null,
+        confirm: true,
+      ),
+    ];
+
+    for (final entry in cases) {
+      test('"${entry.input}" in ${entry.locale}', () {
+        final result = parse(entry.input, locale: entry.locale);
+        expect(result.deadline, entry.deadline,
+            reason: 'deadline for "${entry.input}"');
+        expect(result.spaceId, entry.spaceId,
+            reason: 'space for "${entry.input}"');
+        expect(result.type, entry.type, reason: 'type for "${entry.input}"');
+        if (entry.confirm != null) {
+          expect(result.needsConfirmation, entry.confirm,
+              reason: 'confirmation for "${entry.input}"');
+        }
+        expect(result.title, isNotEmpty);
+        expect(result.notes, entry.input.trim());
+      });
+    }
+
+    test('the corpus covers both languages at once', () {
+      expect(cases.length, greaterThanOrEqualTo(15));
+    });
+
+    test('minggu with english active means sunday but needs a check', () {
+      final result = parse('minggu', locale: 'en');
+      expect(result.deadline, DateTime(2026, 10, 25, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+      expect(result.title, isNot(contains('minggu')));
+    });
+
+    test('the english type key is the same neutral key as the indonesian',
+        () {
+      expect(parse('kuis english tomorrow', locale: 'id').type, 'quiz');
+      expect(parse('quiz english tomorrow', locale: 'en').type, 'quiz');
+      expect(parse('laprak english friday', locale: 'id').type, 'lab_report');
+      expect(parse('lab report english friday', locale: 'en').type,
+          'lab_report');
+    });
+
+    test('english priority words still read in the indonesian locale', () {
+      expect(parse('report english urgent tomorrow').priority, 2);
+      expect(parse('report english optional', locale: 'en').priority, 0);
+    });
+
+    test('the english file name pattern keeps its capitals', () {
+      final result = parse('submit english file name format: Report_Final');
+      expect(result.filenamePattern, 'Report_Final');
+      expect(result.title, isNot(contains('file name format')));
+    });
+  });
 }
 
 const spaces = <Map<String, String>>[
@@ -952,7 +1136,7 @@ const spaces = <Map<String, String>>[
     'id': 's1',
     'name': 'Basis Data',
     'code': 'BD',
-    'aliases': 'basdat,dbms,database',
+    'aliases': 'basdat,dbms,database,db',
   },
   {
     'id': 's2',

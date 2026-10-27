@@ -96,7 +96,11 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
       });
       return;
     }
-    final parsed = parser.parse(text);
+    // The active language decides which dictionary leads (design section
+    // 8.5); until the setting is loaded the parser falls back to Indonesian.
+    final language =
+        ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
+    final parsed = parser.parse(text, locale: language);
     setState(() {
       _parsed = parsed;
       _title = parsed.title;

@@ -9,6 +9,7 @@ import 'normalizer.dart';
 import 'time_extractor.dart';
 import 'matcher.dart';
 import 'advanced_extractor.dart';
+import 'dictionaries/en.dart';
 import 'dictionaries/id.dart';
 
 class ParsedTask {
@@ -56,12 +57,10 @@ class ParsedTask {
 const String kUntitledTask = 'Untitled task';
 
 class ParserService {
-  final TimeExtractor timeExtractor;
   final Matcher matcher;
   final List<Map<String, String>> spaces;
 
   ParserService({
-    required this.timeExtractor,
     required this.matcher,
     required this.spaces,
   });
@@ -69,11 +68,6 @@ class ParserService {
   /// Builds a parser for the currently active spaces, aliases included.
   factory ParserService.forSpaces(List<Map<String, String>> spaces) {
     return ParserService(
-      timeExtractor: TimeExtractor(
-        days: idDays,
-        months: idMonths,
-        abbreviations: idAbbrev,
-      ),
       matcher: Matcher(spaces),
       spaces: spaces,
     );
@@ -81,9 +75,26 @@ class ParserService {
 
   /// Parses raw text into a [ParsedTask]. [now] is injectable so tests stay
   /// deterministic.
+  ///
+  /// [locale] picks the active language. Both dictionaries are always read
+  /// together (design section 8.5): the active one comes first, so it wins a
+  /// conflict and gets first pick of the words, and the other one fills in
+  /// what it lacks, which keeps mixed sentences such as "submit laprak
+  /// friday 23.59" readable in either language.
   ParsedTask parse(String input, {String locale = 'id', DateTime? now}) {
     final moment = now ?? DateTime.now();
-    final isIndonesian = locale != 'en';
+    final isIndonesian = !locale.toLowerCase().startsWith('en');
+
+    final abbrev = _merge(idAbbrev, enAbbrev, isIndonesian);
+    final days = _merge(idDays, enDays, isIndonesian);
+    final months = _merge(idMonths, enMonths, isIndonesian);
+    final typeKeywords = _merge(idTypeKeywords, enTypeKeywords, isIndonesian);
+    final extractor = TimeExtractor(
+      days: days,
+      months: months,
+      abbreviations: abbrev,
+      englishActive: !isIndonesian,
+    );
 
     // Step 1: the list of a shared message becomes subtasks while its line
     // breaks are still there, and the file name pattern is taken raw (both
@@ -91,8 +102,8 @@ class ParserService {
     final subtasks = extractSubtasks(input);
     final filename = extractFilenamePattern(subtasks.remainingText);
 
-    // Step 2: normalize case, spacing and abbreviations.
-    var normalized = normalize(filename.remainingText, idAbbrev);
+    // Step 2: normalize case, spacing and abbreviations of both languages.
+    var normalized = normalize(filename.remainingText, abbrev);
 
     // Step 3: the extra tokens of design section 7.15, in the order they
     // matter: links, email, submission method, "@wadah" and "#tag",
@@ -116,9 +127,10 @@ class ParserService {
     final note = extractInlineNote(normalized);
     normalized = note.remainingText;
 
-    // Step 3: extract the task type.
+    // Step 3: extract the task type, mapped to the neutral keys of design
+    // 8.3, so "kuis" and "quiz" land on the same value.
     String? type;
-    for (final entry in idTypeKeywords.entries) {
+    for (final entry in typeKeywords.entries) {
       if (_hasWord(normalized, entry.key)) {
         type = entry.value;
         normalized = _remove(normalized, entry.key);
@@ -127,12 +139,17 @@ class ParserService {
     }
 
     // Step 4: extract time and date.
-    final timeResult = timeExtractor.extract(normalized, moment);
+    final timeResult = extractor.extract(normalized, moment);
     normalized = timeResult.remainingText;
 
-    // Step 5: extract the work mode.
+    // Step 5: extract the work mode, in both languages.
     var isGroup = false;
-    for (final word in const ['kelompok', 'individu', 'sendiri', 'mandiri', 'group']) {
+    final modeWords = <String>[
+      if (isIndonesian) ...const ['kelompok', 'individu', 'sendiri', 'mandiri'],
+      ...const ['group', 'individual', 'solo', 'alone'],
+      if (!isIndonesian) ...const ['kelompok', 'individu', 'sendiri', 'mandiri'],
+    ];
+    for (final word in modeWords) {
       if (_hasWord(normalized, word)) {
         isGroup = word == 'kelompok' || word == 'group';
         normalized = _remove(normalized, word);
@@ -225,6 +242,23 @@ class ParserService {
 
   static bool _hasAnyWord(String text, List<String> words) =>
       words.any((word) => _hasWord(text, word));
+
+  /// Merges the two dictionaries of one kind: the active language comes
+  /// first, so it decides conflicts and gets the first look at the words,
+  /// and the other language fills in what it does not know (design 8.5).
+  static Map<String, V> _merge<V>(
+    Map<String, V> indonesian,
+    Map<String, V> english,
+    bool useIndonesian,
+  ) {
+    final active = useIndonesian ? indonesian : english;
+    final fallback = useIndonesian ? english : indonesian;
+    return {
+      ...active,
+      for (final entry in fallback.entries)
+        if (!active.containsKey(entry.key)) entry.key: entry.value,
+    };
+  }
 
   static String _remove(String text, String token) =>
       text.replaceAll(RegExp(RegExp.escape(token), caseSensitive: false), ' ');

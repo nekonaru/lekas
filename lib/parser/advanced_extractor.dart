@@ -72,14 +72,16 @@ String _cutAll(String text, RegExp pattern) {
   return (remainingText: work, subtasks: subtasks);
 }
 
-/// Everything after "format nama file" or "penamaan" is stored untouched as
-/// the file name pattern, with a chip asking the user to check it (design
-/// section 7.15). It stops at a newline or at the next sentence.
+/// Everything after "format nama file", "penamaan" or the English spellings
+/// is stored untouched as the file name pattern, with a chip asking the user
+/// to check it (design section 7.15). It stops at a newline or at the next
+/// sentence.
 ({String remainingText, String? filenamePattern}) extractFilenamePattern(
     String text) {
   final match = RegExp(
-    r'(?:format\s+nama\s+file|penamaan(?:\s+file)?|file\s+name\s+format)'
-    r'\s*(?:adalah|:\s*)?\s*([^\n]+?)(?=\s+[.!?](?:\s|$)|\n|$)',
+    r'(?:format\s+nama\s+file|penamaan(?:\s+file)?|file\s+name\s+format|'
+    r'filename\s+format|naming\s+convention)'
+    r'\s*(?:adalah|is|:\s*)?\s*([^\n]+?)(?=\s+[.!?](?:\s|$)|\n|$)',
     caseSensitive: false,
   ).firstMatch(text);
   if (match == null) return (remainingText: text, filenamePattern: null);
