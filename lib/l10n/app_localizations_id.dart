@@ -1533,4 +1533,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get voiceListening => 'Mendengarkan...';
+
+  @override
+  String get appVersionLabel => 'Versi aplikasi';
 }

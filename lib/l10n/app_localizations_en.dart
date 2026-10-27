@@ -1532,4 +1532,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceListening => 'Listening...';
+
+  @override
+  String get appVersionLabel => 'App version';
 }

@@ -2827,6 +2827,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mendengarkan...'**
   String get voiceListening;
+
+  /// No description provided for @appVersionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi aplikasi'**
+  String get appVersionLabel;
 }
 
 class _AppLocalizationsDelegate

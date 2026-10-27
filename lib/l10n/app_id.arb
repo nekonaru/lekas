@@ -518,5 +518,6 @@
   "chipPriorityConflict": "Prioritas campur",
   "micUnavailable": "Pengenalan suara tidak tersedia di perangkat ini.",
   "micPermissionDenied": "Izin mikrofon diperlukan untuk Quick Add suara.",
-  "voiceListening": "Mendengarkan..."
+  "voiceListening": "Mendengarkan...",
+  "appVersionLabel": "Versi aplikasi"
 }

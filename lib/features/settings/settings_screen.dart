@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/constants.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../reminders/reminder_service.dart';
@@ -256,6 +257,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.checkReminder),
             trailing: const Icon(Icons.notifications),
             onTap: () => _push(const DiagnosticScreen()),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l10n.appVersionLabel),
+            subtitle: Text(appVersion),
           ),
         ],
       ),

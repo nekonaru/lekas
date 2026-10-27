@@ -518,5 +518,6 @@
   "chipPriorityConflict": "Mixed priority",
   "micUnavailable": "Speech recognition is not available on this device.",
   "micPermissionDenied": "Microphone permission is needed for Voice Quick Add.",
-  "voiceListening": "Listening..."
+  "voiceListening": "Listening...",
+  "appVersionLabel": "App version"
 }
