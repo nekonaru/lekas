@@ -80,6 +80,15 @@ Terakhir diperbarui: Sun Oct 26 2026
   menjadwalkan ulang pengingat; jadwal disinkronkan lagi saat aplikasi dibuka.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
+- **Parser 7.15 dijalankan sebelum waktu dibaca, kecuali antrian yang harus awal.**
+  Urutannya: subtugas dan pola nama berkas (masih di teks mentah supaya baris dan huruf
+  asli terjaga), normalisasi, tautan, email, cara kumpul, `@wadah`/`#tag`, estimasi,
+  penanda dan kata prioritas, catatan kurung, baru jenis, waktu, mode kerja, wadah, judul.
+  Estimasi sengaja diekstrak sebelum time extractor sehingga "estimasi 3 jam" jadi
+  perkiraan kerja sementara "3 jam lagi" tetap waktu relatif. Penanda `!` cocok lewat
+  regex tersendiri karena `\b` tidak berdiri antara huruf dan tanda baca; bila `@wadah`
+  tidak dikenal, tokennya dikembalikan ke judul. Prioritas tinggi dan rendah dalam satu
+  kalimat dianggap konflik dan netral sampai pengguna memilih di chip.
 
 ---
 
@@ -165,7 +174,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ## Urutan 3: Fase B inti
 - [x] Parser bahasa Indonesia: normalizer, time_extractor, matcher, parser_service
 - [x] Parser dictionary id.dart dan en.dart
-- [x] Tes parser: 136 tes lulus, termasuk tabel kasus tepi 6.1 dan korpus 100+ kalimat
+- [x] Tes parser: 204 tes lulus, termasuk tabel kasus tepi 6.1, korpus 100+ kalimat dan korpus 7.15 berisi 50 kalimat
 - [x] Quick Add tersambung ke parser: chip deadline, wadah, jenis, prioritas, mode kelompok
 - [x] Share dari WhatsApp (share_intake_screen): split kalimat, chip koreksi, simpan banyak tugas
 - [x] Share intent aktif: intent-filter SEND text/plain + listener `ReceiveSharingIntent` di main.dart
@@ -195,11 +204,11 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Fokus hari ini (FokusHariIniScreen, 5.24): pilih maksimal 3 tugas per hari, bagian "Fokus Hari Ini" di layar Hari Ini, sakelar di detail tugas, tombol di ringkasan pagi, tawaran "Lanjutkan N tugas kemarin?", perayaan kecil saat semua selesai
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
-- [ ] Parser lanjutan (7.15)
+- [x] Parser lanjutan (7.15): `lib/parser/advanced_extractor.dart` membaca subtugas berbutir, pola nama berkas, tautan, alamat email, kata cara kumpul (LMS/kelas maya/drive = `lms`, dicetak/hardcopy = `paper`, alamat email = `email`), token `@wadah` dan `#tag`, penanda `!`/`!tinggi`/`!rendah`, estimasi `~2j`/`~45m`/"estimasi 2 jam", kata prioritas Inggris-Indonesia beserta penanda konflik, serta catatan dalam kurung; hasilnya jadi field baru pada `ParsedTask`. Pemasangan chip di Quick Add dan share intake masih menunggu kedua file itu bebas dari pekerjaan agent lain
 - [x] Lampiran dokumen (AttachmentScreen)
 - [x] Skenario nilai (SimulatorNilaiScreen)
 - [x] Impor gabung (ImportMergeScreen)
-- Status: [ ] hampir selesai, tinggal parser lanjutan (7.15)
+- Status: [x] selesai
 
 ---
 
@@ -341,7 +350,7 @@ Tracking:
 
 1. `flutter gen-l10n` - sukses, 443 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 223 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
+3. `flutter test` - 291 tes lulus (parser dasar dan lanjutan 7.15, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
 4. `flutter build apk` - sukses, `app-release.apk` 63.2 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
@@ -352,4 +361,4 @@ Tracking:
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
-- Parser lanjutan (7.15)
+- Chip hasil parser 7.15 belum dipasang di Quick Add dan share intake: kedua file itu sedang dikerjakan agent lain
