@@ -34,15 +34,12 @@ class SpaceRepository {
   }
 
   Future<void> archiveSpace(String id) async {
-    await db.update(db.spaces).replace(Space(
-      id: id,
-      name: '',
-      color: 0,
-      kind: 'course',
-      archived: true,
-      createdAt: 0,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.spaces)..where((t) => t.id.equals(id))).write(
+      SpacesCompanion(
+        archived: const Value(true),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 
   Future<void> deleteSpace(String id) async {

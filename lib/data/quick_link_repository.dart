@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'database.dart';
 
 class QuickLinkRepository {
@@ -23,13 +24,11 @@ class QuickLinkRepository {
   }
 
   Future<void> deleteQuickLink(String id) async {
-    await db.update(db.quickLinks).replace(QuickLink(
-      id: id,
-      title: '',
-      url: '',
-      sortOrder: 0,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.quickLinks)..where((t) => t.id.equals(id))).write(
+      QuickLinksCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 }

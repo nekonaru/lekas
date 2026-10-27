@@ -41,26 +41,23 @@ class TaskRepository {
   }
 
   Future<void> softDeleteTask(String id) async {
-    await db.update(db.tasks).replace(Task(
-      id: id,
-      title: '',
-      priority: 1,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      inbox: false,
-      createdAt: 0,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    // Write only the two columns: replace() would rebuild the row from
+    // scratch and drop notes, deadline, space and every other field.
+    await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 
   Future<void> restoreTask(String id) async {
-    final existing = await getTask(id);
-    await db.update(db.tasks).replace(existing.copyWith(
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: const Value(null),
-    ));
+    await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: const Value(null),
+      ),
+    );
   }
 
   Future<void> markDone(String id, {int? completedAt}) async {
@@ -195,10 +192,27 @@ class TaskRepository {
         .watch();
   }
 
+  /// Rows sitting in the trash: only the soft deleted ones, newest first.
+  Stream<List<Task>> watchTrash() {
+    return (db.select(db.tasks)
+          ..where((t) => t.deletedAt.isNotNull())
+          ..orderBy([(t) => OrderingTerm.desc(t.deletedAt)]))
+        .watch();
+  }
+
+  /// Removes a trashed task for good. This one really deletes the row,
+  /// which is what the trash screen promises to the user.
+  Future<void> deletePermanently(String id) async {
+    await (db.delete(db.tasks)..where((t) => t.id.equals(id))).go();
+  }
+
   Future<int> countInbox() async {
-    final rows = await (db.select(db.tasks)
-          ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))
-        .get();
-    return rows.length;
+    // COUNT(*) in SQLite instead of loading every row into Dart.
+    final count = db.tasks.id.count();
+    final query = db.selectOnly(db.tasks)
+      ..addColumns([count])
+      ..where(db.tasks.inbox.equals(true) & db.tasks.deletedAt.isNull());
+    final row = await query.getSingle();
+    return row.read(count) ?? 0;
   }
 }

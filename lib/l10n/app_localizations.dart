@@ -1346,6 +1346,24 @@ abstract class AppLocalizations {
   /// **'Dihapus: {date}'**
   String deletedAtLabel(String date);
 
+  /// No description provided for @restoreLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get restoreLabel;
+
+  /// No description provided for @deletePermanentlyLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus permanen'**
+  String get deletePermanentlyLabel;
+
+  /// No description provided for @deletePermanentlyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas ini hilang selamanya dan tidak bisa dibatalkan.'**
+  String get deletePermanentlyBody;
+
   /// No description provided for @attachmentsTitle.
   ///
   /// In id, this message translates to:

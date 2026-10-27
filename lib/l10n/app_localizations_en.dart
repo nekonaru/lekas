@@ -680,6 +680,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get restoreLabel => 'Restore';
+
+  @override
+  String get deletePermanentlyLabel => 'Delete permanently';
+
+  @override
+  String get deletePermanentlyBody =>
+      'This task is gone for good and cannot be undone.';
+
+  @override
   String get attachmentsTitle => 'Attachments';
 
   @override

@@ -32,15 +32,11 @@ class ClassSlotRepository {
   }
 
   Future<void> deleteClassSlot(String id) async {
-    await db.update(db.classSlots).replace(ClassSlot(
-      id: id,
-      spaceId: '',
-      weekday: 0,
-      startMin: 0,
-      endMin: 0,
-      kind: 'lecture',
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.classSlots)..where((t) => t.id.equals(id))).write(
+      ClassSlotsCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'database.dart';
 
 class SavedFilterRepository {
@@ -23,13 +24,11 @@ class SavedFilterRepository {
   }
 
   Future<void> deleteSavedFilter(String id) async {
-    await db.update(db.savedFilters).replace(SavedFilter(
-      id: id,
-      name: '',
-      queryJson: '',
-      sortOrder: 0,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.savedFilters)..where((t) => t.id.equals(id))).write(
+      SavedFiltersCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 }

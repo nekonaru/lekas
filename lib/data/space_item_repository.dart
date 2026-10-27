@@ -28,13 +28,11 @@ class SpaceItemRepository {
   }
 
   Future<void> deleteSpaceItem(String id) async {
-    await db.update(db.spaceItems).replace(SpaceItem(
-      id: id,
-      spaceId: '',
-      title: '',
-      sortOrder: 0,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.spaceItems)..where((t) => t.id.equals(id))).write(
+      SpaceItemsCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 }

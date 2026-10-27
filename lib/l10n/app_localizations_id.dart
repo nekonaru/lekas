@@ -682,6 +682,16 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get restoreLabel => 'Pulihkan';
+
+  @override
+  String get deletePermanentlyLabel => 'Hapus permanen';
+
+  @override
+  String get deletePermanentlyBody =>
+      'Tugas ini hilang selamanya dan tidak bisa dibatalkan.';
+
+  @override
   String get attachmentsTitle => 'Lampiran';
 
   @override

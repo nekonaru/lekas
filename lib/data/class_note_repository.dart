@@ -26,12 +26,11 @@ class ClassNoteRepository {
   }
 
   Future<void> deleteClassNote(String id) async {
-    await db.update(db.classNotes).replace(ClassNote(
-      id: id,
-      spaceId: '',
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      deletedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await (db.update(db.classNotes)..where((t) => t.id.equals(id))).write(
+      ClassNotesCompanion(
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
   }
 }

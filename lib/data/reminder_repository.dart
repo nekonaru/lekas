@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'database.dart';
 
 class ReminderRepository {
@@ -27,12 +28,9 @@ class ReminderRepository {
   }
 
   Future<void> markAcked(String id) async {
-    await db.update(db.reminders).replace(Reminder(
-      id: id,
-      fireAt: 0,
-      notifId: 0,
-      fired: false,
-      ackedAt: DateTime.now().millisecondsSinceEpoch,
+    await (db.update(db.reminders)..where((t) => t.id.equals(id)))
+        .write(RemindersCompanion(
+      ackedAt: Value(DateTime.now().millisecondsSinceEpoch),
     ));
   }
 }
