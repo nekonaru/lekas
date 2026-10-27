@@ -62,6 +62,11 @@ Terakhir diperbarui: Sun Oct 26 2026
   notifikasi harian karena menyangkut kehadiran, bukan pengingat tugas. Kelas yang
   selesai di jam tenang (22.00-06.00) tidak memunculkan prompt sama sekali, bukan
   digeser, karena prompt yang digeser akan datang sebelum kelasnya sendiri.
+- **Tawaran lanjut fokus berupa tombol terpisah di ringkasan pagi.** Baris
+  "Lanjutkan N tugas kemarin?" hanya muncul bila ada fokus kemarin yang belum selesai,
+  dan tombol "Lanjutkan" mengerjakannya di latar tanpa membuka layar; tombol
+  "Pilih fokus hari ini" tetap ada. Hanya tugas yang terbuka yang dipindahkan, dan
+  hasilnya tidak pernah melewati batas 3 tugas.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -176,7 +181,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Gabung notifikasi (<= 10 menit jadi satu), anggaran 8 per hari dan intensitas Tenang/Normal/Gencar (`notification_policy.dart`, 11 tes)
 - [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan); ringkasan pagi kini menyertakan jatah absen yang tinggal 1/habis (5.19) dan tombol "Pilih fokus hari ini" (5.24)
 - [x] Ringkasan minggu Minggu malam 20.30: tugas tepat waktu, matkul terpadat minggu depan, usia cadangan terakhir (catatan "Minggu malam", sakelar sendiri)
-- [x] Fokus hari ini (FokusHariIniScreen, 5.24): pilih maksimal 3 tugas per hari, bagian "Fokus Hari Ini" di layar Hari Ini, sakelar di detail tugas, tombol di ringkasan pagi, perayaan kecil saat semua selesai
+- [x] Fokus hari ini (FokusHariIniScreen, 5.24): pilih maksimal 3 tugas per hari, bagian "Fokus Hari Ini" di layar Hari Ini, sakelar di detail tugas, tombol di ringkasan pagi, tawaran "Lanjutkan N tugas kemarin?", perayaan kecil saat semua selesai
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
 - [ ] Parser lanjutan (7.15)
@@ -217,7 +222,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (439 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (441 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -323,9 +328,9 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 439 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 441 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 208 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus)
+3. `flutter test` - 211 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus)
 4. `flutter build apk` - sukses, `app-release.apk` 63.1 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
@@ -337,5 +342,4 @@ Tracking:
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - Widget layar utama (home_widget package)
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
-- Tawaran "Lanjutkan 2 tugas kemarin?" untuk fokus yang belum selesai (5.24) belum dibuat; fokus otomatis kedaluwarsa saat hari berganti
 - Parser lanjutan (7.15)
