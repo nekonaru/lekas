@@ -1450,4 +1450,21 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get focusRemoveTooltip => 'Keluarkan dari fokus';
+
+  @override
+  String get attendPromptTitle => 'Isi kehadiran';
+
+  @override
+  String attendPromptBody(String name) {
+    return 'Kelas $name selesai 10 menit lalu.';
+  }
+
+  @override
+  String get attendPromptAction => 'Isi sekarang';
+
+  @override
+  String get attendPromptToggle => 'Notifikasi Isi kehadiran';
+
+  @override
+  String get attendPromptToggleHint => 'Muncul 10 menit setelah kelas selesai';
 }

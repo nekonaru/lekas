@@ -49,6 +49,9 @@ const int kQuietShiftMinute = 55;
 /// Kind used by the "snooze 1 hour" action button.
 const String kKindSnooze = 'snooze';
 
+/// Kind of the optional prompt that follows a class (design section 5.19).
+const String kKindAttend = 'attend';
+
 const String kChannelDeadline = 'deadline_channel';
 const String kChannelOverdue = 'overdue_channel';
 const String kChannelSummary = 'summary_channel';
@@ -64,6 +67,10 @@ const String kPendingRouteKey = 'pending_route';
 /// Route name of the focus picker, the only route a notification opens.
 const String kRouteFocus = 'focus';
 
+/// Route prefix of the attendance screen: `attendance:<spaceId>`, written
+/// by the prompt that follows a class (design section 5.19).
+const String kRouteAttendancePrefix = 'attendance:';
+
 /// Notification payload: `task|<taskId>|<action>`.
 class ReminderPayload {
   const ReminderPayload(this.taskId, this.action);
@@ -77,6 +84,10 @@ class ReminderPayload {
 
   /// Asks the app to open the focus picker of design section 5.24.
   static const String actionFocus = 'focus';
+
+  /// Asks the app to open the attendance screen of a course, with the space
+  /// id carried in [taskId] (design section 5.19).
+  static const String actionAttend = 'attend';
 
   static ReminderPayload? tryParse(String? raw) {
     if (raw == null || raw.isEmpty) return null;
@@ -97,13 +108,16 @@ class ReminderAction {
   final String kind;
 }
 
+/// Whether a moment falls inside the 22:00 to 06:00 quiet window.
+bool isInQuietHours(DateTime moment) =>
+    moment.hour >= kQuietStartHour || moment.hour < kQuietEndHour;
+
 /// Applies the quiet hours rule: a reminder that would fire between 22:00 and
 /// 06:00 moves to 21:55 of the evening it would fire, so nobody is woken up.
 /// The shift never moves a reminder past its own deadline, and a reminder that
 /// no longer fits is left untouched for the caller to drop.
 DateTime moveOutOfQuietHours(DateTime fireAt, DateTime deadline) {
-  final inQuiet = fireAt.hour >= kQuietStartHour || fireAt.hour < kQuietEndHour;
-  if (!inQuiet) return fireAt;
+  if (!isInQuietHours(fireAt)) return fireAt;
   final DateTime candidate;
   if (fireAt.hour >= kQuietStartHour) {
     candidate = DateTime(fireAt.year, fireAt.month, fireAt.day, kQuietShiftHour,
@@ -237,6 +251,19 @@ List<AndroidNotificationAction> _focusActions(AppLocalizations l10n) {
   ];
 }
 
+/// The action button of the attendance prompt (design section 5.19): it
+/// opens the attendance screen of the course that just finished.
+List<AndroidNotificationAction> _attendActions(AppLocalizations l10n) {
+  return [
+    AndroidNotificationAction(
+      ReminderPayload.actionAttend,
+      l10n.attendPromptAction,
+      showsUserInterface: true,
+      cancelNotification: true,
+    ),
+  ];
+}
+
 /// Background entry point used by `BootReceiver`. Reconciles every reminder
 /// after a reboot or an app update, then tells native code it is done.
 @pragma('vm:entry-point')
@@ -272,13 +299,18 @@ Future<void> onNotificationActionBackground(NotificationResponse response) async
   final payload = ReminderPayload.tryParse(response.payload);
   if (payload == null) return;
   final action = response.actionId ?? payload.action;
-  if (action == ReminderPayload.actionFocus) {
-    // The focus picker can only be shown by the app itself, so remember
-    // where to go and let the app open it (design section 5.24).
+  if (action == ReminderPayload.actionFocus ||
+      action == ReminderPayload.actionAttend) {
+    // The picker or the attendance screen can only be shown by the app, so
+    // remember where to go and let the app open it (design sections 5.19
+    // and 5.24).
+    final route = action == ReminderPayload.actionFocus
+        ? kRouteFocus
+        : '$kRouteAttendancePrefix${payload.taskId}';
     AppDatabase? routeDb;
     try {
       routeDb = await openAppDatabase();
-      await SettingsRepository(routeDb).set(kPendingRouteKey, kRouteFocus);
+      await SettingsRepository(routeDb).set(kPendingRouteKey, route);
     } catch (error, stack) {
       debugPrint('notification route failed: $error\n$stack');
     } finally {
@@ -598,6 +630,8 @@ class ReminderService {
     for (final row in existing) {
       final isFreshSnooze =
           row.kind == kKindSnooze && row.fireAt > nowMs && !desired.containsKey(row.id);
+      // The attendance prompt is planned on its own, after the summaries.
+      if (row.kind == kKindAttend) continue;
       if (desired.containsKey(row.id) || isFreshSnooze) continue;
       await _plugin.cancel(row.notifId);
       await reminderRepository.deleteReminder(row.id);
@@ -636,6 +670,119 @@ class ReminderService {
     await _syncOverdueDigest(tasks, now, l10n);
     await _syncSummaries(tasks, now, exceptions, l10n);
     await _syncWeeklySummary(tasks, now, l10n);
+    await _syncAttendPrompts(now, exceptions, l10n);
+  }
+
+  /// The optional prompt ten minutes after each class of the courses that
+  /// switched it on (design section 5.19). It lives outside the budget of
+  /// task reminders: a course asked for it, and forgetting to mark a class
+  /// is exactly what it prevents.
+  Future<void> _syncAttendPrompts(
+    DateTime now,
+    List<ClassException> exceptions,
+    AppLocalizations l10n,
+  ) async {
+    final repository = _ref.read(reminderRepositoryProvider);
+    final slotRepository = _ref.read(classSlotRepositoryProvider);
+    final spaceRepository = _ref.read(spaceRepositoryProvider);
+    final settings = _ref.read(settingsRepositoryProvider);
+    final horizon = now.add(const Duration(days: kScheduleHorizonDays));
+
+    final spaces = await spaceRepository.getSpaces(includeArchived: true);
+    final slots = await slotRepository.getAllClassSlots();
+
+    // Every prompt that should exist, keyed by its reminder id.
+    final wanted = <String, ({String spaceId, int fireMs})>{};
+    for (final space in spaces) {
+      if (space.attendPrompt != true || space.deletedAt != null) continue;
+      final windows = <ClassWindow>[];
+      for (var day = 0; day <= kScheduleHorizonDays; day++) {
+        windows.addAll(classWindowsFor(
+          date: DateTime(now.year, now.month, now.day + day),
+          spaceId: space.id,
+          slots: slots,
+          exceptions: exceptions,
+        ));
+      }
+      final moments = attendPromptMoments(
+        from: now,
+        horizon: horizon,
+        windows: windows,
+      );
+      for (final moment in moments) {
+        // Classes ending at night never prompt; the mark can wait for the
+        // morning (design section 4.6 keeps 22:00 to 06:00 quiet).
+        if (isInQuietHours(moment)) continue;
+        final endMs =
+            moment.subtract(const Duration(minutes: kAttendPromptDelayMinutes))
+                .millisecondsSinceEpoch;
+        wanted['attend:${space.id}:$endMs'] =
+            (spaceId: space.id, fireMs: moment.millisecondsSinceEpoch);
+      }
+    }
+
+    final existing = (await repository.getReminders())
+        .where((row) => row.kind == kKindAttend)
+        .toList();
+    final existingById = {for (final row in existing) row.id: row};
+
+    var allocated = false;
+    var nextId = await _nextNotifId(settings);
+    for (final row in existing) {
+      if (wanted.containsKey(row.id)) continue;
+      await _plugin.cancel(row.notifId);
+      await repository.deleteReminder(row.id);
+    }
+
+    final names = {for (final space in spaces) space.id: space.name};
+    for (final entry in wanted.entries) {
+      final row = existingById[entry.key];
+      if (row != null && row.fireAt == entry.value.fireMs) continue;
+      if (row != null) {
+        await _plugin.cancel(row.notifId);
+        await repository.updateReminder(
+            row.copyWith(fireAt: entry.value.fireMs, fired: false));
+        await _scheduleAttendPrompt(
+            entry.value, row.notifId, names[entry.value.spaceId] ?? '', l10n);
+      } else {
+        final notifId = nextId++;
+        allocated = true;
+        final newRow = Reminder(
+          id: entry.key,
+          taskId: entry.value.spaceId,
+          fireAt: entry.value.fireMs,
+          kind: kKindAttend,
+          notifId: notifId,
+          fired: false,
+        );
+        await repository.insertReminder(newRow);
+        await _scheduleAttendPrompt(
+            entry.value, notifId, names[entry.value.spaceId] ?? '', l10n);
+      }
+    }
+
+    if (allocated) {
+      await settings.set('notif_id_seq', '$nextId');
+    }
+  }
+
+  Future<void> _scheduleAttendPrompt(
+    ({String spaceId, int fireMs}) prompt,
+    int notifId,
+    String spaceName,
+    AppLocalizations l10n,
+  ) async {
+    await scheduleNotification(
+      id: notifId,
+      when: DateTime.fromMillisecondsSinceEpoch(prompt.fireMs),
+      title: l10n.attendPromptTitle,
+      body: l10n.attendPromptBody(spaceName),
+      payload: ReminderPayload(prompt.spaceId, ReminderPayload.actionOpen)
+          .encode(),
+      channelId: kChannelSummary,
+      actions: _attendActions(l10n),
+      l10n: l10n,
+    );
   }
 
   /// Allocates a notification id that is remembered under [key], so the
@@ -1036,6 +1183,10 @@ class ReminderService {
     } else if (action == ReminderPayload.actionFocus) {
       // The morning summary button of design section 5.24.
       _ref.read(pendingNotificationRouteProvider.notifier).state = kRouteFocus;
+    } else if (action == ReminderPayload.actionAttend) {
+      // The button of the prompt that follows a class (design 5.19).
+      _ref.read(pendingNotificationRouteProvider.notifier).state =
+          '$kRouteAttendancePrefix${payload.taskId}';
     }
   }
 

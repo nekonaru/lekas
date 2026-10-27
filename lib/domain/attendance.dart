@@ -114,3 +114,27 @@ List<String> quotaAlertLines(
   }
   return lines;
 }
+
+/// Minutes between the end of a class and its optional attendance prompt
+/// (design section 5.19).
+const int kAttendPromptDelayMinutes = 10;
+
+/// When the "mark your attendance" prompt fires: ten minutes after every
+/// class of the window that ends between [from] and [horizon], earliest
+/// first. Classes already over are skipped, so a sync never asks about a
+/// meeting the user can no longer answer in time.
+List<DateTime> attendPromptMoments({
+  required DateTime from,
+  required DateTime horizon,
+  required Iterable<({DateTime start, DateTime end})> windows,
+}) {
+  final moments = <DateTime>[];
+  for (final window in windows) {
+    final moment =
+        window.end.add(const Duration(minutes: kAttendPromptDelayMinutes));
+    if (!moment.isAfter(from) || moment.isAfter(horizon)) continue;
+    moments.add(moment);
+  }
+  moments.sort((a, b) => a.compareTo(b));
+  return moments;
+}

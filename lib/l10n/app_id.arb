@@ -489,5 +489,11 @@
   "focusLimitToast": "Fokus hari ini sudah penuh, maksimal 3 tugas",
   "focusAllDoneMsg": "Semua tugas fokus hari ini selesai.",
   "focusEmpty": "Belum ada fokus hari ini. Pilih sampai 3 tugas.",
-  "focusRemoveTooltip": "Keluarkan dari fokus"
+  "focusRemoveTooltip": "Keluarkan dari fokus",
+  "attendPromptTitle": "Isi kehadiran",
+  "attendPromptBody": "Kelas {name} selesai 10 menit lalu.",
+  "@attendPromptBody": { "placeholders": { "name": { "type": "String" } } },
+  "attendPromptAction": "Isi sekarang",
+  "attendPromptToggle": "Notifikasi Isi kehadiran",
+  "attendPromptToggleHint": "Muncul 10 menit setelah kelas selesai"
 }

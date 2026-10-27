@@ -1449,4 +1449,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focusRemoveTooltip => 'Remove from focus';
+
+  @override
+  String get attendPromptTitle => 'Mark attendance';
+
+  @override
+  String attendPromptBody(String name) {
+    return '$name class ended 10 minutes ago.';
+  }
+
+  @override
+  String get attendPromptAction => 'Mark now';
+
+  @override
+  String get attendPromptToggle => 'Mark attendance reminder';
+
+  @override
+  String get attendPromptToggleHint => 'Appears 10 minutes after class ends';
 }

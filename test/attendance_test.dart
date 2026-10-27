@@ -95,6 +95,35 @@ void main() {
       );
       expect(lines, ['Basdat:1']);
     });
+
+    test('the prompt fires ten minutes after a class still ahead', () {
+      final moments = attendPromptMoments(
+        from: DateTime(2026, 10, 26, 8, 0),
+        horizon: DateTime(2026, 11, 9, 8, 0),
+        windows: [
+          (start: DateTime(2026, 10, 27, 9, 0), end: DateTime(2026, 10, 27, 10, 30)),
+          (start: DateTime(2026, 10, 26, 9, 0), end: DateTime(2026, 10, 26, 10, 30)),
+        ],
+      );
+      expect(moments, [
+        DateTime(2026, 10, 26, 10, 40),
+        DateTime(2026, 10, 27, 10, 40),
+      ]);
+    });
+
+    test('a class that is over and one past the horizon stay silent', () {
+      final moments = attendPromptMoments(
+        from: DateTime(2026, 10, 26, 12, 0),
+        horizon: DateTime(2026, 10, 26, 20, 0),
+        windows: [
+          // Prompt at 09:00, already behind the sync moment.
+          (start: DateTime(2026, 10, 26, 7, 0), end: DateTime(2026, 10, 26, 8, 50)),
+          // Prompt at 00:00 tomorrow, past the horizon.
+          (start: DateTime(2026, 10, 26, 23, 0), end: DateTime(2026, 10, 26, 23, 50)),
+        ],
+      );
+      expect(moments, isEmpty);
+    });
   });
 
   group('attendance records (design section 5.19)', () {

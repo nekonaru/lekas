@@ -4,6 +4,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/attendance.dart';
 import '../../l10n/app_localizations.dart';
+import '../../reminders/reminder_service.dart';
 
 /// Attendance and the absence quota of design section 5.19: how many
 /// meetings were attended, how many absences are still allowed, and the
@@ -239,6 +240,21 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                       widget.spaceId,
                       excusedCountsAbsent: value,
                     ),
+                  ),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.notifications_none),
+                    title: Text(l10n.attendPromptToggle),
+                    subtitle: Text(l10n.attendPromptToggleHint),
+                    value: space.attendPrompt ?? false,
+                    onChanged: (value) async {
+                      await spaceRepo.setAttendanceSettings(
+                        widget.spaceId,
+                        attendPrompt: value,
+                      );
+                      // Reschedules or drops the prompts right away.
+                      ref.read(reminderServiceProvider).syncAll();
+                      if (mounted) setState(() {});
+                    },
                   ),
                 ],
               ),

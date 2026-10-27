@@ -46,6 +46,15 @@ void main() {
       final atLimit = DateTime(2026, 10, 20, 21, 59);
       expect(moveOutOfQuietHours(atLimit, deadline), atLimit);
     });
+
+    test('the quiet window itself is easy to ask about', () {
+      // The attendance prompt of design section 5.19 drops its night
+      // classes instead of shifting them.
+      expect(isInQuietHours(DateTime(2026, 10, 20, 22, 0)), isTrue);
+      expect(isInQuietHours(DateTime(2026, 10, 20, 3, 0)), isTrue);
+      expect(isInQuietHours(DateTime(2026, 10, 20, 6, 0)), isFalse);
+      expect(isInQuietHours(DateTime(2026, 10, 20, 21, 59)), isFalse);
+    });
   });
 
   group('notification payload', () {

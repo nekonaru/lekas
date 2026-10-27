@@ -489,5 +489,11 @@
   "focusLimitToast": "Today's focus is full, three tasks at most",
   "focusAllDoneMsg": "All focus tasks of today are done.",
   "focusEmpty": "No focus yet today. Pick up to 3 tasks.",
-  "focusRemoveTooltip": "Remove from focus"
+  "focusRemoveTooltip": "Remove from focus",
+  "attendPromptTitle": "Mark attendance",
+  "attendPromptBody": "{name} class ended 10 minutes ago.",
+  "@attendPromptBody": { "placeholders": { "name": { "type": "String" } } },
+  "attendPromptAction": "Mark now",
+  "attendPromptToggle": "Mark attendance reminder",
+  "attendPromptToggleHint": "Appears 10 minutes after class ends"
 }

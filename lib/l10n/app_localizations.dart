@@ -2701,6 +2701,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Keluarkan dari fokus'**
   String get focusRemoveTooltip;
+
+  /// No description provided for @attendPromptTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi kehadiran'**
+  String get attendPromptTitle;
+
+  /// No description provided for @attendPromptBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas {name} selesai 10 menit lalu.'**
+  String attendPromptBody(String name);
+
+  /// No description provided for @attendPromptAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi sekarang'**
+  String get attendPromptAction;
+
+  /// No description provided for @attendPromptToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi Isi kehadiran'**
+  String get attendPromptToggle;
+
+  /// No description provided for @attendPromptToggleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Muncul 10 menit setelah kelas selesai'**
+  String get attendPromptToggleHint;
 }
 
 class _AppLocalizationsDelegate

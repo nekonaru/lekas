@@ -10,6 +10,7 @@ import 'features/home/home_shell.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/share_intake/share_intake_screen.dart';
 import 'features/tasks/fokus_hari_ini_screen.dart';
+import 'features/tasks/attendance_screen.dart';
 import 'reminders/reminder_service.dart';
 
 /// Used by the share intake flow to push a screen before the first frame.
@@ -109,14 +110,23 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
   }
 
   /// Opens the screen a notification action asked for, once the navigator
-  /// exists (design section 5.24).
+  /// exists (design sections 5.19 and 5.24).
   void _pushNotificationRoute(String route) {
-    if (route != kRouteFocus) return;
     final navigator = navigatorKey.currentState;
     if (navigator == null) return;
-    navigator.push(MaterialPageRoute<void>(
-      builder: (_) => const FokusHariIniScreen(),
-    ));
+    if (route == kRouteFocus) {
+      navigator.push(MaterialPageRoute<void>(
+        builder: (_) => const FokusHariIniScreen(),
+      ));
+      return;
+    }
+    if (route.startsWith(kRouteAttendancePrefix)) {
+      final spaceId = route.substring(kRouteAttendancePrefix.length);
+      if (spaceId.isEmpty) return;
+      navigator.push(MaterialPageRoute<void>(
+        builder: (_) => AttendanceScreen(spaceId: spaceId),
+      ));
+    }
   }
 
   /// Reads the route the background isolate stored in settings and clears

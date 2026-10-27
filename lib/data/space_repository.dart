@@ -61,12 +61,14 @@ class SpaceRepository {
   }
 
   /// Attendance settings of one course (design section 5.19): planned
-  /// meetings, absence limit in percent and how izin and sick days count.
+  /// meetings, absence limit in percent, how izin and sick days count and
+  /// whether the prompt after class is on.
   Future<void> setAttendanceSettings(
     String spaceId, {
     int? totalMeetings,
     int? maxAbsentPercent,
     bool? excusedCountsAbsent,
+    bool? attendPrompt,
   }) async {
     await (db.update(db.spaces)..where((t) => t.id.equals(spaceId))).write(
       SpacesCompanion(
@@ -79,6 +81,9 @@ class SpaceRepository {
         excusedCountsAbsent: excusedCountsAbsent == null
             ? const Value.absent()
             : Value(excusedCountsAbsent),
+        attendPrompt: attendPrompt == null
+            ? const Value.absent()
+            : Value(attendPrompt),
         updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
       ),
     );
