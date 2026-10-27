@@ -515,5 +515,8 @@
   "@chipLinks": { "placeholders": { "count": { "type": "int" } } },
   "chipNote": "Catatan: {note}",
   "@chipNote": { "placeholders": { "note": { "type": "String" } } },
-  "chipPriorityConflict": "Prioritas campur"
+  "chipPriorityConflict": "Prioritas campur",
+  "micUnavailable": "Pengenalan suara tidak tersedia di perangkat ini.",
+  "micPermissionDenied": "Izin mikrofon diperlukan untuk Quick Add suara.",
+  "voiceListening": "Mendengarkan..."
 }

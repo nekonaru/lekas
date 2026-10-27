@@ -515,5 +515,8 @@
   "@chipLinks": { "placeholders": { "count": { "type": "int" } } },
   "chipNote": "Note: {note}",
   "@chipNote": { "placeholders": { "note": { "type": "String" } } },
-  "chipPriorityConflict": "Mixed priority"
+  "chipPriorityConflict": "Mixed priority",
+  "micUnavailable": "Speech recognition is not available on this device.",
+  "micPermissionDenied": "Microphone permission is needed for Voice Quick Add.",
+  "voiceListening": "Listening..."
 }

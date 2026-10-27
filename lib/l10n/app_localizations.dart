@@ -2809,6 +2809,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Prioritas campur'**
   String get chipPriorityConflict;
+
+  /// No description provided for @micUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengenalan suara tidak tersedia di perangkat ini.'**
+  String get micUnavailable;
+
+  /// No description provided for @micPermissionDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan untuk Quick Add suara.'**
+  String get micPermissionDenied;
+
+  /// No description provided for @voiceListening.
+  ///
+  /// In id, this message translates to:
+  /// **'Mendengarkan...'**
+  String get voiceListening;
 }
 
 class _AppLocalizationsDelegate

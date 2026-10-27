@@ -8,6 +8,7 @@ import '../settings/backup_screen.dart';
 import '../settings/diagnostic_screen.dart';
 import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
+import '../tasks/quick_add_suara_screen.dart';
 import '../tasks/search_filter_screen.dart';
 import '../tasks/task_template_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
@@ -145,6 +146,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             leading: const Icon(Icons.add_circle),
             title: Text(l10n.quickAddMenuLabel),
             onTap: _openQuickAdd,
+          ),
+          ListTile(
+            leading: const Icon(Icons.mic_none),
+            title: Text(l10n.voiceQuickAddTitle),
+            onTap: () => _push(const QuickAddSuaraScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.snooze),

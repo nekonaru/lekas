@@ -51,7 +51,8 @@ class TimeExtractor {
   static final RegExp _space = RegExp(r'\s+');
 
   TimeExtractionResult extract(String text, DateTime now) {
-    var working = ' ${text.toLowerCase().trim()} ';
+    var working =
+        ' ${_expandNumberWords(text.toLowerCase().trim())} ';
     var needsConfirmation = false;
     DateTime? result;
     int? hour;
@@ -339,6 +340,122 @@ class TimeExtractor {
       remainingText: working.replaceAll(_space, ' ').trim(),
       needsConfirmation: needsConfirmation,
     );
+  }
+
+  /// Number words the way speech recognition writes them (design section
+  /// 7.1): "jam tujuh", "dua puluh lima oktober", "seven pm". Only a word
+  /// standing next to a time hint is rewritten, so a title such as "beli
+  /// tiga buku" keeps its own words.
+  static final Map<String, int> _numberWords = _buildNumberWords();
+
+  static Map<String, int> _buildNumberWords() {
+    const indonesian = <String, int>{
+      'nol': 0,
+      'satu': 1,
+      'dua': 2,
+      'tiga': 3,
+      'empat': 4,
+      'lima': 5,
+      'enam': 6,
+      'tujuh': 7,
+      'delapan': 8,
+      'sembilan': 9,
+      'sepuluh': 10,
+      'sebelas': 11,
+    };
+    const english = <String, int>{
+      'zero': 0,
+      'one': 1,
+      'two': 2,
+      'three': 3,
+      'four': 4,
+      'five': 5,
+      'six': 6,
+      'seven': 7,
+      'eight': 8,
+      'nine': 9,
+      'ten': 10,
+      'eleven': 11,
+      'twelve': 12,
+    };
+    const teens = <String, int>{
+      'tiga belas': 13,
+      'empat belas': 14,
+      'lima belas': 15,
+      'enam belas': 16,
+      'tujuh belas': 17,
+      'delapan belas': 18,
+      'sembilan belas': 19,
+      'thirteen': 13,
+      'fourteen': 14,
+      'fifteen': 15,
+      'sixteen': 16,
+      'seventeen': 17,
+      'eighteen': 18,
+      'nineteen': 19,
+    };
+    const tens = <String, int>{
+      'dua puluh': 20,
+      'tiga puluh': 30,
+      'empat puluh': 40,
+      'lima puluh': 50,
+      'twenty': 20,
+      'thirty': 30,
+      'forty': 40,
+      'fifty': 50,
+    };
+
+    final words = <String, int>{...indonesian, ...english, ...teens};
+    for (final entry in tens.entries) {
+      words[entry.key] = entry.value;
+      // "dua puluh lima" and "twenty five" read as 25 and 25.
+      for (final unit in <String, int>{...indonesian, ...english}.entries) {
+        words['${entry.key} ${unit.key}'] = entry.value + unit.value;
+      }
+    }
+    return words;
+  }
+
+  /// The number words as one alternation, longest phrase first, so the
+  /// regular expression never reads "dua puluh" out of "dua puluh lima".
+  static final String _numberAlternation = (_numberWords.keys.toList()
+        ..sort((a, b) => b.length.compareTo(a.length)))
+      .map((phrase) => phrase.split(' ').map(RegExp.escape).join(r'\s+'))
+      .join('|');
+
+  static String _valueOf(String phrase) =>
+      (_numberWords[phrase.toLowerCase()] ?? phrase).toString();
+
+  /// Rewrites spoken numbers that sit next to a time hint, leaving every
+  /// other word alone (design section 7.1).
+  String _expandNumberWords(String text) {
+    final number = '(?:$_numberAlternation)';
+
+    // "jam tujuh", "pukul tiga belas", "tanggal dua puluh lima".
+    var out = text.replaceAllMapped(
+      RegExp('\\b(jam|pukul|at|tanggal|tgl)\\s+($number)\\b',
+          caseSensitive: false),
+      (match) => '${match.group(1)} ${_valueOf(match.group(2)!)}',
+    );
+
+    // "dua puluh lima oktober".
+    final monthRun = months.keys.map(RegExp.escape).join('|');
+    if (monthRun.isNotEmpty) {
+      out = out.replaceAllMapped(
+        RegExp('\\b($number)\\s+($monthRun)\\b', caseSensitive: false),
+        (match) => '${_valueOf(match.group(1)!)} ${match.group(2)}',
+      );
+    }
+
+    // "delapan pagi", "seven pm".
+    const periods =
+        'pagi|siang|sore|malam|morning|afternoon|evening|night|am|pm';
+    out = out.replaceAllMapped(
+      RegExp('\\b($number)\\s+($periods)\\b', caseSensitive: false),
+      (match) => '${_valueOf(match.group(1)!)} ${match.group(2)}',
+    );
+
+    return out;
   }
 
   _DateGuess? _extractMonth(String working, DateTime now) {

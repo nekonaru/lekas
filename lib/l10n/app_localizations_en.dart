@@ -1521,4 +1521,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chipPriorityConflict => 'Mixed priority';
+
+  @override
+  String get micUnavailable =>
+      'Speech recognition is not available on this device.';
+
+  @override
+  String get micPermissionDenied =>
+      'Microphone permission is needed for Voice Quick Add.';
+
+  @override
+  String get voiceListening => 'Listening...';
 }

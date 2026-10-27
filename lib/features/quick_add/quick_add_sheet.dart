@@ -8,11 +8,19 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../parser/parser_service.dart';
 import '../../reminders/reminder_service.dart';
+import '../../voice/voice_input.dart';
 
 /// Quick Add (design section 6.1): one text field, a live parse result and
 /// tappable chips so nothing guessed by the parser is saved in silence.
 class QuickAddSheet extends ConsumerStatefulWidget {
-  const QuickAddSheet({super.key});
+  const QuickAddSheet({super.key, this.initialText = '', this.startVoice = false});
+
+  /// Text the sheet opens with, so the voice screen can hand over what it
+  /// heard (design section 7.1).
+  final String initialText;
+
+  /// Starts a speech session as soon as the sheet is up.
+  final bool startVoice;
 
   @override
   ConsumerState<QuickAddSheet> createState() => _QuickAddSheetState();
@@ -43,15 +51,27 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   ParsedTask? _parsed;
   final Set<String> _dismissed = <String>{};
 
+  /// Voice input (design section 7.1): the recognizer is shared by this
+  /// sheet and the voice screen, and the text typed before the session is
+  /// kept in front of whatever is recognized.
+  final VoiceInput _voice = VoiceInput();
+  bool _listening = false;
+  String _voiceBase = '';
+
   @override
   void initState() {
     super.initState();
-    _load();
     _controller.addListener(_reparse);
+    if (widget.initialText.isNotEmpty) _controller.text = widget.initialText;
+    _load();
+    if (widget.startVoice) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _toggleVoice());
+    }
   }
 
   @override
   void dispose() {
+    _voice.cancel();
     _controller.removeListener(_reparse);
     _controller.dispose();
     super.dispose();
@@ -113,6 +133,66 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
       _priority = parsed.priority;
       _isGroup = parsed.isGroup;
     });
+  }
+
+  /// Toggles the microphone of design section 7.1: the recognized sentence
+  /// lands in the text field, so the parser turns it into chips right away.
+  Future<void> _toggleVoice() async {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+    if (_listening) {
+      await _voice.stop();
+      if (mounted) setState(() => _listening = false);
+      return;
+    }
+
+    final language =
+        ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
+    _voiceBase = _controller.text.trim();
+    final started = await _voice.start(
+      localeId: language == 'id' ? 'id_ID' : 'en_US',
+      onText: _onVoiceText,
+      onError: _onVoiceError,
+    );
+    if (!mounted) return;
+    if (started) {
+      setState(() => _listening = true);
+    } else {
+      _showVoiceMessage(l10n.micUnavailable);
+    }
+  }
+
+  /// Writes the recognized sentence behind the text already there, so the
+  /// user can keep typing while the session runs.
+  void _onVoiceText(String text, bool isFinal) {
+    if (!mounted) return;
+    final heard = text.trim();
+    final base = _voiceBase;
+    final next =
+        heard.isEmpty ? base : (base.isEmpty ? heard : '$base $heard');
+    if (_controller.text != next) {
+      _controller.text = next;
+      _controller.selection =
+          TextSelection.collapsed(offset: _controller.text.length);
+    }
+    if (isFinal) setState(() => _listening = false);
+  }
+
+  void _onVoiceError(String errorCode, bool permanent) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+    setState(() => _listening = false);
+    _showVoiceMessage(errorCode == 'error_permission'
+        ? l10n.micPermissionDenied
+        : l10n.micUnavailable);
+  }
+
+  void _showVoiceMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   String? _nameOf(String? id) {
@@ -366,7 +446,16 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               hintText: l10n.quickAddHint,
+              helperText: _listening ? l10n.voiceListening : null,
               border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                tooltip: l10n.voiceQuickAddTitle,
+                icon: Icon(
+                  _listening ? Icons.mic : Icons.mic_none,
+                  color: _listening ? Theme.of(context).colorScheme.error : null,
+                ),
+                onPressed: _toggleVoice,
+              ),
             ),
             onSubmitted: (_) {
               if (canSave) _save();

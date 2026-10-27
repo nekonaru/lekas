@@ -1522,4 +1522,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chipPriorityConflict => 'Prioritas campur';
+
+  @override
+  String get micUnavailable =>
+      'Pengenalan suara tidak tersedia di perangkat ini.';
+
+  @override
+  String get micPermissionDenied =>
+      'Izin mikrofon diperlukan untuk Quick Add suara.';
+
+  @override
+  String get voiceListening => 'Mendengarkan...';
 }

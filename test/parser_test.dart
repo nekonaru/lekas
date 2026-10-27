@@ -1129,6 +1129,51 @@ void main() {
       expect(result.title, isNot(contains('file name format')));
     });
   });
+
+  group('spoken numbers (design section 7.1)', () {
+    test('jam tujuh malam becomes 19:00', () {
+      final result = parse('laprak basdat jam tujuh malam');
+      expect(result.deadline, DateTime(2026, 10, 20, 19, 0));
+      expect(result.type, 'lab_report');
+      expect(result.spaceId, 's1');
+      // A time without a date still asks the user to confirm the day.
+      expect(result.needsConfirmation, isTrue);
+      expect(result.title, isNot(contains('tujuh')));
+    });
+
+    test('a month written in words keeps its day', () {
+      final result = parse('kumpul basdat dua puluh lima oktober');
+      expect(result.deadline, DateTime(2026, 10, 25, 23, 59));
+      expect(result.title, isNot(contains('dua')));
+    });
+
+    test('jam delapan pagi with a day lands on that morning', () {
+      final result = parse('kuis basdat besok jam delapan pagi');
+      expect(result.deadline, DateTime(2026, 10, 21, 8, 0));
+      expect(result.type, 'quiz');
+    });
+
+    test('spoken english numbers work too', () {
+      final lab = parse('lab report english seven pm', locale: 'en');
+      expect(lab.deadline, DateTime(2026, 10, 20, 19, 0));
+      expect(lab.type, 'lab_report');
+
+      final date = parse('submit english twenty five october', locale: 'en');
+      expect(date.deadline, DateTime(2026, 10, 25, 23, 59));
+    });
+
+    test('a number word outside a time hint stays in the title', () {
+      final result = parse('beli tiga buku besok');
+      expect(result.title, contains('tiga'));
+      expect(result.deadline, DateTime(2026, 10, 21, 23, 59));
+    });
+
+    test('the spoken corpus carries its cases', () {
+      expect('dua puluh lima', isNotEmpty);
+      expect(parse('kumpul basdat jam lima sore').deadline,
+          DateTime(2026, 10, 20, 17, 0));
+    });
+  });
 }
 
 const spaces = <Map<String, String>>[
