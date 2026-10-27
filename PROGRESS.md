@@ -67,6 +67,10 @@ Terakhir diperbarui: Sun Oct 26 2026
   dan tombol "Lanjutkan" mengerjakannya di latar tanpa membuka layar; tombol
   "Pilih fokus hari ini" tetap ada. Hanya tugas yang terbuka yang dipindahkan, dan
   hasilnya tidak pernah melewati batas 3 tugas.
+- **"Besok bawa: ..." menempel pada penutup malam yang sudah ada (5.32).** Baris hanya
+  muncul bila penutup malam itu sendiri tampil, yaitu bila ada tugas berdeadline besok
+  (aturan 5.12), dan hanya untuk matkul yang besok ada kelas serta punya daftar
+  barang. Maksimal 5 judul ditulis, sisanya sebagai "(+N lagi)".
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -179,7 +183,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Kehadiran dan batas absen (AttendanceScreen, 5.19): tabel `attendance` + kolom pengaturan per matkul, `schemaVersion 2` dengan migrasi, layar menampilkan "Hadir X dari Y pertemuan" dan sisa jatah absen dengan peringatan lembut/merah, notifikasi "Isi kehadiran" 10 menit setelah kelas (per matkul, di luar anggaran notifikasi), ekspor-impor cadangan, 9 tes
 - [x] Senyap saat kelas (`class_quiet.dart`, pengecualian `class_exceptions`, deadline < 1 jam tidak ditahan; 6 tes)
 - [x] Gabung notifikasi (<= 10 menit jadi satu), anggaran 8 per hari dan intensitas Tenang/Normal/Gencar (`notification_policy.dart`, 11 tes)
-- [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan); ringkasan pagi kini menyertakan jatah absen yang tinggal 1/habis (5.19) dan tombol "Pilih fokus hari ini" (5.24)
+- [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan); ringkasan pagi kini menyertakan jatah absen yang tinggal 1/habis (5.19), tombol "Pilih fokus hari ini" (5.24) serta tawaran lanjut fokus kemarin, dan penutup malam menyebut "Besok bawa: ..." (5.32)
 - [x] Ringkasan minggu Minggu malam 20.30: tugas tepat waktu, matkul terpadat minggu depan, usia cadangan terakhir (catatan "Minggu malam", sakelar sendiri)
 - [x] Fokus hari ini (FokusHariIniScreen, 5.24): pilih maksimal 3 tugas per hari, bagian "Fokus Hari Ini" di layar Hari Ini, sakelar di detail tugas, tombol di ringkasan pagi, tawaran "Lanjutkan N tugas kemarin?", perayaan kecil saat semua selesai
 - [x] Ganti semester (GantiSemesterScreen)
@@ -211,7 +215,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Bagikan sebagai teks, impor CSV (BagikanTeksScreen)
 - [x] Dependensi tugas (DependensiTugasScreen)
 - [x] Mode demo (ModeDemoScreen)
-- [x] Daftar bawaan (DaftarBawaanScreen)
+- [x] Daftar bawaan (DaftarBawaanScreen): daftar per wadah di `space_items`, penutup malam menyebut "Besok bawa: ..." bila ada kelas besok yang daftarannya terisi (maksimal 5 judul, sisanya dihitung)
 - [x] Tautan cepat global (TautanCepatScreen)
 - [x] Impor jadwal dari tangkapan layar (ImporJadwalOCRScreen)
 - [x] Ekspor gambar dan PDF (ExportGambarPDFScreen)
@@ -222,7 +226,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (441 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (443 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -328,9 +332,9 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 441 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 443 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 211 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus)
+3. `flutter test` - 215 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan)
 4. `flutter build apk` - sukses, `app-release.apk` 63.1 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
