@@ -57,6 +57,11 @@ Terakhir diperbarui: Sun Oct 26 2026
   menulis kunci `pending_route` di tabel settings, dibaca saat aplikasi hidup kembali.
   Payload ringkasan pagi selalu berformat parseable supaya tombolnya diabaikan ketika
   tidak ada tugas tempo hari.
+- **Notifikasi "Isi kehadiran" berdiri sendiri di luar anggaran.** Prompt dijadwalkan per
+  kelas dengan `kind` tersendiri (`attend`), tidak melewati penggabungan dan anggaran
+  notifikasi harian karena menyangkut kehadiran, bukan pengingat tugas. Kelas yang
+  selesai di jam tenang (22.00-06.00) tidak memunculkan prompt sama sekali, bukan
+  digeser, karena prompt yang digeser akan datang sebelum kelasnya sendiri.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -166,7 +171,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Share dari aplikasi lain (share_intake_screen)
 - [x] Bobot komponen (WeightComponentScreen)
 - [x] Target pribadi (TargetPribadiScreen)
-- [x] Kehadiran dan batas absen (AttendanceScreen, 5.19): tabel `attendance` + kolom pengaturan per matkul, `schemaVersion 2` dengan migrasi, layar menampilkan "Hadir X dari Y pertemuan" dan sisa jatah absen dengan peringatan lembut/merah, ekspor-impor cadangan, 7 tes
+- [x] Kehadiran dan batas absen (AttendanceScreen, 5.19): tabel `attendance` + kolom pengaturan per matkul, `schemaVersion 2` dengan migrasi, layar menampilkan "Hadir X dari Y pertemuan" dan sisa jatah absen dengan peringatan lembut/merah, notifikasi "Isi kehadiran" 10 menit setelah kelas (per matkul, di luar anggaran notifikasi), ekspor-impor cadangan, 9 tes
 - [x] Senyap saat kelas (`class_quiet.dart`, pengecualian `class_exceptions`, deadline < 1 jam tidak ditahan; 6 tes)
 - [x] Gabung notifikasi (<= 10 menit jadi satu), anggaran 8 per hari dan intensitas Tenang/Normal/Gencar (`notification_policy.dart`, 11 tes)
 - [x] Ringkasan pagi 07.00 dan penutup malam 20.30 sebagai notifikasi (5.12, dua sakelar di Pengaturan); ringkasan pagi kini menyertakan jatah absen yang tinggal 1/habis (5.19) dan tombol "Pilih fokus hari ini" (5.24)
@@ -212,7 +217,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (434 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (439 kunci pesan per bahasa, id dan en sama)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -318,10 +323,10 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 434 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 439 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 205 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus)
-4. `flutter build apk` - sukses, `app-release.apk` 63.0 MB
+3. `flutter test` - 208 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus)
+4. `flutter build apk` - sukses, `app-release.apk` 63.1 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
@@ -333,5 +338,4 @@ Tracking:
 - Widget layar utama (home_widget package)
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
 - Tawaran "Lanjutkan 2 tugas kemarin?" untuk fokus yang belum selesai (5.24) belum dibuat; fokus otomatis kedaluwarsa saat hari berganti
-- Notifikasi "Isi kehadiran" 10 menit setelah kelas (5.19): kolom `attend_prompt` sudah ada di skema, tetapi notifikasinya belum dibuat dan sakelarnya sengaja tidak dipasang di UI supaya tidak menampilkan pengaturan yang belum berfungsi
 - Parser lanjutan (7.15)
