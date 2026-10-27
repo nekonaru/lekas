@@ -89,6 +89,15 @@ Terakhir diperbarui: Sun Oct 26 2026
   regex tersendiri karena `\b` tidak berdiri antara huruf dan tanda baca; bila `@wadah`
   tidak dikenal, tokennya dikembalikan ke judul. Prioritas tinggi dan rendah dalam satu
   kalimat dianggap konflik dan netral sampai pengguna memilih di chip.
+- **Parser dua bahasa membaca dua kamus sekaligus, bahasa aktif lebih dulu (8.5).**
+  `_merge` di `ParserService` menaruh entri bahasa aktif di depan, jadi bahasa itu menang
+  saat bentrok dan mendapat giliran pertama membaca kata, lalu bahasa lain melengkapi
+  kekurangannya; begitu campuran "submit laprak friday 23.59" tetap terbaca di kedua
+  locale. `TimeExtractor` kini paham "tomorrow", "next friday", "7pm", "7:00 PM", "at 7",
+  "in 3 hours", "october 25", "the 25th", "before 12" dan "next week", dengan aturan lama
+  "besok", "jam 7 malam", "jumat depan" tetap berjalan. Kata bentrok "minggu" saat bahasa
+  aktif Inggris dibaca sebagai hari Minggu tapi tetap menyalakan chip "perlu dicek", dan
+  Quick Add serta share intake mengirim `locale` dari `localeProvider`.
 - **Chip 7.15 bisa dibuang dan yang tersimpan hanya yang dipertahankan.** Chip tampil di
   `Wrap` Quick Add dan share intake; membuangnya mencatat id di set `dismissed`, sehingga
   `estimateMinutes`, `submitMethod`, `submitTarget`, `filenamePattern`, `#tag`, subtugas
@@ -181,7 +190,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ## Urutan 3: Fase B inti
 - [x] Parser bahasa Indonesia: normalizer, time_extractor, matcher, parser_service
 - [x] Parser dictionary id.dart dan en.dart
-- [x] Tes parser: 204 tes lulus, termasuk tabel kasus tepi 6.1, korpus 100+ kalimat dan korpus 7.15 berisi 50 kalimat
+- [x] Tes parser: 225 tes lulus, termasuk tabel kasus tepi 6.1, korpus 100+ kalimat, korpus 7.15 berisi 50 kalimat dan korpus Inggris/campur 8.5 berisi 16 kalimat
 - [x] Quick Add tersambung ke parser: chip deadline, wadah, jenis, prioritas, mode kelompok
 - [x] Share dari WhatsApp (share_intake_screen): split kalimat, chip koreksi, simpan banyak tugas
 - [x] Share intent aktif: intent-filter SEND text/plain + listener `ReceiveSharingIntent` di main.dart
@@ -257,8 +266,8 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Penyesuaian bahasa lewat localeProvider (pengingat memakai bahasa dari Pengaturan)
 - [x] Teks native Android strings.xml + values-in + values-en (nama dan teks widget)
 - [x] Kamus parser en.dart (dasar)
-- [ ] Parser Inggris setara penuh (bisa ditunda ke Urutan 5)
-- Status: [x] infrastruktur dan isi selesai
+- [x] Parser Inggris setara penuh: `ParserService.parse` membaca kedua kamus sekaligus dengan bahasa aktif lebih dulu (`_merge`), `TimeExtractor` paham "tomorrow", "next friday", "7pm", "7:00 PM", "at 7", "in 3 hours", "october 25", "the 25th", "before 12" dan "next week", kata mode kerja serta kata prioritas dua bahasa, dan Quick Add serta share intake mengirim `locale` dari `localeProvider`; kata bentrok ("minggu" saat bahasa aktif Inggris) tetap dibaca sebagai hari Minggu tapi menyalakan chip "perlu dicek"
+- Status: [x] selesai
 
 ---
 
@@ -357,7 +366,7 @@ Tracking:
 
 1. `flutter gen-l10n` - sukses, 452 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 295 tes lulus (parser dasar dan lanjutan 7.15, penulis ekstra parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
+3. `flutter test` - 316 tes lulus (parser dasar, lanjutan 7.15 dan Inggris/campur 8.5, penulis ekstra parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
 4. `flutter build apk` - sukses, `app-release.apk` 63.3 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
@@ -366,6 +375,5 @@ Tracking:
 ## Masalah terbuka (perlu native Android / Flutter)
 
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
-- Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
+- Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec dan menambah plugin baru butuh izin
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
-- Chip Quick Add suara tetap terblokir: plugin speech tidak ada di pubspec dan menambah plugin baru butuh izin
