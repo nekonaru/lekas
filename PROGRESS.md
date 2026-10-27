@@ -71,6 +71,13 @@ Terakhir diperbarui: Sun Oct 26 2026
   muncul bila penutup malam itu sendiri tampil, yaitu bila ada tugas berdeadline besok
   (aturan 5.12), dan hanya untuk matkul yang besok ada kelas serta punya daftar
   barang. Maksimal 5 judul ditulis, sisanya sebagai "(+N lagi)".
+- **Empat widget dibangun native di Android (7.8).** Satu kelas dasar
+  (`LekasWidgetProvider`) menggambar tiga daftar dan satu hitung mundur dari data yang
+  ditulis Flutter ke SharedPreferences lewat `home_widget`; tombol kotak centang jalan
+  di isolate latar dan membalik status tugas, lalu widget digambar ulang. Pembaruan
+  terjadi saat data berubah (debounce 400 ms), saat aplikasi kembali ke depan, dan tiap
+  30 menit lewat `updatePeriodMillis` Android. Toggle dari widget tidak langsung
+  menjadwalkan ulang pengingat; jadwal disinkronkan lagi saat aplikasi dibuka.
 - **Uji manual di HP fisik belum dilakukan** (rancangan 14.7): reboot, mode hemat baterai,
   ganti zona waktu, izin alarm ditolak. Layar Cek Pengingat sudah menyediakan tes 1 menit.
 
@@ -162,12 +169,12 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Quick Add tersambung ke parser: chip deadline, wadah, jenis, prioritas, mode kelompok
 - [x] Share dari WhatsApp (share_intake_screen): split kalimat, chip koreksi, simpan banyak tugas
 - [x] Share intent aktif: intent-filter SEND text/plain + listener `ReceiveSharingIntent` di main.dart
-- [ ] Widget dasar (home_widget)
+- [x] Widget layar utama (`home_widget`): empat widget di launcher, "Daftar Tugas" (sampai 6 baris), "Kelas Hari Ini", "Hitung Mundur Ujian" dan "Fokus Hari Ini", masing-masing dengan tombol tambah cepat, kotak centang yang bisa ditap langsung, dan pembaruan saat data berubah serta tiap 30 menit
 - [x] Kalender bulanan (CalendarScreen)
 - [x] Lampiran foto dan tautan (AttachmentScreen)
 - [x] Prediksi nilai (PrediksiNilaiScreen)
-- [ ] Ringkasan minggu malam
-- Status: [ ] setengah selesai
+- [x] Ringkasan minggu malam
+- Status: [x] selesai
 
 ---
 
@@ -192,7 +199,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Lampiran dokumen (AttachmentScreen)
 - [x] Skenario nilai (SimulatorNilaiScreen)
 - [x] Impor gabung (ImportMergeScreen)
-- Status: [ ] setengah selesai
+- Status: [ ] hampir selesai, tinggal parser lanjutan (7.15)
 
 ---
 
@@ -204,7 +211,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Pintasan ikon dan Quick Settings (PintasanIkonScreen)
 - [x] Saran waktu kosong (SaranWaktuKosongScreen)
 - [x] Kalender minggu, agenda, ICS (KalenderLengkapScreen)
-- [x] Widget lanjutan (WidgetLanjutanScreen)
+- [x] Widget lanjutan (WidgetLanjutanScreen, daftar menu ke empat widget di atas)
 - [x] Wadah non-matkul (WadahNonMatkulScreen)
 - [x] Proyek dan milestone (ProyekMilestoneScreen)
 - [x] Quick Add banyak baris (QuickAddBanyakBarisScreen)
@@ -221,7 +228,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Ekspor gambar dan PDF (ExportGambarPDFScreen)
 - [x] Catatan pertemuan (CatatanPertemuanScreen)
 - [x] Cadangan terenkripsi (CadanganTerenkripsiScreen)
-- Status: [ ] setengah selesai
+- Status: [ ] hampir selesai, tinggal Quick Add suara (butuh plugin)
 
 ---
 
@@ -232,7 +239,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] MaterialApp supportedLocales: id, en
 - [x] Semua layar pakai AppLocalizations (tidak ada teks Indonesia hardcoded di lib/features)
 - [x] Penyesuaian bahasa lewat localeProvider (pengingat memakai bahasa dari Pengaturan)
-- [x] Teks native Android strings.xml + values-in
+- [x] Teks native Android strings.xml + values-in + values-en (nama dan teks widget)
 - [x] Kamus parser en.dart (dasar)
 - [ ] Parser Inggris setara penuh (bisa ditunda ke Urutan 5)
 - Status: [x] infrastruktur dan isi selesai
@@ -334,8 +341,8 @@ Tracking:
 
 1. `flutter gen-l10n` - sukses, 443 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 215 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan)
-4. `flutter build apk` - sukses, `app-release.apk` 63.1 MB
+3. `flutter test` - 223 tes lulus (parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
+4. `flutter build apk` - sukses, `app-release.apk` 63.2 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
@@ -344,6 +351,5 @@ Tracking:
 
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
-- Widget layar utama (home_widget package)
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
 - Parser lanjutan (7.15)
