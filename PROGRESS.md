@@ -14,6 +14,11 @@ Terakhir diperbarui: Sun Oct 26 2026
   sudah memakai ARB + `generate: true`. Rancangan bagian 8.2 (dua bahasa lewat ARB) menang
   untuk arsitektur; `rules.md` menang untuk gaya kode, commit, dan push. Kunci ARB hidup di
   `lib/l10n/app_id.arb` dan `app_en.arb`, lalu `flutter gen-l10n` dijalankan.
+- **Pemeriksaan em/en dash harus membaca berkas sebagai UTF-8.** Pemeriksaan lama memakai
+  `Get-Content -Raw` tanpa encoding, sehingga UTF-8 salah dibaca dan em dash di
+  `README.md`, `README.id.md`, `PROGRESS.md` dan `ARCHITECTURE.md` luput. Pemeriksaan kini
+  memakai `[System.IO.File]::ReadAllText($p, [System.Text.Encoding]::UTF8)` dan mencakup
+  berkas `*.md`, `*.arb`, `*.dart`, `*.kt`, `*.xml`, `*.yml`, `*.yaml`.
 - **Semua tombol sudah beraksi.** Tidak ada lagi `onTap: () {}` / `onPressed: () {}`
   di `lib/features/` (dari 66 placeholder menjadi 0). Setiap tombol kini membuka layar,
   dialog, bottom sheet, atau memanggil repository. Quick Add suara memakai plugin
@@ -275,7 +280,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (455 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15 dan 3 kunci mikrofon)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (456 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15, 3 kunci mikrofon, 1 kunci versi)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -381,16 +386,41 @@ Tracking:
 
 ## Verifikasi terakhir (27 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 455 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 456 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 324 tes lulus (parser dasar, lanjutan 7.15, Inggris/campur 8.5 dan
-   angka bicara 7.1, penulis ekstra parser, widget Quick Add suara, pengingat, kebijakan
-   notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus,
-   daftar bawaan, widget)
+3. `flutter test` - 325 tes lulus (parser dasar, lanjutan 7.15, Inggris/campur 8.5 dan
+   angka bicara 7.1, penulis ekstra parser, widget Quick Add suara, versi pubspec,
+   pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin,
+   kehadiran, fokus, daftar bawaan, widget)
 4. `flutter build apk` - sukses, `app-release.apk` 63.4 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
+
+## Rilis v1.0.0 (27 Okt 2026)
+
+- Tag `v1.0.0` (annotated) pada commit hijau `6ae95ab`, sesuai aturan rancangan/rules
+  bagian 12: menandai hanya setelah CI hijau.
+- `.github/workflows/release.yml` (baru) berjalan pada push tag `v*`: cocokkan tag dengan
+  `version:` di `pubspec.yaml`, jalankan `flutter analyze` dan `flutter test`, bangun
+  `flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64`,
+  susun catatan rilis dua bahasa dari header `## vX.Y.Z - ...` di `CHANGELOG.md` dan
+  `CHANGELOG.id.md` (seksi `### ` dipromosikan jadi `## `), lalu terbitkan dengan
+  `gh release create --verify-tag` beserta dua APK.
+- Rilis `Lekas v1.0.0 - First public release` terbit dengan aset
+  `app-arm64-v8a-release.apk` (22 MB) dan `app-armeabi-v7a-release.apk` (19.8 MB).
+- Catatan rilis persis bentuk rules bagian 5: Inggris lalu Indonesia, pemisah
+  `<br>` / `---` / `<br>`, empat seksi, tanpa em/en dash.
+- `CHANGELOG.md` dan `CHANGELOG.id.md` (baru) memakai `## v1.0.0` lalu empat seksi yang
+  sama, versi terbaru di paling atas.
+- `README.md` dan `README.id.md` ditulis ulang ke 11 bagian kanonik rules bagian 4
+  (About, Features berupa tabel, Requirements, Installation, Usage, Display Language,
+  Project Structure, Testing, FAQ, Author, License) dengan pemilih bahasa di baris pertama.
+- Deskripsi repo dan topik diperbarui sesuai rules bagian 2 dan 3: "Track student tasks
+  and deadlines offline-first (Flutter, Android), capture them from chat in 5 seconds,
+  fully offline." plus topik `dart`, `indonesia`, `offline`.
+- Baris versi di Pengaturan memakai `appVersion` (`lib/core/constants.dart`), dijaga oleh
+  `test/version_test.dart` agar selalu sama dengan `version:` di `pubspec.yaml`.
 
 ## Masalah terbuka (perlu native Android / Flutter)
 
