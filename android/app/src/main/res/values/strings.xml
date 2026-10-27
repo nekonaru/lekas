@@ -13,4 +13,14 @@
     <string name="notification_permission">Izinkan notifikasi untuk pengingat tugas</string>
     <string name="alarm_permission">Izinkan alarm presisi untuk pengingat tepat waktu</string>
     <string name="battery_optimization">Matikan penghemat baterai untuk Lekas agar pengingat tidak hilang</string>
+    <string name="widget_tasks_title">Daftar Tugas</string>
+    <string name="widget_classes_title">Kelas Hari Ini</string>
+    <string name="widget_exam_title">Hitung Mundur Ujian</string>
+    <string name="widget_focus_title">Fokus Hari Ini</string>
+    <string name="widget_add">+ Tambah</string>
+    <string name="widget_empty_tasks">Belum ada tugas</string>
+    <string name="widget_empty_classes">Belum ada kelas hari ini</string>
+    <string name="widget_empty_focus">Belum ada fokus hari ini</string>
+    <string name="widget_empty_exam">Belum ada ujian</string>
+    <string name="widget_exam_days">%d hari lagi</string>
 </resources>

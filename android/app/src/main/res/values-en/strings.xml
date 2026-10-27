@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_tasks_title">Task List</string>
+    <string name="widget_classes_title">Classes Today</string>
+    <string name="widget_exam_title">Exam Countdown</string>
+    <string name="widget_focus_title">Today Focus</string>
+    <string name="widget_add">+ Add</string>
+    <string name="widget_empty_tasks">No tasks yet</string>
+    <string name="widget_empty_classes">No class today</string>
+    <string name="widget_empty_focus">No focus yet</string>
+    <string name="widget_empty_exam">No exam yet</string>
+    <string name="widget_exam_days">%d days left</string>
+</resources>

@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'l10n/app_localizations.dart';
 import 'core/theme.dart';
 import 'data/providers.dart';
 import 'features/home/home_shell.dart';
+import 'features/home/home_widget_sync.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/quick_add/quick_add_sheet.dart';
 import 'features/share_intake/share_intake_screen.dart';
 import 'features/tasks/fokus_hari_ini_screen.dart';
 import 'features/tasks/attendance_screen.dart';
@@ -21,6 +24,15 @@ final pendingShareProvider = StateProvider<String?>((ref) => null);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // A checkbox tap on a home screen widget runs this in its own isolate
+  // (design section 7.8).
+  unawaited(
+    HomeWidget.registerInteractivityCallback(widgetBackgroundCallback)
+        .catchError((Object error) {
+      debugPrint('widget callback registration failed: $error');
+      return false;
+    }),
+  );
   runApp(const ProviderScope(child: LekasApp()));
 }
 
@@ -41,6 +53,7 @@ class LekasApp extends ConsumerStatefulWidget {
 
 class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver {
   StreamSubscription<List<SharedMediaFile>>? _shareSubscription;
+  StreamSubscription<Uri?>? _widgetSubscription;
 
   /// Keeps the stored notification route from being pushed twice when the
   /// start up frame and the resumed event race each other.
@@ -51,6 +64,7 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initShareIntent();
+    _initWidgetClicks();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // A tap on a notification action while the app was killed stores its
       // route before the app finishes starting (design section 5.24).
@@ -61,8 +75,40 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
   @override
   void dispose() {
     _shareSubscription?.cancel();
+    _widgetSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  /// Handles the launch uri of a home screen widget: the add button opens
+  /// quick add, everything else simply lands in the app (design 7.8).
+  void _initWidgetClicks() {
+    _widgetSubscription = HomeWidget.widgetClicked.listen(
+      (uri) {
+        if (uri != null) _onWidgetUri(uri);
+      },
+      onError: (Object _) {
+        // A missing widget platform must never break start up.
+      },
+    );
+    unawaited(
+      HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+        if (uri != null) _onWidgetUri(uri);
+      }).catchError((Object _) {}),
+    );
+  }
+
+  void _onWidgetUri(Uri uri) {
+    if (uri.host != 'quickadd') return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navigator = navigatorKey.currentState;
+      if (navigator == null) return;
+      showModalBottomSheet<void>(
+        context: navigator.context,
+        isScrollControlled: true,
+        builder: (_) => const QuickAddSheet(),
+      );
+    });
   }
 
   /// Listens for text shared from other apps (design section 6.2).
@@ -106,6 +152,12 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       ref.read(reminderServiceProvider).syncAll();
       // A background action button may have stored a route while paused.
       _consumeStoredRoute();
+      // The widgets may have been tapped while the app was away.
+      unawaited(syncHomeWidgets(ref.read(appDatabaseProvider)).catchError(
+        (Object error, StackTrace stack) {
+          debugPrint('widget sync failed: $error\n$stack');
+        },
+      ));
     }
   }
 
@@ -154,6 +206,8 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final themeMode = ref.watch(themeModeProvider);
     // Keeps the schedule in line with every task change.
     ref.watch(reminderSyncProvider);
+    // Keeps the home screen widgets in line with the data (design 7.8).
+    ref.watch(homeWidgetSyncProvider);
 
     // A tap on the action button while the app was already alive lands
     // here instead of in settings (design section 5.24).

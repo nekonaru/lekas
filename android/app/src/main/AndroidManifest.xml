@@ -46,7 +46,75 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="image/*"/>
             </intent-filter>
+
+            <!-- Lets a home screen widget open the app with its own uri
+                 (design section 7.8). -->
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.LAUNCH"/>
+            </intent-filter>
         </activity>
+
+        <!-- The four home screen widgets (design section 7.8). -->
+        <receiver
+            android:name=".TaskListWidgetProvider"
+            android:label="@string/widget_tasks_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_tasks"/>
+        </receiver>
+
+        <receiver
+            android:name=".ClassWidgetProvider"
+            android:label="@string/widget_classes_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_classes"/>
+        </receiver>
+
+        <receiver
+            android:name=".ExamWidgetProvider"
+            android:label="@string/widget_exam_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_exam"/>
+        </receiver>
+
+        <receiver
+            android:name=".FocusWidgetProvider"
+            android:label="@string/widget_focus_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_focus"/>
+        </receiver>
+
+        <!-- Runs the widget checkbox taps in a background isolate. -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.BACKGROUND"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
         <receiver
             android:name=".BootReceiver"

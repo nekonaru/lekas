@@ -4,6 +4,10 @@ import '../data/database.dart';
 /// exceptions of that date.
 typedef ClassWindow = ({DateTime start, DateTime end});
 
+/// The same window with the room of the slot that produced it, used by the
+/// classes widget (design section 7.8).
+typedef ClassWindowDetail = ({DateTime start, DateTime end, String? room});
+
 /// Key of a calendar day used by the `class_exceptions.date` column.
 String classDateKey(DateTime date) {
   final month = date.month.toString().padLeft(2, '0');
@@ -19,10 +23,29 @@ List<ClassWindow> classWindowsFor({
   required List<ClassSlot> slots,
   required List<ClassException> exceptions,
 }) {
+  return [
+    for (final window in classWindowDetailsFor(
+      date: date,
+      spaceId: spaceId,
+      slots: slots,
+      exceptions: exceptions,
+    ))
+      (start: window.start, end: window.end),
+  ];
+}
+
+/// [classWindowsFor] with the room kept, so the classes widget can name
+/// where the class is (design section 7.8).
+List<ClassWindowDetail> classWindowDetailsFor({
+  required DateTime date,
+  required String? spaceId,
+  required List<ClassSlot> slots,
+  required List<ClassException> exceptions,
+}) {
   if (spaceId == null) return const [];
 
   final key = classDateKey(date);
-  final windows = <ClassWindow>[];
+  final windows = <ClassWindowDetail>[];
   for (final slot in slots) {
     if (slot.spaceId != spaceId || slot.weekday != date.weekday) continue;
     if (slot.deletedAt != null) continue;
@@ -49,6 +72,7 @@ List<ClassWindow> classWindowsFor({
     windows.add((
       start: DateTime(date.year, date.month, date.day, startMin ~/ 60, startMin % 60),
       end: DateTime(date.year, date.month, date.day, endMin ~/ 60, endMin % 60),
+      room: slot.room,
     ));
   }
   return windows;
