@@ -16,8 +16,8 @@ Terakhir diperbarui: Sun Oct 26 2026
   `lib/l10n/app_id.arb` dan `app_en.arb`, lalu `flutter gen-l10n` dijalankan.
 - **Semua tombol sudah beraksi.** Tidak ada lagi `onTap: () {}` / `onPressed: () {}`
   di `lib/features/` (dari 66 placeholder menjadi 0). Setiap tombol kini membuka layar,
-  dialog, bottom sheet, atau memanggil repository. Pengecualian: Quick Add suara masih
-  menampilkan pesan `featureNotAvailable` karena plugin speech tidak ada di `pubspec.yaml`.
+  dialog, bottom sheet, atau memanggil repository. Quick Add suara memakai plugin
+  `speech_to_text` (izin menambah plugin diberikan pada 26 Okt 2026).
 - **Urutan aturan pengingat: jam tenang dulu, lalu kelas.** Bila ujung kelas jatuh di dalam
   jam tenang, hasil kelas yang menang (dibaca ulang lewat `moveOutOfQuietHours`), sehingga
   pengingat tidak pernah mendarat di 22.00-06.00. Pengecualian rancangan 5.21: deadline
@@ -98,6 +98,18 @@ Terakhir diperbarui: Sun Oct 26 2026
   "besok", "jam 7 malam", "jumat depan" tetap berjalan. Kata bentrok "minggu" saat bahasa
   aktif Inggris dibaca sebagai hari Minggu tapi tetap menyalakan chip "perlu dicek", dan
   Quick Add serta share intake mengirim `locale` dari `localeProvider`.
+- **Mikrofon Quick Add suara ada di dalam sheet, bukan di layar terpisah (7.1).**
+  `QuickAddSheet` mempunyai tombol mikrofon di ujung kolom teks lewat pembungkus
+  `VoiceInput` (`lib/voice/voice_input.dart`) yang memakai `speech_to_text` 7.5.0; setiap
+  panggilan platform ditangkap menjadi `false`, sehingga perangkat tanpa pengenal suara
+  menampilkan pesan `micUnavailable`/`micPermissionDenied` alih-alih kegagalan. Layar
+  `QuickAddSuaraScreen` tetap ada sebagai layar bicara: teks dengar masuk ke kolomnya,
+  lalu tombol `quickAddMenuLabel` membuka `QuickAddSheet(initialText:)`, dan entri laci
+  "Quick Add Suara" membuka layar itu. Angka bicara (7.1) diubah jadi digit hanya bila
+  berdempetan petunjuk waktu (`jam|pukul|at|tanggal|tgl`, sebelum nama bulan, sebelum kata
+  periode), jadi "beli tiga buku" tetap memakai kata. Karena `SpeechToText.initialize`
+  tidak pernah menjawab di lingkungan tes, `test/voice_quick_add_test.dart` memasang
+  mock kanal `plugin.csdcorp.com/speech_to_text` yang membalas `false`.
 - **Chip 7.15 bisa dibuang dan yang tersimpan hanya yang dipertahankan.** Chip tampil di
   `Wrap` Quick Add dan share intake; membuangnya mencatat id di set `dismissed`, sehingga
   `estimateMinutes`, `submitMethod`, `submitTarget`, `filenamePattern`, `#tag`, subtugas
@@ -190,7 +202,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ## Urutan 3: Fase B inti
 - [x] Parser bahasa Indonesia: normalizer, time_extractor, matcher, parser_service
 - [x] Parser dictionary id.dart dan en.dart
-- [x] Tes parser: 225 tes lulus, termasuk tabel kasus tepi 6.1, korpus 100+ kalimat, korpus 7.15 berisi 50 kalimat dan korpus Inggris/campur 8.5 berisi 16 kalimat
+- [x] Tes parser: 231 tes lulus, termasuk tabel kasus tepi 6.1, korpus 100+ kalimat, korpus 7.15 berisi 50 kalimat, korpus Inggris/campur 8.5 berisi 16 kalimat dan angka bicara 7.1
 - [x] Quick Add tersambung ke parser: chip deadline, wadah, jenis, prioritas, mode kelompok
 - [x] Share dari WhatsApp (share_intake_screen): split kalimat, chip koreksi, simpan banyak tugas
 - [x] Share intent aktif: intent-filter SEND text/plain + listener `ReceiveSharingIntent` di main.dart
@@ -232,7 +244,12 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Timer fokus (TimerFokusScreen)
 - [x] Pin, tag, duplikat, templat (5.9): bagian "Disematkan" di layar Hari Ini, tag bebas dari detail tugas, duplikat satu ketukan, simpan/buat dari templat, penyaring gabung wadah + jenis + tag
 - [x] Kontak dan tautan kelas (KontakKelasScreen)
-- [ ] Quick Add suara (layarnya ada, input suara butuh plugin speech yang belum ada di pubspec)
+- [x] Quick Add suara (7.1): mikrofon di `QuickAddSheet` dan di layar `QuickAddSuaraScreen`
+  lewat pembungkus `VoiceInput` (`lib/voice/voice_input.dart`, plugin `speech_to_text` 7.5.0);
+  hasil dengar ditulis ke kolom teks sambil bicara sehingga parser langsung menampilkan chip,
+  layar suara menyerahkan kalimatnya ke sheet lewat `QuickAddSheet(initialText:)`, entri laci
+  "Quick Add Suara" membuka layar itu, dan perangkat tanpa pengenal suara mendapat pesan
+  `micUnavailable` atau `micPermissionDenied` alih-alih kegagalan
 - [x] Pintasan ikon dan Quick Settings (PintasanIkonScreen)
 - [x] Saran waktu kosong (SaranWaktuKosongScreen)
 - [x] Kalender minggu, agenda, ICS (KalenderLengkapScreen)
@@ -253,12 +270,12 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Ekspor gambar dan PDF (ExportGambarPDFScreen)
 - [x] Catatan pertemuan (CatatanPertemuanScreen)
 - [x] Cadangan terenkripsi (CadanganTerenkripsiScreen)
-- Status: [ ] hampir selesai, tinggal Quick Add suara (butuh plugin)
+- Status: [x] selesai
 
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (452 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (455 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15 dan 3 kunci mikrofon)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -362,12 +379,15 @@ Tracking:
 
 ---
 
-## Verifikasi terakhir (26 Okt 2026)
+## Verifikasi terakhir (27 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 452 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 455 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 316 tes lulus (parser dasar, lanjutan 7.15 dan Inggris/campur 8.5, penulis ekstra parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
-4. `flutter build apk` - sukses, `app-release.apk` 63.3 MB
+3. `flutter test` - 324 tes lulus (parser dasar, lanjutan 7.15, Inggris/campur 8.5 dan
+   angka bicara 7.1, penulis ekstra parser, widget Quick Add suara, pengingat, kebijakan
+   notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus,
+   daftar bawaan, widget)
+4. `flutter build apk` - sukses, `app-release.apk` 63.4 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
@@ -375,5 +395,6 @@ Tracking:
 ## Masalah terbuka (perlu native Android / Flutter)
 
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
-- Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec dan menambah plugin baru butuh izin
+- Uji Quick Add suara di HP fisik: izin mikrofon, pengenalan suara bawaan Android, dan hasil
+  ucapan yang salah menulis angka
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
