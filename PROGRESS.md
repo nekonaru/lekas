@@ -1,4 +1,4 @@
-# PROGRESS.md — Lekas (Aplikasi Tugas)
+# PROGRESS.md - Lekas (Aplikasi Tugas)
 
 Sumber rancangan: `rancangan baru.md` (bagian 3, 13, 14).
 Dipakai AI untuk melanjutkan pembangunan setelah percakapan terputih.
@@ -123,9 +123,9 @@ Terakhir diperbarui: Sun Oct 26 2026
 ## Urutan 1: Fase A inti + semua [W]
 
 ### 1. Struktur proyek, tema, database Drift, wadah dan tugas (CRUD)
-- [x] database.dart — skema lengkap 24 tabel sesuai bagian 10
-- [x] database.g.dart — generated Drift code (divalidasi ulang dengan `build_runner`: hasilnya identik)
-- [x] data/models.dart — semua 24 data class
+- [x] database.dart - skema lengkap 24 tabel sesuai bagian 10
+- [x] database.g.dart - generated Drift code (divalidasi ulang dengan `build_runner`: hasilnya identik)
+- [x] data/models.dart - semua 24 data class
 - [x] Repository per entitas (15 repository)
 - [x] Providers untuk semua repository + onboardedProvider + backupServiceProvider
 - [x] Tema: mode gelap/terang (AppTheme), 12 warna wadah
@@ -134,8 +134,8 @@ Terakhir diperbarui: Sun Oct 26 2026
 - Status: [x] selesai
 
 ### 2. Skor urgensi, layar Hari Ini, bagian dan alasan, undo
-- [x] domain/urgency.dart — rumus lengkap dengan semua penyesuaian
-- [x] core/scoring_config.dart — konstanta skor
+- [x] domain/urgency.dart - rumus lengkap dengan semua penyesuaian
+- [x] core/scoring_config.dart - konstanta skor
 - [x] Layar Hari Ini dengan 7 bagian (overdue, doing, today, this_week, upcoming, waiting, someday)
 - [x] Setiap bagian diurutkan oleh skor urgensi
 - [x] Navigasi ke detail tugas dari setiap bagian
@@ -302,10 +302,10 @@ Terakhir diperbarui: Sun Oct 26 2026
 ## File yang dibuat/diperbarui (80+ file)
 
 Database (4):
-- lib/data/database.dart — skema 24 tabel
-- lib/data/database.g.dart — generated code
-- lib/data/models.dart — semua data class
-- lib/data/backup_service.dart — export/import JSON
+- lib/data/database.dart - skema 24 tabel
+- lib/data/database.g.dart - generated code
+- lib/data/models.dart - semua data class
+- lib/data/backup_service.dart - export/import JSON
 
 Repositories (15):
 - space_repository, task_repository, subtask_repository, class_slot_repository
@@ -314,30 +314,30 @@ Repositories (15):
 - class_exception_repository, space_item_repository, quick_link_repository
 - class_note_repository, diagnostic_repository, grade_component_repository
 - saved_filter_repository, task_dep_repository
-- lib/data/providers.dart — semua provider
+- lib/data/providers.dart - semua provider
 
 Domain & Core (5):
-- lib/domain/urgency.dart — skor urgensi lengkap
-- lib/core/scoring_config.dart — konstanta skor
-- lib/core/theme.dart — tema gelap/terang
-- lib/core/date_util.dart — utilitas tanggal
-- lib/core/components/undo_snackbar.dart — snackbar undo
-- lib/core/components/task_section.dart — bagian layar Hari Ini
+- lib/domain/urgency.dart - skor urgensi lengkap
+- lib/core/scoring_config.dart - konstanta skor
+- lib/core/theme.dart - tema gelap/terang
+- lib/core/date_util.dart - utilitas tanggal
+- lib/core/components/undo_snackbar.dart - snackbar undo
+- lib/core/components/task_section.dart - bagian layar Hari Ini
 
 Parser (5):
-- lib/parser/normalizer.dart — normalisasi teks
-- lib/parser/time_extractor.dart — ekstraksi waktu
-- lib/parser/matcher.dart — pencocokan wadah
-- lib/parser/parser_service.dart — parser gabungan
-- lib/parser/dictionaries/id.dart, en.dart — kamus bahasa
+- lib/parser/normalizer.dart - normalisasi teks
+- lib/parser/time_extractor.dart - ekstraksi waktu
+- lib/parser/matcher.dart - pencocokan wadah
+- lib/parser/parser_service.dart - parser gabungan
+- lib/parser/dictionaries/id.dart, en.dart - kamus bahasa
 
 Reminders (1):
-- lib/reminders/reminder_service.dart — jadwal notifikasi
+- lib/reminders/reminder_service.dart - jadwal notifikasi
 
 UI Screens (40+):
-- lib/main.dart — onboarding flow
-- lib/features/home/home_shell.dart — navigasi dengan drawer
-- lib/features/today/today_screen.dart — 7 bagian, urgency
+- lib/main.dart - onboarding flow
+- lib/features/home/home_shell.dart - navigasi dengan drawer
+- lib/features/today/today_screen.dart - 7 bagian, urgency
 - lib/features/spaces/spaces_screen.dart, space_detail_screen.dart, class_schedule_screen.dart
 - lib/features/inbox/inbox_screen.dart
 - lib/features/tasks/tasks_screen.dart, task_form_sheet.dart, task_detail_screen.dart

@@ -1,4 +1,4 @@
-# ARCHITECTURE.md — Lekas (Aplikasi Tugas)
+# ARCHITECTURE.md - Lekas (Aplikasi Tugas)
 
 Sumber rancangan: `Rancangan_Aplikasi_Tugas_v2_Dirapikan.md`.
 

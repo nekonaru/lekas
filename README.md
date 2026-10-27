@@ -17,7 +17,7 @@
 
 ## ✨ About
 
-**Lekas** is an offline-first Android app for university students to capture tasks and deadlines, organized per course, with reliable local reminders. No account, no cloud, no collaboration — all data stays on your phone.
+**Lekas** is an offline-first Android app for university students to capture tasks and deadlines, organized per course, with reliable local reminders. No account, no cloud, no collaboration - all data stays on your phone.
 
 > _"Capture tasks from chat in 5 seconds, auto-organized per course, and reminded on time."_
 
@@ -39,4 +39,4 @@ Flutter · Drift (SQLite) · Riverpod · flutter_local_notifications · home_wid
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

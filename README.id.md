@@ -17,7 +17,7 @@
 
 ## ✨ Tentang
 
-**Lekas** adalah aplikasi Android offline-first untuk mahasiswa mencatat tugas dan deadline, rapi per matkul, dengan pengingat lokal yang andal. Tanpa akun, tanpa cloud, tanpa kolaborasi — semua data tersimpan di HP.
+**Lekas** adalah aplikasi Android offline-first untuk mahasiswa mencatat tugas dan deadline, rapi per matkul, dengan pengingat lokal yang andal. Tanpa akun, tanpa cloud, tanpa kolaborasi - semua data tersimpan di HP.
 
 ## 🎯 Fitur (Fase A & B)
 
@@ -37,4 +37,4 @@ Flutter · Drift (SQLite) · Riverpod · flutter_local_notifications · home_wid
 
 ## 📄 Lisensi
 
-MIT — lihat [LICENSE](LICENSE).
+MIT - lihat [LICENSE](LICENSE).
