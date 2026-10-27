@@ -89,6 +89,13 @@ Terakhir diperbarui: Sun Oct 26 2026
   regex tersendiri karena `\b` tidak berdiri antara huruf dan tanda baca; bila `@wadah`
   tidak dikenal, tokennya dikembalikan ke judul. Prioritas tinggi dan rendah dalam satu
   kalimat dianggap konflik dan netral sampai pengguna memilih di chip.
+- **Chip 7.15 bisa dibuang dan yang tersimpan hanya yang dipertahankan.** Chip tampil di
+  `Wrap` Quick Add dan share intake; membuangnya mencatat id di set `dismissed`, sehingga
+  `estimateMinutes`, `submitMethod`, `submitTarget`, `filenamePattern`, `#tag`, subtugas
+  dan tautan tidak ikut tersimpan. Tautan menjadi lampiran `kind: 'link'`, `#tag` dinormalisasi
+  lewat `TagRepository.setTaskTags`, subtugas disimpan berurutan lewat
+  `saveParsedExtras` (`lib/data/parsed_task_extras.dart`). Chip catatan dan chip konflik
+  prioritas bersifat informatif; catatan sudah tertulis di kolom `notes` lewat teks asli.
 
 ---
 
@@ -204,7 +211,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 - [x] Fokus hari ini (FokusHariIniScreen, 5.24): pilih maksimal 3 tugas per hari, bagian "Fokus Hari Ini" di layar Hari Ini, sakelar di detail tugas, tombol di ringkasan pagi, tawaran "Lanjutkan N tugas kemarin?", perayaan kecil saat semua selesai
 - [x] Ganti semester (GantiSemesterScreen)
 - [x] Saring tersimpan (SavedFilterScreen)
-- [x] Parser lanjutan (7.15): `lib/parser/advanced_extractor.dart` membaca subtugas berbutir, pola nama berkas, tautan, alamat email, kata cara kumpul (LMS/kelas maya/drive = `lms`, dicetak/hardcopy = `paper`, alamat email = `email`), token `@wadah` dan `#tag`, penanda `!`/`!tinggi`/`!rendah`, estimasi `~2j`/`~45m`/"estimasi 2 jam", kata prioritas Inggris-Indonesia beserta penanda konflik, serta catatan dalam kurung; hasilnya jadi field baru pada `ParsedTask`. Pemasangan chip di Quick Add dan share intake masih menunggu kedua file itu bebas dari pekerjaan agent lain
+- [x] Parser lanjutan (7.15): `lib/parser/advanced_extractor.dart` membaca subtugas berbutir, pola nama berkas, tautan, alamat email, kata cara kumpul (LMS/kelas maya/drive = `lms`, dicetak/hardcopy = `paper`, alamat email = `email`), token `@wadah` dan `#tag`, penanda `!`/`!tinggi`/`!rendah`, estimasi `~2j`/`~45m`/"estimasi 2 jam", kata prioritas Inggris-Indonesia beserta penanda konflik, serta catatan dalam kurung; hasilnya jadi field baru pada `ParsedTask` dan chip yang bisa dibuang di Quick Add serta share intake
 - [x] Lampiran dokumen (AttachmentScreen)
 - [x] Skenario nilai (SimulatorNilaiScreen)
 - [x] Impor gabung (ImportMergeScreen)
@@ -242,7 +249,7 @@ Terakhir diperbarui: Sun Oct 26 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (443 kunci pesan per bahasa, id dan en sama)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (452 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -348,10 +355,10 @@ Tracking:
 
 ## Verifikasi terakhir (26 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 443 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 452 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 291 tes lulus (parser dasar dan lanjutan 7.15, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
-4. `flutter build apk` - sukses, `app-release.apk` 63.2 MB
+3. `flutter test` - 295 tes lulus (parser dasar dan lanjutan 7.15, penulis ekstra parser, pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin, kehadiran, fokus, daftar bawaan, widget)
+4. `flutter build apk` - sukses, `app-release.apk` 63.3 MB
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
@@ -361,4 +368,4 @@ Tracking:
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
 - Quick Add suara: layar ada, plugin speech belum ditambahkan ke pubspec
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
-- Chip hasil parser 7.15 belum dipasang di Quick Add dan share intake: kedua file itu sedang dikerjakan agent lain
+- Chip Quick Add suara tetap terblokir: plugin speech tidak ada di pubspec dan menambah plugin baru butuh izin
