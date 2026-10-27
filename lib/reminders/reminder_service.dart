@@ -16,6 +16,7 @@ import '../data/reminder_repository.dart';
 import '../data/settings_repository.dart';
 import '../data/task_repository.dart';
 import '../domain/attendance.dart';
+import '../domain/focus.dart';
 import '../l10n/app_localizations.dart';
 import 'class_quiet.dart';
 
@@ -85,6 +86,10 @@ class ReminderPayload {
   /// Asks the app to open the focus picker of design section 5.24.
   static const String actionFocus = 'focus';
 
+  /// Carries yesterday's open focus into today, in the background, when
+  /// the morning summary offers it (design section 5.24).
+  static const String actionContinue = 'continue';
+
   /// Asks the app to open the attendance screen of a course, with the space
   /// id carried in [taskId] (design section 5.19).
   static const String actionAttend = 'attend';
@@ -106,6 +111,30 @@ class ReminderAction {
 
   final String taskId;
   final String kind;
+}
+
+/// Carries yesterday's unfinished focus into today (design section 5.24):
+/// only the tasks the offer picked get today's date, so the three task
+/// limit survives the trip. Returns how many tasks were carried over.
+Future<int> carryOverFocus(AppDatabase db, DateTime today) async {
+  final repository = TaskRepository(db);
+  final tasks = await repository.getTasks(includeInbox: true);
+  final carry = focusCarryOverIds(
+    today: today,
+    tasks: [
+      for (final task in tasks)
+        (
+          id: task.id,
+          focusDate: task.focusDate,
+          done: task.status == 'done',
+        ),
+    ],
+  );
+  final day = startOfDayMs(today);
+  for (final id in carry) {
+    await repository.setFocusDate(id, day);
+  }
+  return carry.length;
 }
 
 /// Whether a moment falls inside the 22:00 to 06:00 quiet window.
@@ -238,10 +267,20 @@ List<AndroidNotificationAction> _notificationActions(AppLocalizations l10n) {
   ];
 }
 
-/// The single action button of the morning summary (design sections 5.12
-/// and 5.24): it opens the focus picker instead of marking anything done.
-List<AndroidNotificationAction> _focusActions(AppLocalizations l10n) {
+/// The two buttons of the morning summary (design sections 5.12 and 5.24):
+/// carry yesterday's unfinished focus into today, or open the picker.
+List<AndroidNotificationAction> _focusActions(
+  AppLocalizations l10n, {
+  required bool offerCarryOver,
+}) {
   return [
+    if (offerCarryOver)
+      AndroidNotificationAction(
+        ReminderPayload.actionContinue,
+        l10n.continueFocusAction,
+        showsUserInterface: false,
+        cancelNotification: true,
+      ),
     AndroidNotificationAction(
       ReminderPayload.actionFocus,
       l10n.chooseFocusAction,
@@ -318,7 +357,9 @@ Future<void> onNotificationActionBackground(NotificationResponse response) async
     }
     return;
   }
-  if (action != ReminderPayload.actionDone && action != ReminderPayload.actionSnooze) {
+  if (action != ReminderPayload.actionDone &&
+      action != ReminderPayload.actionSnooze &&
+      action != ReminderPayload.actionContinue) {
     return;
   }
   AppDatabase? db;
@@ -326,6 +367,10 @@ Future<void> onNotificationActionBackground(NotificationResponse response) async
     db = await openAppDatabase();
     if (action == ReminderPayload.actionDone) {
       await _markDoneInDb(db, payload.taskId);
+    } else if (action == ReminderPayload.actionContinue) {
+      // The morning offer of design section 5.24: yesterday's open focus
+      // becomes today's without opening the app.
+      await carryOverFocus(db, DateTime.now());
     } else {
       await _snoozeInDb(db, payload.taskId);
     }
@@ -864,6 +909,22 @@ class ReminderService {
       for (final line in quotaLines) {
         buffer.write('\n$line');
       }
+      // Design section 5.24: yesterday's unfinished focus is offered again,
+      // with a button that carries it into today.
+      final carry = focusCarryOverIds(
+        today: today,
+        tasks: [
+          for (final task in tasks)
+            (
+              id: task.id,
+              focusDate: task.focusDate,
+              done: task.status == 'done',
+            ),
+        ],
+      );
+      if (carry.isNotEmpty) {
+        buffer.write('\n${l10n.continueFocusQuestion(carry.length)}');
+      }
       await scheduleNotification(
         id: id,
         when: nextMomentAt(now, 7),
@@ -876,7 +937,7 @@ class ReminderService {
           ReminderPayload.actionOpen,
         ).encode(),
         channelId: kChannelSummary,
-        actions: _focusActions(l10n),
+        actions: _focusActions(l10n, offerCarryOver: carry.isNotEmpty),
         l10n: l10n,
       );
     }
@@ -1169,7 +1230,7 @@ class ReminderService {
     }
   }
 
-  void _onForegroundResponse(NotificationResponse response) {
+  Future<void> _onForegroundResponse(NotificationResponse response) async {
     final payload = ReminderPayload.tryParse(response.payload);
     if (payload == null) return;
     final action = response.actionId ?? payload.action;
@@ -1187,6 +1248,11 @@ class ReminderService {
       // The button of the prompt that follows a class (design 5.19).
       _ref.read(pendingNotificationRouteProvider.notifier).state =
           '$kRouteAttendancePrefix${payload.taskId}';
+    } else if (action == ReminderPayload.actionContinue) {
+      // Carries yesterday's unfinished focus into today (design 5.24).
+      final db = _ref.read(appDatabaseProvider);
+      await carryOverFocus(db, DateTime.now());
+      unawaited(syncAll());
     }
   }
 

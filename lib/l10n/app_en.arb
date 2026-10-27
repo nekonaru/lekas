@@ -495,5 +495,8 @@
   "@attendPromptBody": { "placeholders": { "name": { "type": "String" } } },
   "attendPromptAction": "Mark now",
   "attendPromptToggle": "Mark attendance reminder",
-  "attendPromptToggleHint": "Appears 10 minutes after class ends"
+  "attendPromptToggleHint": "Appears 10 minutes after class ends",
+  "continueFocusQuestion": "Carry over {count} focus tasks from yesterday?",
+  "@continueFocusQuestion": { "placeholders": { "count": { "type": "int" } } },
+  "continueFocusAction": "Carry over"
 }

@@ -25,3 +25,28 @@ bool focusHasRoom(int picked) => picked < kMaxFocusTasks;
 /// finished. An empty focus list is not a celebration.
 bool focusAllDone(List<bool> doneFlags) =>
     doneFlags.isNotEmpty && doneFlags.every((done) => done);
+
+/// Yesterday's focus tasks that are still open and still fit into today's
+/// focus, for the offer the morning summary makes the next day (design
+/// section 5.24: "Lanjutkan 2 tugas kemarin?"). Ids come back in the order
+/// they were given and never break the three task limit.
+List<String> focusCarryOverIds({
+  required DateTime today,
+  required Iterable<({String id, int? focusDate, bool done})> tasks,
+}) {
+  final list = tasks.toList();
+  final yesterday = DateTime(today.year, today.month, today.day - 1);
+  final takenToday =
+      list.where((task) => isFocusOnDay(task.focusDate, today)).length;
+  var room = kMaxFocusTasks - takenToday;
+  final carry = <String>[];
+  if (room <= 0) return carry;
+  for (final task in list) {
+    if (task.done) continue;
+    if (!isFocusOnDay(task.focusDate, yesterday)) continue;
+    carry.add(task.id);
+    room--;
+    if (room == 0) break;
+  }
+  return carry;
+}

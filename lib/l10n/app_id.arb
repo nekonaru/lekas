@@ -495,5 +495,8 @@
   "@attendPromptBody": { "placeholders": { "name": { "type": "String" } } },
   "attendPromptAction": "Isi sekarang",
   "attendPromptToggle": "Notifikasi Isi kehadiran",
-  "attendPromptToggleHint": "Muncul 10 menit setelah kelas selesai"
+  "attendPromptToggleHint": "Muncul 10 menit setelah kelas selesai",
+  "continueFocusQuestion": "Lanjutkan {count} tugas fokus kemarin?",
+  "@continueFocusQuestion": { "placeholders": { "count": { "type": "int" } } },
+  "continueFocusAction": "Lanjutkan"
 }

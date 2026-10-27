@@ -1467,4 +1467,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get attendPromptToggleHint => 'Muncul 10 menit setelah kelas selesai';
+
+  @override
+  String continueFocusQuestion(int count) {
+    return 'Lanjutkan $count tugas fokus kemarin?';
+  }
+
+  @override
+  String get continueFocusAction => 'Lanjutkan';
 }

@@ -1466,4 +1466,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attendPromptToggleHint => 'Appears 10 minutes after class ends';
+
+  @override
+  String continueFocusQuestion(int count) {
+    return 'Carry over $count focus tasks from yesterday?';
+  }
+
+  @override
+  String get continueFocusAction => 'Carry over';
 }

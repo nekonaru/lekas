@@ -2731,6 +2731,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Muncul 10 menit setelah kelas selesai'**
   String get attendPromptToggleHint;
+
+  /// No description provided for @continueFocusQuestion.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan {count} tugas fokus kemarin?'**
+  String continueFocusQuestion(int count);
+
+  /// No description provided for @continueFocusAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan'**
+  String get continueFocusAction;
 }
 
 class _AppLocalizationsDelegate
