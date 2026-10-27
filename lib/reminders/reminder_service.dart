@@ -56,6 +56,14 @@ const String kChannelTest = 'test_channel';
 
 const String _timezoneChannel = 'lekas/timezone';
 
+/// Settings key holding the screen a notification action asked for until
+/// the app can show it. The background isolate of the plugin writes it, so
+/// it must survive the trip through the database (design section 5.24).
+const String kPendingRouteKey = 'pending_route';
+
+/// Route name of the focus picker, the only route a notification opens.
+const String kRouteFocus = 'focus';
+
 /// Notification payload: `task|<taskId>|<action>`.
 class ReminderPayload {
   const ReminderPayload(this.taskId, this.action);
@@ -66,6 +74,9 @@ class ReminderPayload {
   static const String actionOpen = 'open';
   static const String actionDone = 'done';
   static const String actionSnooze = 'snooze';
+
+  /// Asks the app to open the focus picker of design section 5.24.
+  static const String actionFocus = 'focus';
 
   static ReminderPayload? tryParse(String? raw) {
     if (raw == null || raw.isEmpty) return null;
@@ -139,6 +150,7 @@ Future<void> scheduleNotification({
   required String payload,
   String channelId = kChannelDeadline,
   bool withActions = true,
+  List<AndroidNotificationAction>? actions,
   AppLocalizations? l10n,
 }) async {
   final plugin = FlutterLocalNotificationsPlugin();
@@ -159,7 +171,8 @@ Future<void> scheduleNotification({
       channelDescription: 'Lekas task reminders',
       importance: Importance.high,
       priority: Priority.high,
-      actions: (l10n == null || !withActions) ? null : _notificationActions(l10n),
+      actions: actions ??
+          ((l10n == null || !withActions) ? null : _notificationActions(l10n)),
     ),
   );
   final scheduled = tz.TZDateTime.from(when, tz.local);
@@ -211,6 +224,19 @@ List<AndroidNotificationAction> _notificationActions(AppLocalizations l10n) {
   ];
 }
 
+/// The single action button of the morning summary (design sections 5.12
+/// and 5.24): it opens the focus picker instead of marking anything done.
+List<AndroidNotificationAction> _focusActions(AppLocalizations l10n) {
+  return [
+    AndroidNotificationAction(
+      ReminderPayload.actionFocus,
+      l10n.chooseFocusAction,
+      showsUserInterface: true,
+      cancelNotification: true,
+    ),
+  ];
+}
+
 /// Background entry point used by `BootReceiver`. Reconciles every reminder
 /// after a reboot or an app update, then tells native code it is done.
 @pragma('vm:entry-point')
@@ -246,6 +272,20 @@ Future<void> onNotificationActionBackground(NotificationResponse response) async
   final payload = ReminderPayload.tryParse(response.payload);
   if (payload == null) return;
   final action = response.actionId ?? payload.action;
+  if (action == ReminderPayload.actionFocus) {
+    // The focus picker can only be shown by the app itself, so remember
+    // where to go and let the app open it (design section 5.24).
+    AppDatabase? routeDb;
+    try {
+      routeDb = await openAppDatabase();
+      await SettingsRepository(routeDb).set(kPendingRouteKey, kRouteFocus);
+    } catch (error, stack) {
+      debugPrint('notification route failed: $error\n$stack');
+    } finally {
+      await routeDb?.close();
+    }
+    return;
+  }
   if (action != ReminderPayload.actionDone && action != ReminderPayload.actionSnooze) {
     return;
   }
@@ -682,12 +722,14 @@ class ReminderService {
         when: nextMomentAt(now, 7),
         title: l10n.morningSummaryNotificationTitle,
         body: buffer.toString(),
-        payload: dueToday.isEmpty
-            ? 'task||open'
-            : ReminderPayload(dueToday.first.id, ReminderPayload.actionOpen)
-                .encode(),
+        // The payload must always parse, otherwise the focus button below
+        // would be ignored when nothing is due today.
+        payload: ReminderPayload(
+          dueToday.isEmpty ? 'today' : dueToday.first.id,
+          ReminderPayload.actionOpen,
+        ).encode(),
         channelId: kChannelSummary,
-        withActions: false,
+        actions: _focusActions(l10n),
         l10n: l10n,
       );
     }
@@ -991,6 +1033,9 @@ class ReminderService {
           );
     } else if (action == ReminderPayload.actionSnooze) {
       _snooze(payload.taskId);
+    } else if (action == ReminderPayload.actionFocus) {
+      // The morning summary button of design section 5.24.
+      _ref.read(pendingNotificationRouteProvider.notifier).state = kRouteFocus;
     }
   }
 

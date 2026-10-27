@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/date_util.dart';
+import '../../domain/focus.dart';
 import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
 import '../../core/components/undo_snackbar.dart';
@@ -464,9 +465,13 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           final Map<TodaySection, List<Task>> sections = {};
           for (final task in allTasks) {
-            // Design section 5.9: pinned tasks come first, outside the score.
-            final section =
-                task.pinned ? TodaySection.pinned : _classifyTask(task, now);
+            // Design section 5.24: today's focus gets its own group, 5.9
+            // pins come next, and everything else follows the score.
+            final section = isFocusOnDay(task.focusDate, now)
+                ? TodaySection.focus
+                : task.pinned
+                    ? TodaySection.pinned
+                    : _classifyTask(task, now);
             sections.putIfAbsent(section, () => []).add(task);
           }
 
@@ -526,6 +531,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
               ?warning,
               for (final section in const [
                 TodaySection.pinned,
+                TodaySection.focus,
                 TodaySection.overdue,
                 TodaySection.doing,
                 TodaySection.today,

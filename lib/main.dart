@@ -9,6 +9,7 @@ import 'data/providers.dart';
 import 'features/home/home_shell.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/share_intake/share_intake_screen.dart';
+import 'features/tasks/fokus_hari_ini_screen.dart';
 import 'reminders/reminder_service.dart';
 
 /// Used by the share intake flow to push a screen before the first frame.
@@ -40,11 +41,20 @@ class LekasApp extends ConsumerStatefulWidget {
 class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver {
   StreamSubscription<List<SharedMediaFile>>? _shareSubscription;
 
+  /// Keeps the stored notification route from being pushed twice when the
+  /// start up frame and the resumed event race each other.
+  bool _consumingRoute = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initShareIntent();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // A tap on a notification action while the app was killed stores its
+      // route before the app finishes starting (design section 5.24).
+      _consumeStoredRoute();
+    });
   }
 
   @override
@@ -93,6 +103,36 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     // foreground (design section 4.6, point 7).
     if (state == AppLifecycleState.resumed) {
       ref.read(reminderServiceProvider).syncAll();
+      // A background action button may have stored a route while paused.
+      _consumeStoredRoute();
+    }
+  }
+
+  /// Opens the screen a notification action asked for, once the navigator
+  /// exists (design section 5.24).
+  void _pushNotificationRoute(String route) {
+    if (route != kRouteFocus) return;
+    final navigator = navigatorKey.currentState;
+    if (navigator == null) return;
+    navigator.push(MaterialPageRoute<void>(
+      builder: (_) => const FokusHariIniScreen(),
+    ));
+  }
+
+  /// Reads the route the background isolate stored in settings and clears
+  /// it, so the picker opens exactly once.
+  Future<void> _consumeStoredRoute() async {
+    if (_consumingRoute) return;
+    _consumingRoute = true;
+    try {
+      final settings = ref.read(settingsRepositoryProvider);
+      final route = await settings.get(kPendingRouteKey);
+      if (route == null || route.isEmpty) return;
+      await settings.set(kPendingRouteKey, '');
+      if (!mounted) return;
+      _pushNotificationRoute(route);
+    } finally {
+      _consumingRoute = false;
     }
   }
 
@@ -104,6 +144,14 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final themeMode = ref.watch(themeModeProvider);
     // Keeps the schedule in line with every task change.
     ref.watch(reminderSyncProvider);
+
+    // A tap on the action button while the app was already alive lands
+    // here instead of in settings (design section 5.24).
+    ref.listen(pendingNotificationRouteProvider, (previous, next) {
+      if (next == null) return;
+      ref.read(pendingNotificationRouteProvider.notifier).state = null;
+      _pushNotificationRoute(next);
+    });
 
     return MaterialApp(
       title: 'Lekas',

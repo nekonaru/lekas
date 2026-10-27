@@ -2665,6 +2665,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Jatah absen {name} sudah habis.'**
   String morningSummaryQuotaOut(String name);
+
+  /// No description provided for @chooseFocusAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih fokus hari ini'**
+  String get chooseFocusAction;
+
+  /// No description provided for @pickFocusLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tugas'**
+  String get pickFocusLabel;
+
+  /// No description provided for @focusLimitToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus hari ini sudah penuh, maksimal 3 tugas'**
+  String get focusLimitToast;
+
+  /// No description provided for @focusAllDoneMsg.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua tugas fokus hari ini selesai.'**
+  String get focusAllDoneMsg;
+
+  /// No description provided for @focusEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada fokus hari ini. Pilih sampai 3 tugas.'**
+  String get focusEmpty;
+
+  /// No description provided for @focusRemoveTooltip.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluarkan dari fokus'**
+  String get focusRemoveTooltip;
 }
 
 class _AppLocalizationsDelegate

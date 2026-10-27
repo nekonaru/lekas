@@ -72,12 +72,34 @@ class TaskRepository {
     ));
   }
 
+  /// Puts a finished task back on the list: the undo snackbars and the
+  /// focus picker both need it (design section 5.24).
+  Future<void> reopenTask(String id) async {
+    final existing = await getTask(id);
+    await db.update(db.tasks).replace(existing.copyWith(
+      status: 'todo',
+      completedAt: const Value(null),
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    ));
+  }
+
   /// Pins or unpins a task (design section 5.9): pinned tasks always come
   /// first on the Today screen, outside the urgency order.
   Future<void> setPinned(String id, bool pinned) async {
     await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
       TasksCompanion(
         pinned: Value(pinned),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
+  /// Picks or releases a task as focus of the day (design section 5.24).
+  /// Passing null clears yesterday's focus so it never carries over.
+  Future<void> setFocusDate(String id, int? focusDate) async {
+    await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        focusDate: Value(focusDate),
         updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
       ),
     );
@@ -92,6 +114,7 @@ class TaskRepository {
       id: const Uuid().v4(),
       status: 'todo',
       pinned: false,
+      focusDate: const Value(null),
       submittedAt: const Value(null),
       completedAt: const Value(null),
       createdAt: now,

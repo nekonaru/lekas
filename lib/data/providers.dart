@@ -68,6 +68,11 @@ final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
   return AttendanceRepository(ref.read(appDatabaseProvider));
 });
 
+/// The screen a notification action should open once the app is up, for
+/// example the focus picker behind the morning summary button (design
+/// section 5.24). Cleared as soon as the route has been pushed.
+final pendingNotificationRouteProvider = StateProvider<String?>((ref) => null);
+
 final classSlotRepositoryProvider = Provider<ClassSlotRepository>((ref) {
   return ClassSlotRepository(ref.read(appDatabaseProvider));
 });

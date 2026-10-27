@@ -1431,4 +1431,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String morningSummaryQuotaOut(String name) {
     return 'Absence quota for $name is used up.';
   }
+
+  @override
+  String get chooseFocusAction => 'Choose today\'s focus';
+
+  @override
+  String get pickFocusLabel => 'Pick tasks';
+
+  @override
+  String get focusLimitToast => 'Today\'s focus is full, three tasks at most';
+
+  @override
+  String get focusAllDoneMsg => 'All focus tasks of today are done.';
+
+  @override
+  String get focusEmpty => 'No focus yet today. Pick up to 3 tasks.';
+
+  @override
+  String get focusRemoveTooltip => 'Remove from focus';
 }

@@ -1432,4 +1432,22 @@ class AppLocalizationsId extends AppLocalizations {
   String morningSummaryQuotaOut(String name) {
     return 'Jatah absen $name sudah habis.';
   }
+
+  @override
+  String get chooseFocusAction => 'Pilih fokus hari ini';
+
+  @override
+  String get pickFocusLabel => 'Pilih tugas';
+
+  @override
+  String get focusLimitToast => 'Fokus hari ini sudah penuh, maksimal 3 tugas';
+
+  @override
+  String get focusAllDoneMsg => 'Semua tugas fokus hari ini selesai.';
+
+  @override
+  String get focusEmpty => 'Belum ada fokus hari ini. Pilih sampai 3 tugas.';
+
+  @override
+  String get focusRemoveTooltip => 'Keluarkan dari fokus';
 }

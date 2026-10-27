@@ -483,5 +483,11 @@
   "morningSummaryQuotaLast": "Jatah absen {name} tinggal 1, hati-hati hari ini.",
   "@morningSummaryQuotaLast": { "placeholders": { "name": { "type": "String" } } },
   "morningSummaryQuotaOut": "Jatah absen {name} sudah habis.",
-  "@morningSummaryQuotaOut": { "placeholders": { "name": { "type": "String" } } }
+  "@morningSummaryQuotaOut": { "placeholders": { "name": { "type": "String" } } },
+  "chooseFocusAction": "Pilih fokus hari ini",
+  "pickFocusLabel": "Pilih tugas",
+  "focusLimitToast": "Fokus hari ini sudah penuh, maksimal 3 tugas",
+  "focusAllDoneMsg": "Semua tugas fokus hari ini selesai.",
+  "focusEmpty": "Belum ada fokus hari ini. Pilih sampai 3 tugas.",
+  "focusRemoveTooltip": "Keluarkan dari fokus"
 }

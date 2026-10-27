@@ -483,5 +483,11 @@
   "morningSummaryQuotaLast": "Absence quota for {name} has 1 left, careful today.",
   "@morningSummaryQuotaLast": { "placeholders": { "name": { "type": "String" } } },
   "morningSummaryQuotaOut": "Absence quota for {name} is used up.",
-  "@morningSummaryQuotaOut": { "placeholders": { "name": { "type": "String" } } }
+  "@morningSummaryQuotaOut": { "placeholders": { "name": { "type": "String" } } },
+  "chooseFocusAction": "Choose today's focus",
+  "pickFocusLabel": "Pick tasks",
+  "focusLimitToast": "Today's focus is full, three tasks at most",
+  "focusAllDoneMsg": "All focus tasks of today are done.",
+  "focusEmpty": "No focus yet today. Pick up to 3 tasks.",
+  "focusRemoveTooltip": "Remove from focus"
 }

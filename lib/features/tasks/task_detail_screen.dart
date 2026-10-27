@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/date_util.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
+import '../../domain/focus.dart';
 import '../../l10n/app_localizations.dart';
 import 'deadline_history_screen.dart';
 import 'submission_screen.dart';
@@ -201,6 +202,18 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     value: task.pinned,
                     onChanged: (value) async {
                       await repo.setPinned(task.id, value);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.star_outline),
+                    title: Text(l10n.todayFocusTitle),
+                    value: isFocusOnDay(task.focusDate, DateTime.now()),
+                    onChanged: (value) async {
+                      await repo.setFocusDate(
+                        task.id,
+                        value ? startOfDayMs(DateTime.now()) : null,
+                      );
                       if (mounted) setState(() {});
                     },
                   ),
