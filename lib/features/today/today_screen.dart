@@ -162,7 +162,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final l10n = AppLocalizations.of(context)!;
     final repository = ref.read(taskRepositoryProvider);
     await repository.markDone(task.id);
-    await ref.read(reminderServiceProvider).syncAll();
+    // The schedule follows the task stream (reminderSyncProvider), so it
+    // reconciles once the writes settle instead of once per swipe.
     if (!mounted) return;
     setState(() {});
     UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
@@ -172,7 +173,6 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       ));
       if (mounted) setState(() {});
-      await ref.read(reminderServiceProvider).syncAll();
     });
   }
 
@@ -186,7 +186,6 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       await repository.markDone(task.id);
     }
     _clearSelection();
-    await ref.read(reminderServiceProvider).syncAll();
     if (!mounted) return;
     UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
       final now = DateTime.now().millisecondsSinceEpoch;
@@ -198,7 +197,6 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
         ));
       }
       if (mounted) setState(() {});
-      await ref.read(reminderServiceProvider).syncAll();
     });
   }
 
@@ -211,14 +209,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       await repository.softDeleteTask(task.id);
     }
     _clearSelection();
-    await ref.read(reminderServiceProvider).syncAll();
     if (!mounted) return;
     UndoSnackbar.show(context, l10n.tasksDeletedUndo(picked.length), () async {
       for (final task in picked) {
         await repository.restoreTask(task.id);
       }
       if (mounted) setState(() {});
-      await ref.read(reminderServiceProvider).syncAll();
     });
   }
 

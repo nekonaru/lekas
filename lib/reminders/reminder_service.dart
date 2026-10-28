@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'dart:async' show unawaited;
+import 'dart:async' show Timer, unawaited;
 import 'package:flutter/widgets.dart' show Locale, WidgetsFlutterBinding;
 import 'package:flutter/services.dart'
     show MethodChannel, MissingPluginException, PlatformException;
@@ -186,6 +186,9 @@ class _Desired {
 /// Schedules a single notification, choosing exact or inexact alarms based on
 /// what the device currently allows. Shared by the app and the background
 /// isolate that handles notification action buttons.
+///
+/// [canExact] carries a permission answer the caller already asked for, so a
+/// sync run asks Android once instead of once per notification.
 Future<void> scheduleNotification({
   required int id,
   required DateTime when,
@@ -196,12 +199,15 @@ Future<void> scheduleNotification({
   bool withActions = true,
   List<AndroidNotificationAction>? actions,
   AppLocalizations? l10n,
+  bool? canExact,
 }) async {
   final plugin = FlutterLocalNotificationsPlugin();
   final android =
       plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
   var exact = true;
-  if (android != null) {
+  if (canExact != null) {
+    exact = canExact;
+  } else if (android != null) {
     try {
       exact = await android.canScheduleExactNotifications() ?? false;
     } on PlatformException {
@@ -448,6 +454,11 @@ class ReminderService {
   AppLocalizations? _l10nCache;
   Future<void>? _syncChain;
 
+  /// The exact alarm answer of the run in progress, null outside one.
+  /// Scheduling a whole window used to ask Android once per notification;
+  /// a sync asks once and passes the answer down instead.
+  bool? _exactAllowed;
+
   AndroidFlutterLocalNotificationsPlugin? get _android =>
       _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
@@ -589,6 +600,15 @@ class ReminderService {
 
   Future<void> _sync() async {
     if (!_initialized) await init();
+    _exactAllowed = await canScheduleExact() ?? false;
+    try {
+      await _reconcile();
+    } finally {
+      _exactAllowed = null;
+    }
+  }
+
+  Future<void> _reconcile() async {
     final tasks = await _ref.read(taskRepositoryProvider).getTasks(includeInbox: true);
     final reminderRepository = _ref.read(reminderRepositoryProvider);
     final now = DateTime.now();
@@ -673,46 +693,71 @@ class ReminderService {
     final l10n = await _l10n();
     final existing = await reminderRepository.getReminders();
     final existingByKey = <String, Reminder>{for (final row in existing) row.id: row};
-    var nextId = await _nextNotifId(_ref.read(settingsRepositoryProvider));
+    var nextId = await _nextNotifId(settings);
 
+    // The rows are reconciled in a single transaction and the plugin calls
+    // that mirror them run afterwards, so a run never interleaves a half
+    // written table with cancelled or scheduled notifications.
+    final dropRows = <String>[];
+    final dropNotifIds = <int>[];
     for (final row in existing) {
       final isFreshSnooze =
           row.kind == kKindSnooze && row.fireAt > nowMs && !desired.containsKey(row.id);
       // The attendance prompt is planned on its own, after the summaries.
       if (row.kind == kKindAttend) continue;
       if (desired.containsKey(row.id) || isFreshSnooze) continue;
-      await _plugin.cancel(row.notifId);
-      await reminderRepository.deleteReminder(row.id);
+      dropRows.add(row.id);
+      dropNotifIds.add(row.notifId);
     }
 
     var allocated = false;
+    final updateRows = <Reminder>[];
+    final insertRows = <Reminder>[];
+    final updateNotifIds = <int>[];
+    final scheduleQueue = <({int notifId, _Desired value})>[];
     for (final entry in desired.entries) {
       final fireMs = entry.value.fireAt.millisecondsSinceEpoch;
       final row = existingByKey[entry.key];
       if (row != null) {
         if (row.fireAt == fireMs) continue;
-        await _plugin.cancel(row.notifId);
-        await reminderRepository.updateReminder(
-            row.copyWith(fireAt: fireMs, fired: false));
-        await _scheduleRow(entry.value, row.notifId, l10n);
+        updateNotifIds.add(row.notifId);
+        updateRows.add(row.copyWith(fireAt: fireMs, fired: false));
+        scheduleQueue.add((notifId: row.notifId, value: entry.value));
       } else {
         final notifId = nextId++;
         allocated = true;
-        final newRow = Reminder(
+        insertRows.add(Reminder(
           id: entry.key,
           taskId: entry.value.task.id,
           fireAt: fireMs,
           kind: entry.value.kind,
           notifId: notifId,
           fired: false,
-        );
-        await reminderRepository.insertReminder(newRow);
-        await _scheduleRow(entry.value, notifId, l10n);
+        ));
+        scheduleQueue.add((notifId: notifId, value: entry.value));
       }
     }
 
-    if (allocated) {
-      await _ref.read(settingsRepositoryProvider).set('notif_id_seq', '$nextId');
+    // The id counter travels with the inserts: a crash in between would
+    // hand the same notification id to two different reminders later.
+    await _ref.read(appDatabaseProvider).transaction(() async {
+      for (final id in dropRows) {
+        await reminderRepository.deleteReminder(id);
+      }
+      for (final row in updateRows) {
+        await reminderRepository.updateReminder(row);
+      }
+      for (final row in insertRows) {
+        await reminderRepository.insertReminder(row);
+      }
+      if (allocated) await settings.set('notif_id_seq', '$nextId');
+    });
+
+    for (final notifId in <int>[...dropNotifIds, ...updateNotifIds]) {
+      await _plugin.cancel(notifId);
+    }
+    for (final item in scheduleQueue) {
+      await _scheduleRow(item.value, item.notifId, l10n);
     }
 
     await _syncOverdueDigest(tasks, now, l10n);
@@ -776,41 +821,64 @@ class ReminderService {
 
     var allocated = false;
     var nextId = await _nextNotifId(settings);
+    final dropRows = <String>[];
+    final dropNotifIds = <int>[];
     for (final row in existing) {
       if (wanted.containsKey(row.id)) continue;
-      await _plugin.cancel(row.notifId);
-      await repository.deleteReminder(row.id);
+      dropRows.add(row.id);
+      dropNotifIds.add(row.notifId);
     }
 
     final names = {for (final space in spaces) space.id: space.name};
+    final updateRows = <Reminder>[];
+    final insertRows = <Reminder>[];
+    final updateNotifIds = <int>[];
+    final scheduleQueue = <({int notifId, ({String spaceId, int fireMs}) value})>[];
     for (final entry in wanted.entries) {
       final row = existingById[entry.key];
       if (row != null && row.fireAt == entry.value.fireMs) continue;
       if (row != null) {
-        await _plugin.cancel(row.notifId);
-        await repository.updateReminder(
-            row.copyWith(fireAt: entry.value.fireMs, fired: false));
-        await _scheduleAttendPrompt(
-            entry.value, row.notifId, names[entry.value.spaceId] ?? '', l10n);
+        updateNotifIds.add(row.notifId);
+        updateRows.add(row.copyWith(fireAt: entry.value.fireMs, fired: false));
+        scheduleQueue.add((notifId: row.notifId, value: entry.value));
       } else {
         final notifId = nextId++;
         allocated = true;
-        final newRow = Reminder(
+        insertRows.add(Reminder(
           id: entry.key,
           taskId: entry.value.spaceId,
           fireAt: entry.value.fireMs,
           kind: kKindAttend,
           notifId: notifId,
           fired: false,
-        );
-        await repository.insertReminder(newRow);
-        await _scheduleAttendPrompt(
-            entry.value, notifId, names[entry.value.spaceId] ?? '', l10n);
+        ));
+        scheduleQueue.add((notifId: notifId, value: entry.value));
       }
     }
 
-    if (allocated) {
-      await settings.set('notif_id_seq', '$nextId');
+    await _ref.read(appDatabaseProvider).transaction(() async {
+      for (final id in dropRows) {
+        await repository.deleteReminder(id);
+      }
+      for (final row in updateRows) {
+        await repository.updateReminder(row);
+      }
+      for (final row in insertRows) {
+        await repository.insertReminder(row);
+      }
+      if (allocated) await settings.set('notif_id_seq', '$nextId');
+    });
+
+    for (final notifId in <int>[...dropNotifIds, ...updateNotifIds]) {
+      await _plugin.cancel(notifId);
+    }
+    for (final item in scheduleQueue) {
+      await _scheduleAttendPrompt(
+        item.value,
+        item.notifId,
+        names[item.value.spaceId] ?? '',
+        l10n,
+      );
     }
   }
 
@@ -830,6 +898,7 @@ class ReminderService {
       channelId: kChannelSummary,
       actions: _attendActions(l10n),
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -979,6 +1048,7 @@ class ReminderService {
         channelId: kChannelSummary,
         actions: _focusActions(l10n, offerCarryOver: carry.isNotEmpty),
         l10n: l10n,
+        canExact: _exactAllowed,
       );
     }
 
@@ -1009,6 +1079,7 @@ class ReminderService {
       channelId: kChannelSummary,
       withActions: false,
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1113,6 +1184,7 @@ class ReminderService {
       channelId: kChannelSummary,
       withActions: false,
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1168,6 +1240,7 @@ class ReminderService {
       channelId: kChannelOverdue,
       withActions: overdue.length == 1,
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1225,6 +1298,7 @@ class ReminderService {
         channelId: kChannelSummary,
         withActions: false,
         l10n: l10n,
+        canExact: _exactAllowed,
       );
     }
     if (desired.mergedTitles.isNotEmpty) {
@@ -1239,6 +1313,7 @@ class ReminderService {
             .encode(),
         withActions: false,
         l10n: l10n,
+        canExact: _exactAllowed,
       );
     }
     final payload = ReminderPayload(desired.task.id, ReminderPayload.actionOpen).encode();
@@ -1249,6 +1324,7 @@ class ReminderService {
       body: _bodyFor(desired.kind, l10n),
       payload: payload,
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1348,6 +1424,7 @@ class ReminderService {
       body: l10n.reminderSnoozed,
       payload: ReminderPayload(taskId, ReminderPayload.actionOpen).encode(),
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1364,6 +1441,7 @@ class ReminderService {
       payload: '',
       channelId: kChannelTest,
       l10n: l10n,
+      canExact: _exactAllowed,
     );
   }
 
@@ -1415,10 +1493,67 @@ final allTasksProvider = StreamProvider<List<Task>>((ref) {
   return ref.watch(taskRepositoryProvider).watchTasks(includeInbox: true);
 });
 
+/// How long a burst of task writes waits before the schedule is reconciled.
+const Duration kReminderSyncDebounce = Duration(milliseconds: 400);
+
+/// Stable hash of every task field the sync reads from the rows.
+///
+/// The rows are sorted first, because the order the table happens to be
+/// read in is not part of the schedule, and the result only has to hold
+/// inside one run of the app: a fresh start simply schedules again.
+int reminderSyncFingerprint(Iterable<Task> tasks) {
+  final sorted = tasks.toList()..sort((a, b) => a.id.compareTo(b.id));
+  var hash = 0x811c9dc5; // FNV-1a offset basis.
+  void mix(String part) {
+    for (final unit in part.codeUnits) {
+      hash ^= unit;
+      hash = (hash * 0x01000193) & 0xFFFFFFFF;
+    }
+    hash ^= 0x1F;
+    hash = (hash * 0x01000193) & 0xFFFFFFFF;
+  }
+
+  for (final task in sorted) {
+    // The title belongs in: it is the body of the notification itself.
+    mix('${task.id}|${task.title}|${task.deadline}|${task.status}|'
+        '${task.deletedAt}|${task.spaceId}|${task.focusDate}|'
+        '${task.completedAt}|${task.weightPercent}|${task.inbox}|'
+        '${task.isGroup}|${task.pinned}');
+  }
+  return hash;
+}
+
 /// Reconciles the schedule whenever a task is created, edited, completed or
 /// deleted, so a changed deadline always replaces the old reminders.
+///
+/// The stream fires once per written row, so a bulk complete of twenty tasks
+/// used to queue twenty full reconciliations behind each other. The listener
+/// now waits for the writes to settle and then skips the run when the rows
+/// are the ones the previous run already scheduled.
 final reminderSyncProvider = Provider<void>((ref) {
-  ref.watch(allTasksProvider).whenData((tasks) {
-    unawaited(ref.read(reminderServiceProvider).syncAll());
-  });
+  Timer? pending;
+  var lastSynced = -1;
+  ref.onDispose(() => pending?.cancel());
+  ref.listen(
+    allTasksProvider,
+    (previous, next) {
+      final tasks = next.asData?.value;
+      if (tasks == null) return;
+      pending?.cancel();
+      pending = Timer(kReminderSyncDebounce, () {
+        final fingerprint = reminderSyncFingerprint(tasks);
+        if (fingerprint == lastSynced) return;
+        unawaited(
+          ref.read(reminderServiceProvider).syncAll().then((_) {
+            // Recorded only after a successful run, so a failed run is
+            // retried by the next write instead of being skipped forever.
+            lastSynced = fingerprint;
+          }).catchError((Object error, StackTrace stack) {
+            debugPrint('reminder sync failed: $error\n$stack');
+          }),
+        );
+      });
+    },
+    fireImmediately: true,
+  );
 });
