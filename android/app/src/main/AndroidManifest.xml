@@ -126,6 +126,26 @@
             </intent-filter>
         </receiver>
 
+        <!-- flutter_local_notifications 18 ships these classes but stopped
+             declaring them, so an app that wants the scheduled alarms, the
+             reboot reschedule and the notification action buttons has to
+             declare them itself. All three stay private: they only answer
+             pending intents this app created. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:exported="false"/>
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false"/>
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2"/>
