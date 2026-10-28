@@ -216,4 +216,55 @@ void main() {
       expect(stats.containsKey('tasks'), isFalse);
     });
   });
+
+  group('import refuses attachment rows a backup cannot honestly carry', () {
+    Map<String, dynamic> attachmentJson({
+      String id = 'a1',
+      String kind = 'file',
+      String pathOrUrl = '/storage/emulated/0/Download/laprak.pdf',
+    }) =>
+        {
+          'id': id,
+          'taskId': 't1',
+          'kind': kind,
+          'pathOrUrl': pathOrUrl,
+          'createdAt': now,
+        };
+
+    test('a file row pointing into app private storage is dropped', () async {
+      final file = await writeBackup({
+        'version': '1.0',
+        'tasks': [taskJson()],
+        'attachments': [
+          attachmentJson(),
+          attachmentJson(
+            id: 'evil',
+            pathOrUrl: '/data/user/0/com.lekas.lekas/databases/lekas.sqlite',
+          ),
+        ],
+      });
+
+      final stats = await backup.importFromJson(file, mode: 'merge');
+
+      // The hostile row never reaches the table the share sheet reads.
+      expect(stats['attachments'], 1);
+      final rows = await db.select(db.attachments).get();
+      expect(rows.map((row) => row.id), ['a1']);
+    });
+
+    test('a link row with a non http scheme is dropped', () async {
+      final file = await writeBackup({
+        'version': '1.0',
+        'attachments': [
+          attachmentJson(id: 'ok', kind: 'link', pathOrUrl: 'https://a.com/x'),
+          attachmentJson(id: 'bad', kind: 'link', pathOrUrl: 'file:///data/misc/x'),
+        ],
+      });
+
+      await backup.importFromJson(file, mode: 'merge');
+
+      final rows = await db.select(db.attachments).get();
+      expect(rows.map((row) => row.id), ['ok']);
+    });
+  });
 }

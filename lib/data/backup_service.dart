@@ -17,6 +17,39 @@ class BackupFormatException implements Exception {
   String toString() => message;
 }
 
+/// Roots an imported `file` attachment may never point into.
+///
+/// The attachment screen shares whatever path a row names, so a hostile
+/// backup could plant `/data/user/0/<pkg>/databases/lekas.sqlite` next to a
+/// plausible task and have the share sheet hand the database to whichever
+/// app the user picks. A path under these prefixes is always app private:
+/// no file picker on earth hands one out, so a backup carrying one is
+/// either hostile or taken from a dead install and useless here anyway.
+const List<String> kUntrustedAttachmentPrefixes = [
+  '/data/data/',
+  '/data/user/',
+  '/data/misc/',
+];
+
+/// Whether an imported attachment row may be kept (design section 7.6).
+///
+/// `file` rows must stay outside app private storage, and `link` rows must
+/// really be http links; the schema itself accepts any string, so the
+/// import is the last place that can refuse them.
+bool isSafeImportedAttachment(
+  Attachment row, {
+  List<String> blockedPrefixes = kUntrustedAttachmentPrefixes,
+}) {
+  if (row.kind == 'link') {
+    return row.pathOrUrl.startsWith('http://') ||
+        row.pathOrUrl.startsWith('https://');
+  }
+  for (final prefix in blockedPrefixes) {
+    if (row.pathOrUrl.startsWith(prefix)) return false;
+  }
+  return true;
+}
+
 class BackupService {
   final AppDatabase db;
   BackupService(this.db);
@@ -113,6 +146,10 @@ class BackupService {
     final tags = _decode<Tag>(data, 'tags', Tag.fromJson);
     final taskTags = _decode<TaskTag>(data, 'task_tags', TaskTag.fromJson);
     final attachments = _decode<Attachment>(data, 'attachments', Attachment.fromJson);
+    // A row only says where a file was; the attachment screen reads that
+    // path and shares the file, so the import drops rows that point into
+    // app private storage or claim to be links they are not.
+    attachments.removeWhere((row) => !isSafeImportedAttachment(row));
     final reminders = _decode<Reminder>(data, 'reminders', Reminder.fromJson);
     final events = _decode<TaskEvent>(data, 'task_events', TaskEvent.fromJson);
     final sessions = _decode<FocusSession>(data, 'focus_sessions', FocusSession.fromJson);
