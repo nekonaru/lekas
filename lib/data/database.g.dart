@@ -10971,6 +10971,82 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $SavedFiltersTable savedFilters = $SavedFiltersTable(this);
   late final $AttendanceTable attendance = $AttendanceTable(this);
+  late final Index idxSpacesDeleted = Index(
+    'idx_spaces_deleted',
+    'CREATE INDEX idx_spaces_deleted ON spaces (deleted_at)',
+  );
+  late final Index idxTasksDeadline = Index(
+    'idx_tasks_deadline',
+    'CREATE INDEX idx_tasks_deadline ON tasks (deadline)',
+  );
+  late final Index idxTasksStatus = Index(
+    'idx_tasks_status',
+    'CREATE INDEX idx_tasks_status ON tasks (status)',
+  );
+  late final Index idxTasksSpace = Index(
+    'idx_tasks_space',
+    'CREATE INDEX idx_tasks_space ON tasks (space_id)',
+  );
+  late final Index idxTasksDeleted = Index(
+    'idx_tasks_deleted',
+    'CREATE INDEX idx_tasks_deleted ON tasks (deleted_at)',
+  );
+  late final Index idxTasksFocus = Index(
+    'idx_tasks_focus',
+    'CREATE INDEX idx_tasks_focus ON tasks (focus_date)',
+  );
+  late final Index idxSubtasksTask = Index(
+    'idx_subtasks_task',
+    'CREATE INDEX idx_subtasks_task ON subtasks (task_id)',
+  );
+  late final Index idxClassSlotsSpace = Index(
+    'idx_class_slots_space',
+    'CREATE INDEX idx_class_slots_space ON class_slots (space_id)',
+  );
+  late final Index idxTaskTagsTag = Index(
+    'idx_task_tags_tag',
+    'CREATE INDEX idx_task_tags_tag ON task_tags (tag_id)',
+  );
+  late final Index idxAttachmentsTask = Index(
+    'idx_attachments_task',
+    'CREATE INDEX idx_attachments_task ON attachments (task_id)',
+  );
+  late final Index idxRemindersTask = Index(
+    'idx_reminders_task',
+    'CREATE INDEX idx_reminders_task ON reminders (task_id)',
+  );
+  late final Index idxRemindersFire = Index(
+    'idx_reminders_fire',
+    'CREATE INDEX idx_reminders_fire ON reminders (fire_at)',
+  );
+  late final Index idxTaskEventsTask = Index(
+    'idx_task_events_task',
+    'CREATE INDEX idx_task_events_task ON task_events (task_id)',
+  );
+  late final Index idxFocusSessionsTask = Index(
+    'idx_focus_sessions_task',
+    'CREATE INDEX idx_focus_sessions_task ON focus_sessions (task_id)',
+  );
+  late final Index idxClassExceptionsSlot = Index(
+    'idx_class_exceptions_slot',
+    'CREATE INDEX idx_class_exceptions_slot ON class_exceptions (class_slot_id)',
+  );
+  late final Index idxClassExceptionsDate = Index(
+    'idx_class_exceptions_date',
+    'CREATE INDEX idx_class_exceptions_date ON class_exceptions (date)',
+  );
+  late final Index idxSpaceItemsSpace = Index(
+    'idx_space_items_space',
+    'CREATE INDEX idx_space_items_space ON space_items (space_id)',
+  );
+  late final Index idxClassNotesSpace = Index(
+    'idx_class_notes_space',
+    'CREATE INDEX idx_class_notes_space ON class_notes (space_id)',
+  );
+  late final Index idxAttendanceSpaceDate = Index(
+    'idx_attendance_space_date',
+    'CREATE INDEX idx_attendance_space_date ON attendance (space_id, date)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11000,6 +11076,25 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gradeComponents,
     savedFilters,
     attendance,
+    idxSpacesDeleted,
+    idxTasksDeadline,
+    idxTasksStatus,
+    idxTasksSpace,
+    idxTasksDeleted,
+    idxTasksFocus,
+    idxSubtasksTask,
+    idxClassSlotsSpace,
+    idxTaskTagsTag,
+    idxAttachmentsTask,
+    idxRemindersTask,
+    idxRemindersFire,
+    idxTaskEventsTask,
+    idxFocusSessionsTask,
+    idxClassExceptionsSlot,
+    idxClassExceptionsDate,
+    idxSpaceItemsSpace,
+    idxClassNotesSpace,
+    idxAttendanceSpaceDate,
   ];
 }
 
