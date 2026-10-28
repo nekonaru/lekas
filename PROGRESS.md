@@ -435,6 +435,26 @@ perubahan logis per commit, semua CI hijau:
   mengikuti stream `watchTasks` (tanpa spinner ulang tiap interaksi), skor urgensi
   dihitung sekali per tugas (dulu dua kali per pasangan), `DateFormat` di-cache per
   locale.
+- `6510dd2` `docs: record the post release audit in progress` - bagian audit ini
+  sendiri, termasuk keputusan izin `INTERNET`.
+- `74f21f6` `fix: drop planted attachment paths on import` - baris attachment hasil
+  impor backup tidak pernah divalidasi: file berisi `pathOrUrl` sewenang-wenang
+  (mis. `/data/user/0/<pkg>/databases/lekas.sqlite`) diterima apa adanya, lalu layar
+  lampiran membacanya dan menyerahkannya ke aplikasi mana pun lewat share sheet.
+  Impor kini membuang baris `file` yang menunjuk area privat aplikasi dan baris
+  `link` yang bukan http(s).
+- `1587a6f` `fix: declare the notification plugin receivers` - `flutter_local_notifications`
+  18 membawa `ActionBroadcastReceiver`, `ScheduledNotificationReceiver` dan
+  `ScheduledNotificationBootReceiver` tetapi berhenti mendaftarkannya di manifest
+  plugin, dan aplikasi pun tidak mendaftarkannya: alarm terjadwal dari isolate
+  latar tidak pernah diterima dan tombol aksi Selesai/Tunda pada notifikasi tidak
+  pernah hidup. Ketiga receiver kini dideklarasikan di manifest aplikasi (dua
+  privat, satu hanya aksi sistem terlindungi), diverifikasi masuk APK dengan
+  `aapt2 dump xmltree`.
+
+Sisa permukaan dari pemburu keamanan sudah bersih: komponen ter-ekspor, payload
+widget, handler aksi notifikasi, ekspor backup, SQL mentah, regex parser, URL,
+rahasia dan log.
 
 Keputusan: **izin `INTERNET` dipertahankan** di manifest. `speech_to_text`
 membutuhkannya untuk menghubungi layanan pengenalan Android; aplikasi tetap
