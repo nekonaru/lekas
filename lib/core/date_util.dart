@@ -1,12 +1,24 @@
 import 'package:intl/intl.dart';
 
 class DateUtil {
+  /// Formatters are built by parsing their pattern, which costs more than
+  /// formatting a date; the cards call these for every list row, so each
+  /// locale keeps one instance.
+  static final Map<String, DateFormat> _dateFormats = {};
+  static final Map<String, DateFormat> _timeFormats = {};
+
+  static DateFormat _dateFormatFor(String locale) =>
+      _dateFormats.putIfAbsent(locale, () => DateFormat.yMMMEd(locale));
+
+  static DateFormat _timeFormatFor(String locale) =>
+      _timeFormats.putIfAbsent(locale, () => DateFormat.Hm(locale));
+
   static String formatDate(DateTime dateTime, String locale) {
-    return DateFormat.yMMMEd(locale).format(dateTime);
+    return _dateFormatFor(locale).format(dateTime);
   }
 
   static String formatTime(DateTime dateTime, String locale) {
-    return DateFormat.Hm(locale).format(dateTime);
+    return _timeFormatFor(locale).format(dateTime);
   }
 
   static String formatDateTime(DateTime dateTime, String locale) {

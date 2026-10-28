@@ -463,8 +463,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             ),
         ],
       ),
-      body: FutureBuilder<List<Task>>(
-        future: repo.getTasks(includeInbox: false),
+      // The list follows the table, so a write shows up on its own and the
+      // body never falls back to a spinner after the first frame.
+      body: StreamBuilder<List<Task>>(
+        stream: repo.watchTasks(includeInbox: false),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -486,27 +488,23 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           }
 
           sections.forEach((section, tasks) {
-            tasks.sort((a, b) {
-              final sa = urgencyScore(
-                now: now,
-                deadline: a.deadline != null
-                    ? DateTime.fromMillisecondsSinceEpoch(a.deadline!)
-                    : null,
-                priority: a.priority,
-                weightPercent: a.weightPercent,
-                estimateMinutes: a.estimateMinutes,
-              );
-              final sb = urgencyScore(
-                now: now,
-                deadline: b.deadline != null
-                    ? DateTime.fromMillisecondsSinceEpoch(b.deadline!)
-                    : null,
-                priority: b.priority,
-                weightPercent: b.weightPercent,
-                estimateMinutes: b.estimateMinutes,
-              );
-              return sb.compareTo(sa);
-            });
+            // The score only depends on the task and the current minute, so
+            // it is computed once per task; recomputing it inside the
+            // comparison ran it twice per pair the sort compares.
+            final scores = <String, double>{
+              for (final task in tasks)
+                task.id: urgencyScore(
+                  now: now,
+                  deadline: task.deadline != null
+                      ? DateTime.fromMillisecondsSinceEpoch(task.deadline!)
+                      : null,
+                  priority: task.priority,
+                  weightPercent: task.weightPercent,
+                  estimateMinutes: task.estimateMinutes,
+                ),
+            };
+            tasks.sort((a, b) =>
+                scores[b.id]!.compareTo(scores[a.id]!));
           });
 
           if (allTasks.isEmpty) {
