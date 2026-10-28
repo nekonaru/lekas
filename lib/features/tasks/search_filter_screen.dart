@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import 'task_detail_screen.dart';
+
+/// How long typing pauses before the search filter runs.
+const Duration kSearchDebounce = Duration(milliseconds: 250);
 
 class SearchFilterScreen extends ConsumerStatefulWidget {
   const SearchFilterScreen({super.key});
@@ -18,8 +23,22 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   String? _typeFilter;
   String? _tagFilter;
 
+  /// The settled search text. Every keystroke used to rebuild the whole
+  /// list, so the filter now waits until typing pauses (design section 5.9).
+  String _query = '';
+  Timer? _debounce;
+
+  void _onQueryChanged(String text) {
+    _debounce?.cancel();
+    _debounce = Timer(kSearchDebounce, () {
+      if (!mounted) return;
+      setState(() => _query = text.trim().toLowerCase());
+    });
+  }
+
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -150,8 +169,6 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final repo = ref.watch(taskRepositoryProvider);
-    final query = _searchController.text.trim().toLowerCase();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.searchFilterTitle)),
@@ -161,7 +178,7 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _searchController,
-              onChanged: (_) => setState(() {}),
+              onChanged: _onQueryChanged,
               decoration: InputDecoration(
                 labelText: l10n.searchTitleOrNotesLabel,
                 border: const OutlineInputBorder(),
@@ -181,7 +198,10 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
           ),
           Expanded(
             child: FutureBuilder<List<Task>>(
-              future: repo.getTasks(spaceId: _spaceFilter, includeInbox: false),
+              // The query is built once per filter change instead of on
+              // every keystroke, which used to restart the database read
+              // and flash the spinner while typing.
+              future: _tasksFuture(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -189,17 +209,15 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                 final tasks = (snapshot.data ?? [])
                     .where((t) =>
                         (_typeFilter == null || t.type == _typeFilter) &&
-                        (query.isEmpty ||
-                            t.title.toLowerCase().contains(query) ||
-                            (t.notes ?? '').toLowerCase().contains(query)))
+                        (_query.isEmpty ||
+                            t.title.toLowerCase().contains(_query) ||
+                            (t.notes ?? '').toLowerCase().contains(_query)))
                     .toList();
                 if (_tagFilter == null) return _taskList(tasks, l10n);
                 // Design section 5.9: the tag filter combines with the
                 // space and type filters applied above.
                 return FutureBuilder<Map<String, List<String>>>(
-                  future: ref
-                      .read(tagRepositoryProvider)
-                      .tagsForTasks([for (final t in tasks) t.id]),
+                  future: _tagsFuture(tasks),
                   builder: (context, tagSnapshot) {
                     final tagsByTask = tagSnapshot.data;
                     if (tagsByTask == null) {
@@ -218,6 +236,43 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
         ],
       ),
     );
+  }
+
+  /// The tag lookup for [tasks], kept while the matching tasks stay the
+  /// same, for the same reason as [_tasksFuture].
+  Future<Map<String, List<String>>>? _cachedTags;
+  String? _cachedTagsKey;
+
+  Future<Map<String, List<String>>> _tagsFuture(List<Task> tasks) {
+    final key = [for (final t in tasks) t.id].join(',');
+    final cached = _cachedTags;
+    if (cached != null && _cachedTagsKey == key) return cached;
+    final future = ref.read(tagRepositoryProvider).tagsForTasks([
+      for (final t in tasks) t.id,
+    ]);
+    _cachedTags = future;
+    _cachedTagsKey = key;
+    return future;
+  }
+
+  /// The task query, kept until the space filter changes.
+  ///
+  /// FutureBuilder rebuilds on every keystroke and state change, and an
+  /// inline `future:` argument kicked off a fresh database read each time.
+  /// The result is memoized here so only a real filter change reads again.
+  Future<List<Task>>? _cachedTasks;
+  String? _cachedSpaceKey;
+
+  Future<List<Task>> _tasksFuture() {
+    final key = _spaceFilter ?? '';
+    final cached = _cachedTasks;
+    if (cached != null && _cachedSpaceKey == key) return cached;
+    final future = ref
+        .read(taskRepositoryProvider)
+        .getTasks(spaceId: _spaceFilter, includeInbox: false);
+    _cachedTasks = future;
+    _cachedSpaceKey = key;
+    return future;
   }
 
   Widget _taskList(List<Task> tasks, AppLocalizations l10n) {

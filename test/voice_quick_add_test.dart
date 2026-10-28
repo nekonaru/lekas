@@ -54,7 +54,8 @@ void main() {
 
     expect(find.byType(TextField), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'laprak basdat besok');
-    await tester.pump();
+    // The chips follow the text after the parse debounce (design 7.15).
+    await tester.pump(const Duration(milliseconds: 200));
 
     // The parse result of design section 6.1 shows up as the deadline chip.
     final tomorrow = DateTime.now().add(const Duration(days: 1));

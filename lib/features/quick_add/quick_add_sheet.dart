@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -58,6 +60,11 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   bool _listening = false;
   String _voiceBase = '';
 
+  /// Settling time between the last keystroke and the parse of the chips.
+  Timer? _debounce;
+
+  static const Duration kQuickAddParseDebounce = Duration(milliseconds: 150);
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +78,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _voice.cancel();
     _controller.removeListener(_reparse);
     _controller.dispose();
@@ -99,6 +107,17 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   }
 
   void _reparse() {
+    // The chips follow the text, but a keystroke used to run the whole
+    // parse and rebuild on every character. The parse now waits for a
+    // short pause; the save button always parses what is in the field.
+    _debounce?.cancel();
+    _debounce = Timer(kQuickAddParseDebounce, () {
+      if (!mounted) return;
+      _reparseNow();
+    });
+  }
+
+  void _reparseNow() {
     final parser = _parser;
     if (parser == null) return;
     final text = _controller.text;
@@ -354,6 +373,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     final l10n = AppLocalizations.of(context);
     final text = _controller.text.trim();
     if (l10n == null || text.isEmpty || _saving) return;
+    // The chips may still be waiting on the debounce; save what is in the
+    // field right now, not what was typed a moment ago.
+    _debounce?.cancel();
+    _reparseNow();
     setState(() => _saving = true);
 
     final now = DateTime.now();
