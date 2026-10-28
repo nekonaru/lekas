@@ -16,6 +16,11 @@ class VoiceInput {
   bool _listening = false;
   void Function(String errorCode, bool permanent)? _errorHandler;
 
+  /// Bumped once per session, so a result the recognizer delivers late
+  /// (after a quick stop and restart) belongs to a session that is already
+  /// over and is dropped instead of re-appending an old sentence.
+  int _session = 0;
+
   /// True while a session is running.
   bool get isListening => _listening;
 
@@ -47,10 +52,14 @@ class VoiceInput {
   }) async {
     final available = await ready(onError: onError);
     if (!available) return false;
+    final session = ++_session;
     try {
       await _speech.listen(
-        onResult: (SpeechRecognitionResult result) =>
-            onText(result.recognizedWords, result.finalResult),
+        onResult: (SpeechRecognitionResult result) {
+          // The recognizer can answer after its session was replaced.
+          if (session != _session) return;
+          onText(result.recognizedWords, result.finalResult);
+        },
         listenOptions: SpeechListenOptions(
           localeId: localeId,
           listenMode: ListenMode.dictation,
@@ -70,6 +79,7 @@ class VoiceInput {
   Future<void> stop() async {
     if (!_listening) return;
     _listening = false;
+    _session++;
     try {
       await _speech.stop();
     } catch (_) {
@@ -80,6 +90,7 @@ class VoiceInput {
   /// Drops the session without waiting for a final result.
   Future<void> cancel() async {
     _listening = false;
+    _session++;
     try {
       await _speech.cancel();
     } catch (_) {
