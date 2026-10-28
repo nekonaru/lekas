@@ -50,6 +50,12 @@ String _cutAll(String text, RegExp pattern) =>
 /// subtasks; a run of "2. x" inside one line counts as well. The markers
 /// never reach the title, and a list with a title in front of it keeps the
 /// title where it is.
+///
+/// The list stops at [kMaxSubtasks]: a pasted checklist of hundreds of
+/// lines is a document, and turning it into a task with a hundred children
+/// helps nobody while costing a write per row.
+const int kMaxSubtasks = 50;
+
 ({String remainingText, List<String> subtasks}) extractSubtasks(String text) {
   final subtasks = <String>[];
   var work = text;
@@ -59,7 +65,7 @@ String _cutAll(String text, RegExp pattern) =>
     r'(?:^|\n)\s*(?:\d{1,2}[.)]|[-•*])\s+([^\n]+)',
     caseSensitive: false,
   );
-  while (true) {
+  while (subtasks.length < kMaxSubtasks) {
     final match = line.firstMatch(work);
     if (match == null) break;
     final item = _tidy(match.group(1)!);
@@ -72,15 +78,18 @@ String _cutAll(String text, RegExp pattern) =>
   final inline = RegExp(r'(?:^|\s)(\d{1,2})[.)]\s+');
   final markers = inline.allMatches(work).toList();
   if (markers.length >= 2) {
-    for (var i = 0; i < markers.length - 1; i++) {
+    for (var i = 0; i < markers.length - 1 && subtasks.length < kMaxSubtasks; i++) {
       final start = markers[i].end;
       final end = markers[i + 1].start;
       final item = _tidy(work.substring(start, end));
       if (item.isNotEmpty) subtasks.add(item);
     }
-    final last = markers.last;
-    final tail = _tidy(work.substring(last.end));
-    if (tail.isNotEmpty) subtasks.add(tail);
+    // The tail is one more item; past the cap it is simply left out, the
+    // same way the items in front of it were stopped.
+    if (subtasks.length < kMaxSubtasks) {
+      final tail = _tidy(work.substring(markers.last.end));
+      if (tail.isNotEmpty) subtasks.add(tail);
+    }
     // Everything in front of the first marker is the title; the markers
     // and their items are gone.
     work = _tidy(work.substring(0, markers.first.start));

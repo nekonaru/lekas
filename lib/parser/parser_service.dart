@@ -56,6 +56,20 @@ class ParsedTask {
 
 const String kUntitledTask = 'Untitled task';
 
+/// How much of the input the parser ever looks at.
+///
+/// Quick Add parses on every settled keystroke and on whatever a share or a
+/// voice note hands it, so a pasted web page has to become a short title
+/// instead of a freeze (design section 7.15).
+const int kMaxParsedChars = 4000;
+
+/// The input cut at a word boundary, so the cap never chops a token in half.
+String _capForParsing(String input) {
+  if (input.length <= kMaxParsedChars) return input;
+  final cut = input.lastIndexOf(' ', kMaxParsedChars);
+  return input.substring(0, cut <= 0 ? kMaxParsedChars : cut);
+}
+
 class ParserService {
   final Matcher matcher;
   final List<Map<String, String>> spaces;
@@ -96,10 +110,14 @@ class ParserService {
       englishActive: !isIndonesian,
     );
 
+    // Only the part of the text that can still change the result is read;
+    // the notes below keep the original message untouched.
+    final text = _capForParsing(input);
+
     // Step 1: the list of a shared message becomes subtasks while its line
     // breaks are still there, and the file name pattern is taken raw (both
     // of design section 7.15); normalizing afterwards folds the lines.
-    final subtasks = extractSubtasks(input);
+    final subtasks = extractSubtasks(text);
     final filename = extractFilenamePattern(subtasks.remainingText);
 
     // Step 2: normalize case, spacing and abbreviations of both languages.
@@ -208,7 +226,7 @@ class ParserService {
     } else if (words.priority != 1 || words.conflict) {
       priority = words.priority;
     } else {
-      final lowerInput = input.toLowerCase();
+      final lowerInput = text.toLowerCase();
       if (_hasAnyWord(lowerInput, const ['penting', 'urgent', 'tinggi', 'high'])) {
         priority = 2;
       } else if (_hasAnyWord(lowerInput, const ['rendah', 'low', 'santai'])) {
