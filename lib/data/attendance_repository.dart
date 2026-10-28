@@ -42,7 +42,11 @@ class AttendanceRepository {
               ? t.slotId.isNull()
               : t.slotId.equals(slotId)) &
           t.deletedAt.isNull());
-    final existing = await query.getSingleOrNull();
+    // An imported backup can carry two rows for the same lesson (the table
+    // index is not unique); getSingleOrNull() would throw StateError and
+    // the marking would silently fail, so the first row simply wins.
+    final matches = await (query..limit(1)).get();
+    final existing = matches.isEmpty ? null : matches.first;
     final normalized = normalizeAttendanceStatus(status);
     if (existing != null) {
       await (db.update(db.attendance)..where((t) => t.id.equals(existing.id)))

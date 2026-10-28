@@ -6,6 +6,19 @@ import '../../data/models.dart';
 import '../../core/date_util.dart';
 import '../../l10n/app_localizations.dart';
 
+/// Minutes since midnight of a typed "HH:mm", or null when the text is not
+/// a real time of day. Anything outside 00:00 to 23:59 is refused instead
+/// of being parsed into a wild hour that shifts the class window.
+int? parseHourMinute(String text) {
+  final parts = text.trim().split(':');
+  if (parts.length != 2) return null;
+  final hour = int.tryParse(parts[0].trim());
+  final minute = int.tryParse(parts[1].trim());
+  if (hour == null || minute == null) return null;
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+  return hour * 60 + minute;
+}
+
 class ClassScheduleScreen extends ConsumerStatefulWidget {
   final String spaceId;
   const ClassScheduleScreen({super.key, required this.spaceId});
@@ -124,14 +137,26 @@ class _ClassScheduleScreenState extends ConsumerState<ClassScheduleScreen> {
                         const Spacer(),
                         ElevatedButton(
                           onPressed: () async {
-                            final startParts = _startController.text.split(':');
-                            final endParts = _endController.text.split(':');
+                            final startMin =
+                                parseHourMinute(_startController.text);
+                            final endMin =
+                                parseHourMinute(_endController.text);
+                            // A half typed "7.30" or "99:99" used to throw
+                            // inside int.parse and the slot simply vanished;
+                            // a slot is now only saved when both ends are
+                            // real minutes of a day and the hour is not
+                            // upside down (design section 5.23).
+                            if (startMin == null ||
+                                endMin == null ||
+                                startMin >= endMin) {
+                              return;
+                            }
                             await repo.insertClassSlot(ClassSlot(
                               id: const Uuid().v4(),
                               spaceId: widget.spaceId,
                               weekday: _selectedWeekday,
-                              startMin: int.parse(startParts[0]) * 60 + int.parse(startParts[1]),
-                              endMin: int.parse(endParts[0]) * 60 + int.parse(endParts[1]),
+                              startMin: startMin,
+                              endMin: endMin,
                               kind: 'lecture',
                               room: _roomController.text.isEmpty ? null : _roomController.text,
                               updatedAt: DateTime.now().millisecondsSinceEpoch,

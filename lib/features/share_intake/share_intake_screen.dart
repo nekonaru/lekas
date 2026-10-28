@@ -25,6 +25,12 @@ const List<String> kDeadlineKeywords = [
 /// Splits a shared message into candidate tasks. Sentences carrying a
 /// deadline keyword are proposed, otherwise the whole message is one
 /// candidate (design section 6.2).
+///
+/// The list is capped: any app on the phone can share a text of any size,
+/// and a message of ten thousand "batas" sentences used to become ten
+/// thousand candidate cards and ten thousand saved tasks.
+const int kMaxShareCandidates = 50;
+
 List<String> splitShareCandidates(String message) {
   final sentences = message
       .split(_sentenceSplit)
@@ -36,8 +42,17 @@ List<String> splitShareCandidates(String message) {
   final hits = sentences
       .where((s) => kDeadlineKeywords.any((k) => s.toLowerCase().contains(k)))
       .toList();
-  if (hits.isNotEmpty) return hits;
+  if (hits.isNotEmpty) return hits.take(kMaxShareCandidates).toList();
   return [message.trim()];
+}
+
+/// The shared message trimmed and cut at the parser's character cap, so a
+/// pasted document cannot be stored over and over once per saved task.
+String _boundedMessage(String message) {
+  final trimmed = message.trim();
+  if (trimmed.length <= kMaxParsedChars) return trimmed;
+  final cut = trimmed.lastIndexOf(' ', kMaxParsedChars);
+  return trimmed.substring(0, cut <= 0 ? kMaxParsedChars : cut);
 }
 
 /// Shows the tasks proposed from a shared message with checkboxes and
@@ -190,6 +205,11 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
     setState(() => _saving = true);
     final repository = ref.read(taskRepositoryProvider);
     final now = DateTime.now().millisecondsSinceEpoch;
+    // The full shared message used to be copied into notes and sourceText
+    // of every saved task, so one hostile megabyte grew with every row.
+    // Both fields share one bounded copy; the parser only ever reads the
+    // first part of it anyway (design section 6.2 and 7.15).
+    final storedMessage = _boundedMessage(widget.message);
     var saved = 0;
     for (final candidate in _candidates) {
       if (!candidate.checked) continue;
@@ -202,14 +222,14 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         id: taskId,
         spaceId: candidate.spaceId,
         title: title,
-        notes: widget.message.trim(),
+        notes: storedMessage,
         priority: candidate.priority,
         status: 'todo',
         isGroup: candidate.isGroup,
         pinned: false,
         inbox: candidate.spaceId == null,
         deadline: candidate.deadline?.millisecondsSinceEpoch,
-        sourceText: widget.message.trim(),
+        sourceText: storedMessage,
         // Design section 7.15: the values of the extra chips.
         estimateMinutes:
             wanted('estimate') ? parsed?.estimateMinutes : null,

@@ -143,6 +143,15 @@ class BackupService {
     final tasks = _decode<Task>(data, 'tasks', Task.fromJson);
     final subtasks = _decode<Subtask>(data, 'subtasks', Subtask.fromJson);
     final slots = _decode<ClassSlot>(data, 'class_slots', ClassSlot.fromJson);
+    // A class slot only makes sense on one weekday of a real lesson hour;
+    // an imported row outside that range made the schedule screen index
+    // past the end of its weekday list and shifted the quiet hour window.
+    slots.removeWhere((row) =>
+        row.weekday < 1 ||
+        row.weekday > 7 ||
+        row.startMin < 0 ||
+        row.endMin > 24 * 60 ||
+        row.startMin >= row.endMin);
     final tags = _decode<Tag>(data, 'tags', Tag.fromJson);
     final taskTags = _decode<TaskTag>(data, 'task_tags', TaskTag.fromJson);
     final attachments = _decode<Attachment>(data, 'attachments', Attachment.fromJson);
