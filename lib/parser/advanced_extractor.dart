@@ -19,14 +19,31 @@ String _tidy(String text) =>
 String _cut(String text, Match match) =>
     _tidy('${text.substring(0, match.start)} ${text.substring(match.end)}');
 
-/// Removes every occurrence of [pattern].
-String _cutAll(String text, RegExp pattern) {
-  var work = text;
-  for (final match in pattern.allMatches(text).toList().reversed) {
-    work = _cut(work, match);
+/// Removes every match of [matches] from [text] in a single pass.
+///
+/// The matches have to come from [text] itself. Cutting them one after the
+/// other shifted the offsets of everything in front of the cut, so a second
+/// `!` marker landed outside the shortened string and threw a RangeError,
+/// and a message that started with spaces came back with pieces of words
+/// glued together. Walking forward over the original text instead keeps
+/// every offset honest and reads the text once.
+String _removeMatches(String text, Iterable<Match> matches) {
+  final buffer = StringBuffer();
+  var cursor = 0;
+  for (final match in matches) {
+    // Two matches cannot share characters; the first one owns them.
+    if (match.start < cursor) continue;
+    buffer.write(text.substring(cursor, match.start));
+    buffer.write(' ');
+    cursor = match.end;
   }
-  return work;
+  buffer.write(text.substring(cursor));
+  return _tidy(buffer.toString());
 }
+
+/// Removes every occurrence of [pattern].
+String _cutAll(String text, RegExp pattern) =>
+    _removeMatches(text, pattern.allMatches(text));
 
 /// The numbered or bulleted items of a shared message (design section
 /// 7.15). Lines that start with "1.", "1)", "-" or "3." are taken as
@@ -99,19 +116,19 @@ String _cutAll(String text, RegExp pattern) {
 /// title.
 ({String remainingText, List<String> links}) extractLinks(String text) {
   final links = <String>[];
-  var work = text;
+  final cut = <Match>[];
   final pattern =
       RegExp(r"""\b(?:https?://|www\.)[^\s,;"']+""", caseSensitive: false);
-  for (final match in pattern.allMatches(text).toList().reversed) {
+  for (final match in pattern.allMatches(text)) {
     var link = match.group(0)!;
     while (link.isNotEmpty && '.,;:!?)]'.contains(link[link.length - 1])) {
       link = link.substring(0, link.length - 1);
     }
     if (link.isEmpty) continue;
-    links.insert(0, link.startsWith('http') ? link : 'https://$link');
-    work = _cut(work, match);
+    links.add(link.startsWith('http') ? link : 'https://$link');
+    cut.add(match);
   }
-  return (remainingText: _tidy(work), links: links);
+  return (remainingText: _removeMatches(text, cut), links: links);
 }
 
 /// The email address in the text (design section 7.15): it becomes the
@@ -212,20 +229,21 @@ String _cutAll(String text, RegExp pattern) {
   final matches = RegExp(r'(?:^|\s)!([a-z]*)', caseSensitive: false)
       .allMatches(text)
       .toList();
-  var work = text;
+  final cut = <Match>[];
   var priority = 1;
   var seen = false;
 
   // The first marker that names a known level decides, and every known
-  // marker leaves the text.
+  // marker leaves the text. The decisions run over the untouched text so
+  // cutting one marker cannot move the next one.
   for (final match in matches) {
     final word = match.group(1)!.toLowerCase();
     if (!levels.containsKey(word)) continue;
     if (!seen) priority = levels[word]!;
     seen = true;
-    work = _cut(work, match);
+    cut.add(match);
   }
-  return (remainingText: _tidy(work), priority: priority, seen: seen);
+  return (remainingText: _removeMatches(text, cut), priority: priority, seen: seen);
 }
 
 /// The priority words of design section 7.15: "penting", "urgent" and
