@@ -120,27 +120,31 @@ class TaskRepository {
     );
     await insertTask(copy);
 
-    final subtasks = await (db.select(db.subtasks)
-          ..where((t) => t.taskId.equals(id) & t.deletedAt.isNull()))
-        .get();
-    for (final subtask in subtasks) {
-      await db.into(db.subtasks).insert(subtask.copyWith(
-            id: const Uuid().v4(),
-            taskId: copy.id,
-            done: false,
-            updatedAt: now,
-          ));
-    }
+    // The copy is all or nothing: subtasks and links join the task row in
+    // one transaction instead of one commit each.
+    await db.transaction(() async {
+      final subtasks = await (db.select(db.subtasks)
+            ..where((t) => t.taskId.equals(id) & t.deletedAt.isNull()))
+          .get();
+      for (final subtask in subtasks) {
+        await db.into(db.subtasks).insert(subtask.copyWith(
+              id: const Uuid().v4(),
+              taskId: copy.id,
+              done: false,
+              updatedAt: now,
+            ));
+      }
 
-    final links = await (db.select(db.taskTags)
-          ..where((t) => t.taskId.equals(id)))
-        .get();
-    for (final link in links) {
-      await db.into(db.taskTags).insert(
-            TaskTag(taskId: copy.id, tagId: link.tagId),
-            mode: InsertMode.insertOrIgnore,
-          );
-    }
+      final links = await (db.select(db.taskTags)
+            ..where((t) => t.taskId.equals(id)))
+          .get();
+      for (final link in links) {
+        await db.into(db.taskTags).insert(
+              TaskTag(taskId: copy.id, tagId: link.tagId),
+              mode: InsertMode.insertOrIgnore,
+            );
+      }
+    });
     return copy;
   }
 
@@ -170,19 +174,22 @@ class TaskRepository {
     );
     await insertTask(task);
 
-    var order = 0;
-    for (final title in decodeSubtaskTitles(template.subtasksJson)) {
-      await db.into(db.subtasks).insert(
-            Subtask(
-              id: const Uuid().v4(),
-              taskId: task.id,
-              title: title,
-              done: false,
-              sortOrder: order++,
-              updatedAt: now,
-            ),
-          );
-    }
+    // A template either fills the task completely or not at all.
+    await db.transaction(() async {
+      var order = 0;
+      for (final title in decodeSubtaskTitles(template.subtasksJson)) {
+        await db.into(db.subtasks).insert(
+              Subtask(
+                id: const Uuid().v4(),
+                taskId: task.id,
+                title: title,
+                done: false,
+                sortOrder: order++,
+                updatedAt: now,
+              ),
+            );
+      }
+    });
     return task;
   }
 

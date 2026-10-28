@@ -132,9 +132,13 @@ Future<int> carryOverFocus(AppDatabase db, DateTime today) async {
     ],
   );
   final day = startOfDayMs(today);
-  for (final id in carry) {
-    await repository.setFocusDate(id, day);
-  }
+  // The carried focus moves as one block, so the picker never shows half
+  // of yesterday's tasks in today.
+  await db.transaction(() async {
+    for (final id in carry) {
+      await repository.setFocusDate(id, day);
+    }
+  });
   return carry.length;
 }
 

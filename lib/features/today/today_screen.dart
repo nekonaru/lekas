@@ -182,20 +182,26 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final repository = ref.read(taskRepositoryProvider);
     final picked = _picked(tasks);
     if (picked.isEmpty) return;
-    for (final task in picked) {
-      await repository.markDone(task.id);
-    }
+    // One transaction for the whole selection: a single commit instead of
+    // one per task, and the stream reports the change once.
+    await ref.read(appDatabaseProvider).transaction(() async {
+      for (final task in picked) {
+        await repository.markDone(task.id);
+      }
+    });
     _clearSelection();
     if (!mounted) return;
     UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
       final now = DateTime.now().millisecondsSinceEpoch;
-      for (final task in picked) {
-        await repository.updateTask(task.copyWith(
-          status: 'todo',
-          completedAt: const Value(null),
-          updatedAt: now,
-        ));
-      }
+      await ref.read(appDatabaseProvider).transaction(() async {
+        for (final task in picked) {
+          await repository.updateTask(task.copyWith(
+            status: 'todo',
+            completedAt: const Value(null),
+            updatedAt: now,
+          ));
+        }
+      });
       if (mounted) setState(() {});
     });
   }
@@ -205,15 +211,19 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final repository = ref.read(taskRepositoryProvider);
     final picked = _picked(tasks);
     if (picked.isEmpty) return;
-    for (final task in picked) {
-      await repository.softDeleteTask(task.id);
-    }
+    await ref.read(appDatabaseProvider).transaction(() async {
+      for (final task in picked) {
+        await repository.softDeleteTask(task.id);
+      }
+    });
     _clearSelection();
     if (!mounted) return;
     UndoSnackbar.show(context, l10n.tasksDeletedUndo(picked.length), () async {
-      for (final task in picked) {
-        await repository.restoreTask(task.id);
-      }
+      await ref.read(appDatabaseProvider).transaction(() async {
+        for (final task in picked) {
+          await repository.restoreTask(task.id);
+        }
+      });
       if (mounted) setState(() {});
     });
   }
@@ -250,10 +260,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     if (priority == null || !mounted) return;
     final repository = ref.read(taskRepositoryProvider);
     final now = DateTime.now().millisecondsSinceEpoch;
-    for (final task in picked) {
-      await repository
-          .updateTask(task.copyWith(priority: priority, updatedAt: now));
-    }
+    await ref.read(appDatabaseProvider).transaction(() async {
+      for (final task in picked) {
+        await repository
+            .updateTask(task.copyWith(priority: priority, updatedAt: now));
+      }
+    });
     if (!mounted) return;
     setState(() {});
     if (!mounted) return;
@@ -292,13 +304,15 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     if (spaceId == null || !mounted) return;
     final repository = ref.read(taskRepositoryProvider);
     final now = DateTime.now().millisecondsSinceEpoch;
-    for (final task in picked) {
-      await repository.updateTask(task.copyWith(
-        spaceId: Value(spaceId.isEmpty ? null : spaceId),
-        inbox: spaceId.isEmpty,
-        updatedAt: now,
-      ));
-    }
+    await ref.read(appDatabaseProvider).transaction(() async {
+      for (final task in picked) {
+        await repository.updateTask(task.copyWith(
+          spaceId: Value(spaceId.isEmpty ? null : spaceId),
+          inbox: spaceId.isEmpty,
+          updatedAt: now,
+        ));
+      }
+    });
     if (!mounted) return;
     setState(() {});
     if (!mounted) return;

@@ -22,34 +22,38 @@ Future<void> saveParsedExtras({
   final now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
 
   final trimmedTag = tag?.trim();
-  if (trimmedTag != null && trimmedTag.isNotEmpty) {
-    await tags.setTaskTags(taskId, [trimmedTag]);
-  }
+  // One commit for the whole side car: a row that fails halfway must not
+  // leave half of a parsed message behind.
+  await tags.db.transaction(() async {
+    if (trimmedTag != null && trimmedTag.isNotEmpty) {
+      await tags.setTaskTags(taskId, [trimmedTag]);
+    }
 
-  var order = 0;
-  for (final title in subtaskTitles) {
-    final clean = title.trim();
-    if (clean.isEmpty) continue;
-    await subtasks.insertSubtask(Subtask(
-      id: const Uuid().v4(),
-      taskId: taskId,
-      title: clean,
-      done: false,
-      sortOrder: order,
-      updatedAt: now,
-    ));
-    order++;
-  }
+    var order = 0;
+    for (final title in subtaskTitles) {
+      final clean = title.trim();
+      if (clean.isEmpty) continue;
+      await subtasks.insertSubtask(Subtask(
+        id: const Uuid().v4(),
+        taskId: taskId,
+        title: clean,
+        done: false,
+        sortOrder: order,
+        updatedAt: now,
+      ));
+      order++;
+    }
 
-  for (final url in links) {
-    final clean = url.trim();
-    if (clean.isEmpty) continue;
-    await attachments.insertAttachment(Attachment(
-      id: const Uuid().v4(),
-      taskId: taskId,
-      kind: 'link',
-      pathOrUrl: clean,
-      createdAt: now,
-    ));
-  }
+    for (final url in links) {
+      final clean = url.trim();
+      if (clean.isEmpty) continue;
+      await attachments.insertAttachment(Attachment(
+        id: const Uuid().v4(),
+        taskId: taskId,
+        kind: 'link',
+        pathOrUrl: clean,
+        createdAt: now,
+      ));
+    }
+  });
 }
