@@ -93,7 +93,14 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final space = snapshot.data!;
+        final space = snapshot.data;
+        if (space == null) {
+          // The course was deleted while this screen was open.
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.attendanceTitle)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
 
         return FutureBuilder<AttendanceSummary>(
           future: attendanceRepo.summaryFor(space),

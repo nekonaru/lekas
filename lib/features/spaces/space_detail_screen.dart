@@ -35,7 +35,13 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final space = snapshot.data!;
+        final space = snapshot.data;
+        if (space == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.spacesTitle)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
         return Scaffold(
           appBar: AppBar(title: Text(space.name)),
           body: ListView(

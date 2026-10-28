@@ -119,7 +119,13 @@ class _KontakKelasScreenState extends ConsumerState<KontakKelasScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final space = snapshot.data!;
+        final space = snapshot.data;
+        if (space == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.classContactsLinksTitle)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
         final lecturer = _valueOf('lecturer');
         final room = _valueOf('room');
         final link = _valueOf('link');

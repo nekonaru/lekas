@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -22,6 +23,11 @@ public class BootReceiver extends BroadcastReceiver {
     private static final String CHANNEL = "lekas/boot";
     private static final long TIMEOUT_MS = 30_000L;
 
+    // Two broadcasts can arrive back to back (an update while booting),
+    // and starting two background engines at once wastes the battery.
+    private static final long DEBOUNCE_MS = 10_000L;
+    private static volatile long lastRunAt = 0L;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (context == null || intent == null || intent.getAction() == null) {
@@ -29,12 +35,16 @@ public class BootReceiver extends BroadcastReceiver {
         }
         String action = intent.getAction();
         boolean isBoot = Intent.ACTION_BOOT_COMPLETED.equals(action)
-                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)
-                || "android.intent.action.QUICKBOOT_POWERON".equals(action)
-                || "com.htc.intent.action.QUICKBOOT_POWERON".equals(action);
+                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action);
         if (!isBoot) {
             return;
         }
+
+        long now = SystemClock.elapsedRealtime();
+        if (now - lastRunAt < DEBOUNCE_MS) {
+            return;
+        }
+        lastRunAt = now;
 
         Context appContext = context.getApplicationContext();
         FlutterLoader loader = FlutterInjector.instance().flutterLoader();

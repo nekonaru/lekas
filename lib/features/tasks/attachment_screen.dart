@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
+import '../../core/constants.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -72,18 +73,32 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          final messenger = ScaffoldMessenger.of(context);
           final result = await FilePicker.platform.pickFiles(
             type: FileType.any,
           );
           if (result != null && result.files.single.path != null) {
             final file = File(result.files.single.path!);
+            final size = await file.length();
+            // Keeps a huge file from being copied into the app directory
+            // without the user ever seeing why the app grew.
+            if (size > maxAttachmentBytes) {
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    l10n.attachmentTooBig(maxAttachmentBytes ~/ (1024 * 1024)),
+                  ),
+                ),
+              );
+              return;
+            }
             await repo.insertAttachment(Attachment(
               id: DateTime.now().millisecondsSinceEpoch.toString(),
               taskId: widget.taskId,
               kind: 'file',
               pathOrUrl: file.path,
               mime: result.files.single.extension,
-              sizeBytes: await file.length(),
+              sizeBytes: size,
               createdAt: DateTime.now().millisecondsSinceEpoch,
             ));
             if (mounted) setState(() {});

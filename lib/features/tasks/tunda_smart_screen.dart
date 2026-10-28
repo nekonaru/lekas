@@ -26,7 +26,13 @@ class _TundaSmartScreenState extends ConsumerState<TundaSmartScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final task = snapshot.data!;
+        final task = snapshot.data;
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.snoozeReminderTitle)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
 
         return Scaffold(
           appBar: AppBar(title: Text(l10n.snoozeReminderTitle)),

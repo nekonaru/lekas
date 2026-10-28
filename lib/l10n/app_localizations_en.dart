@@ -243,6 +243,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get exportFailed => 'Export failed. Try again.';
+
+  @override
+  String get importFailed =>
+      'Import failed. Your existing data was left untouched.';
+
+  @override
+  String get recordNotFound => 'Record not found.';
+
+  @override
+  String attachmentTooBig(int limit) {
+    return 'That file is too large. The limit is $limit MB.';
+  }
+
+  @override
   String get autoBackupFolder => 'Pick Auto Backup Folder';
 
   @override

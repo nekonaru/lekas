@@ -36,7 +36,13 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final task = snapshot.data!;
+        final task = snapshot.data;
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.submissionMethodTitle)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
 
         return Scaffold(
           appBar: AppBar(title: Text(l10n.submissionMethodTitle)),

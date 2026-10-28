@@ -536,6 +536,30 @@ abstract class AppLocalizations {
   /// **'Diimpor: {count} tugas'**
   String importedTasks(int count);
 
+  /// No description provided for @exportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor gagal. Coba lagi.'**
+  String get exportFailed;
+
+  /// No description provided for @importFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor gagal. Data yang ada tidak diubah.'**
+  String get importFailed;
+
+  /// No description provided for @recordNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak ditemukan.'**
+  String get recordNotFound;
+
+  /// No description provided for @attachmentTooBig.
+  ///
+  /// In id, this message translates to:
+  /// **'File terlalu besar. Maksimal {limit} MB.'**
+  String attachmentTooBig(int limit);
+
   /// No description provided for @autoBackupFolder.
   ///
   /// In id, this message translates to:

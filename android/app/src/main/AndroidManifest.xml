@@ -7,11 +7,19 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
+    <!-- Lets the voice input find the installed speech recognizer on
+         Android 11 and newer, where the package is otherwise invisible. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
+    </queries>
+
     <application
         android:label="Lekas"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:theme="@style/LaunchTheme">
         <activity
             android:name=".MainActivity"
@@ -25,12 +33,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- Accept plain text shared from other apps (design section 6.2). -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
-            </intent-filter>
+            <!-- Accept plain text shared from other apps (design section 6.2).
+                 The app only reads text, so images are deliberately not
+                 offered in the share sheet. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -40,11 +45,6 @@
                 <action android:name="android.intent.action.SEND_MULTIPLE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="image/*"/>
             </intent-filter>
 
             <!-- Lets a home screen widget open the app with its own uri
@@ -103,27 +103,26 @@
                 android:resource="@xml/widget_focus"/>
         </receiver>
 
-        <!-- Runs the widget checkbox taps in a background isolate. -->
+        <!-- Runs the widget checkbox taps in a background isolate. Only the
+             app's own widget pending intents reach it, so it stays private:
+             an exported receiver here would let any app on the phone spin up
+             a background engine and flip tasks. -->
         <receiver
             android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="es.antonborri.home_widget.action.BACKGROUND"/>
-            </intent-filter>
-        </receiver>
+            android:exported="false"/>
         <service
             android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
 
+        <!-- Only protected system broadcasts: the quickboot actions of some
+             old launchers are not protected, so any app could send them. -->
         <receiver
             android:name=".BootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
 

@@ -142,7 +142,8 @@ Map<String, Object?> _examJson(WidgetExamCountdown countdown) => {
 Future<void> widgetBackgroundCallback(Uri? data) async {
   if (data == null || data.host != 'toggle') return;
   final taskId = data.queryParameters['id'];
-  if (taskId == null || taskId.isEmpty) return;
+  // Ids this app writes are uuids; anything longer is not one of them.
+  if (taskId == null || taskId.isEmpty || taskId.length > 64) return;
   WidgetsFlutterBinding.ensureInitialized();
 
   AppDatabase? db;

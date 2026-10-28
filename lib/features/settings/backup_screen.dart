@@ -42,6 +42,10 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                       messenger.showSnackBar(
                         SnackBar(content: Text(l10n.exportedTo(file.path))),
                       );
+                    } catch (e) {
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(l10n.exportFailed)),
+                      );
                     } finally {
                       if (mounted) setState(() => _isExporting = false);
                     }
@@ -71,6 +75,12 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                           SnackBar(content: Text(l10n.importedTasks(tasks))),
                         );
                       }
+                    } catch (e) {
+                      // The service validates before it deletes anything,
+                      // so the current data is still here after this.
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(l10n.importFailed)),
+                      );
                     } finally {
                       if (mounted) setState(() => _isImporting = false);
                     }

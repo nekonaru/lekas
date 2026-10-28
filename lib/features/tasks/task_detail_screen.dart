@@ -32,7 +32,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final task = snapshot.data!;
+        final task = snapshot.data;
+        if (task == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.tasksMenuLabel)),
+            body: Center(child: Text(l10n.recordNotFound)),
+          );
+        }
 
         return FutureBuilder<List<Subtask>>(
           future: subtaskRepo.getSubtasks(widget.taskId),

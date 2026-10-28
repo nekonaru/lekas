@@ -244,6 +244,20 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get exportFailed => 'Ekspor gagal. Coba lagi.';
+
+  @override
+  String get importFailed => 'Impor gagal. Data yang ada tidak diubah.';
+
+  @override
+  String get recordNotFound => 'Data tidak ditemukan.';
+
+  @override
+  String attachmentTooBig(int limit) {
+    return 'File terlalu besar. Maksimal $limit MB.';
+  }
+
+  @override
   String get autoBackupFolder => 'Pilih Folder Cadangan Otomatis';
 
   @override

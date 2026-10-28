@@ -215,6 +215,8 @@ Future<void> scheduleNotification({
       channelDescription: 'Lekas task reminders',
       importance: Importance.high,
       priority: Priority.high,
+      // Task titles stay off the lock screen preview (audit finding).
+      visibility: NotificationVisibility.private,
       actions: actions ??
           ((l10n == null || !withActions) ? null : _notificationActions(l10n)),
     ),
@@ -1381,6 +1383,7 @@ class ReminderService {
           channelDescription: 'One off test reminders',
           importance: Importance.high,
           priority: Priority.high,
+          visibility: NotificationVisibility.private,
         ),
       ),
     );

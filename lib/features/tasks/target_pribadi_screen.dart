@@ -29,7 +29,10 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          final task = snapshot.data!;
+          final task = snapshot.data;
+          if (task == null) {
+            return Center(child: Text(l10n.recordNotFound));
+          }
 
           return ListView(
             padding: const EdgeInsets.all(16),

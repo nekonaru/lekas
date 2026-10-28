@@ -6,11 +6,26 @@ import '../data/database.dart';
 import '../data/models.dart';
 import 'package:drift/drift.dart';
 
+/// Thrown when a backup file cannot be trusted. The message is shown to
+/// the user, and the import never touches the existing database.
+class BackupFormatException implements Exception {
+  const BackupFormatException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
+}
+
 class BackupService {
   final AppDatabase db;
   BackupService(this.db);
 
   static const String backupVersion = '1.0';
+
+  /// Files above this are refused before a single byte is parsed, so a
+  /// corrupt or hostile file cannot exhaust memory while decoding.
+  static const int maxBackupBytes = 50 * 1024 * 1024;
 
   /// Exports all data to a JSON file.
   Future<File> exportToJson() async {
@@ -44,7 +59,9 @@ class BackupService {
     data['saved_filters'] = (await db.select(db.savedFilters).get()).map((e) => e.toJson()).toList();
     data['attendance'] = (await db.select(db.attendance).get()).map((e) => e.toJson()).toList();
 
-    final jsonString = JsonEncoder.withIndent('  ').convert(data);
+    // Compact encoding: a backup is machine data, and indentation roughly
+    // doubles the size of a large database.
+    final jsonString = jsonEncode(data);
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/lekas_backup_${DateTime.now().millisecondsSinceEpoch}.json');
     await file.writeAsString(jsonString);
@@ -57,216 +74,182 @@ class BackupService {
   }
 
   /// Imports data from a JSON file. Mode is 'replace' or 'merge'.
+  ///
+  /// The whole file is decoded and type checked first, and the write runs
+  /// in a single transaction, so a bad file leaves the current data alone.
   Future<Map<String, int>> importFromJson(File file, {String mode = 'replace'}) async {
-    final jsonString = await file.readAsString();
-    final data = jsonDecode(jsonString) as Map<String, dynamic>;
-
-    // Verify version
-    final version = data['version'] as String?;
-    if (version == null) {
-      throw Exception('Berkas cadangan tidak memiliki versi yang valid.');
+    final size = await file.length();
+    if (size > maxBackupBytes) {
+      throw BackupFormatException(
+        'Backup is larger than ${maxBackupBytes ~/ (1024 * 1024)} MB.',
+      );
     }
+
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(await file.readAsString());
+    } on FormatException catch (e) {
+      throw BackupFormatException('Backup is not valid JSON: ${e.message}');
+    } on FileSystemException {
+      throw BackupFormatException('The backup file could not be read.');
+    }
+    if (decoded is! Map<String, dynamic>) {
+      throw BackupFormatException('The backup root is not a JSON object.');
+    }
+    final data = decoded;
+
+    final version = data['version'];
+    if (version is! String || version.isEmpty) {
+      throw BackupFormatException('The backup has no valid version field.');
+    }
+
+    // Decode every row before anything is deleted.
+    final spaces = _decode<Space>(data, 'spaces', Space.fromJson);
+    final aliases = _decode<SpaceAliase>(data, 'space_aliases', SpaceAliase.fromJson);
+    final spaceMeta = _decode<SpaceMetaData>(data, 'space_meta', SpaceMetaData.fromJson);
+    final tasks = _decode<Task>(data, 'tasks', Task.fromJson);
+    final subtasks = _decode<Subtask>(data, 'subtasks', Subtask.fromJson);
+    final slots = _decode<ClassSlot>(data, 'class_slots', ClassSlot.fromJson);
+    final tags = _decode<Tag>(data, 'tags', Tag.fromJson);
+    final taskTags = _decode<TaskTag>(data, 'task_tags', TaskTag.fromJson);
+    final attachments = _decode<Attachment>(data, 'attachments', Attachment.fromJson);
+    final reminders = _decode<Reminder>(data, 'reminders', Reminder.fromJson);
+    final events = _decode<TaskEvent>(data, 'task_events', TaskEvent.fromJson);
+    final sessions = _decode<FocusSession>(data, 'focus_sessions', FocusSession.fromJson);
+    final templates = _decode<TaskTemplate>(data, 'task_templates', TaskTemplate.fromJson);
+    final parserPrefs = _decode<ParserPref>(data, 'parser_prefs', ParserPref.fromJson);
+    final settings = _decode<Setting>(data, 'settings', Setting.fromJson);
+    final deps = _decode<TaskDep>(data, 'task_deps', TaskDep.fromJson);
+    final exceptions = _decode<ClassException>(data, 'class_exceptions', ClassException.fromJson);
+    final items = _decode<SpaceItem>(data, 'space_items', SpaceItem.fromJson);
+    final quickLinks = _decode<QuickLink>(data, 'quick_links', QuickLink.fromJson);
+    final classNotes = _decode<ClassNote>(data, 'class_notes', ClassNote.fromJson);
+    final diagnostics = _decode<Diagnostic>(data, 'diagnostics', Diagnostic.fromJson);
+    final grades = _decode<GradeComponent>(data, 'grade_components', GradeComponent.fromJson);
+    final filters = _decode<SavedFilter>(data, 'saved_filters', SavedFilter.fromJson);
+    final attendance = _decode<AttendanceData>(data, 'attendance', AttendanceData.fromJson);
 
     final stats = <String, int>{};
-
-    if (mode == 'replace') {
-      // Delete all existing data first
-      await db.delete(db.savedFilters).go();
-      await db.delete(db.attendance).go();
-      await db.delete(db.gradeComponents).go();
-      await db.delete(db.diagnostics).go();
-      await db.delete(db.classNotes).go();
-      await db.delete(db.quickLinks).go();
-      await db.delete(db.spaceItems).go();
-      await db.delete(db.classExceptions).go();
-      await db.delete(db.taskDeps).go();
-      await db.delete(db.settings).go();
-      await db.delete(db.parserPrefs).go();
-      await db.delete(db.taskTemplates).go();
-      await db.delete(db.focusSessions).go();
-      await db.delete(db.taskEvents).go();
-      await db.delete(db.reminders).go();
-      await db.delete(db.attachments).go();
-      await db.delete(db.taskTags).go();
-      await db.delete(db.tags).go();
-      await db.delete(db.classSlots).go();
-      await db.delete(db.subtasks).go();
-      await db.delete(db.tasks).go();
-      await db.delete(db.spaceMeta).go();
-      await db.delete(db.spaceAliases).go();
-      await db.delete(db.spaces).go();
+    void count(String key, List<dynamic> rows) {
+      if (data.containsKey(key)) stats[key] = rows.length;
     }
 
-    // Import spaces
-    if (data['spaces'] != null) {
-      for (final item in data['spaces']) {
-        await db.into(db.spaces).insert(item, mode: InsertMode.insertOrReplace);
+    count('spaces', spaces);
+    count('space_aliases', aliases);
+    count('space_meta', spaceMeta);
+    count('tasks', tasks);
+    count('subtasks', subtasks);
+    count('class_slots', slots);
+    count('tags', tags);
+    count('task_tags', taskTags);
+    count('attachments', attachments);
+    count('reminders', reminders);
+    count('task_events', events);
+    count('focus_sessions', sessions);
+    count('task_templates', templates);
+    count('parser_prefs', parserPrefs);
+    count('settings', settings);
+    count('task_deps', deps);
+    count('class_exceptions', exceptions);
+    count('space_items', items);
+    count('quick_links', quickLinks);
+    count('class_notes', classNotes);
+    count('diagnostics', diagnostics);
+    count('grade_components', grades);
+    count('saved_filters', filters);
+    count('attendance', attendance);
+
+    Future<void> putAll<D>(List<D> rows, Future<void> Function(D) write) async {
+      for (final row in rows) {
+        await write(row);
       }
-      stats['spaces'] = (data['spaces'] as List).length;
     }
 
-    if (data['space_aliases'] != null) {
-      for (final item in data['space_aliases']) {
-        await db.into(db.spaceAliases).insert(item, mode: InsertMode.insertOrReplace);
+    await db.transaction(() async {
+      if (mode == 'replace') {
+        // Children first: delete everything this app owns.
+        await db.delete(db.savedFilters).go();
+        await db.delete(db.attendance).go();
+        await db.delete(db.gradeComponents).go();
+        await db.delete(db.diagnostics).go();
+        await db.delete(db.classNotes).go();
+        await db.delete(db.quickLinks).go();
+        await db.delete(db.spaceItems).go();
+        await db.delete(db.classExceptions).go();
+        await db.delete(db.taskDeps).go();
+        await db.delete(db.settings).go();
+        await db.delete(db.parserPrefs).go();
+        await db.delete(db.taskTemplates).go();
+        await db.delete(db.focusSessions).go();
+        await db.delete(db.taskEvents).go();
+        await db.delete(db.reminders).go();
+        await db.delete(db.attachments).go();
+        await db.delete(db.taskTags).go();
+        await db.delete(db.tags).go();
+        await db.delete(db.classSlots).go();
+        await db.delete(db.subtasks).go();
+        await db.delete(db.tasks).go();
+        await db.delete(db.spaceMeta).go();
+        await db.delete(db.spaceAliases).go();
+        await db.delete(db.spaces).go();
       }
-      stats['space_aliases'] = (data['space_aliases'] as List).length;
-    }
 
-    if (data['space_meta'] != null) {
-      for (final item in data['space_meta']) {
-        await db.into(db.spaceMeta).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['space_meta'] = (data['space_meta'] as List).length;
-    }
-
-    if (data['tasks'] != null) {
-      for (final item in data['tasks']) {
-        await db.into(db.tasks).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['tasks'] = (data['tasks'] as List).length;
-    }
-
-    if (data['subtasks'] != null) {
-      for (final item in data['subtasks']) {
-        await db.into(db.subtasks).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['subtasks'] = (data['subtasks'] as List).length;
-    }
-
-    if (data['class_slots'] != null) {
-      for (final item in data['class_slots']) {
-        await db.into(db.classSlots).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['class_slots'] = (data['class_slots'] as List).length;
-    }
-
-    if (data['attendance'] != null) {
-      for (final item in data['attendance']) {
-        await db.into(db.attendance).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['attendance'] = (data['attendance'] as List).length;
-    }
-
-    if (data['tags'] != null) {
-      for (final item in data['tags']) {
-        await db.into(db.tags).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['tags'] = (data['tags'] as List).length;
-    }
-
-    if (data['task_tags'] != null) {
-      for (final item in data['task_tags']) {
-        await db.into(db.taskTags).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['task_tags'] = (data['task_tags'] as List).length;
-    }
-
-    if (data['attachments'] != null) {
-      for (final item in data['attachments']) {
-        await db.into(db.attachments).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['attachments'] = (data['attachments'] as List).length;
-    }
-
-    if (data['reminders'] != null) {
-      for (final item in data['reminders']) {
-        await db.into(db.reminders).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['reminders'] = (data['reminders'] as List).length;
-    }
-
-    if (data['task_events'] != null) {
-      for (final item in data['task_events']) {
-        await db.into(db.taskEvents).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['task_events'] = (data['task_events'] as List).length;
-    }
-
-    if (data['focus_sessions'] != null) {
-      for (final item in data['focus_sessions']) {
-        await db.into(db.focusSessions).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['focus_sessions'] = (data['focus_sessions'] as List).length;
-    }
-
-    if (data['task_templates'] != null) {
-      for (final item in data['task_templates']) {
-        await db.into(db.taskTemplates).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['task_templates'] = (data['task_templates'] as List).length;
-    }
-
-    if (data['parser_prefs'] != null) {
-      for (final item in data['parser_prefs']) {
-        await db.into(db.parserPrefs).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['parser_prefs'] = (data['parser_prefs'] as List).length;
-    }
-
-    if (data['settings'] != null) {
-      for (final item in data['settings']) {
-        await db.into(db.settings).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['settings'] = (data['settings'] as List).length;
-    }
-
-    if (data['task_deps'] != null) {
-      for (final item in data['task_deps']) {
-        await db.into(db.taskDeps).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['task_deps'] = (data['task_deps'] as List).length;
-    }
-
-    if (data['class_exceptions'] != null) {
-      for (final item in data['class_exceptions']) {
-        await db.into(db.classExceptions).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['class_exceptions'] = (data['class_exceptions'] as List).length;
-    }
-
-    if (data['space_items'] != null) {
-      for (final item in data['space_items']) {
-        await db.into(db.spaceItems).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['space_items'] = (data['space_items'] as List).length;
-    }
-
-    if (data['quick_links'] != null) {
-      for (final item in data['quick_links']) {
-        await db.into(db.quickLinks).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['quick_links'] = (data['quick_links'] as List).length;
-    }
-
-    if (data['class_notes'] != null) {
-      for (final item in data['class_notes']) {
-        await db.into(db.classNotes).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['class_notes'] = (data['class_notes'] as List).length;
-    }
-
-    if (data['diagnostics'] != null) {
-      for (final item in data['diagnostics']) {
-        await db.into(db.diagnostics).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['diagnostics'] = (data['diagnostics'] as List).length;
-    }
-
-    if (data['grade_components'] != null) {
-      for (final item in data['grade_components']) {
-        await db.into(db.gradeComponents).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['grade_components'] = (data['grade_components'] as List).length;
-    }
-
-    if (data['saved_filters'] != null) {
-      for (final item in data['saved_filters']) {
-        await db.into(db.savedFilters).insert(item, mode: InsertMode.insertOrReplace);
-      }
-      stats['saved_filters'] = (data['saved_filters'] as List).length;
-    }
+      await putAll(spaces, (row) => db.into(db.spaces).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(aliases, (row) => db.into(db.spaceAliases).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(spaceMeta, (row) => db.into(db.spaceMeta).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(tasks, (row) => db.into(db.tasks).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(subtasks, (row) => db.into(db.subtasks).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(slots, (row) => db.into(db.classSlots).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(tags, (row) => db.into(db.tags).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(taskTags, (row) => db.into(db.taskTags).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(attachments, (row) => db.into(db.attachments).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(reminders, (row) => db.into(db.reminders).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(events, (row) => db.into(db.taskEvents).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(sessions, (row) => db.into(db.focusSessions).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(templates, (row) => db.into(db.taskTemplates).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(parserPrefs, (row) => db.into(db.parserPrefs).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(settings, (row) => db.into(db.settings).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(deps, (row) => db.into(db.taskDeps).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(exceptions, (row) => db.into(db.classExceptions).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(items, (row) => db.into(db.spaceItems).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(quickLinks, (row) => db.into(db.quickLinks).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(classNotes, (row) => db.into(db.classNotes).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(diagnostics, (row) => db.into(db.diagnostics).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(grades, (row) => db.into(db.gradeComponents).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(filters, (row) => db.into(db.savedFilters).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(attendance, (row) => db.into(db.attendance).insert(row, mode: InsertMode.insertOrReplace));
+    });
 
     return stats;
+  }
+
+  /// Reads one table out of a backup and checks every row, or throws
+  /// [BackupFormatException] naming the table and the row at fault.
+  List<D> _decode<D>(
+    Map<String, dynamic> data,
+    String key,
+    D Function(Map<String, dynamic> json) fromJson,
+  ) {
+    final raw = data[key];
+    if (raw == null) return <D>[];
+    if (raw is! List) {
+      throw BackupFormatException('Key "$key" must be a list of objects.');
+    }
+
+    final rows = <D>[];
+    for (var i = 0; i < raw.length; i++) {
+      final item = raw[i];
+      if (item is! Map) {
+        throw BackupFormatException('Row $i of "$key" is not a JSON object.');
+      }
+      final json = item.map((dynamic k, dynamic v) => MapEntry(k.toString(), v));
+      try {
+        rows.add(fromJson(json));
+      } catch (e) {
+        throw BackupFormatException('Row $i of "$key" is not usable: $e');
+      }
+    }
+    return rows;
   }
 
   /// Picks the folder used for automatic backups (Storage Access Framework).
