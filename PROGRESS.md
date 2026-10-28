@@ -456,6 +456,37 @@ Sisa permukaan dari pemburu keamanan sudah bersih: komponen ter-ekspor, payload
 widget, handler aksi notifikasi, ekspor backup, SQL mentah, regex parser, URL,
 rahasia dan log.
 
+## Audit gelombang 2 (29 Okt 2026)
+
+Pemburu kedua menyapu permukaan yang belum tersentuh (suara, home widget, jadwal
+kelas, halaman bagikan, ekspor, gradle). Empat temuan diperbaiki, sisanya bersih:
+
+- `a985a56` `fix: bound the share intake and imported schedules` - aplikasi mana
+  pun bisa membagikan teks sebesar apa pun; sepuluh ribu kalimat "batas" pernah
+  menjadi sepuluh ribu kartu kandidat, sepuluh ribu tugas tersimpan, dan pesan
+  utuh terduplikasi dua kali ke tiap baris. Daftar kandidat kini berhenti di 50
+  dan pesan tersimpan di batas parser 4000 karakter. Impor backup juga bisa
+  membawa dua baris kehadiran untuk satu pelajaran (membuat `mark()` melempar
+  StateError) dan slot kelas dengan `weekday` 0 atau 42 (membuat layar jadwal
+  crash) atau jam terbalik (menggeser jendela jam tenang); penandaan kini ambil
+  baris pertama, impor membuang slot yang tak bisa digambar, dan form slot
+  menolak teks yang bukan jam nyata.
+- `cf1b1cd` `fix: drop speech results of a finished session` - berhenti lalu
+  memulai mikrofon dengan cepat membuat pengenalan menjawab dengan kalimat
+  sesi lama yang tertulis ulang ke kolom teks; tiap sesi kini bernomor dan
+  jawaban telat sesi yang sudah berakhir diabaikan.
+
+Bersih: voice/logging (tidak ada `debugPrint` isi ucapan), payload widget (dari
+prefs privat aplikasi, JSON di try/catch, `widgetCategory="home_screen"` sehingga
+tidak tampil di layar kunci), layar ruang (kueri difilter `spaceId`), domain
+murni, ekspor gambar/PDF (hanya `share_plus` teks, tanpa tulis berkas), ARB
+(interpolasi Dart, tanpa `%s`), flag `debuggable` (tetap false di rilis).
+
+Masih tertunda (butuh keputusan manusia): signing rilis masih memakai kunci
+debug (`android/app/build.gradle.kts` baris 33-39, komentar TODO) dan build
+rilis belum menyalakan minify; keduanya menunggu keystore asli dan GitHub
+secrets, lalu pengujian di HP fisik.
+
 Keputusan: **izin `INTERNET` dipertahankan** di manifest. `speech_to_text`
 membutuhkannya untuk menghubungi layanan pengenalan Android; aplikasi tetap
 offline-first karena tidak ada panggilan jaringan milik Lekas sendiri.
