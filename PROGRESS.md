@@ -384,18 +384,61 @@ Tracking:
 
 ---
 
-## Verifikasi terakhir (27 Okt 2026)
+## Verifikasi terakhir (28 Okt 2026)
 
-1. `flutter gen-l10n` - sukses, 456 kunci pesan per bahasa
+1. `flutter gen-l10n` - sukses, 459 kunci pesan per bahasa
 2. `flutter analyze` - 0 issue (termasuk `prefer_single_quotes: true`)
-3. `flutter test` - 325 tes lulus (parser dasar, lanjutan 7.15, Inggris/campur 8.5 dan
+3. `flutter test` - 383 tes lulus (parser dasar, lanjutan 7.15, Inggris/campur 8.5 dan
    angka bicara 7.1, penulis ekstra parser, widget Quick Add suara, versi pubspec,
    pengingat, kebijakan notifikasi dan ringkasan, urgensi, tag, duplikat, templat, pin,
-   kehadiran, fokus, daftar bawaan, widget)
-4. `flutter build apk` - sukses, `app-release.apk` 63.4 MB
+   kehadiran, fokus, daftar bawaan, widget, indeks skema, sinkronisasi pengingat,
+   pemotongan token parser, batas parser)
+4. `flutter build apk --split-per-abi` - sukses, 19.8 MB (armeabi-v7a) + 22.1 MB (arm64)
 5. `database.g.dart` divalidasi dengan `dart run build_runner build`: hasil identik
 6. Placeholder `onTap: () {}` / `onPressed: () {}` di `lib/features/` - 0 tersisa
 7. Push ke `main` dan CI GitHub Actions hijau
+
+## Audit pasca-rilis (28 Okt 2026)
+
+Dua subagent memb seluruh `lib/` dan `test/`. Temuan diperbaiki bertahap, satu
+perubahan logis per commit, semua CI hijau:
+
+- `60d6c64` `fix: stop soft deletes from wiping row data` - `softDeleteTask` memakai
+  `replace()` yang membangun ulang baris dari nol sehingga notes, deadline dan space
+  hilang saat pindah ke Sampah. Kini hanya kolom `deleted_at`/`updated_at` yang ditulis;
+  `watchTrash`/`deletePermanently` menempel di sampah asli; `countInbox` memakai COUNT(*).
+- `5418f06` `fix: harden backup import, manifest and notifications` - impor backup
+  kini tervalidasi (manifest + skema), receiver backup jadi privat, `allowBackup=false`,
+  visibilitas notifikasi privat, lampiran di batas 10 MB, guard `snapshot.data!`.
+- `5945049` `perf: add schema 3 indexes for list queries` - 19 `@TableIndex` dihitung
+  dari `EXPLAIN QUERY PLAN` nyata; `test/index_test.dart` mengunci tiap rencana query.
+- `8a38bd1` `perf: reconcile reminders once per write burst` - `reminderSyncProvider`
+  kini `ref.listen(fireImmediately: true)` + debounce 400 ms + fingerprint FNV-1a;
+  jawaban izin alarm presisi ditanya sekali per run; baris reminder + `notif_id_seq`
+  bergerak dalam satu transaksi; 6 panggilan `syncAll()` ganda di TodayScreen dihapus.
+- `8af82ff` `perf: commit bulk task edits in one transaction` - seleksi massal,
+  `duplicateTask`, `createFromTemplate`, carry over fokus dan `saveParsedExtras` kini
+  satu transaksi (dulu satu fsync per baris, dan kegagalan di tengah meninggalkan
+  salinan setengah jadi).
+- `c995b52` `fix: cut every token against the original text` - bug nyata: dua penanda
+  `!tinggi ... !rendah` membuat RangeError (offset geser setelah potongan), dan dua
+  tautan berspasi awal mengacak judul jadi "lihat ht alu". Pemotongan kini satu pass
+  maju atas teks asli.
+- `9759b9f` `perf: bound the parser on pasted input` - parser membaca paling banyak
+  4000 karakter (dipotong di batas kata; notes tetap pesan asli) dan daftar subtask
+  berhenti di 50 item.
+- `be020cd` `perf: settle search and quick add before parsing` - pencarian menunggu
+  250 ms dan query task/tag di-memo sampai filter berubah (dulu satu baca DB baru per
+  ketikan); Quick Add parse 150 ms setelah karakter terakhir, tombol simpan selalu
+  flush parse atas isi kolom saat itu.
+- `01fab77` `perf: watch today tasks and sort by one score pass` - badan TodayScreen
+  mengikuti stream `watchTasks` (tanpa spinner ulang tiap interaksi), skor urgensi
+  dihitung sekali per tugas (dulu dua kali per pasangan), `DateFormat` di-cache per
+  locale.
+
+Keputusan: **izin `INTERNET` dipertahankan** di manifest. `speech_to_text`
+membutuhkannya untuk menghubungi layanan pengenalan Android; aplikasi tetap
+offline-first karena tidak ada panggilan jaringan milik Lekas sendiri.
 
 ## Rilis v1.0.0 (27 Okt 2026)
 
