@@ -193,6 +193,10 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       await settings.set(kPendingRouteKey, '');
       if (!mounted) return;
       _pushNotificationRoute(route);
+    } catch (error, stack) {
+      // A database that fails to open must never turn the start up route
+      // into an unhandled async error.
+      debugPrint('stored route failed: $error\n$stack');
     } finally {
       _consumingRoute = false;
     }
