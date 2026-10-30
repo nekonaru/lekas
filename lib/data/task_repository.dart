@@ -209,8 +209,31 @@ class TaskRepository {
 
   /// Removes a trashed task for good. This one really deletes the row,
   /// which is what the trash screen promises to the user.
+  ///
+  /// The schema sets no `ON DELETE CASCADE`, so every child row has to go
+  /// here or it is left behind as an orphan that still joins against a task
+  /// that no longer exists.
   Future<void> deletePermanently(String id) async {
-    await (db.delete(db.tasks)..where((t) => t.id.equals(id))).go();
+    await db.transaction(() async {
+      await (db.delete(db.subtasks)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.taskTags)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.attachments)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.reminders)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.taskEvents)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.focusSessions)..where((t) => t.taskId.equals(id))).go();
+      await (db.delete(db.taskDeps)
+            ..where((t) => t.taskId.equals(id) | t.dependsOn.equals(id)))
+          .go();
+      // A group task can hold children through `parent_id`; they move to the
+      // inbox instead of dangling with a dead parent.
+      await (db.update(db.tasks)..where((t) => t.parentId.equals(id))).write(
+        const TasksCompanion(
+          parentId: Value(null),
+          inbox: Value(true),
+        ),
+      );
+      await (db.delete(db.tasks)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   Future<int> countInbox() async {
