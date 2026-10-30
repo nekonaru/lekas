@@ -82,7 +82,11 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                 title: Text(l10n.taskContainer),
                 subtitle: Text(_spaceFilter == null
                     ? l10n.allLabel
-                    : spaces.firstWhere((s) => s.id == _spaceFilter).name),
+                    : spaces
+                        .where((s) => s.id == _spaceFilter)
+                        .map((s) => s.name)
+                        .firstOrNull ??
+                    l10n.allLabel),
               ),
               ListTile(
                 leading: const Icon(Icons.folder_outlined),
