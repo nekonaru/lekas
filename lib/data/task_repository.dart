@@ -7,14 +7,30 @@ class TaskRepository {
   final AppDatabase db;
   TaskRepository(this.db);
 
+  /// Query streams already handed out, keyed by their arguments.
+  ///
+  /// drift reuses the stream behind a query, but every `watch()` call wraps
+  /// it in a new object. A `StreamBuilder` compares streams by identity, so
+  /// building a screen with `stream: repo.watchTasks(...)` used to cancel and
+  /// reopen the subscription on every rebuild: one extra query, one pass
+  /// through the waiting state (a spinner flash) for every tap in selection
+  /// mode. Returning the same instance keeps a single subscription alive for
+  /// as long as anyone listens.
+  final Map<String, Stream<List<Task>>> _watchCache = {};
+
+  Stream<List<Task>> _watch(String key, Stream<List<Task>> Function() build) =>
+      _watchCache.putIfAbsent(key, build);
+
   Stream<List<Task>> watchTasks({String? spaceId, bool includeInbox = false}) {
-    final query = db.select(db.tasks)..where((t) => t.deletedAt.isNull());
-    if (spaceId != null) {
-      query.where((t) => t.spaceId.equals(spaceId));
-    } else if (!includeInbox) {
-      query.where((t) => t.inbox.equals(false));
-    }
-    return query.watch();
+    return _watch('tasks:${spaceId ?? '*'}:$includeInbox', () {
+      final query = db.select(db.tasks)..where((t) => t.deletedAt.isNull());
+      if (spaceId != null) {
+        query.where((t) => t.spaceId.equals(spaceId));
+      } else if (!includeInbox) {
+        query.where((t) => t.inbox.equals(false));
+      }
+      return query.watch();
+    });
   }
 
   Future<List<Task>> getTasks(
@@ -194,17 +210,21 @@ class TaskRepository {
   }
 
   Stream<List<Task>> watchInbox() {
-    return (db.select(db.tasks)
-          ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))
-        .watch();
+    return _watch('inbox', () {
+      return (db.select(db.tasks)
+            ..where((t) => t.inbox.equals(true) & t.deletedAt.isNull()))
+          .watch();
+    });
   }
 
   /// Rows sitting in the trash: only the soft deleted ones, newest first.
   Stream<List<Task>> watchTrash() {
-    return (db.select(db.tasks)
-          ..where((t) => t.deletedAt.isNotNull())
-          ..orderBy([(t) => OrderingTerm.desc(t.deletedAt)]))
-        .watch();
+    return _watch('trash', () {
+      return (db.select(db.tasks)
+            ..where((t) => t.deletedAt.isNotNull())
+            ..orderBy([(t) => OrderingTerm.desc(t.deletedAt)]))
+          .watch();
+    });
   }
 
   /// Removes a trashed task for good. This one really deletes the row,

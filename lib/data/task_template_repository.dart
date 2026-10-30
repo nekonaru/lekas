@@ -29,8 +29,13 @@ class TaskTemplateRepository {
   final AppDatabase db;
   TaskTemplateRepository(this.db);
 
+  /// The same instance for the same query: `watch()` wraps drift's cached
+  /// stream in a new object per call, and a `StreamBuilder` that sees a new
+  /// object resubscribes (re-running the query) on every rebuild.
+  Stream<List<TaskTemplate>>? _cachedTemplates;
+
   Stream<List<TaskTemplate>> watchTaskTemplates() {
-    return db.select(db.taskTemplates).watch();
+    return _cachedTemplates ??= db.select(db.taskTemplates).watch();
   }
 
   Future<List<TaskTemplate>> getTaskTemplates() async {
