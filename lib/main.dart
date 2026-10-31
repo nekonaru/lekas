@@ -204,7 +204,16 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    final startup = ref.watch(appInitProvider);
+    // Start the schedule without holding the first frame behind it: opening
+    // the notification plugin, loading the time zone and reconciling a 14 day
+    // window of reminders used to delay the home screen on every launch.
+    // Every later sync checks that init has run, so the app is usable from
+    // the first frame while the schedule fills in behind it.
+    ref.watch(appInitProvider);
+    ref.listen(appInitProvider, (previous, next) {
+      final error = next.error;
+      if (error != null) debugPrint('reminder start up failed: $error');
+    });
     final onboarded = ref.watch(onboardedProvider);
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeModeProvider);
@@ -230,14 +239,7 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode.value ?? ThemeMode.system,
-      home: startup.when(
-        loading: () => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-        // A notification failure must never keep the app from opening.
-        error: (error, stack) => _Home(onboarded: onboarded),
-        data: (_) => _Home(onboarded: onboarded),
-      ),
+      home: _Home(onboarded: onboarded),
     );
   }
 }

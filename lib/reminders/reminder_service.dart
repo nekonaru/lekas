@@ -466,9 +466,28 @@ class ReminderService {
   AndroidFlutterLocalNotificationsPlugin? get _android =>
       _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
+  /// The init run in progress, shared by everybody who needs the plugin.
+  Future<void>? _initFuture;
+
   /// Initializes the plugin, notification channels and the local time zone.
-  Future<void> init() async {
-    if (_initialized) return;
+  ///
+  /// Memoized: the start up provider and the first sync can now ask at the
+  /// same moment (the home screen no longer waits for the schedule), and two
+  /// parallel runs would open the plugin and create the channels twice. A
+  /// failed run is forgotten, so the next caller tries again.
+  Future<void> init() {
+    final running = _initFuture;
+    if (running != null) return running;
+    late final Future<void> run;
+    run = _init().onError((Object error, StackTrace stack) {
+      if (identical(_initFuture, run)) _initFuture = null;
+      throw error;
+    });
+    _initFuture = run;
+    return run;
+  }
+
+  Future<void> _init() async {
     tz_data.initializeTimeZones();
     await _setLocalTimeZone();
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
