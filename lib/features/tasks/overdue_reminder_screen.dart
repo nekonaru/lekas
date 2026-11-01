@@ -44,7 +44,7 @@ class _OverdueReminderScreenState extends ConsumerState<OverdueReminderScreen> {
             itemBuilder: (context, index) {
               final task = overdue[index];
               final deadline = DateTime.fromMillisecondsSinceEpoch(task.deadline!);
-              final daysLate = today.difference(deadline).inDays;
+              final daysLate = DateUtil.calendarDaysLate(now, deadline);
 
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

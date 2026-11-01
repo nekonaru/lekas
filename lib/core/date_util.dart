@@ -25,6 +25,18 @@ class DateUtil {
     return '${formatDate(dateTime, locale)}, ${formatTime(dateTime, locale)}';
   }
 
+  /// Calendar days between the day of [deadline] and the day of [now], so a
+  /// deadline from yesterday is one day late and never zero.
+  ///
+  /// Both days are taken as UTC midnights: a local day can be 23 or 25 hours
+  /// long across a daylight saving change, which would drag a whole day
+  /// difference below a full day and print one day too few.
+  static int calendarDaysLate(DateTime now, DateTime deadline) {
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final due = DateTime.utc(deadline.year, deadline.month, deadline.day);
+    return today.difference(due).inDays;
+  }
+
   static String relativeTime(DateTime dateTime, String locale) {
     final now = DateTime.now();
     final difference = dateTime.difference(now);
