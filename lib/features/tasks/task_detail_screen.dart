@@ -51,8 +51,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 
             return Scaffold(
               appBar: AppBar(title: Text(task.title)),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // A Column of cards, subtasks and list tiles overflowed on any
+              // short screen (landscape, split screen, large fonts): the
+              // content has to be able to scroll.
+              body: ListView(
                 children: [
                   Card(
                     margin: const EdgeInsets.all(16),
@@ -69,14 +71,14 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                           if (task.notes != null && task.notes!.isNotEmpty)
                             Text(task.notes!),
                           const SizedBox(height: 12),
-                          Row(
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
                             children: [
                               _badge(task.type ?? '-'),
-                              const SizedBox(width: 8),
                               _badge(
                                 l10n.priorityBadgeLabel(_priorityLabel(task.priority)),
                               ),
-                              const SizedBox(width: 8),
                               _badge(_statusLabel(task.status)),
                             ],
                           ),
