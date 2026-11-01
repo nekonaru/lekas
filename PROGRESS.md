@@ -4,7 +4,7 @@ Sumber rancangan: `rancangan baru.md` (bagian 3, 13, 14).
 Dipakai AI untuk melanjutkan pembangunan setelah percakapan terputih.
 Centang `[x]` tiap fitur setelah: tes lulus, aplikasi berjalan, commit, dan PROGRESS.md diperbarui.
 
-Terakhir diperbarui: Sun Oct 26 2026
+Terakhir diperbarui: Sun Nov 01 2026
 
 ---
 
@@ -516,8 +516,62 @@ offline-first karena tidak ada panggilan jaringan milik Lekas sendiri.
 - Baris versi di Pengaturan memakai `appVersion` (`lib/core/constants.dart`), dijaga oleh
   `test/version_test.dart` agar selalu sama dengan `version:` di `pubspec.yaml`.
 
+## Audit, perbaikan dan kinerja (31 Okt s.d. 1 Nov 2026)
+
+Sepuluh commit setelah v1.0.0, semuanya hijau di CI Build APK:
+
+- `9b22b41` tes jalur naik skema 2 ke 3: 19 `CREATE INDEX` aman karena skema 2 tidak punya
+  indeks, data selamat, dan buka kedua kali tidak menjalankan migrasi lagi. Migrasi
+  **bukan** penyebab crash.
+- `33531e4` `main.dart` menahan kegagalan baca rute tersimpan saat start up.
+- `202c7e3` hapus permanen ikut membersihkan baris anak (subtask, tag, lampiran, pengingat,
+  event, sesi fokus, dependensi) dalam satu transaksi; anak kelompok dipindah ke inbox.
+  Skema tidak punya `ON DELETE CASCADE`, jadi sebelumnya baris yatim tertinggal dan tetap
+  ikut join ke tugas yang sudah tidak ada.
+- `4129002` layar filter tak lagi crash (`StateError`) saat wadah tugas dihapus selama
+  filternya aktif.
+- `fca9ed4` `watchTasks`/`watchTrash`/`watchTaskTemplates` kini memberi satu stream yang
+  sama per kueri. StreamBuilder membandingkan identitas objek, jadi tiap rebuild dulu
+  membatalkan dan membuka ulang langganan: kueri SQL dijalankan ulang dan frame spinner
+  berkedip di tiap tap mode pilih-banyak.
+- `0e56598` layar utama tampil tanpa menunggu init notifikasi + sinkron 14 hari (dulu
+  selalu diawali spinner). Karena provider start up dan sync pertama tidak lagi saling
+  menunggu, `ReminderService.init()` di-memoisasi jadi satu run bersama dan run yang gagal
+  dilupakan agar pemanggil berikutnya mencoba ulang.
+- `4c20ad1` subjudul daftar tugas dulu mencetak stempel waktu penuh sampai milidetik
+  (`DateTime.toString` tidak pernah memuat karakter `T`, jadi `split('T')` tak memotong).
+- `5bd429a` layar detail tugas kini `ListView`: dulu `Column` berisi kartu, subtask dan
+  tujuh baris menu meluap 105 piksel di layar pendek (landscape, split screen, huruf
+  besar). Baris badge ringkasan pindah ke `Wrap` agar label panjang tidak terdorong keluar.
+- `e7e4ef7` daftar Hari Ini kini `ListView.builder` malas. `TaskSection` dipecah jadi
+  `TaskSectionHeader` dan `TaskCard`, sehingga hanya kartu yang terlihat yang dibangun;
+  callback tap/panjang-tekan dikeluarkan dari `build` agar rebuild tidak membuat closure
+  per baris. Ditutupi `test/today_list_test.dart` (urutan bagian, pilih-banyak, buka detail).
+- `bc2e5a5` keterlambatan dihitung per hari kalender lewat `DateUtil.calendarDaysLate`
+  (kedua hari dibaca sebagai tengah malam UTC, aman dari hari 23/25 jam), jadi tugas tempo
+  kemarin menampilkan 1 hari telat, bukan 0.
+
+Ukuran APK dari `flutter build apk --release --analyze-size` (arm64): 21 MB per ABI,
+didominasi engine Flutter; total kode Dart 8 MB terkompresi dan kode aplikasi sendiri
+hanya 793 KB; ikon sudah tree-shaken (1,6 MB menjadi 10 KB); `classes.dex` 544 KB.
+Keputusan: **R8/minify tidak dinyalakan** karena potongannya hanya sekitar 200-300 KB
+sedangkan risikonya crash baru tanpa perangkat uji. `--split-debug-info` terbukti
+menghemat 1,1 MB tetapi mengeluarkan simbol Dart dari APK, sehingga ditunda sampai
+masalah crash force-close selesai didiagnosis.
+
+Kondisi: `flutter analyze` 0 issue, `flutter test` 409 tes lulus.
+
 ## Masalah terbuka (perlu native Android / Flutter)
 
+- **Aplikasi force close saat dibuka di HP pengguna** (laporan 31 Okt 2026, mencurigakan
+  setelah memasang APK baru di atas v1.0.0). Sudah dibuktikan bersih dari sisi Dart:
+  `LekasApp` membangun frame pertama tanpa lempar (`test/app_startup_test.dart`), jalur
+  migrasi skema 2 ke 3 aman, kode native startup defensif, dan semua penerima notifikasi di
+  manifest ada dan tidak ganda. Yang masih dibutuhkan: logcat perangkat
+  (`adb logcat -d | findstr /i "FATAL AndroidRuntime lekas"`) atau stack trace merah dari
+  `flutter run`, plus info apakah v1.0.0 pernah terbuka normal di HP itu dan APK yang crash
+  berasal dari rilis GitHub atau dari `flutter run` lokal. `app-debug.apk` (163 MB) sudah
+  dibangun untuk mereproduksi.
 - Uji manual pengingat di HP fisik (reboot, hemat baterai, ganti zona waktu, izin ditolak)
 - Uji Quick Add suara di HP fisik: izin mikrofon, pengenalan suara bawaan Android, dan hasil
   ucapan yang salah menulis angka
