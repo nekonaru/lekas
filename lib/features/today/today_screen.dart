@@ -16,6 +16,30 @@ import '../tasks/task_form_sheet.dart';
 import '../tasks/search_filter_screen.dart';
 import '../inbox/inbox_screen.dart';
 
+/// One row of the Today list, so the body can be a lazy ListView.builder:
+/// the warning card, a section title, or a single task.
+sealed class _Entry {
+  const _Entry();
+}
+
+class _WarningEntry extends _Entry {
+  const _WarningEntry(this.warning);
+
+  final Widget warning;
+}
+
+class _TitleEntry extends _Entry {
+  const _TitleEntry(this.section);
+
+  final TodaySection section;
+}
+
+class _TaskEntry extends _Entry {
+  const _TaskEntry(this.task);
+
+  final Task task;
+}
+
 class TodayScreen extends ConsumerStatefulWidget {
   const TodayScreen({super.key});
 
@@ -42,6 +66,20 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       if (!_selection.remove(id)) _selection.add(id);
     });
   }
+
+  /// Tap on a card: open the task, or toggle it while multi select is on.
+  /// Hoisted so a rebuild of the list does not allocate a closure per row.
+  void _onTaskTap(Task task) {
+    if (_selection.isEmpty) {
+      _navigateToDetail(context, task.id);
+    } else {
+      _toggleSelection(task.id);
+    }
+  }
+
+  void _onTaskLongPress(Task task) => _toggleSelection(task.id);
+
+  bool _isSelected(Task task) => _selection.contains(task.id);
 
   void _clearSelection() {
     setState(_selection.clear);
@@ -534,35 +572,55 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           final warning = _warningCard(l10n, allTasks, now);
 
-          return ListView(
-            children: [
-              ?warning,
-              for (final section in const [
-                TodaySection.pinned,
-                TodaySection.focus,
-                TodaySection.overdue,
-                TodaySection.doing,
-                TodaySection.today,
-                TodaySection.thisWeek,
-                TodaySection.upcoming,
-                TodaySection.waiting,
-                TodaySection.someday,
-              ])
-                if (sections[section]?.isNotEmpty ?? false)
-                  TaskSection(
+          // One flat row list: the warning, then a title and one entry per
+          // task of every non empty section. A lazy ListView.builder walks
+          // this, so a long list only lays out the cards on screen instead
+          // of building every one of them on each rebuild.
+          final entries = <_Entry>[
+            if (warning != null) _WarningEntry(warning),
+            for (final section in const [
+              TodaySection.pinned,
+              TodaySection.focus,
+              TodaySection.overdue,
+              TodaySection.doing,
+              TodaySection.today,
+              TodaySection.thisWeek,
+              TodaySection.upcoming,
+              TodaySection.waiting,
+              TodaySection.someday,
+            ])
+              if (sections[section]?.isNotEmpty ?? false) ...[
+                _TitleEntry(section),
+                for (final task in sections[section]!) _TaskEntry(task),
+              ],
+          ];
+
+          return ListView.builder(
+            itemCount: entries.length,
+            itemBuilder: (context, index) {
+              final entry = entries[index];
+              return switch (entry) {
+                _WarningEntry(:final warning) => KeyedSubtree(
+                    key: const ValueKey('today-warning'),
+                    child: warning,
+                  ),
+                _TitleEntry(:final section) => TaskSectionHeader(
+                    key: ValueKey('today-title:$section'),
                     section: section,
-                    tasks: sections[section]!,
+                  ),
+                _TaskEntry(:final task) => TaskCard(
+                    key: ValueKey('today-task:${task.id}'),
+                    task: task,
                     now: now,
                     locale: locale,
-                    onTaskTap: (task) => _selection.isEmpty
-                        ? _navigateToDetail(context, task.id)
-                        : _toggleSelection(task.id),
+                    selected: _isSelected(task),
+                    onTaskTap: _onTaskTap,
                     onTaskDone: _completeOne,
                     onTaskSnooze: _openSnooze,
-                    onTaskLongPress: (task) => _toggleSelection(task.id),
-                    isSelected: (task) => _selection.contains(task.id),
+                    onTaskLongPress: _onTaskLongPress,
                   ),
-            ],
+              };
+            },
           );
         },
       ),
