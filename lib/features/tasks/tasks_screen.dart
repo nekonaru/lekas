@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/date_util.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -21,6 +22,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final repository = ref.watch(taskRepositoryProvider);
+    final locale = ref.watch(localeProvider).valueOrNull?.languageCode ?? 'id';
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.taskListTitle)),
@@ -71,13 +73,16 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                         )
                       : null,
                 ),
+                // `DateTime.toString()` never contains a "T" (only
+                // toIso8601String does), so splitting on it printed the whole
+                // timestamp with milliseconds. Show the date like every other
+                // screen does.
                 subtitle: task.deadline == null
                     ? null
-                    : Text(DateTime.fromMillisecondsSinceEpoch(task.deadline!)
-                        .toLocal()
-                        .toString()
-                        .split('T')
-                        .first),
+                    : Text(DateUtil.formatDate(
+                        DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+                        locale,
+                      )),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
