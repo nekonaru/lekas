@@ -330,7 +330,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
           ? const TimeOfDay(hour: 23, minute: 59)
           : TimeOfDay.fromDateTime(_deadline!),
     );
-    if (time == null) return;
+    if (time == null || !mounted) return;
     setState(() {
       _deadlineTouched = true;
       _deadline =

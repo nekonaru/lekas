@@ -72,6 +72,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     if (selected == null) return;
     await ref.read(settingsRepositoryProvider).setLanguage(selected);
+    if (!mounted) return;
     ref.invalidate(localeProvider);
     setState(() => _language = selected);
   }
@@ -93,6 +94,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     if (selected == null || selected == current) return;
     await ref.read(settingsRepositoryProvider).set('theme_mode', selected.name);
+    if (!mounted) return;
     ref.invalidate(themeModeProvider);
     setState(() => _themeMode = selected);
   }
