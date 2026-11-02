@@ -2,6 +2,29 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.0.1 - Stability and speed fixes
+
+### Optimizations
+
+- **Home screen first.** The app now draws the home screen immediately and fills the reminder schedule behind it, instead of opening on a spinner every time.
+- **Only visible cards built.** The Today list lays out one card at a time, so a long list stays smooth and every tap no longer rebuilds the whole screen.
+- **One stream per query.** Every watch call reuses a single query stream, so the refresh spinner stops flickering and the database stops re-querying on each rebuild.
+
+### Bug fixes
+
+- **No crash after an update.** The reboot and app update receiver now logs a failed reminder reschedule instead of taking the whole app down with it.
+- **Deleted space cannot crash the filter.** Searching while the filtered space is deleted keeps the list open instead of throwing.
+- **Permanent delete cleans up.** Deleting a task for good also removes its subtasks, tags, attachments, reminders and other child rows.
+- **Readable dates in the task list.** The subtitle shows a formatted date instead of a raw timestamp down to the milliseconds.
+- **Task detail scrolls.** The detail screen scrolls on short screens and in landscape, and long badges wrap instead of running off the edge.
+- **Late counts whole days.** A task due yesterday reads "1 day late" instead of "0".
+- **Start up survives a bad stored route.** A route that cannot be read at launch falls back to the home screen instead of crashing.
+- **Late writes cannot touch a closed screen.** Three pickers in settings and Quick Add now stop when the screen is already gone.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.0.0 - First public release
 
 ### New features
