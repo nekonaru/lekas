@@ -4,7 +4,7 @@ Sumber rancangan: `rancangan baru.md` (bagian 3, 13, 14).
 Dipakai AI untuk melanjutkan pembangunan setelah percakapan terputih.
 Centang `[x]` tiap fitur setelah: tes lulus, aplikasi berjalan, commit, dan PROGRESS.md diperbarui.
 
-Terakhir diperbarui: Sun Nov 01 2026
+Terakhir diperbarui: Tue Nov 03 2026
 
 ---
 
@@ -518,7 +518,7 @@ offline-first karena tidak ada panggilan jaringan milik Lekas sendiri.
 
 ## Audit, perbaikan dan kinerja (31 Okt s.d. 1 Nov 2026)
 
-Sepuluh commit setelah v1.0.0, semuanya hijau di CI Build APK:
+Dua belas commit setelah v1.0.0, semuanya hijau di CI Build APK:
 
 - `9b22b41` tes jalur naik skema 2 ke 3: 19 `CREATE INDEX` aman karena skema 2 tidak punya
   indeks, data selamat, dan buka kedua kali tidak menjalankan migrasi lagi. Migrasi
@@ -550,6 +550,18 @@ Sepuluh commit setelah v1.0.0, semuanya hijau di CI Build APK:
 - `bc2e5a5` keterlambatan dihitung per hari kalender lewat `DateUtil.calendarDaysLate`
   (kedua hari dibaca sebagai tengah malam UTC, aman dari hari 23/25 jam), jadi tugas tempo
   kemarin menampilkan 1 hari telat, bukan 0.
+- `8dcb0bc` `BootReceiver.onReceive` kini berada dalam `try/catch` yang mencatat log dan
+  menyelesaikan broadcast: penerima ini jalan tepat setelah pemasangan APK
+  (`MY_PACKAGE_REPLACED`) di proses aplikasi sendiri, dan kegagalan apa pun yang lolos
+  (termasuk `Error` saat pustaka native gagal dimuat) mematikan seluruh proses, persis
+  gejala force close. Timer pengawas dipasang paling akhir sehingga tidak ada jalur yang
+  bisa menyelesaikan broadcast dua kali. Dugaan "entry point ganda" (konstruktor
+  `FlutterEngine` menjalankan `main()` sebelum `reminderBoot`) **dibuktikan salah** dari
+  bytecode embedding: konstruktor hanya membuat `DartExecutor` tanpa menjalankan Dart.
+- `69058f2` tiga `setState` dipasangi cek `mounted` setelah `await` (pemilih waktu di
+  Quick Add, pemilih bahasa dan tema gelap di Pengaturan) mengikuti pola method
+  tetangganya, sehingga tulis lambat setelah layar dilepas tidak lagi memanggil
+  `setState` pada state yang sudah dibuang.
 
 Ukuran APK dari `flutter build apk --release --analyze-size` (arm64): 21 MB per ABI,
 didominasi engine Flutter; total kode Dart 8 MB terkompresi dan kode aplikasi sendiri
