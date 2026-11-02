@@ -588,3 +588,17 @@ Kondisi: `flutter analyze` 0 issue, `flutter test` 409 tes lulus.
 - Uji Quick Add suara di HP fisik: izin mikrofon, pengenalan suara bawaan Android, dan hasil
   ucapan yang salah menulis angka
 - Isi digest terlambat dan ringkasan pagi, malam serta minggu diperbarui saat sync (buka app, boot, ubah tugas), bukan tepat pada jamnya
+
+## Rilis v1.0.1 (3 Nov 2026)
+
+- Versi `1.0.1+2` (pubspec) dan `appVersion` di `lib/core/constants.dart` sama sama naik;
+  `version_test` menahan keduanya tetap sinkron.
+- Percobaan rilis pertama gagal di langkah Test: `appVersion` belum ikut dinaikkan.
+  Ternyata workflow **Build APK hanya build** (tanpa analyze dan tanpa tes), sedangkan
+  workflow **Release** yang menjalankan analyze dan tes. Rilis tidak pernah terbit pada
+  percobaan itu, tag lama dihapus lalu tag `v1.0.1` dipasang ulang di `86f38a4` yang hijau.
+- Tag anotasi `v1.0.1` pada `86f38a4` (CI hijau), pesan `Lekas v1.0.1 - Stability and speed fixes`.
+- Workflow Release menerbitkan rilis dengan dua APK split (`app-arm64-v8a-release.apk`
+  dan `app-armeabi-v7a-release.apk`) dan catatan rilis dua bahasa yang disusun otomatis
+  dari `CHANGELOG.md` dan `CHANGELOG.id.md`: EN dulu, pemisah persis `<br>` baris kosong
+  `---` baris kosong `<br>`, lalu ID.
