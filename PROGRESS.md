@@ -602,3 +602,34 @@ Kondisi: `flutter analyze` 0 issue, `flutter test` 409 tes lulus.
   dan `app-armeabi-v7a-release.apk`) dan catatan rilis dua bahasa yang disusun otomatis
   dari `CHANGELOG.md` dan `CHANGELOG.id.md`: EN dulu, pemisah persis `<br>` baris kosong
   `---` baris kosong `<br>`, lalu ID.
+
+## Sambungan layar jadi (3 Nov 2026)
+
+Survei menemukan 17 layar dengan logika nyata tetapi tanpa pintu masuk sama
+sekali (tidak direferensikan di mana pun). Semua kini terjangkau:
+
+- **Drawer**: Saring tersimpan, Statistik dan rekap semester, Tautan cepat
+  global, Sampah (label baru `trashTitle` di kedua berkas ARB).
+- **Pengaturan**: Tugas berulang, Deteksi duplikat, Cadangan otomatis, Impor
+  dan gabung, Ekspor gambar dan PDF, Ganti semester, Widget lanjutan, Pintasan
+  ikon, Mode demo.
+- **Wadah**: tombol AppBar pembuat wadah non-matkul; detail wadah mendapat
+  Prediksi nilai (butuh `spaceId`, jadi bukan layar global).
+- **Detail tugas**: Subtugas (edit/hapus), Lampiran, Target pribadi.
+
+Dua bug laten ditemukan oleh test sambungan dan diperbaiki lebih dulu:
+
+1. `_closeDrawer` memakai `Scaffold.maybeOf(context)` dengan konteks yang
+   berada DI ATAS Scaffold yang dibangunnya, sehingga selalu `null` dan drawer
+   tidak pernah tertutup: layar yang dibuka dari drawer meninggalkan drawer
+   terbuka di belakangnya dan tombol kembali mendarat kembali ke drawer terbuka.
+   Kini memakai `GlobalKey<ScaffoldState>`.
+2. `TrashScreen` mengembalikan daftar telanjang tanpa Scaffold, jadi
+   tanpa AppBar dan tanpa tombol kembali yang terlihat.
+
+Test baru `test/navigation_wiring_test.dart` membuka setiap entri menu dan
+menuntut layar yang benar muncul (4 test; total 413 tes lulus). Catatan harness:
+drawer dibangun oleh Scaffold hanya saat dibuka pertama kali, tab tanpa
+StreamBuilder di akhir test (timer cleanup drift nol durasi menyebabkan
+gagal dan menggantung runner), dan `AndroidFlutterLocalNotificationsPlugin.registerWith()`
+wajib karena kartu peringatan layar Hari Ini menanya izin notifikasi.
