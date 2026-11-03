@@ -30,6 +30,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   int _i = 0;
   late final List<Widget> _pages;
 
+  /// The drawer lives inside this state's own Scaffold, and a lookup with
+  /// [Scaffold.maybeOf] from this context walks above it, where there is no
+  /// Scaffold to find: the old check always came back null and the drawer
+  /// stayed open underneath every screen pushed from it. The key reaches the
+  /// Scaffold state directly instead.
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -42,10 +49,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ];
   }
 
-  /// Closes the navigation drawer when it is open, so a push does not pop
-  /// the shell itself.
+  /// Closes the navigation drawer when it is open, so a push does not leave
+  /// the drawer sitting behind the new screen.
   void _closeDrawer() {
-    final state = Scaffold.maybeOf(context);
+    final state = _scaffoldKey.currentState;
     if (state == null) return;
     if (state.isDrawerOpen || state.isEndDrawerOpen) {
       Navigator.pop(context);
@@ -124,6 +131,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ];
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(labels[_i]),
         actions: [
