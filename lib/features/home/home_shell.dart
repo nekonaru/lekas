@@ -9,8 +9,12 @@ import '../settings/diagnostic_screen.dart';
 import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/quick_add_suara_screen.dart';
+import '../tasks/saved_filter_screen.dart';
 import '../tasks/search_filter_screen.dart';
+import '../tasks/statistik_rekap_screen.dart';
+import '../tasks/tautan_cepat_screen.dart';
 import '../tasks/task_template_screen.dart';
+import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../inbox/inbox_screen.dart';
@@ -171,6 +175,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             onTap: () => _push(const SearchFilterScreen()),
           ),
           ListTile(
+            leading: const Icon(Icons.bookmark_border),
+            title: Text(l10n.savedViewsTitle),
+            onTap: () => _push(const SavedFilterScreen()),
+          ),
+          ListTile(
             leading: const Icon(Icons.description_outlined),
             title: Text(l10n.taskTemplatesTitle),
             onTap: () => _push(const TaskTemplateScreen()),
@@ -184,6 +193,16 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             leading: const Icon(Icons.warning),
             title: Text(l10n.overdueTasksMenuLabel),
             onTap: () => _push(const OverdueReminderScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.bar_chart),
+            title: Text(l10n.semesterStatsTitle),
+            onTap: () => _push(const StatistikRekapScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.link),
+            title: Text(l10n.globalQuickLinksTitle),
+            onTap: () => _push(const TautanCepatScreen()),
           ),
           const Divider(),
           ListTile(
@@ -200,6 +219,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             leading: const Icon(Icons.notifications),
             title: Text(l10n.checkReminder),
             onTap: () => _push(const DiagnosticScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_outline),
+            title: Text(l10n.trashTitle),
+            onTap: () => _push(const TrashScreen()),
           ),
         ],
       ),

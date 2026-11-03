@@ -687,6 +687,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createTasks => 'Create Tasks';
 
   @override
+  String get trashTitle => 'Trash';
+
+  @override
   String get emptyTrash => 'Trash is empty.';
 
   @override

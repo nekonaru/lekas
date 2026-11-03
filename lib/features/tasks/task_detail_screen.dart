@@ -6,9 +6,12 @@ import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../domain/focus.dart';
 import '../../l10n/app_localizations.dart';
+import 'attachment_screen.dart';
 import 'deadline_history_screen.dart';
 import 'submission_screen.dart';
+import 'subtask_screen.dart';
 import 'task_form_sheet.dart';
+import 'target_pribadi_screen.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -188,6 +191,45 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => SubmissionScreen(taskId: task.id),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.check_box_outlined),
+                    title: Text(l10n.subtasksTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SubtaskScreen(taskId: task.id),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.attach_file),
+                    title: Text(l10n.attachmentsTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AttachmentScreen(taskId: task.id),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.flag_outlined),
+                    title: Text(l10n.personalTargetTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => TargetPribadiScreen(taskId: task.id),
                         ),
                       );
                     },

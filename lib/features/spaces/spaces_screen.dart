@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
+import '../tasks/wadah_non_matkul_screen.dart';
 import 'space_detail_screen.dart';
 
 class SpacesScreen extends ConsumerStatefulWidget {
@@ -38,6 +39,18 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
             icon: const Icon(Icons.add),
             onPressed: () => _showAddDialog(context),
             tooltip: l10n.addSpace,
+          ),
+          IconButton(
+            icon: const Icon(Icons.category_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const WadahNonMatkulScreen(),
+                ),
+              );
+            },
+            tooltip: l10n.nonCourseSpaceTitle,
           ),
         ],
       ),

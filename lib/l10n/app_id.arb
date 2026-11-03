@@ -224,6 +224,7 @@
   "tasksWillBeCreated": "{count} tugas akan dibuat",
   "@tasksWillBeCreated": { "placeholders": { "count": { "type": "int" } } },
   "createTasks": "Buat Tugas",
+  "trashTitle": "Sampah",
   "emptyTrash": "Sampah kosong.",
   "deletedAtLabel": "Dihapus: {date}",
   "restoreLabel": "Pulihkan",

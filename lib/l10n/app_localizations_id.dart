@@ -688,6 +688,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get createTasks => 'Buat Tugas';
 
   @override
+  String get trashTitle => 'Sampah';
+
+  @override
   String get emptyTrash => 'Sampah kosong.';
 
   @override

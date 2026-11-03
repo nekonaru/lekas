@@ -224,6 +224,7 @@
   "tasksWillBeCreated": "{count} tasks will be created",
   "@tasksWillBeCreated": { "placeholders": { "count": { "type": "int" } } },
   "createTasks": "Create Tasks",
+  "trashTitle": "Trash",
   "emptyTrash": "Trash is empty.",
   "deletedAtLabel": "Deleted: {date}",
   "restoreLabel": "Restore",

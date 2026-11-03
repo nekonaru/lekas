@@ -1358,6 +1358,12 @@ abstract class AppLocalizations {
   /// **'Buat Tugas'**
   String get createTasks;
 
+  /// No description provided for @trashTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sampah'**
+  String get trashTitle;
+
   /// No description provided for @emptyTrash.
   ///
   /// In id, this message translates to:

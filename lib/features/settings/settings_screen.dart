@@ -6,6 +6,15 @@ import '../../l10n/app_localizations.dart';
 import '../../reminders/reminder_service.dart';
 import 'backup_screen.dart';
 import 'diagnostic_screen.dart';
+import '../tasks/backup_auto_screen.dart';
+import '../tasks/duplicate_detection_screen.dart';
+import '../tasks/export_gambar_pdf_screen.dart';
+import '../tasks/ganti_semester_screen.dart';
+import '../tasks/import_merge_screen.dart';
+import '../tasks/mode_demo_screen.dart';
+import '../tasks/pintasan_ikon_screen.dart';
+import '../tasks/tugas_berulang_screen.dart';
+import '../tasks/widget_lanjutan_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -259,6 +268,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.checkReminder),
             trailing: const Icon(Icons.notifications),
             onTap: () => _push(const DiagnosticScreen()),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.repeat),
+            title: Text(l10n.simpleRecurringTasksTitle),
+            onTap: () => _push(const TugasBerulangScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.copy_all_outlined),
+            title: Text(l10n.duplicateDetectionTitle),
+            onTap: () => _push(const DuplicateDetectionScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.backup_outlined),
+            title: Text(l10n.autoBackupTitle),
+            onTap: () => _push(const BackupAutoScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.merge_type),
+            title: Text(l10n.mergeImportTitle),
+            onTap: () => _push(const ImportMergeScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.picture_as_pdf_outlined),
+            title: Text(l10n.exportImagePdfTitle),
+            onTap: () => _push(const ExportGambarPDFScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month),
+            title: Text(l10n.changeSemesterTitle),
+            onTap: () => _push(const GantiSemesterScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.widgets_outlined),
+            title: Text(l10n.advancedWidgetsTitle),
+            onTap: () => _push(const WidgetLanjutanScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.shortcut),
+            title: Text(l10n.iconShortcutsTitle),
+            onTap: () => _push(const PintasanIkonScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.play_circle_outline),
+            title: Text(l10n.demoModeTitle),
+            onTap: () => _push(const ModeDemoScreen()),
           ),
           const Divider(),
           ListTile(

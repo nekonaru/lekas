@@ -7,6 +7,7 @@ import '../tasks/attendance_screen.dart';
 import '../tasks/catatan_pertemuan_screen.dart';
 import '../tasks/daftar_bawaan_screen.dart';
 import '../tasks/kontak_kelas_screen.dart';
+import '../tasks/prediksi_nilai_screen.dart';
 import '../tasks/tasks_screen.dart';
 import '../tasks/weight_component_screen.dart';
 import 'class_schedule_screen.dart';
@@ -103,6 +104,12 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _push(WeightComponentScreen(
                     spaceId: space.id, spaceName: space.name)),
+              ),
+              ListTile(
+                title: Text(l10n.gradePredictionTitle),
+                leading: const Icon(Icons.grade_outlined),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _push(PrediksiNilaiScreen(spaceId: space.id)),
               ),
               ListTile(
                 title: Text(l10n.meetingNotesTitle),
