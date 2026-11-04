@@ -289,11 +289,14 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  final status = task.status == 'done' ? 'todo' : 'done';
-                  repo.markDone(widget.taskId,
-                      completedAt: status == 'done'
-                          ? DateTime.now().millisecondsSinceEpoch
-                          : null);
+                  // markDone always writes status "done", so the restore
+                  // icon has to ask for the reopen explicitly.
+                  if (task.status == 'done') {
+                    repo.reopenTask(widget.taskId);
+                  } else {
+                    repo.markDone(widget.taskId,
+                        completedAt: DateTime.now().millisecondsSinceEpoch);
+                  }
                   Navigator.pop(context);
                 },
                 tooltip: task.status == 'done' ? l10n.reopenTooltip : l10n.markDoneTooltip,
