@@ -17,6 +17,7 @@ import 'package:lekas/features/spaces/spaces_screen.dart';
 import 'package:lekas/features/tasks/attachment_screen.dart';
 import 'package:lekas/features/tasks/backup_auto_screen.dart';
 import 'package:lekas/features/tasks/duplicate_detection_screen.dart';
+import 'package:lekas/features/tasks/dependensi_tugas_screen.dart';
 import 'package:lekas/features/tasks/export_gambar_pdf_screen.dart';
 import 'package:lekas/features/tasks/ganti_semester_screen.dart';
 import 'package:lekas/features/tasks/import_merge_screen.dart';
@@ -313,6 +314,7 @@ void main() {
     final detailTools = <String, Type>{
       'Subtasks': SubtaskScreen,
       'Attachments': AttachmentScreen,
+      'Task Dependencies': DependensiTugasScreen,
       'Personal Target': TargetPribadiScreen,
     };
     for (final entry in detailTools.entries) {

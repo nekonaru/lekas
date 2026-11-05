@@ -8,6 +8,7 @@ import '../../domain/focus.dart';
 import '../../l10n/app_localizations.dart';
 import 'attachment_screen.dart';
 import 'deadline_history_screen.dart';
+import 'dependensi_tugas_screen.dart';
 import 'submission_screen.dart';
 import 'subtask_screen.dart';
 import 'task_form_sheet.dart';
@@ -217,6 +218,20 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => AttachmentScreen(taskId: task.id),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.link),
+                    title: Text(l10n.taskDependenciesTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              DependensiTugasScreen(taskId: task.id),
                         ),
                       );
                     },

@@ -282,6 +282,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get taskDependenciesBody => 'Tugas yang menunggu tugas lain selesai.';
 
   @override
+  String get noDependenciesYet => 'Belum ada prasyarat.';
+
+  @override
+  String get addPrerequisiteLabel => 'Tambah prasyarat';
+
+  @override
+  String get searchTaskLabel => 'Cari tugas';
+
+  @override
+  String get noOtherTasks => 'Belum ada tugas lain.';
+
+  @override
+  String get dependencyCycleError =>
+      'Itu akan membuat lingkaran. Pilih tugas lain.';
+
+  @override
   String get importScheduleOcrTitle => 'Impor Jadwal dari Tangkapan Layar';
 
   @override

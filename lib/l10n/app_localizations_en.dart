@@ -281,6 +281,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskDependenciesBody => 'Tasks waiting for other tasks to finish.';
 
   @override
+  String get noDependenciesYet => 'No prerequisites yet.';
+
+  @override
+  String get addPrerequisiteLabel => 'Add prerequisite';
+
+  @override
+  String get searchTaskLabel => 'Search tasks';
+
+  @override
+  String get noOtherTasks => 'No other tasks yet.';
+
+  @override
+  String get dependencyCycleError =>
+      'That would create a loop. Pick a different task.';
+
+  @override
   String get importScheduleOcrTitle => 'Import Schedule from Screenshot';
 
   @override

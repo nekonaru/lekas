@@ -602,6 +602,36 @@ abstract class AppLocalizations {
   /// **'Tugas yang menunggu tugas lain selesai.'**
   String get taskDependenciesBody;
 
+  /// No description provided for @noDependenciesYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada prasyarat.'**
+  String get noDependenciesYet;
+
+  /// No description provided for @addPrerequisiteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah prasyarat'**
+  String get addPrerequisiteLabel;
+
+  /// No description provided for @searchTaskLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari tugas'**
+  String get searchTaskLabel;
+
+  /// No description provided for @noOtherTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tugas lain.'**
+  String get noOtherTasks;
+
+  /// No description provided for @dependencyCycleError.
+  ///
+  /// In id, this message translates to:
+  /// **'Itu akan membuat lingkaran. Pilih tugas lain.'**
+  String get dependencyCycleError;
+
   /// No description provided for @importScheduleOcrTitle.
   ///
   /// In id, this message translates to:
