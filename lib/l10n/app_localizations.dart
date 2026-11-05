@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Papan klip kosong. Salin teks dulu.'**
   String get clipboardEmpty;
 
+  /// No description provided for @repeatLastTask.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi tugas terakhir'**
+  String get repeatLastTask;
+
   /// No description provided for @emptyToday.
   ///
   /// In id, this message translates to:

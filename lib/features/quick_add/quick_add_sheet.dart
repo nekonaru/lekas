@@ -50,6 +50,13 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   bool _typeTouched = false;
   bool _saving = false;
 
+  /// Repeat from the last saved task (design section 7.16): the source
+  /// task, the clock time it carried, and whether the "Ulangi" chip has
+  /// anything at all to copy.
+  Task? _latest;
+  TimeOfDay? _repeatTime;
+  bool _hasRepeatSource = false;
+
   /// The full parse result behind the extra chips of design section 7.15,
   /// and the chips the user has already dismissed for this text.
   ParsedTask? _parsed;
@@ -100,10 +107,18 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
         'aliases': aliases.join(','),
       });
     }
+    // Design section 7.16: the chip is only offered when the newest task
+    // actually carries a space, a type or a deadline time to copy.
+    final latest = await ref.read(taskRepositoryProvider).getLatestTask();
     if (!mounted) return;
     setState(() {
       _spaces = loaded;
       _parser = ParserService.forSpaces(loaded);
+      _latest = latest;
+      _hasRepeatSource = latest != null &&
+          (latest.spaceId != null ||
+              latest.type != null ||
+              latest.deadline != null);
     });
     _reparse();
   }
@@ -128,7 +143,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
         _title = null;
         _parsed = null;
         _dismissed.clear();
-        if (!_deadlineTouched) _deadline = null;
+        if (!_deadlineTouched) _deadline = _repeatDeadline(null);
         if (!_spaceTouched) {
           _spaceId = null;
           _spaceName = null;
@@ -145,7 +160,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     setState(() {
       _parsed = parsed;
       _title = parsed.title;
-      if (!_deadlineTouched) _deadline = parsed.deadline;
+      if (!_deadlineTouched) _deadline = _repeatDeadline(parsed.deadline);
       if (!_spaceTouched) {
         _spaceId = parsed.spaceId;
         _spaceName = _nameOf(parsed.spaceId);
@@ -349,6 +364,47 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     }
 
     return chips;
+  }
+
+  /// The clock time copied from the last task (design section 7.16)
+  /// applied to [deadline]: the date still comes from the parser, only
+  /// the hour and minute come from the previous task. Without a parsed
+  /// date there is nothing to attach the time to yet, so the deadline
+  /// stays empty until the user types one.
+  DateTime? _repeatDeadline(DateTime? deadline) {
+    final time = _repeatTime;
+    if (time == null) return deadline;
+    if (deadline == null) return null;
+    return DateTime(deadline.year, deadline.month, deadline.day, time.hour,
+        time.minute);
+  }
+
+  /// Copies the space, type and deadline time of the last saved task
+  /// (design section 7.16), useful when recording several tasks of the
+  /// same course. The values are marked as touched so the parser does not
+  /// overwrite them while the user keeps typing.
+  void _repeatLast() {
+    final latest = _latest;
+    if (latest == null || !mounted) return;
+    setState(() {
+      final name = _nameOf(latest.spaceId);
+      if (latest.spaceId != null && name != null) {
+        _spaceTouched = true;
+        _spaceId = latest.spaceId;
+        _spaceName = name;
+      }
+      if (latest.type != null) {
+        _typeTouched = true;
+        _type = latest.type;
+      }
+      if (latest.deadline != null) {
+        final previous =
+            DateTime.fromMillisecondsSinceEpoch(latest.deadline!);
+        _repeatTime = TimeOfDay(hour: previous.hour, minute: previous.minute);
+        _deadline = _repeatDeadline(_deadline ?? _parsed?.deadline);
+      }
+    });
+    _reparseNow();
   }
 
   Future<void> _pickDeadline() async {
@@ -570,6 +626,14 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
                 selected: _isGroup,
                 onSelected: (value) => setState(() => _isGroup = value),
               ),
+              // Design section 7.16: only offered when the last task has
+              // a space, type or deadline time worth copying.
+              if (_hasRepeatSource)
+                ActionChip(
+                  avatar: const Icon(Icons.repeat, size: 18),
+                  label: Text(l10n.repeatLastTask),
+                  onPressed: _repeatLast,
+                ),
               ..._extraChips(l10n),
             ],
           ),

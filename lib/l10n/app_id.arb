@@ -10,6 +10,7 @@
   "quickAddHint": "Tambah tugas cepat...",
   "pasteAction": "Tempel",
   "clipboardEmpty": "Papan klip kosong. Salin teks dulu.",
+  "repeatLastTask": "Ulangi tugas terakhir",
   "emptyToday": "Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?",
   "undo": "Urungkan",
   "done": "Selesai",

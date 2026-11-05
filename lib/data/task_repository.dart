@@ -65,6 +65,18 @@ class TaskRepository {
     return (db.select(db.tasks)..where((t) => t.id.equals(id))).getSingle();
   }
 
+  /// The most recently created task that is still in the app (design
+  /// section 7.16): the source for "repeat space, type and deadline time".
+  /// Inbox and completed tasks count, they are just as recent as the rest.
+  Future<Task?> getLatestTask() async {
+    final query = db.select(db.tasks)
+      ..where((t) => t.deletedAt.isNull())
+      ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+      ..limit(1);
+    final rows = await query.get();
+    return rows.isEmpty ? null : rows.first;
+  }
+
   Future<void> insertTask(Task task) async {
     await db.into(db.tasks).insert(task);
   }

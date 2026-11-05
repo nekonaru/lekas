@@ -39,6 +39,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clipboardEmpty => 'Clipboard is empty. Copy some text first.';
 
   @override
+  String get repeatLastTask => 'Repeat last task';
+
+  @override
   String get emptyToday =>
       'No tasks today. Enjoy your time, or plan for tomorrow?';
 

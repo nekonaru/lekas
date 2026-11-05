@@ -39,6 +39,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get clipboardEmpty => 'Papan klip kosong. Salin teks dulu.';
 
   @override
+  String get repeatLastTask => 'Ulangi tugas terakhir';
+
+  @override
   String get emptyToday =>
       'Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?';
 

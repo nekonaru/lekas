@@ -10,6 +10,7 @@
   "quickAddHint": "Add task quickly...",
   "pasteAction": "Paste",
   "clipboardEmpty": "Clipboard is empty. Copy some text first.",
+  "repeatLastTask": "Repeat last task",
   "emptyToday": "No tasks today. Enjoy your time, or plan for tomorrow?",
   "undo": "Undo",
   "done": "Done",
