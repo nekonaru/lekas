@@ -1,14 +1,14 @@
 <div align="center">
-  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Logo Lekas" width="110" />
-  <h1>Lekas: Pencatat Tugas & Deadline Mahasiswa</h1>
-  <p><b>Tangkap tugas dari chat dalam 5 detik, otomatis rapi per matkul,<br/>
-  diingatkan dengan benar, dan sepenuhnya offline.</b></p>
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Lekas logo" width="110" />
+  <h1>Lekas: Pencatat Tugas & Deadline untuk Mahasiswa</h1>
+  <p><b>Catat tugas dari chat dalam 5 detik, otomatis tertata per mata kuliah,<br/>
+  diingatkan tepat waktu, dan sepenuhnya offline.</b></p>
 
-  <a href="https://github.com/nekonaru/lekas/releases"><img src="https://img.shields.io/github/v/release/nekonaru/lekas?style=flat-square&color=blue" alt="Rilis" /></a>
+  <a href="https://github.com/nekonaru/lekas/releases"><img src="https://img.shields.io/github/v/release/nekonaru/lekas?style=flat-square&color=blue" alt="Release" /></a>
   <a href="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml"><img src="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/Flutter-3.47-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter" />
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Platform" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="Lisensi" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square" alt="Status" />
 </div>
 
@@ -17,7 +17,7 @@
 [English](README.md) | **Bahasa Indonesia**
 
 > [!NOTE]
-> Lekas berjalan sepenuhnya di HP Anda. Tanpa akun, tanpa cloud: setiap layar, pengingat dan widget membaca database SQLite lokal, sehingga aplikasi tetap jalan saat sinyal mati.
+> Lekas berjalan sepenuhnya di ponselmu. Tidak ada akun dan tidak ada cloud: setiap layar, pengingat, dan widget membaca database SQLite lokal, jadi aplikasi tetap berfungsi dengan radio dimatikan.
 
 ---
 
@@ -27,26 +27,26 @@
 - [Fitur](#fitur)
 - [Persyaratan](#persyaratan)
 - [Instalasi](#instalasi)
-- [Cara Pakai](#cara-pakai)
+- [Penggunaan](#penggunaan)
 - [Bahasa Tampilan](#bahasa-tampilan)
 - [Struktur Proyek](#struktur-proyek)
 - [Pengembangan](#pengembangan)
 - [Pengujian](#pengujian)
-- [Integrasi Berkelanjutan](#integrasi-berkelanjutan)
-- [Tanya Jawab](#tanya-jawab)
+- [Continuous Integration](#continuous-integration)
+- [FAQ](#faq)
 - [Penulis](#penulis)
-- [Penafian](#penafian)
+- [Disclaimer](#disclaimer)
 - [Lisensi](#lisensi)
 
 ---
 
 ## Tentang
 
-**Lekas** adalah aplikasi Android offline-first untuk mahasiswa mencatat tugas dan deadline, rapi per matkul, dengan pengingat lokal yang andal. Tanpa akun, tanpa cloud, tanpa kolaborasi: semuanya tersimpan di HP.
+**Lekas** adalah aplikasi Android offline-first untuk mahasiswa mencatat tugas dan deadline, tertata per mata kuliah, dengan pengingat lokal yang andal. Tanpa akun, tanpa cloud, tanpa kolaborasi: semuanya tetap di ponselmu.
 
-Ketik satu baris, parser membaca deadline, matkul dan prioritas. Geser kartu, tugas selesai, dengan undo yang menunggu. Bagikan pesan dari aplikasi chat dan pesan itu menjadi daftar kandidat tugas sebelum ada yang disimpan.
+Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Geser sebuah kartu dan tugas selesai, dengan undo yang siap menunggu. Bagikan pesan dari aplikasi chat dan pesan itu menjadi daftar kandidat tugas sebelum apa pun disimpan.
 
-> _"Deadline Anda, terekam dalam lima detik, bahkan tanpa internet."_
+> _"Deadline-mu, tercatat dalam lima detik, bahkan tanpa internet."_
 
 ---
 
@@ -55,62 +55,62 @@ Ketik satu baris, parser membaca deadline, matkul dan prioritas. Geser kartu, tu
 ### Pencatatan
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Quick Add** | Satu kolom, teks Indonesia atau Inggris, chip langsung untuk setiap nilai yang ditebak parser (bagian 6.1 dan 7.15) |
-| **Quick Add suara** | Mikrofon di Quick Add dan di layar tersendiri; angka bicara seperti "jam tujuh" menjadi deadline |
-| **Masukan berbagi** | Teks yang dibagikan dari WhatsApp atau aplikasi lain dipecah jadi kandidat lalu diparsing sebelum disimpan, tidak ada yang tersimpan otomatis |
+|-------|-----------|
+| **Quick Add** | Satu kolom, teks bahasa Indonesia atau Inggris, chip langsung untuk setiap nilai yang ditebak parser (desain 6.1 dan 7.15) |
+| **Voice Quick Add** | Mikrofon di Quick Add dan di layarnya sendiri; angka yang diucapkan seperti "jam tujuh" menjadi deadline |
+| **Share intake** | Teks yang dibagikan dari WhatsApp atau aplikasi apa pun dipecah menjadi kandidat dan diurai sebelum disimpan, tidak ada yang tersimpan otomatis |
 
-### Tugas dan Wadah
+### Tugas dan Space
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Wadah** | Matkul dan wadah lain dengan warna, kode, alias untuk parser, plus catatan dosen, ruangan dan tautan |
-| **Tugas** | Jenis, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, lengkap dengan subtugas, tag dan lampiran |
-| **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagiannya sendiri, prasyarat yang selesai mengirim satu notifikasi lembut "siap dimulai", dan penyimpanan yang akan membuat lingkaran ditolak |
-| **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam wadah |
-| **Inbox dan Sampah** | Tangkapan cepat tanpa matkul, serta Sampah yang menyimpan tugas terhapus agar bisa dikembalikan |
+|-------|-----------|
+| **Space** | Mata kuliah dan wadah lain dengan warna, kode, alias untuk parser, dan catatan untuk dosen, ruang, dan tautan |
+| **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
+| **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagian tersendiri, prasyarat yang selesai mengirim satu pemberitahuan lembut "siap dimulai", dan penyimpanan yang akan membentuk putaran ditolak |
+| **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam sebuah space |
+| **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah, dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
 
 ### Hari Ini dan Fokus
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Layar Hari Ini** | Skor urgensi dengan bagian terlambat, hari ini, menunggu dan kapan-kapan, plus snackbar undo |
-| **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk selesai, geser kiri untuk menunda |
-| **Mode fokus** | Maksimal tiga tugas sehari, timer fokus 25/5, dan sisa yang belum muat dibawa ke hari berikutnya (5.24) |
+|-------|-----------|
+| **Layar Hari Ini** | Skor urgensi dengan bagian terlambat, hari ini, menunggu, dan suatu hari nanti, plus snackbar undo |
+| **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk menyelesaikan, geser kiri untuk menunda |
+| **Mode fokus** | Maksimal tiga tugas per hari, timer fokus 25/5, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
 
 ### Kalender dan Kelas
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Kalender** | Tampilan bulan dan minggu, jadwal kuliah, kehadiran dengan passing grade kampus (5.19) |
-| **Statistik semester** | Statistik per matkul dan rekap semester di balik laci |
+|-------|-----------|
+| **Kalender** | Tampilan bulan dan minggu, jadwal kuliah, presensi dengan batas lulus kampus (5.19) |
+| **Statistik semester** | Statistik per mata kuliah dan rekap semester di balik drawer |
 
 ### Pengingat
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Pengingat lokal** | H-3, H-1, 3 jam, 30 menit, jam tenang 22.00 sampai 06.00, plus ringkasan pagi, malam dan minggu |
-| **Ringkasan terlambat** | Satu notifikasi per hari pukul 09.00 berisi semua tugas yang melewati deadline |
-| **Pemeriksa pengingat** | Layar Cek Pengingat menjalankan pemeriksaan yang sama dengan layanan pengingat saat notifikasi tampak hilang |
+|-------|-----------|
+| **Pengingat lokal** | H-3, H-1, 3 jam, 30 menit, jam tenang pukul 22.00 sampai 06.00, plus ringkasan pagi, malam, dan mingguan |
+| **Rangkuman terlambat** | Satu notifikasi per hari pukul 09:00 yang mendaftar setiap tugas yang lewat deadline |
+| **Pemeriksa pengingat** | Layar Cek Pengingat menjalankan pemeriksaan yang sama dengan layanan pengingat saat notifikasi terasa hilang |
 
 ### Widget
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Empat widget layar utama** | Daftar tugas dengan kotak centang, kelas hari ini, hitung mundur ujian, fokus hari ini, diberi data lewat `home_widget` dan disegarkan dengan debounce 400 ms |
+|-------|-----------|
+| **Empat widget layar utama** | Daftar tugas dengan checkbox, kelas hari ini, hitung mundur ujian, fokus hari ini, disuplai lewat `home_widget` dan diperbarui dengan debounce 400 ms |
 
 ### Data dan Cadangan
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Cadangan dan pemulihan** | Ekspor dan impor JSON, semua data disimpan lokal lewat Drift (SQLite) |
-| **Impor dan gabung** | Menggabungkan cadangan ke database saat ini tanpa menghapus data yang sudah ada |
+|-------|-----------|
+| **Cadangkan dan pulihkan** | Ekspor dan impor JSON, semuanya disimpan lokal dengan Drift (SQLite) |
+| **Impor dan gabung** | Gabungkan cadangan ke database saat ini tanpa kehilangan yang sudah ada |
 
 ### Tampilan dan Bahasa
 
 | Fitur | Deskripsi |
-|---------|-------------|
-| **Antarmuka Inggris dan Indonesia** | Indonesia sebagai bawaan; ganti ke Inggris di Pengaturan |
+|-------|-----------|
+| **Antarmuka Indonesia dan Inggris** | Indonesia secara default; ganti ke English di Pengaturan |
 | **Tema** | Terang, gelap, atau ikuti sistem |
 
 ---
@@ -118,23 +118,23 @@ Ketik satu baris, parser membaca deadline, matkul dan prioritas. Geser kartu, tu
 ## Persyaratan
 
 | Dependensi | Versi Minimum | Catatan |
-|------------|-----------------|-------|
-| **Flutter** | 3.47 | Kanal stable, hanya untuk membangun dari kode sumber |
-| **JDK** | 17 | Hanya untuk membangun dari kode sumber |
-| **Android SDK** | API 37 | Hanya untuk membangun dari kode sumber |
-| **HP atau emulator Android** | Android 7.0 (API 24) | Untuk menjalankan aplikasi |
+|------------|---------------|---------|
+| **Flutter** | 3.47 | Channel stable, hanya diperlukan untuk build dari source |
+| **JDK** | 17 | Hanya diperlukan untuk build dari source |
+| **Android SDK** | API 37 | Hanya diperlukan untuk build dari source |
+| **Ponsel atau emulator Android** | Android 7.0 (API 24) | Diperlukan untuk menjalankan aplikasi |
 
 > [!TIP]
-> Kalau Anda hanya ingin memakai aplikasinya, Anda tidak butuh Flutter, JDK, atau Android SDK. Unduh APK dari halaman [Releases](https://github.com/nekonaru/lekas/releases) saja.
+> Kalau kamu hanya ingin memakai aplikasinya, kamu tidak perlu Flutter, JDK, atau Android SDK. Unduh APK dari halaman [Releases](https://github.com/nekonaru/lekas/releases).
 
-### Belum pernah membuka terminal? Mulai dari sini
+### Belum pernah memakai terminal? Mulai dari sini
 
 <details>
 <summary><b>Cara membuka terminal di Windows</b></summary>
 
 1. Tekan tombol **Windows**, ketik `PowerShell`, lalu tekan **Enter**
-2. Jendela biru terbuka. Di situ Anda mengetik perintah
-3. Setiap perintah `flutter ...` atau `git ...` di panduan ini diketik di jendela itu, lalu **Enter**
+2. Jendela biru akan terbuka. Di situlah kamu mengetik perintah
+3. Setiap perintah `flutter ...` atau `git ...` di panduan ini diketik di jendela itu, diikuti **Enter**
 
 </details>
 
@@ -145,18 +145,18 @@ Ketik satu baris, parser membaca deadline, matkul dan prioritas. Geser kartu, tu
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/lekas/releases)
-2. Unduh APK sesuai HP Anda (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama)
-3. Buka di HP, izinkan instalasi dari sumber tidak dikenal bila diminta
+2. Unduh APK yang sesuai dengan perangkatmu (`app-arm64-v8a-release.apk` untuk kebanyakan ponsel modern, `app-armeabi-v7a-release.apk` untuk ponsel 32-bit yang lebih lama)
+3. Buka di ponselmu, izinkan instalasi dari sumber tidak dikenal jika diminta
 
 > [!IMPORTANT]
-> Berikan izin notifikasi saat aplikasi meminta, kalau tidak pengingat, ringkasan dan ringkasan terlambat tidak akan muncul. Optimisasi baterai untuk Lekas sebaiknya juga dibiarkan tanpa batasan.
+> Berikan izin notifikasi saat aplikasi pertama kali memintanya, kalau tidak pengingat, ringkasan, dan rangkuman terlambat tidak bisa muncul. Optimasi baterai juga sebaiknya dibiarkan tanpa batasan untuk Lekas.
 
-### Opsi B: Bangun dari kode sumber (untuk pengembangan / membaca atau mengubah kode)
+### Opsi B: Build dari source (untuk pengembangan / membaca atau mengubah kode)
 
-#### 1. Ambil kode proyeknya
+#### 1. Ambil kode proyek
 
 <details>
-<summary><b>Saya sudah punya Git</b></summary>
+<summary><b>Saya sudah menginstal Git</b></summary>
 
 ```bash
 git clone https://github.com/nekonaru/lekas.git
@@ -169,8 +169,8 @@ cd lekas
 <summary><b>Saya belum punya Git</b></summary>
 
 1. Buka halaman repositori di GitHub
-2. Tombol hijau **`Code`**, pilih **`Download ZIP`**
-3. Ekstrak ZIP ke folder pilihan Anda
+2. Klik tombol hijau **`Code`**, pilih **`Download ZIP`**
+3. Ekstrak ZIP ke folder pilihanmu
 4. Di terminal, masuk ke folder hasil ekstrak, contohnya:
 
 ```bash
@@ -179,7 +179,7 @@ cd Downloads/lekas-main
 
 </details>
 
-#### 2. Pasang dependensi dan verifikasi
+#### 2. Instal dependensi dan verifikasi
 
 ```bash
 flutter pub get
@@ -189,41 +189,41 @@ flutter analyze
 > [!IMPORTANT]
 > `flutter analyze` harus melaporkan **No issues found**.
 
-#### 3. Bangun APK-nya
+#### 3. Build APK
 
 ```bash
 flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
 ```
 
-Dua APK itu tersimpan di `build/app/outputs/flutter-apk/`.
+Kedua APK berada di `build/app/outputs/flutter-apk/`.
 
 ---
 
-## Cara Pakai
+## Penggunaan
 
-### Peluncuran pertama
+### Pertama kali dibuka
 
-1. Berikan izin notifikasi saat diminta
-2. Buat wadah untuk tiap matkul (warna, kode, alias untuk parser), atau lewati dulu dan kerjakan nanti
-3. Ketik tugas pertama Anda di Quick Add
+1. Izinkan notifikasi saat diminta
+2. Buat sebuah space untuk setiap mata kuliah (warna, kode, alias untuk parser), atau lewati dan lakukan nanti
+3. Ketik tugas pertamamu di Quick Add
 
-### Pemakaian sehari-hari
+### Penggunaan sehari-hari
 
-- Ketik bebas: `laprak basdat besok jam tujuh malam #kelompok` menjadi deadline, matkul dan tag lewat chip yang bisa dibuang
-- Bagikan pesan dari aplikasi chat ke Lekas, periksa kandidatnya, simpan sebagai tugas
-- Kerjakan dari **Hari Ini**: bagian paling atas adalah yang paling mendesak; geser kanan untuk selesai, geser kiri untuk menunda, tekan lama untuk pilih banyak
-- Selesaikan prasyarat, tugas yang menunggu padanya menerima satu notifikasi lembut bahwa ia boleh dimulai
-- Cek **Kalender**: tampilan bulan, jadwal kuliah dan kehadiran berada satu ketukan dari laci
+- Ketik secara natural: `laprak basdat besok jam tujuh malam #kelompok` menjadi deadline, mata kuliah, dan tag dengan chip yang bisa kamu hapus
+- Bagikan pesan dari aplikasi chat ke Lekas, tinjau kandidatnya, simpan sebagai tugas
+- Kerjakan dari **Hari Ini**: bagian teratas daftar adalah yang paling mendesak; geser kanan untuk menyelesaikan, geser kiri untuk menunda, tekan lama untuk pilih banyak
+- Selesaikan sebuah prasyarat dan tugas yang menunggunya mendapat satu notifikasi lembut bahwa tugas itu sudah bisa dimulai
+- Cek **Kalender**: tampilan bulan, jadwal kuliah, dan presensi hanya satu ketukan drawer jauhnya
 
 ---
 
 ## Bahasa Tampilan
 
-Antarmuka aplikasi (menu, tombol, pesan dan pengaturan) tersedia dalam **Bahasa Indonesia** (bawaan) dan **English**.
+Antarmuka aplikasi (menu, tombol, pesan, dan pengaturan) tersedia dalam **Bahasa Indonesia** (default) dan **English**.
 
 1. Buka **Pengaturan**
-2. Di bagian **Bahasa**, pilih `Indonesia` atau `English`
-3. Pilihan disimpan di tabel `settings` dengan kunci `language` dan membangun ulang seluruh aplikasi lewat `localeProvider`; pengingat, notifikasi dan parser mengikutinya, sehingga parser membaca teks Inggris saat bahasa Inggris dipilih (bagian 8.5)
+2. Di bawah **Bahasa**, pilih **Indonesia** atau **English**
+3. Pilihan disimpan di tabel `settings` dengan key `language` dan membangun ulang seluruh aplikasi lewat `localeProvider`; pengingat, notifikasi, dan parser mengikutinya, jadi parser membaca teks bahasa Inggris saat English dipilih (desain bagian 8.5)
 
 ---
 
@@ -232,27 +232,27 @@ Antarmuka aplikasi (menu, tombol, pesan dan pengaturan) tersedia dalam **Bahasa 
 ```
 lekas/
 ├── lib/
-│   ├── main.dart                 # titik masuk, provider, MaterialApp
-│   ├── core/                     # tema, utilitas tanggal, konstanta skor, komponen bersama
+│   ├── main.dart                 # entry point, provider, MaterialApp
+│   ├── core/                     # tema, pembantu tanggal, konstanta skor, komponen bersama
 │   ├── data/                     # database Drift, repository, provider Riverpod, cadangan
 │   ├── domain/                   # skor urgensi dan aturan fokus
 │   ├── features/                 # satu folder per layar (home, today, quick_add, share_intake, ...)
-│   ├── l10n/                     # app_id.arb, app_en.arb dan lokal hasil generate
-│   ├── parser/                   # normalizer, ekstraktor waktu, pencocok, kamus per bahasa
-│   ├── reminders/                # layanan pengingat, kebijakan notifikasi, ringkasan berkala
-│   └── voice/                    # pembungkus suara di balik Quick Add suara
-├── test/                         # tes unit dan widget, satu *_test.dart per area
+│   ├── l10n/                     # app_id.arb, app_en.arb, dan lokalisasi hasil generate
+│   ├── parser/                   # normalizer, time extractor, matcher, kamus per bahasa
+│   ├── reminders/                # layanan pengingat, kebijakan notifikasi, rangkuman digest
+│   └── voice/                    # pembungkus speech di balik Voice Quick Add
+├── test/                         # unit dan widget test, satu *_test.dart per area
 ├── l10n.yaml                     # konfigurasi lokalisasi
 ├── .github/
 │   └── workflows/
-│       ├── build-apk.yml         # CI: membangun APK terpisah pada setiap push ke main
-│       └── release.yml           # CI: analyze, test, bangun dan menerbitkan rilis
+│       ├── build-apk.yml         # CI: build APK terpisah di setiap push ke main
+│       └── release.yml           # CI: analyze, test, build, dan publikasikan rilis
 ├── ARCHITECTURE.md               # struktur dan konvensi
 ├── CHANGELOG.md                  # catatan rilis dalam bahasa Inggris
 ├── CHANGELOG.id.md               # catatan rilis dalam Bahasa Indonesia
 ├── pubspec.yaml
 ├── LICENSE
-├── README.md                     # dokumentasi utama (bahasa Inggris)
+├── README.md                     # dokumentasi utama (Inggris)
 └── README.id.md                  # dokumentasi (Bahasa Indonesia)
 ```
 
@@ -260,14 +260,14 @@ lekas/
 
 ## Pengembangan
 
-### Menambahkan string baru untuk pengguna
+### Menambah string baru untuk pengguna
 
-1. Tambahkan kuncinya ke `lib/l10n/app_id.arb` (Indonesian, template) dan `lib/l10n/app_en.arb` (Inggris)
+1. Tambahkan key ke `lib/l10n/app_id.arb` (Indonesia, sebagai template) dan `lib/l10n/app_en.arb` (Inggris)
 2. Jalankan `flutter gen-l10n`
-3. Pakai lewat `AppLocalizations.of(context)!.yourKey`
+3. Gunakan lewat `AppLocalizations.of(context)!.yourKey`
 
 > [!WARNING]
-> Berkas `lib/l10n/app_localizations*.dart` adalah hasil generate. Jangan mengeditnya langsung, ubah berkas `.arb` lalu jalankan `flutter gen-l10n`.
+> File `lib/l10n/app_localizations*.dart` dihasilkan otomatis. Jangan diedit manual, ubah file `.arb` lalu jalankan `flutter gen-l10n`.
 
 ---
 
@@ -280,51 +280,51 @@ flutter analyze
 flutter test
 ```
 
-| Pemeriksaan | Persyaratan |
-|-------|-------------|
-| `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol peringatan) |
-| `flutter test` | Harus lulus suite penuh (428 tes) |
+| Pemeriksaan | Syarat |
+|-------------|--------|
+| `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
+| `flutter test` | Seluruh suite harus lulus (428 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
 ---
 
-## Integrasi Berkelanjutan
+## Continuous Integration
 
-| Alur kerja | Tujuan |
-|----------|---------|
-| `build-apk.yml` | Membangun APK terpisah pada setiap push ke main |
-| `release.yml` | Saat tag `v*`: mencocokkan tag dengan versi pubspec, analyze, test, membangun APK terpisah, lalu menerbitkan rilis GitHub dengan catatan dwibahasa dari `CHANGELOG.md` |
+| Workflow | Fungsi |
+|----------|--------|
+| `build-apk.yml` | Build APK terpisah di setiap push ke main |
+| `release.yml` | Pada tag `v*`: cocokkan tag dengan versi pubspec, analyze, test, build APK terpisah, lalu publikasikan rilis GitHub dengan catatan dua bahasa yang diambil dari `CHANGELOG.md` |
 
 ---
 
-## Tanya Jawab
+## FAQ
 
 <details>
 <summary><b>Apakah Lekas butuh internet?</b></summary>
 
-Tidak. Semua layar, pengingat dan widget membaca database SQLite lokal. Internet hanya terpakai saat Anda membagikan teks dari aplikasi lain ke Lekas, atau oleh pengenal suara saat Anda memakai Quick Add suara.
+Tidak. Setiap layar, pengingat, dan widget membaca database SQLite lokal. Internet hanya dipakai jika kamu membagikan teks ke aplikasi dari aplikasi lain, atau oleh speech recognizer saat kamu memakai Voice Quick Add.
 
 </details>
 
 <details>
-<summary><b>Di mana data saya?</b></summary>
+<summary><b>Di mana datamu?</b></summary>
 
-Di database aplikasi di HP, ditambah file JSON yang Anda ekspor lewat *Cadangan*.
-
-</details>
-
-<details>
-<summary><b>Kenapa pengingat saya tidak berbunyi?</b></summary>
-
-Penyebab umumnya optimisasi baterai atau proses latar yang dihentikan sistem. Buka *Cek Pengingat* di laci, pemeriksaan di sana sama dengan yang dilakukan layanan pengingat.
+Di database aplikasi pada ponsel, plus file JSON apa pun yang kamu ekspor ke *Cadangan*.
 
 </details>
 
 <details>
-<summary><b>Bisa mengetik dalam bahasa Inggris?</b></summary>
+<summary><b>Kenapa pengingatku tidak berbunyi?</b></summary>
 
-Bisa. Parser Quick Add membaca dua kamus sekaligus dan bahasa aktif menang saat bentrok, sehingga `lab report db friday 11:59pm` dan `laprak basdat jumat 23.59` mendarat di kolom yang sama.
+Penyebab yang biasa adalah optimasi baterai atau proses latar belakang yang dimatikan. Buka *Cek Pengingat* di drawer, layar itu menjalankan pemeriksaan yang sama dengan layanan pengingat.
+
+</details>
+
+<details>
+<summary><b>Bisakah mengetik dalam bahasa Inggris?</b></summary>
+
+Bisa. Parser Quick Add menggabungkan kedua kamus dan bahasa yang aktif menang saat ada konflik, jadi `lab report db friday 11:59pm` dan `laprak basdat jumat 23.59` mendarat di kolom yang sama.
 
 </details>
 
@@ -343,9 +343,9 @@ Bisa. Parser Quick Add membaca dua kamus sekaligus dan bahasa aktif menang saat 
 
 ---
 
-## Penafian
+## Disclaimer
 
-Lekas adalah proyek open-source independen dan tidak berafiliasi atau didukung oleh Google, WhatsApp, atau Meta. Pengingat, ringkasan dan widget bergantung pada kebijakan latar Android, sehingga optimisasi baterai atau proses yang dihentikan bisa menundanya; layar *Cek Pengingat* ada untuk membantu Anda menemukan penyebabnya.
+Lekas adalah proyek open-source independen dan tidak berafiliasi dengan atau didukung oleh Google, WhatsApp, atau Meta. Pengingat, ringkasan, dan widget bergantung pada kebijakan latar belakang Android, jadi optimasi baterai atau proses yang dimatikan bisa menundanya; layar *Cek Pengingat* ada untuk membantumu menemukan penyebabnya.
 
 ---
 
