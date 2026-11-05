@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lekas/core/components/task_section.dart';
 import 'package:lekas/data/database.dart';
 import 'package:lekas/data/providers.dart';
+import 'package:lekas/data/task_dep_repository.dart';
 import 'package:lekas/data/task_repository.dart';
 import 'package:lekas/features/tasks/task_detail_screen.dart';
 import 'package:lekas/features/today/today_screen.dart';
@@ -149,6 +150,62 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(TaskDetailScreen), findsOneWidget);
+
+    await unmountTree(tester);
+  });
+
+  testWidgets('a task waiting on another sits in the waiting section',
+      (tester) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final tasks = TaskRepository(db);
+    final today = DateTime.now().add(const Duration(hours: 3));
+
+    // A task due today that cannot start yet (design section 5.27).
+    await tasks.insertTask(Task(
+      id: 'wait-1',
+      title: 'Blocked task',
+      priority: 1,
+      status: 'todo',
+      isGroup: false,
+      pinned: false,
+      inbox: false,
+      deadline: today.millisecondsSinceEpoch,
+      createdAt: 1,
+      updatedAt: 1,
+    ));
+    await tasks.insertTask(Task(
+      id: 'prereq-1',
+      title: 'Open prerequisite',
+      priority: 0,
+      status: 'todo',
+      isGroup: false,
+      pinned: false,
+      inbox: false,
+      createdAt: 1,
+      updatedAt: 1,
+    ));
+    await TaskDepRepository(db)
+        .insertTaskDep(TaskDep(taskId: 'wait-1', dependsOn: 'prereq-1'));
+
+    await tester.pumpWidget(host(db));
+    await tester.pumpAndSettle();
+
+    List<TodaySection> sections() => tester
+        .widgetList<TaskSectionHeader>(find.byType(TaskSectionHeader))
+        .map((header) => header.section)
+        .toList();
+    // The blocked task waits; its open prerequisite still shows normally.
+    expect(sections(), [TodaySection.waiting, TodaySection.someday]);
+    expect(find.text('Blocked task'), findsOneWidget);
+
+    // Finishing the prerequisite frees the task into its date section.
+    await tasks.markDone('prereq-1');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Waiting'), findsNothing);
+    expect(sections(), [TodaySection.today, TodaySection.someday]);
+    expect(find.text('Blocked task'), findsOneWidget);
 
     await unmountTree(tester);
   });

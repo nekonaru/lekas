@@ -133,6 +133,12 @@ final taskDepRepositoryProvider = Provider<TaskDepRepository>((ref) {
   return TaskDepRepository(ref.read(appDatabaseProvider));
 });
 
+/// Ids of tasks that still wait on an unfinished prerequisite (design
+/// section 5.27), recomputed on every task or dependency write. The Today
+/// screen watches this to group the Waiting section.
+final blockedTaskIdsProvider = StreamProvider.autoDispose<List<String>>(
+    (ref) => ref.watch(taskDepRepositoryProvider).watchBlockedTaskIds());
+
 final backupServiceProvider = Provider<BackupService>((ref) {
   return BackupService(ref.read(appDatabaseProvider));
 });

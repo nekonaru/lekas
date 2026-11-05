@@ -452,6 +452,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
     final repo = ref.watch(taskRepositoryProvider);
+    final blocked = ref.watch(blockedTaskIdsProvider);
 
     final selecting = _selection.isNotEmpty;
 
@@ -506,9 +507,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       body: StreamBuilder<List<Task>>(
         stream: repo.watchTasks(includeInbox: false),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          // The waiting set arrives on its own stream: without it the
+          // first frames would group blocked tasks by their date instead
+          // of under Waiting (design section 5.27).
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              !blocked.hasValue) {
             return const Center(child: CircularProgressIndicator());
           }
+          final blockedIds = blocked.value?.toSet() ?? const <String>{};
           final allTasks = snapshot.data ?? [];
           _tasks = allTasks;
           final now = DateTime.now();
@@ -521,7 +527,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 ? TodaySection.focus
                 : task.pinned
                     ? TodaySection.pinned
-                    : _classifyTask(task, now);
+                    : _classifyTask(task, now, blockedIds);
             sections.putIfAbsent(section, () => []).add(task);
           }
 
@@ -646,9 +652,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     );
   }
 
-  TodaySection _classifyTask(Task task, DateTime now) {
+  TodaySection _classifyTask(Task task, DateTime now, Set<String> blocked) {
     if (task.status == 'doing') return TodaySection.doing;
     if (task.status == 'done') return TodaySection.someday;
+
+    // Design section 5.27: a task with an unfinished prerequisite waits in
+    // its own section whatever its date says, because it cannot be acted
+    // on yet.
+    if (blocked.contains(task.id)) return TodaySection.waiting;
 
     if (task.deadline == null) return TodaySection.someday;
 
