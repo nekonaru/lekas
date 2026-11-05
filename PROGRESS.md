@@ -280,7 +280,7 @@ Terakhir diperbarui: Tue Nov 03 2026
 ---
 
 ## Dua bahasa (bagian 8)
-- [x] ARB files: app_id.arb dan app_en.arb lengkap (456 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15, 3 kunci mikrofon, 1 kunci versi)
+- [x] ARB files: app_id.arb dan app_en.arb lengkap (474 kunci pesan per bahasa, id dan en sama; 9 kunci chip 7.15, 3 kunci mikrofon, 1 kunci versi, 4 kunci 7.16)
 - [x] app_localizations.dart dengan semua getter
 - [x] app_localizations_id.dart dan app_localizations_en.dart
 - [x] MaterialApp supportedLocales: id, en
@@ -676,3 +676,43 @@ pencarian tugas lain lewat bottom sheet. Kunci ARB baru di kedua berkas:
 `task_dep_test.dart` (9), `dependensi_tugas_test.dart` (3),
 `unblock_notice_test.dart` (2), plus 1 test bagian Menunggu di
 `today_list_test.dart` dan entri "Task Dependencies" di wiring test.
+
+## Quick Add banyak baris dan ulang cepat (5 Nov 2026)
+
+Fitur 7.16 selesai penuh: tombol Tempel, chip Ulangi dari tugas terakhir,
+dan Saran dari riwayat, masing-masing satu commit.
+
+- **Tempel membaca papan klip hanya saat diketuk.** Tombol ikon di samping
+  mikrofon `QuickAddSheet` membaca clipboard lewat `_paste()` hanya setelah
+  ketukan, membuang baris kosong dan membatasi `kMaxShareCandidates`.
+  `ShareIntakeScreen` kini menerima parameter `lines`, jadi tiap baris jadi
+  satu calon tanpa pembagian kalimat dan tetap lewat layar centang seperti
+  6.2; bila tersimpan lebih dari nol, sheet ikut menutup. Papan klip kosong
+  menjawab pesan `clipboardEmpty` tanpa membuka rute baru.
+- **Ulangi dari tugas terakhir.** `TaskRepository.getLatestTask()` mengambil
+  tugas non-hapus terbaru, dan chip "Repeat last task" hanya muncul bila tugas
+  itu membawa wadah, jenis atau jam deadline. Ketukan menyalin ketiganya lalu
+  menandai `spaceTouched` dan `typeTouched` supaya parser tidak menimpanya;
+  jam deadline diterapkan ke tanggal hasil parser lewat `_repeatDeadline`,
+  jadi tanggal tetap datang dari teks yang diketik.
+- **Saran dari riwayat.** Saat sheet dibuka, `getTasks(includeInbox: true)` dan
+  `SubtaskRepository.getSubtaskTitlesByTask()` (satu kueri, dikelompokkan per
+  tugas) mengisi daftar riwayat; hanya tugas ber-subtugas atau ber-estimasi
+  yang layak jadi kandidat. Setelah debounce parse, `_findSuggestion` menilai
+  tumpang tindih token (kata minimal empat huruf, teks minimal enam karakter,
+  skor minimal setengah dari sisi yang lebih pendek). Chip "Similar to: judul"
+  menyalin subtugas dan estimasi ke dalam draf sebagai chip terpisah yang
+  bisa dibuang, dan judul yang sudah dibuang tidak ditawarkan lagi. Saat
+  menyimpan, nilai salinan menang atas hasil parser (`_copiedEstimate ??
+  parsed?.estimateMinutes`, dan subtugas serupa).
+- **Batas yang jujur:** kecocokan hanya perbandingan kata biasa, tanpa sinonim
+  maupun potong kata, jadi judul yang dirombak total tidak akan tersambung;
+  riwayat dibaca satu kali saat sheet dibuka, sehingga tugas yang baru saja
+  dibuat tidak ikut sampai sheet dibuka kembali; subtugas hasil salinan
+  menggantikan chip subtugas parser apa pun yang sempat ditebak.
+
+Kunci ARB baru di kedua berkas: `pasteAction`, `clipboardEmpty`,
+`repeatLastTask`, `historySuggestion`. Test baru: `quick_add_paste_test.dart`
+(3), `quick_add_repeat_test.dart` (2), `quick_add_history_suggestion_test.dart`
+(3); total 436 tes lulus. Catatan harness: ikon hapus `InputChip` di Material
+3 adalah `Icons.clear`, bukan `Icons.cancel` seperti `RawChip`.
