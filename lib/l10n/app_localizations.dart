@@ -632,6 +632,12 @@ abstract class AppLocalizations {
   /// **'Itu akan membuat lingkaran. Pilih tugas lain.'**
   String get dependencyCycleError;
 
+  /// No description provided for @taskUnblockedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekarang bisa mulai'**
+  String get taskUnblockedTitle;
+
   /// No description provided for @importScheduleOcrTitle.
   ///
   /// In id, this message translates to:

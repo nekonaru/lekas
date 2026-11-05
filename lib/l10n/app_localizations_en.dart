@@ -297,6 +297,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'That would create a loop. Pick a different task.';
 
   @override
+  String get taskUnblockedTitle => 'Ready to start';
+
+  @override
   String get importScheduleOcrTitle => 'Import Schedule from Screenshot';
 
   @override

@@ -298,6 +298,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Itu akan membuat lingkaran. Pilih tugas lain.';
 
   @override
+  String get taskUnblockedTitle => 'Sekarang bisa mulai';
+
+  @override
   String get importScheduleOcrTitle => 'Impor Jadwal dari Tangkapan Layar';
 
   @override

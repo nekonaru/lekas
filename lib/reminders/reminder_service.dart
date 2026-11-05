@@ -59,6 +59,9 @@ const String kChannelOverdue = 'overdue_channel';
 const String kChannelSummary = 'summary_channel';
 const String kChannelTest = 'test_channel';
 
+/// Channel of the soft "ready to start" notice of design section 5.27.
+const String kChannelUnblock = 'unblock_channel';
+
 const String _timezoneChannel = 'lekas/timezone';
 
 /// Settings key holding the screen a notification action asked for until
@@ -542,6 +545,12 @@ class ReminderService {
         'Test',
         description: 'One off test reminders',
         importance: Importance.high,
+      ),
+      AndroidNotificationChannel(
+        kChannelUnblock,
+        'Task ready',
+        description: 'A prerequisite finished and a task can start',
+        importance: Importance.defaultImportance,
       ),
     ];
     final android = _android;
@@ -1470,6 +1479,38 @@ class ReminderService {
 
   Future<void> cancelTestNotification() => _plugin.cancel(kTestNotificationId);
 
+  /// Shows the one soft notice of design section 5.27: a prerequisite
+  /// finished and a dependent task can start now. Every notice shares one
+  /// id, so a burst of completions replaces the previous notice instead of
+  /// flooding the shade.
+  Future<void> showUnblockNotice(String taskId) async {
+    if (!_initialized) await init();
+    Task task;
+    try {
+      task = await _ref.read(taskRepositoryProvider).getTask(taskId);
+    } catch (_) {
+      return; // The task vanished between the completion and the notice.
+    }
+    if (task.deletedAt != null) return;
+    final l10n = await _l10n();
+    await _plugin.show(
+      kUnblockNotificationId,
+      l10n.taskUnblockedTitle,
+      task.title,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          kChannelUnblock,
+          'Task ready',
+          channelDescription: 'A prerequisite finished and a task can start',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+          visibility: NotificationVisibility.private,
+        ),
+      ),
+      payload: ReminderPayload(taskId, ReminderPayload.actionOpen).encode(),
+    );
+  }
+
   /// Shows a notification right away, used to verify permission state.
   Future<void> showNow(String title, String body) async {
     if (!_initialized) await init();
@@ -1507,8 +1548,30 @@ class ReminderService {
 /// Notification id reserved for the reminder check screen.
 const int kTestNotificationId = 999999;
 
+/// Notification id of the soft "ready to start" notice (design section
+/// 5.27), outside the range the reminder id sequence hands out.
+const int kUnblockNotificationId = 900001;
+
 final reminderServiceProvider = Provider<ReminderService>((ref) {
   return ReminderService(ref);
+});
+
+/// Shows the soft notice when a completion frees the last open
+/// prerequisite of another task (design section 5.27). The app root
+/// watches this next to the schedule sync.
+final unblockNoticeProvider = Provider<void>((ref) {
+  final subscription = ref
+      .read(taskRepositoryProvider)
+      .justUnblocked
+      .listen((taskId) {
+    unawaited(ref
+        .read(reminderServiceProvider)
+        .showUnblockNotice(taskId)
+        .catchError((Object error, StackTrace stack) {
+      debugPrint('unblock notice failed: $error\n$stack');
+    }));
+  });
+  ref.onDispose(subscription.cancel);
 });
 
 /// Every non deleted task, used to keep reminders in sync.

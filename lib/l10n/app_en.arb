@@ -96,6 +96,7 @@
   "searchTaskLabel": "Search tasks",
   "noOtherTasks": "No other tasks yet.",
   "dependencyCycleError": "That would create a loop. Pick a different task.",
+  "taskUnblockedTitle": "Ready to start",
   "importScheduleOcrTitle": "Import Schedule from Screenshot",
   "importScheduleOcrBody": "Import your course schedule from a screenshot or portal text.",
   "weeklyLoadMapTitle": "Weekly Load Map",

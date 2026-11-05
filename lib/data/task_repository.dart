@@ -1,11 +1,28 @@
+import 'dart:async' show StreamController;
+
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'database.dart';
+import 'task_dep_repository.dart';
 import 'task_template_repository.dart' show decodeSubtaskTitles;
 
 class TaskRepository {
   final AppDatabase db;
   TaskRepository(this.db);
+
+  /// Tasks that became startable because the task passed to [markDone] was
+  /// their last open prerequisite (design section 5.27). The notification
+  /// layer listens; nothing else subscribes.
+  final StreamController<String> _unblockedController =
+      StreamController<String>.broadcast();
+
+  Stream<String> get justUnblocked => _unblockedController.stream;
+
+  /// Closes [justUnblocked] when the provider that owns this repository is
+  /// disposed, so no listener is called on a dead container.
+  void dispose() {
+    _unblockedController.close();
+  }
 
   /// Query streams already handed out, keyed by their arguments.
   ///
@@ -83,6 +100,12 @@ class TaskRepository {
       completedAt: Value(completedAt ?? DateTime.now().millisecondsSinceEpoch),
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     ));
+    // Only a first completion opens doors: marking a finished task again
+    // would repeat the notice for everyone waiting on it (design 5.27).
+    if (existing.status == 'done') return;
+    for (final freed in await TaskDepRepository(db).unblockedBy(id)) {
+      if (!_unblockedController.isClosed) _unblockedController.add(freed);
+    }
   }
 
   /// Puts a finished task back on the list: the undo snackbars and the

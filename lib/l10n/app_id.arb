@@ -96,6 +96,7 @@
   "searchTaskLabel": "Cari tugas",
   "noOtherTasks": "Belum ada tugas lain.",
   "dependencyCycleError": "Itu akan membuat lingkaran. Pilih tugas lain.",
+  "taskUnblockedTitle": "Sekarang bisa mulai",
   "importScheduleOcrTitle": "Impor Jadwal dari Tangkapan Layar",
   "importScheduleOcrBody": "Impor jadwal KRS dari tangkapan layar atau teks portal.",
   "weeklyLoadMapTitle": "Peta Beban Mingguan",

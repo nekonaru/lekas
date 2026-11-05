@@ -219,6 +219,8 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final themeMode = ref.watch(themeModeProvider);
     // Keeps the schedule in line with every task change.
     ref.watch(reminderSyncProvider);
+    // One soft notice when a completion frees a waiting task (design 5.27).
+    ref.watch(unblockNoticeProvider);
     // Keeps the home screen widgets in line with the data (design 7.8).
     ref.watch(homeWidgetSyncProvider);
 

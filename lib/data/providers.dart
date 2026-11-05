@@ -51,7 +51,9 @@ final spaceRepositoryProvider = Provider<SpaceRepository>((ref) {
 });
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {
-  return TaskRepository(ref.read(appDatabaseProvider));
+  final repo = TaskRepository(ref.read(appDatabaseProvider));
+  ref.onDispose(repo.dispose);
+  return repo;
 });
 
 final subtaskRepositoryProvider = Provider<SubtaskRepository>((ref) {
