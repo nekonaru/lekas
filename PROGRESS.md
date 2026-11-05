@@ -633,3 +633,46 @@ drawer dibangun oleh Scaffold hanya saat dibuka pertama kali, tab tanpa
 StreamBuilder di akhir test (timer cleanup drift nol durasi menyebabkan
 gagal dan menggantung runner), dan `AndroidFlutterLocalNotificationsPlugin.registerWith()`
 wajib karena kartu peringatan layar Hari Ini menanya izin notifikasi.
+
+## Dependensi tugas (5 Nov 2026)
+
+Fitur 5.27 selesai penuh: `task_deps` kini punya UI, aturan dan umpan balik.
+
+- **Siklus ditolak saat menyimpan.** `TaskDepRepository.hasCycle` (yang
+  sebelumnya stub selalu `false`) berjalan menyusuri seluruh graf: diri sendiri
+  dan lingkaran langsung maupun transitif ditolak. `insertTaskDep` mengembalikan
+  `false` bila ditolak; layar menampilkan error di kolom pencarian tanpa
+  menutup sheet, supaya pengguna bisa memilih tugas lain.
+- **Bagian Menunggu terisi.** `blockedTaskIdsProvider` menggabung `task_deps`
+  dengan `tasks` (prasyarat yang belum selesai, tidak di sampah); drift
+  menjalankan ulang join di setiap tulis tugas atau dependensi. Layar Hari Ini
+  menunggu emisi pertama sebelum mengelompokkan, supaya tidak ada frame yang
+  salah tempat. Urutan desain dipertahankan: pin dan fokus tetap menang,
+  status Dikerjakan dan Selesai tetap di bagiannya; hanya tanggal yang kalah
+  dari Menunggu.
+- **Satu notifikasi lembut saat prasyarat selesai.** Hook dipusatkan di
+  `TaskRepository.markDone` (semua 9 pemanggil otomatis ikut), dengan penjaga
+  "hanya kompletasi pertama" lewat stream `justUnblocked`. Provider
+  `unblockNoticeProvider` diaktifkan dari root aplikasi. Id notifikasi tetap
+  (900001) supaya ledakan kompletasi menggantikan notifikasi lama, bukan
+  membanjiri panel; kanal baru `unblock_channel` ber importance default
+  (lembut); payload `actionOpen` sehingga ketuk membuka aplikasi, konsisten
+  dengan perilaku ketuk notifikasi yang sudah terdokumentasi.
+- **Batas yang jujur:** kompletasi lewat tombol notifikasi saat proses aplikasi
+  sudah mati berjalan di isolate latar dengan instance repository sendiri, jadi
+  notifikasi lembut tidak muncul; tugas tetap keluar dari Menunggu saat aplikasi
+  dibuka. Pengingat mulai (5.4) memang belum ada di kode (kolom `start_at`
+  tidak pernah dibaca), jadi tidak ada yang perlu ditekan untuk tugas menunggu;
+  pengingat deadline tetap berjalan sesuai spesifikasi.
+- **Bug FAB diperbaiki lebih dulu:** tombol restore di detail tugas memanggil
+  `markDone` yang selalu menulis status `done`, sehingga tugas tidak pernah bisa
+  dibuka kembali dari layar detail; kini memanggil `reopenTask`.
+
+Layar `DependensiTugasScreen(taskId)` (tile "Task Dependencies" di detail
+tugas) menampilkan daftar prasyarat dengan ikon status, hapus per item, dan
+pencarian tugas lain lewat bottom sheet. Kunci ARB baru di kedua berkas:
+`noDependenciesYet`, `addPrerequisiteLabel`, `searchTaskLabel`,
+`noOtherTasks`, `dependencyCycleError`, `taskUnblockedTitle`. Test baru:
+`task_dep_test.dart` (9), `dependensi_tugas_test.dart` (3),
+`unblock_notice_test.dart` (2), plus 1 test bagian Menunggu di
+`today_list_test.dart` dan entri "Task Dependencies" di wiring test.
