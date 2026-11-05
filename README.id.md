@@ -283,7 +283,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (428 tes) |
+| `flutter test` | Seluruh suite harus lulus (436 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

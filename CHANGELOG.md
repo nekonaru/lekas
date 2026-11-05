@@ -2,6 +2,26 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.1.0 - Task dependencies and smarter Quick Add
+
+### New features
+
+- **Task dependencies.** A task can require other tasks to be finished first: blocked tasks wait in their own section, a finished prerequisite sends one "ready to start" notice, and a save that would close a loop is refused.
+- **Finished screens in the menus.** Spaces, calendar, statistics, backup, trash and the reminder checker are reachable from the drawer and settings.
+- **Clipboard paste in share intake.** Several clipboard lines become one candidate per line, added only when tapped.
+- **Repeat chip in Quick Add.** One tap copies the space, type and deadline time from the last task.
+- **Similar task suggestions.** A title close to an older task offers that task's subtasks and estimate as chips.
+
+### Bug fixes
+
+- **Reopen from the detail screen.** Reopening a finished task from its detail page works again.
+- **Drawer closes before navigation.** Opening a screen from the home drawer no longer leaves the drawer behind it.
+- **Trash back button.** The trash screen can be closed with a back arrow like every other screen.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.0.1 - Stability and speed fixes
 
 ### Optimizations

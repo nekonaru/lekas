@@ -283,7 +283,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (428 tests) |
+| `flutter test` | Must pass the full suite (436 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
