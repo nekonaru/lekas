@@ -58,9 +58,16 @@ String _boundedMessage(String message) {
 /// Shows the tasks proposed from a shared message with checkboxes and
 /// correction chips. One message can become several tasks.
 class ShareIntakeScreen extends ConsumerStatefulWidget {
-  const ShareIntakeScreen({super.key, required this.message});
+  const ShareIntakeScreen({super.key, required this.message, this.lines});
 
+  /// The original text, kept as the notes and sourceText of every saved
+  /// task so the requirements of the assignment are not lost.
   final String message;
+
+  /// Candidates handed over already split, one per line, from the Tempel
+  /// button of Quick Add (design section 7.16). When null the [message] is
+  /// split into sentences like a message shared from another app.
+  final List<String>? lines;
 
   @override
   ConsumerState<ShareIntakeScreen> createState() => _ShareIntakeScreenState();
@@ -117,7 +124,7 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
     final language =
         ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
 
-    for (final text in splitShareCandidates(widget.message)) {
+    for (final text in widget.lines ?? splitShareCandidates(widget.message)) {
       final parsed = parser.parse(text, locale: language);
       _candidates.add(_Candidate(text)
         ..parsed = parsed

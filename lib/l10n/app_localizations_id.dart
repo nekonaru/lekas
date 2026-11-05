@@ -33,6 +33,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get quickAddHint => 'Tambah tugas cepat...';
 
   @override
+  String get pasteAction => 'Tempel';
+
+  @override
+  String get clipboardEmpty => 'Papan klip kosong. Salin teks dulu.';
+
+  @override
   String get emptyToday =>
       'Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?';
 

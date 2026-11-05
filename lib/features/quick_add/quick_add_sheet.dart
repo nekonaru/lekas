@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,6 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../parser/parser_service.dart';
 import '../../reminders/reminder_service.dart';
 import '../../voice/voice_input.dart';
+import '../share_intake/share_intake_screen.dart';
 
 /// Quick Add (design section 6.1): one text field, a live parse result and
 /// tappable chips so nothing guessed by the parser is saved in silence.
@@ -177,7 +179,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     if (started) {
       setState(() => _listening = true);
     } else {
-      _showVoiceMessage(l10n.micUnavailable);
+      _showMessage(l10n.micUnavailable);
     }
   }
 
@@ -202,16 +204,50 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     final l10n = AppLocalizations.of(context);
     if (l10n == null) return;
     setState(() => _listening = false);
-    _showVoiceMessage(errorCode == 'error_permission'
+    _showMessage(errorCode == 'error_permission'
         ? l10n.micPermissionDenied
         : l10n.micUnavailable);
   }
 
-  void _showVoiceMessage(String message) {
+  void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  /// Design section 7.16: the Tempel (Paste) button reads the clipboard
+  /// only after this tap, turns every non-empty line into one candidate
+  /// and opens the checklist screen of design section 6.2. The sheet never
+  /// touches the clipboard by itself.
+  Future<void> _paste() async {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final lines = (data?.text ?? '')
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .take(kMaxShareCandidates)
+        .toList();
+    if (lines.isEmpty) {
+      _showMessage(l10n.clipboardEmpty);
+      return;
+    }
+    if (!mounted) return;
+    final saved = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ShareIntakeScreen(
+          message: lines.join('\n'),
+          lines: lines,
+        ),
+      ),
+    );
+    // Candidates were saved from the checklist screen: close the sheet too,
+    // the text field still holds whatever was typed before the paste.
+    if (saved == null || saved == 0 || !mounted) return;
+    Navigator.pop(context, true);
   }
 
   String? _nameOf(String? id) {
@@ -471,13 +507,24 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
               hintText: l10n.quickAddHint,
               helperText: _listening ? l10n.voiceListening : null,
               border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                tooltip: l10n.voiceQuickAddTitle,
-                icon: Icon(
-                  _listening ? Icons.mic : Icons.mic_none,
-                  color: _listening ? Theme.of(context).colorScheme.error : null,
-                ),
-                onPressed: _toggleVoice,
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: l10n.pasteAction,
+                    icon: const Icon(Icons.content_paste),
+                    onPressed: _paste,
+                  ),
+                  IconButton(
+                    tooltip: l10n.voiceQuickAddTitle,
+                    icon: Icon(
+                      _listening ? Icons.mic : Icons.mic_none,
+                      color:
+                          _listening ? Theme.of(context).colorScheme.error : null,
+                    ),
+                    onPressed: _toggleVoice,
+                  ),
+                ],
               ),
             ),
             onSubmitted: (_) {

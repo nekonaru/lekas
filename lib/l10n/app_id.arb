@@ -8,6 +8,8 @@
   "calendarTitle": "Kalender",
   "settingsTitle": "Pengaturan",
   "quickAddHint": "Tambah tugas cepat...",
+  "pasteAction": "Tempel",
+  "clipboardEmpty": "Papan klip kosong. Salin teks dulu.",
   "emptyToday": "Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?",
   "undo": "Urungkan",
   "done": "Selesai",

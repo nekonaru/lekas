@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'Tambah tugas cepat...'**
   String get quickAddHint;
 
+  /// No description provided for @pasteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get pasteAction;
+
+  /// No description provided for @clipboardEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Papan klip kosong. Salin teks dulu.'**
+  String get clipboardEmpty;
+
   /// No description provided for @emptyToday.
   ///
   /// In id, this message translates to:

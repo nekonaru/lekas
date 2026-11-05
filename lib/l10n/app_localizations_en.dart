@@ -33,6 +33,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickAddHint => 'Add task quickly...';
 
   @override
+  String get pasteAction => 'Paste';
+
+  @override
+  String get clipboardEmpty => 'Clipboard is empty. Copy some text first.';
+
+  @override
   String get emptyToday =>
       'No tasks today. Enjoy your time, or plan for tomorrow?';
 
