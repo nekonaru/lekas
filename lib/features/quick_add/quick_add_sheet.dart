@@ -57,6 +57,16 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   TimeOfDay? _repeatTime;
   bool _hasRepeatSource = false;
 
+  /// History suggestion (design section 7.16): the old tasks worth
+  /// copying from, the match currently offered while typing, what a tap
+  /// copied into the draft, and the title the user threw away so the
+  /// same offer does not come back on every keystroke.
+  List<_HistoryTask> _history = const [];
+  _HistoryTask? _suggestion;
+  List<String>? _copiedSubtasks;
+  int? _copiedEstimate;
+  String? _dismissedSuggestion;
+
   /// The full parse result behind the extra chips of design section 7.15,
   /// and the chips the user has already dismissed for this text.
   ParsedTask? _parsed;
@@ -110,6 +120,25 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     // Design section 7.16: the chip is only offered when the newest task
     // actually carries a space, a type or a deadline time to copy.
     final latest = await ref.read(taskRepositoryProvider).getLatestTask();
+    // Design section 7.16: old tasks that carry subtasks or an estimate,
+    // the raw material of the "saran dari riwayat" chip, read once here
+    // instead of on every keystroke.
+    final historyTasks =
+        await ref.read(taskRepositoryProvider).getTasks(includeInbox: true);
+    final subtaskTitles =
+        await ref.read(subtaskRepositoryProvider).getSubtaskTitlesByTask();
+    final history = <_HistoryTask>[];
+    for (final task in historyTasks) {
+      final subtasks = subtaskTitles[task.id] ?? const <String>[];
+      final estimate = task.estimateMinutes;
+      if (subtasks.isEmpty && (estimate == null || estimate <= 0)) continue;
+      history.add(_HistoryTask(
+        title: task.title,
+        tokens: _tokenize(task.title),
+        subtasks: subtasks,
+        estimate: estimate,
+      ));
+    }
     if (!mounted) return;
     setState(() {
       _spaces = loaded;
@@ -119,6 +148,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
           (latest.spaceId != null ||
               latest.type != null ||
               latest.deadline != null);
+      _history = history;
     });
     _reparse();
   }
@@ -143,6 +173,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
         _title = null;
         _parsed = null;
         _dismissed.clear();
+        _suggestion = null;
         if (!_deadlineTouched) _deadline = _repeatDeadline(null);
         if (!_spaceTouched) {
           _spaceId = null;
@@ -157,9 +188,17 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     final language =
         ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
     final parsed = parser.parse(text, locale: language);
+    // Design section 7.16: while the typed title resembles an old one,
+    // offer that task's subtasks and estimate. Nothing is offered once
+    // something was copied or the same offer was thrown away.
+    var suggestion = _copiedSubtasks == null && _copiedEstimate == null
+        ? _findSuggestion(text)
+        : null;
+    if (suggestion?.title == _dismissedSuggestion) suggestion = null;
     setState(() {
       _parsed = parsed;
       _title = parsed.title;
+      _suggestion = suggestion;
       if (!_deadlineTouched) _deadline = _repeatDeadline(parsed.deadline);
       if (!_spaceTouched) {
         _spaceId = parsed.spaceId;
@@ -407,6 +446,98 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     _reparseNow();
   }
 
+  /// The old task whose title looks most like [text] (design section
+  /// 7.16): at least half of the shorter side's words in common, so one
+  /// shared word between two short titles is not enough. Candidates
+  /// already carry a subtask list or an estimate, otherwise a tap would
+  /// copy nothing.
+  _HistoryTask? _findSuggestion(String text) {
+    if (text.trim().length < 6) return null;
+    final typed = _tokenize(text);
+    if (typed.isEmpty) return null;
+    _HistoryTask? best;
+    var bestScore = 0.0;
+    for (final entry in _history) {
+      var shared = 0;
+      for (final word in typed) {
+        if (entry.tokens.contains(word)) shared++;
+      }
+      if (shared == 0) continue;
+      final shorter =
+          typed.length < entry.tokens.length ? typed.length : entry.tokens.length;
+      final score = shared / shorter;
+      if (score > bestScore) {
+        bestScore = score;
+        best = entry;
+      }
+    }
+    return bestScore >= 0.5 ? best : null;
+  }
+
+  /// Copies the subtasks and the estimate of the suggested old task into
+  /// the draft (design section 7.16). Both become chips of their own
+  /// that can be thrown away before saving, and the same title is not
+  /// offered again.
+  void _applySuggestion() {
+    final suggestion = _suggestion;
+    if (suggestion == null) return;
+    setState(() {
+      if (suggestion.subtasks.isNotEmpty) _copiedSubtasks = suggestion.subtasks;
+      if (suggestion.estimate != null && suggestion.estimate! > 0) {
+        _copiedEstimate = suggestion.estimate;
+      }
+      _suggestion = null;
+      _dismissedSuggestion = suggestion.title;
+    });
+  }
+
+  /// The suggestion chip of design section 7.16, or nothing: the offer
+  /// only exists while a similar old task exists and nothing has been
+  /// copied yet.
+  List<Widget> _suggestionChip(AppLocalizations l10n) {
+    final suggestion = _suggestion;
+    if (suggestion == null) return const [];
+    final title = suggestion.title.length > 28
+        ? '${suggestion.title.substring(0, 28)}…'
+        : suggestion.title;
+    return [
+      InputChip(
+        avatar: const Icon(Icons.history, size: 18),
+        label: Text(l10n.historySuggestion(title)),
+        onPressed: _applySuggestion,
+        onDeleted: () => setState(() {
+          _dismissedSuggestion = suggestion.title;
+          _suggestion = null;
+        }),
+      ),
+    ];
+  }
+
+  /// What a tapped suggestion copied into the draft (design section
+  /// 7.16): one chip per copied value, each removable on its own.
+  List<Widget> _copiedChips(AppLocalizations l10n) {
+    final chips = <Widget>[];
+    final subtasks = _copiedSubtasks;
+    if (subtasks != null) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.checklist, size: 18),
+        label: Text(l10n.chipSubtasks(subtasks.length)),
+        onDeleted: () => setState(() => _copiedSubtasks = null),
+      ));
+    }
+    final estimate = _copiedEstimate;
+    if (estimate != null) {
+      chips.add(InputChip(
+        avatar: const Icon(Icons.timer_outlined, size: 18),
+        label: Text(estimate >= 60 && estimate % 60 == 0
+            ? l10n.chipEstimateHours(estimate ~/ 60)
+            : l10n.estimateMinutesLabel(estimate)),
+        onDeleted: () => setState(() => _copiedEstimate = null),
+      ));
+    }
+    return chips;
+  }
+
   Future<void> _pickDeadline() async {
     final now = DateTime.now();
     final date = await showDatePicker(
@@ -487,9 +618,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
           pinned: false,
           inbox: _spaceId == null,
           sourceText: text,
-          estimateMinutes: _stillWanted('estimate')
-              ? parsed?.estimateMinutes
-              : null,
+          // Design section 7.16: a copied estimate wins over the parsed
+          // one, both disappear when their chip is thrown away.
+          estimateMinutes: _copiedEstimate ??
+              (_stillWanted('estimate') ? parsed?.estimateMinutes : null),
           submitMethod: _stillWanted('submit') ? parsed?.submitMethod : null,
           submitTarget: _stillWanted('submit') && parsed?.submitMethod == 'email'
               ? parsed?.submitTarget
@@ -507,9 +639,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
       subtasks: ref.read(subtaskRepositoryProvider),
       attachments: ref.read(attachmentRepositoryProvider),
       tag: _stillWanted('tag') ? parsed?.tag : null,
-      subtaskTitles: _stillWanted('subtasks')
-          ? parsed?.subtasks ?? const []
-          : const [],
+      // Design section 7.16: subtasks copied from an old task replace
+      // whatever the parser found for this text.
+      subtaskTitles: _copiedSubtasks ??
+          (_stillWanted('subtasks') ? parsed?.subtasks ?? const [] : const []),
       links: _stillWanted('links') ? parsed?.links ?? const [] : const [],
     );
 
@@ -634,6 +767,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
                   label: Text(l10n.repeatLastTask),
                   onPressed: _repeatLast,
                 ),
+              // Design section 7.16: the similar old task and whatever
+              // tapping it copied into this draft.
+              ..._suggestionChip(l10n),
+              ..._copiedChips(l10n),
               ..._extraChips(l10n),
             ],
           ),
@@ -649,4 +786,29 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
       ),
     );
   }
+}
+
+/// The comparable words of a title: lowercased, split on anything that
+/// is not a letter or a digit, and short filler words dropped so "di"
+/// and "ke" never make two unrelated titles look alike.
+Set<String> _tokenize(String text) => text
+    .toLowerCase()
+    .split(RegExp('[^a-z0-9]+'))
+    .where((word) => word.length >= 4)
+    .toSet();
+
+/// One old task behind the suggestion chip of design section 7.16: its
+/// title as words to compare against, plus the values a tap copies.
+class _HistoryTask {
+  const _HistoryTask({
+    required this.title,
+    required this.tokens,
+    required this.subtasks,
+    required this.estimate,
+  });
+
+  final String title;
+  final Set<String> tokens;
+  final List<String> subtasks;
+  final int? estimate;
 }

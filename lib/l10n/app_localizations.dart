@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Ulangi tugas terakhir'**
   String get repeatLastTask;
 
+  /// No description provided for @historySuggestion.
+  ///
+  /// In id, this message translates to:
+  /// **'Mirip: {title}'**
+  String historySuggestion(String title);
+
   /// No description provided for @emptyToday.
   ///
   /// In id, this message translates to:

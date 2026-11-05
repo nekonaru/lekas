@@ -19,6 +19,24 @@ class SubtaskRepository {
         .get();
   }
 
+  /// Every live subtask in one query, grouped by the task it belongs to.
+  /// The history suggestion of design section 7.16 reads this once when
+  /// Quick Add opens, instead of running one query per old task.
+  Future<Map<String, List<String>>> getSubtaskTitlesByTask() async {
+    final rows = await (db.select(db.subtasks)
+          ..where((t) => t.deletedAt.isNull())
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.taskId),
+            (t) => OrderingTerm.asc(t.sortOrder),
+          ]))
+        .get();
+    final grouped = <String, List<String>>{};
+    for (final row in rows) {
+      grouped.putIfAbsent(row.taskId, () => []).add(row.title);
+    }
+    return grouped;
+  }
+
   Future<void> insertSubtask(Subtask subtask) async {
     await db.into(db.subtasks).insert(subtask);
   }

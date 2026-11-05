@@ -42,6 +42,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get repeatLastTask => 'Ulangi tugas terakhir';
 
   @override
+  String historySuggestion(String title) {
+    return 'Mirip: $title';
+  }
+
+  @override
   String get emptyToday =>
       'Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?';
 

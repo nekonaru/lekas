@@ -11,6 +11,8 @@
   "pasteAction": "Tempel",
   "clipboardEmpty": "Papan klip kosong. Salin teks dulu.",
   "repeatLastTask": "Ulangi tugas terakhir",
+  "historySuggestion": "Mirip: {title}",
+  "@historySuggestion": { "placeholders": { "title": { "type": "String" } } },
   "emptyToday": "Belum ada tugas hari ini. Nikmati waktumu, atau rencanakan besok?",
   "undo": "Urungkan",
   "done": "Selesai",

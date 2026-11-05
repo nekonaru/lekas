@@ -42,6 +42,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get repeatLastTask => 'Repeat last task';
 
   @override
+  String historySuggestion(String title) {
+    return 'Similar to: $title';
+  }
+
+  @override
   String get emptyToday =>
       'No tasks today. Enjoy your time, or plan for tomorrow?';
 
