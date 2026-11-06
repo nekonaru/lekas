@@ -8,6 +8,10 @@ class UndoSnackbar {
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         action: SnackBarAction(
           label: l10n.undo,
           onPressed: onUndo,

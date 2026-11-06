@@ -554,13 +554,33 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           if (allTasks.isEmpty) {
             final warning = _warningCard(l10n, allTasks, now);
             if (warning == null) {
+              final colors = Theme.of(context).colorScheme;
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
-                    const SizedBox(height: 16),
-                    Text(l10n.emptyToday),
+                    Container(
+                      width: 96,
+                      height: 96,
+                      decoration: BoxDecoration(
+                        color: colors.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check_circle_outline,
+                        size: 48,
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        l10n.emptyToday,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -602,6 +622,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           ];
 
           return ListView.builder(
+            // Bottom padding keeps the last card clear of the FAB instead
+            // of hiding behind it while scrolling to the end.
+            padding: const EdgeInsets.only(bottom: 88),
             itemCount: entries.length,
             itemBuilder: (context, index) {
               final entry = entries[index];

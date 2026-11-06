@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/models.dart';
 import '../../domain/urgency.dart';
 import '../../core/date_util.dart';
+import '../theme.dart';
 import '../../l10n/app_localizations.dart';
 
 enum TodaySection {
@@ -136,6 +137,7 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
     final score = urgencyScore(
       now: now,
       deadline: task.deadline != null
@@ -146,19 +148,50 @@ class TaskCard extends StatelessWidget {
       estimateMinutes: task.estimateMinutes,
     );
     final card = Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
-        leading: selected
-            ? Icon(Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary)
-            : _priorityIcon(task.priority),
+        // The selection check crossfades in over the priority dot instead of
+        // popping, so entering multi select reads as one motion.
+        leading: AnimatedSwitcher(
+          duration: AppMotion.fast,
+          switchInCurve: Curves.easeOutBack,
+          transitionBuilder: (child, animation) => ScaleTransition(
+            scale: animation,
+            child: FadeTransition(opacity: animation, child: child),
+          ),
+          child: selected
+              ? Icon(
+                  Icons.check_circle,
+                  key: const ValueKey('selected'),
+                  color: colors.primary,
+                )
+              : KeyedSubtree(
+                  key: ValueKey('priority-${task.priority}'),
+                  child: _priorityIcon(task.priority),
+                ),
+        ),
         selected: selected,
         title: Text(task.title),
         subtitle: Text(_subtitleText(l10n)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(score.toStringAsFixed(0)),
+            // The urgency score as a quiet pill: it groups the number away
+            // from the chevron without adding a new widget per row.
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: colors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                score.toStringAsFixed(0),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
+            ),
             const SizedBox(width: 8),
             const Icon(Icons.chevron_right),
           ],
@@ -167,30 +200,36 @@ class TaskCard extends StatelessWidget {
       ),
     );
 
-    if (onTaskDone == null && onTaskSnooze == null) return card;
-
-    // Swipe right to finish, swipe left to snooze (design section 5.5).
-    return Dismissible(
-      key: ValueKey('task:${task.id}'),
-      direction: DismissDirection.horizontal,
-      background: _swipeBackground(context, right: true),
-      secondaryBackground: _swipeBackground(context, right: false),
-      confirmDismiss: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          await onTaskDone?.call(task);
-        } else if (direction == DismissDirection.endToStart) {
-          await onTaskSnooze?.call(task);
-        }
-        // The card snaps back and the list reloads with the new state.
-        return false;
-      },
-      child: onTaskLongPress == null
-          ? card
-          : GestureDetector(
-              onLongPress: () => onTaskLongPress!(task),
-              child: card,
-            ),
-    );
+    Widget row;
+    if (onTaskDone == null && onTaskSnooze == null) {
+      row = card;
+    } else {
+      // Swipe right to finish, swipe left to snooze (design section 5.5).
+      row = Dismissible(
+        key: ValueKey('task:${task.id}'),
+        direction: DismissDirection.horizontal,
+        background: _swipeBackground(context, right: true),
+        secondaryBackground: _swipeBackground(context, right: false),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            await onTaskDone?.call(task);
+          } else if (direction == DismissDirection.endToStart) {
+            await onTaskSnooze?.call(task);
+          }
+          // The card snaps back and the list reloads with the new state.
+          return false;
+        },
+        child: onTaskLongPress == null
+            ? card
+            : GestureDetector(
+                onLongPress: () => onTaskLongPress!(task),
+                child: card,
+              ),
+      );
+    }
+    // Swipes that end without a dismiss animate the card back from an
+    // offset; a RepaintBoundary keeps that motion off the rest of the list.
+    return RepaintBoundary(child: row);
   }
 
   /// The short reason why this card sits here, followed by the deadline
@@ -245,7 +284,10 @@ class TaskCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: right ? colors.primary : colors.tertiary,
+      decoration: BoxDecoration(
+        color: right ? colors.primary : colors.tertiary,
+        borderRadius: BorderRadius.circular(14),
+      ),
       alignment: right ? Alignment.centerLeft : Alignment.centerRight,
       child: Icon(
         right ? Icons.check : Icons.snooze,

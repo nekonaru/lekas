@@ -21,6 +21,7 @@ import '../inbox/inbox_screen.dart';
 import '../settings/settings_screen.dart';
 import '../spaces/spaces_screen.dart';
 import '../today/today_screen.dart';
+import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
@@ -149,10 +150,38 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       drawer: NavigationDrawer(
         children: [
-          const DrawerHeader(
-            child: Text('Lekas',
-                style:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          // A compact branded header instead of a full DrawerHeader: it
+          // keeps the drawer from feeling like a wall of grey.
+          SafeArea(
+            top: true,
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.bolt,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Lekas',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.add_circle),
@@ -227,7 +256,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: _pages[_i],
+      // A short fade and slide between tabs: the swap reads as one motion
+      // instead of a hard cut, and it settles fast for tests.
+      body: AnimatedSwitcher(
+        duration: AppMotion.normal,
+        switchInCurve: AppMotion.ease,
+        switchOutCurve: AppMotion.ease,
+        child: KeyedSubtree(
+          key: ValueKey(_i),
+          child: _pages[_i],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _i,
         onDestinationSelected: (v) => setState(() => _i = v),

@@ -1,5 +1,20 @@
 import 'package:flutter/material.dart';
 
+/// Shared motion values so every transition in the app feels the same.
+/// All animations that use these are finite, so tests can pumpAndSettle.
+class AppMotion {
+  AppMotion._();
+
+  /// Icon swaps, chip highlights, small control changes.
+  static const Duration fast = Duration(milliseconds: 150);
+
+  /// Tab switches, sheet and section transitions.
+  static const Duration normal = Duration(milliseconds: 220);
+
+  /// The one easing curve the app uses, decelerating into place.
+  static const Curve ease = Curves.easeOutCubic;
+}
+
 class AppTheme {
   static const List<Color> containerColors = [
     Color(0xFF6366F1), // indigo
@@ -18,30 +33,73 @@ class AppTheme {
 
   static Color get accentColor => const Color(0xFF6366F1);
 
-  static ThemeData lightTheme() {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: accentColor,
-        brightness: Brightness.light,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-      ),
-    );
-  }
+  static ThemeData lightTheme() => _base(Brightness.light);
 
-  static ThemeData darkTheme() {
+  static ThemeData darkTheme() => _base(Brightness.dark);
+
+  static ThemeData _base(Brightness brightness) {
+    final scheme = ColorScheme.fromSeed(
+      seedColor: accentColor,
+      brightness: brightness,
+    );
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: accentColor,
-        brightness: Brightness.dark,
+      colorScheme: scheme,
+      // One page transition everywhere: a short zoom that reads smooth on
+      // every Android version and finishes fast enough for tests.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
+          TargetPlatform.linux: ZoomPageTransitionsBuilder(),
+          TargetPlatform.macOS: ZoomPageTransitionsBuilder(),
+          TargetPlatform.windows: ZoomPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: ZoomPageTransitionsBuilder(),
+        },
       ),
-      cardTheme: const CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+      // Flat cards with a soft tint: cheaper to draw than elevation shadows
+      // and they read cleaner on long lists.
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: scheme.surfaceContainerLow,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+      listTileTheme: ListTileThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        showDragHandle: true,
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: scheme.surfaceContainerHigh.withValues(alpha: 0.5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: scheme.primary, width: 2),
+        ),
       ),
     );
   }
