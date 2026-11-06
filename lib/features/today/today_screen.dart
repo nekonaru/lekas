@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/date_util.dart';
@@ -7,6 +8,7 @@ import '../../domain/focus.dart';
 import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
 import '../../core/components/undo_snackbar.dart';
+import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -29,15 +31,17 @@ class _WarningEntry extends _Entry {
 }
 
 class _TitleEntry extends _Entry {
-  const _TitleEntry(this.section);
+  const _TitleEntry(this.section, this.count);
 
   final TodaySection section;
+  final int count;
 }
 
 class _TaskEntry extends _Entry {
-  const _TaskEntry(this.task);
+  const _TaskEntry(this.task, this.score);
 
   final Task task;
+  final double score;
 }
 
 class TodayScreen extends ConsumerStatefulWidget {
@@ -50,6 +54,10 @@ class TodayScreen extends ConsumerStatefulWidget {
 class _TodayScreenState extends ConsumerState<TodayScreen> {
   int? _inboxCount;
   bool? _notificationsOn;
+
+  /// The FAB slides away while the list scrolls down and comes back on the
+  /// first upward scroll, so it never covers the card being read.
+  bool _fabVisible = true;
 
   /// Tasks picked by a long press, for the bulk actions of design 5.5.
   final Set<String> _selection = {};
@@ -520,6 +528,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           final now = DateTime.now();
 
           final Map<TodaySection, List<Task>> sections = {};
+          final scoresById = <String, double>{};
           for (final task in allTasks) {
             // Design section 5.24: today's focus gets its own group, 5.9
             // pins come next, and everything else follows the score.
@@ -533,8 +542,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           sections.forEach((section, tasks) {
             // The score only depends on the task and the current minute, so
-            // it is computed once per task; recomputing it inside the
-            // comparison ran it twice per pair the sort compares.
+            // it is computed once per task, kept for the row widget, and
+            // never recomputed while the card is on screen; recomputing it
+            // inside the comparison ran it twice per pair the sort compares.
             final scores = <String, double>{
               for (final task in tasks)
                 task.id: urgencyScore(
@@ -547,6 +557,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                   estimateMinutes: task.estimateMinutes,
                 ),
             };
+            scoresById.addAll(scores);
             tasks.sort((a, b) =>
                 scores[b.id]!.compareTo(scores[a.id]!));
           });
@@ -554,36 +565,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           if (allTasks.isEmpty) {
             final warning = _warningCard(l10n, allTasks, now);
             if (warning == null) {
-              final colors = Theme.of(context).colorScheme;
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        color: colors.primaryContainer,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.check_circle_outline,
-                        size: 48,
-                        color: colors.onPrimaryContainer,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        l10n.emptyToday,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return const _EmptyToday();
             }
             return ListView(
               children: [
@@ -616,52 +598,78 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
               TodaySection.someday,
             ])
               if (sections[section]?.isNotEmpty ?? false) ...[
-                _TitleEntry(section),
-                for (final task in sections[section]!) _TaskEntry(task),
+                _TitleEntry(section, sections[section]!.length),
+                for (final task in sections[section]!)
+                  _TaskEntry(task, scoresById[task.id]!),
               ],
           ];
 
-          return ListView.builder(
-            // Bottom padding keeps the last card clear of the FAB instead
-            // of hiding behind it while scrolling to the end.
-            padding: const EdgeInsets.only(bottom: 88),
-            itemCount: entries.length,
-            itemBuilder: (context, index) {
-              final entry = entries[index];
-              return switch (entry) {
-                _WarningEntry(:final warning) => KeyedSubtree(
-                    key: const ValueKey('today-warning'),
-                    child: warning,
-                  ),
-                _TitleEntry(:final section) => TaskSectionHeader(
-                    key: ValueKey('today-title:$section'),
-                    section: section,
-                  ),
-                _TaskEntry(:final task) => TaskCard(
-                    key: ValueKey('today-task:${task.id}'),
-                    task: task,
-                    now: now,
-                    locale: locale,
-                    selected: _isSelected(task),
-                    onTaskTap: _onTaskTap,
-                    onTaskDone: _completeOne,
-                    onTaskSnooze: _openSnooze,
-                    onTaskLongPress: _onTaskLongPress,
-                  ),
-              };
+          return NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+              final visible =
+                  notification.direction != ScrollDirection.reverse;
+              if (visible != _fabVisible) {
+                setState(() => _fabVisible = visible);
+              }
+              return false;
             },
+            child: ListView.builder(
+              // Bottom padding keeps the last card clear of the FAB instead
+              // of hiding behind it while scrolling to the end.
+              padding: const EdgeInsets.only(bottom: 88),
+              addAutomaticKeepAlives: false,
+              itemCount: entries.length,
+              itemBuilder: (context, index) {
+                final entry = entries[index];
+                return switch (entry) {
+                  _WarningEntry(:final warning) => KeyedSubtree(
+                      key: const ValueKey('today-warning'),
+                      child: warning,
+                    ),
+                  _TitleEntry(:final section, :final count) => TaskSectionHeader(
+                      key: ValueKey('today-title:$section'),
+                      section: section,
+                      count: count,
+                    ),
+                  _TaskEntry(:final task, :final score) => TaskCard(
+                      key: ValueKey('today-task:${task.id}'),
+                      task: task,
+                      now: now,
+                      locale: locale,
+                      score: score,
+                      selected: _isSelected(task),
+                      onTaskTap: _onTaskTap,
+                      onTaskDone: _completeOne,
+                      onTaskSnooze: _openSnooze,
+                      onTaskLongPress: _onTaskLongPress,
+                    ),
+                };
+              },
+            ),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (_) => const TaskFormSheet(),
-          );
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: IgnorePointer(
+        ignoring: !_fabVisible,
+        child: AnimatedSlide(
+          duration: AppMotion.normal,
+          curve: AppMotion.ease,
+          offset: _fabVisible ? Offset.zero : const Offset(0, 1.4),
+          child: AnimatedScale(
+            duration: AppMotion.fast,
+            scale: _fabVisible ? 1 : 0.6,
+            child: FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const TaskFormSheet(),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -699,5 +707,70 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       return TodaySection.thisWeek;
     }
     return TodaySection.upcoming;
+  }
+}
+
+/// The empty Today screen: a tinted check and the message, fading and
+/// scaling in once. The animation is finite, so tests can settle on it.
+class _EmptyToday extends StatefulWidget {
+  const _EmptyToday();
+
+  @override
+  State<_EmptyToday> createState() => _EmptyTodayState();
+}
+
+class _EmptyTodayState extends State<_EmptyToday>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _entrance = AnimationController(
+    vsync: this,
+    duration: AppMotion.normal,
+  )..forward();
+
+  @override
+  void dispose() {
+    _entrance.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
+    final curve = CurvedAnimation(parent: _entrance, curve: AppMotion.ease);
+    return Center(
+      child: FadeTransition(
+        opacity: curve,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.92, end: 1).animate(curve),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  color: colors.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.check_circle_outline,
+                  size: 48,
+                  color: colors.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  l10n.emptyToday,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

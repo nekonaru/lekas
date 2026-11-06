@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart' show Locale, ThemeMode;
+import 'package:flutter/material.dart' show Color, Locale, ThemeMode;
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'database.dart';
@@ -167,5 +167,29 @@ final themeModeProvider = FutureProvider<ThemeMode>((ref) async {
       return ThemeMode.dark;
     default:
       return ThemeMode.system;
+  }
+});
+
+/// Accent color of the whole app, stored as an ARGB hex string. Null falls
+/// back to the built in indigo.
+final accentColorProvider = FutureProvider<Color?>((ref) async {
+  final repo = ref.watch(settingsRepositoryProvider);
+  final value = int.tryParse(await repo.get('accent_color') ?? '');
+  return value == null ? null : Color(value);
+});
+
+/// Text scale multiplier on top of the system setting. One of 0.85, 1.0,
+/// 1.15 or 1.3, stored as a short word and defaulted to normal.
+final fontScaleProvider = FutureProvider<double>((ref) async {
+  final repo = ref.watch(settingsRepositoryProvider);
+  switch (await repo.get('font_scale')) {
+    case 'small':
+      return 0.85;
+    case 'large':
+      return 1.15;
+    case 'xlarge':
+      return 1.3;
+    default:
+      return 1.0;
   }
 });

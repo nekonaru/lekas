@@ -217,6 +217,8 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final onboarded = ref.watch(onboardedProvider);
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final accent = ref.watch(accentColorProvider);
+    final fontScale = ref.watch(fontScaleProvider);
     // Keeps the schedule in line with every task change.
     ref.watch(reminderSyncProvider);
     // One soft notice when a completion frees a waiting task (design 5.27).
@@ -238,9 +240,21 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       locale: locale.value ?? const Locale('id'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
+      theme: AppTheme.lightTheme(seed: accent.valueOrNull),
+      darkTheme: AppTheme.darkTheme(seed: accent.valueOrNull),
       themeMode: themeMode.value ?? ThemeMode.system,
+      // Multiplies the chosen font size on top of the system text scale, so
+      // the accessibility setting of the phone keeps working.
+      builder: (context, child) {
+        final scale =
+            MediaQuery.textScalerOf(context).scale(1.0) *
+                (fontScale.valueOrNull ?? 1.0);
+        return MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(scale)),
+          child: child!,
+        );
+      },
       home: _Home(onboarded: onboarded),
     );
   }

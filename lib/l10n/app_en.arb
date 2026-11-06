@@ -539,5 +539,12 @@
   "micUnavailable": "Speech recognition is not available on this device.",
   "micPermissionDenied": "Microphone permission is needed for Voice Quick Add.",
   "voiceListening": "Listening...",
-  "appVersionLabel": "App version"
+  "appVersionLabel": "App version",
+  "accentColor": "Accent color",
+  "fontSize": "Font size",
+  "fontSmall": "Small",
+  "fontNormal": "Normal",
+  "fontLarge": "Large",
+  "fontXlarge": "Extra large",
+  "colorDefault": "Default"
 }

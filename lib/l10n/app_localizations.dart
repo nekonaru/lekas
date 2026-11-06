@@ -2941,6 +2941,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Versi aplikasi'**
   String get appVersionLabel;
+
+  /// No description provided for @accentColor.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna aksen'**
+  String get accentColor;
+
+  /// No description provided for @fontSize.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran font'**
+  String get fontSize;
+
+  /// No description provided for @fontSmall.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecil'**
+  String get fontSmall;
+
+  /// No description provided for @fontNormal.
+  ///
+  /// In id, this message translates to:
+  /// **'Normal'**
+  String get fontNormal;
+
+  /// No description provided for @fontLarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Besar'**
+  String get fontLarge;
+
+  /// No description provided for @fontXlarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Sangat besar'**
+  String get fontXlarge;
+
+  /// No description provided for @colorDefault.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawaan'**
+  String get colorDefault;
 }
 
 class _AppLocalizationsDelegate

@@ -539,5 +539,12 @@
   "micUnavailable": "Pengenalan suara tidak tersedia di perangkat ini.",
   "micPermissionDenied": "Izin mikrofon diperlukan untuk Quick Add suara.",
   "voiceListening": "Mendengarkan...",
-  "appVersionLabel": "Versi aplikasi"
+  "appVersionLabel": "Versi aplikasi",
+  "accentColor": "Warna aksen",
+  "fontSize": "Ukuran font",
+  "fontSmall": "Kecil",
+  "fontNormal": "Normal",
+  "fontLarge": "Besar",
+  "fontXlarge": "Sangat besar",
+  "colorDefault": "Bawaan"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
+import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../reminders/reminder_service.dart';
@@ -26,6 +27,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _language;
   ThemeMode? _themeMode;
+  Color? _accent;
+  double _fontScale = 1.0;
   String _intensity = 'normal';
   int _budget = kDailyNotificationBudget;
   bool _overdueDigest = true;
@@ -43,6 +46,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settings = ref.read(settingsRepositoryProvider);
     final language = await settings.getLanguage();
     final themeMode = await ref.read(themeModeProvider.future);
+    final accent = await ref.read(accentColorProvider.future);
+    final fontScale = await ref.read(fontScaleProvider.future);
     final intensity = await settings.get('reminder_intensity');
     final budget = int.tryParse(await settings.get('notification_budget') ?? '');
     final digest = await settings.get('overdue_digest_enabled');
@@ -53,6 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _language = language;
       _themeMode = themeMode;
+      _accent = accent;
+      _fontScale = fontScale;
       _intensity = intensity ?? 'normal';
       _budget = budget ?? kDailyNotificationBudget;
       _overdueDigest = digest != '0';
@@ -106,6 +113,123 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (!mounted) return;
     ref.invalidate(themeModeProvider);
     setState(() => _themeMode = selected);
+  }
+
+  /// The accent recolors the whole app through colorSchemeFromSeed; the
+  /// first swatch resets to the built in indigo.
+  Future<void> _pickAccent() async {
+    final l10n = AppLocalizations.of(context)!;
+    final current = _accent ?? AppTheme.accentColor;
+    final selected = await showDialog<Color>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.accentColor),
+        content: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            _swatch(dialogContext, null, current, l10n.colorDefault),
+            for (final color in AppTheme.containerColors)
+              _swatch(dialogContext, color, current, null),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.closeLabel),
+          ),
+        ],
+      ),
+    );
+    if (selected == null || selected == current) return;
+    await ref
+        .read(settingsRepositoryProvider)
+        .set('accent_color', selected.toARGB32().toString());
+    if (!mounted) return;
+    ref.invalidate(accentColorProvider);
+    setState(() => _accent = selected == AppTheme.accentColor ? null : selected);
+  }
+
+  Widget _swatch(
+    BuildContext dialogContext,
+    Color? color,
+    Color current,
+    String? label,
+  ) {
+    final resolved = color ?? AppTheme.accentColor;
+    final chosen = color == null
+        ? current == AppTheme.accentColor
+        : current.toARGB32() == resolved.toARGB32();
+    return InkWell(
+      onTap: () => Navigator.pop(
+        dialogContext,
+        color ?? AppTheme.accentColor,
+      ),
+      customBorder: const CircleBorder(),
+      child: Tooltip(
+        message: label ?? '',
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: resolved,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: chosen
+                  ? Theme.of(dialogContext).colorScheme.onSurface
+                  : Theme.of(dialogContext).colorScheme.outlineVariant,
+              width: chosen ? 3 : 1,
+            ),
+          ),
+          child: chosen
+              ? Icon(
+                  Icons.check,
+                  size: 20,
+                  color: ThemeData.estimateBrightnessForColor(resolved) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  /// Font size multiplies the system text scale, so the accessibility
+  /// setting of the phone keeps working underneath it.
+  Future<void> _pickFontScale() async {
+    final l10n = AppLocalizations.of(context)!;
+    final options = <String, double>{
+      l10n.fontSmall: 0.85,
+      l10n.fontNormal: 1.0,
+      l10n.fontLarge: 1.15,
+      l10n.fontXlarge: 1.3,
+    };
+    final selected = await showDialog<double>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.fontSize),
+        children: [
+          for (final entry in options.entries)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(dialogContext, entry.value),
+              child: Text(entry.key),
+            ),
+        ],
+      ),
+    );
+    if (selected == null || selected == _fontScale) return;
+    final key = switch (selected) {
+      0.85 => 'small',
+      1.15 => 'large',
+      1.3 => 'xlarge',
+      _ => 'normal',
+    };
+    await ref.read(settingsRepositoryProvider).set('font_scale', key);
+    if (!mounted) return;
+    ref.invalidate(fontScaleProvider);
+    setState(() => _fontScale = selected);
   }
 
   void _push(Widget screen) {
@@ -201,6 +325,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.darkMode),
             subtitle: Text(themeMode.name),
             onTap: _pickThemeMode,
+          ),
+          ListTile(
+            title: Text(l10n.accentColor),
+            subtitle: Text(
+              _accent == null
+                  ? l10n.colorDefault
+                  : '#${_accent!.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
+            ),
+            leading: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: _accent ?? AppTheme.accentColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            onTap: _pickAccent,
+          ),
+          ListTile(
+            title: Text(l10n.fontSize),
+            subtitle: Text(
+              _fontScale == 0.85
+                  ? l10n.fontSmall
+                  : _fontScale == 1.15
+                      ? l10n.fontLarge
+                      : _fontScale == 1.3
+                          ? l10n.fontXlarge
+                          : l10n.fontNormal,
+            ),
+            onTap: _pickFontScale,
           ),
           const Divider(),
           ListTile(

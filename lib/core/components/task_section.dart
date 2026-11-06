@@ -66,15 +66,18 @@ IconData sectionIcon(TodaySection section) {
 }
 
 /// The icon and name row that opens a group. Kept as its own widget so the
-/// Today list can build it straight from a lazy `ListView.builder`.
+/// Today list can build it straight from a lazy `ListView.builder`. The
+/// optional count renders as a quiet pill behind the title.
 class TaskSectionHeader extends StatelessWidget {
-  const TaskSectionHeader({super.key, required this.section});
+  const TaskSectionHeader({super.key, required this.section, this.count});
 
   final TodaySection section;
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
@@ -82,7 +85,7 @@ class TaskSectionHeader extends StatelessWidget {
           Icon(
             sectionIcon(section),
             size: 20,
-            color: Theme.of(context).colorScheme.primary,
+            color: colors.primary,
           ),
           const SizedBox(width: 8),
           Text(
@@ -91,6 +94,24 @@ class TaskSectionHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
           ),
+          if (count != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+              decoration: BoxDecoration(
+                color: colors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                '$count',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -110,6 +131,7 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.now,
     required this.locale,
+    this.score,
     this.selected = false,
     this.onTaskTap,
     this.onTaskDone,
@@ -120,6 +142,11 @@ class TaskCard extends StatelessWidget {
   final Task task;
   final DateTime now;
   final String locale;
+
+  /// Precomputed urgency score from the list owner, so a visible card never
+  /// runs the score twice. Null falls back to computing it here.
+  final double? score;
+
   final bool selected;
 
   /// Tap: open the task, or toggle it while multi select is on.
@@ -138,15 +165,16 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    final score = urgencyScore(
-      now: now,
-      deadline: task.deadline != null
-          ? DateTime.fromMillisecondsSinceEpoch(task.deadline!)
-          : null,
-      priority: task.priority,
-      weightPercent: task.weightPercent,
-      estimateMinutes: task.estimateMinutes,
-    );
+    final score = this.score ??
+        urgencyScore(
+          now: now,
+          deadline: task.deadline != null
+              ? DateTime.fromMillisecondsSinceEpoch(task.deadline!)
+              : null,
+          priority: task.priority,
+          weightPercent: task.weightPercent,
+          estimateMinutes: task.estimateMinutes,
+        );
     final card = Card(
       child: ListTile(
         // The selection check crossfades in over the priority dot instead of

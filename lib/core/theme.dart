@@ -33,17 +33,20 @@ class AppTheme {
 
   static Color get accentColor => const Color(0xFF6366F1);
 
-  static ThemeData lightTheme() => _base(Brightness.light);
+  static ThemeData lightTheme({Color? seed}) => _base(Brightness.light, seed);
 
-  static ThemeData darkTheme() => _base(Brightness.dark);
+  static ThemeData darkTheme({Color? seed}) => _base(Brightness.dark, seed);
 
-  static ThemeData _base(Brightness brightness) {
+  static ThemeData _base(Brightness brightness, Color? seed) {
     final scheme = ColorScheme.fromSeed(
-      seedColor: accentColor,
+      seedColor: seed ?? accentColor,
       brightness: brightness,
     );
     return ThemeData(
       useMaterial3: true,
+      // The bundled Inter family gives every screen its own voice instead
+      // of the platform default.
+      fontFamily: 'Inter',
       colorScheme: scheme,
       // One page transition everywhere: a short zoom that reads smooth on
       // every Android version and finishes fast enough for tests.

@@ -1596,4 +1596,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'App version';
+
+  @override
+  String get accentColor => 'Accent color';
+
+  @override
+  String get fontSize => 'Font size';
+
+  @override
+  String get fontSmall => 'Small';
+
+  @override
+  String get fontNormal => 'Normal';
+
+  @override
+  String get fontLarge => 'Large';
+
+  @override
+  String get fontXlarge => 'Extra large';
+
+  @override
+  String get colorDefault => 'Default';
 }

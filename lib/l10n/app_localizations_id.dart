@@ -1596,4 +1596,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'Versi aplikasi';
+
+  @override
+  String get accentColor => 'Warna aksen';
+
+  @override
+  String get fontSize => 'Ukuran font';
+
+  @override
+  String get fontSmall => 'Kecil';
+
+  @override
+  String get fontNormal => 'Normal';
+
+  @override
+  String get fontLarge => 'Besar';
+
+  @override
+  String get fontXlarge => 'Sangat besar';
+
+  @override
+  String get colorDefault => 'Bawaan';
 }
