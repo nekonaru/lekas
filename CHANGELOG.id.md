@@ -2,6 +2,25 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.3.0 - Warna kustom, ukuran font, dan Inter
+
+### Fitur baru
+
+- **Warna aksen.** Pilih warna seluruh aplikasi di Pengaturan: dua belas pilihan plus indigo bawaan, langsung berlaku di semua layar dan kontrol.
+- **Ukuran font.** Empat pilihan ukuran teks yang mengalikan skala aksesibilitas HP, jadi pengaturan sistem tetap jalan di bawahnya.
+- **Tipografi Inter.** Aplikasi membawa huruf Inter dalam empat ketebalan, memberi judul, kartu dan chip tampilan yang rapi dan khas.
+
+### Optimisasi
+
+- **Tombol tambah sadar gulir.** Tombol tambah bergeser menghilang saat menggulir ke bawah dan kembali pada guliran pertama ke atas.
+- **Hitungan seksi.** Setiap judul seksi di Today menampilkan jumlah tugasnya dalam pill kecil.
+- **Masuk yang lembut.** Layar Today yang kosong tampil dengan fade dan skala sekali, bukan muncul mendadak.
+- **Pembangunan ulang lebih ramping.** Kartu menerima skor urgensi yang sudah dihitung, dan daftar melepas keep alive otomatis.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.2.0 - Antarmuka lebih halus dan daftar lebih ringan
 
 ### Optimisasi

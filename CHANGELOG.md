@@ -2,6 +2,25 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.3.0 - Custom colors, font size and Inter
+
+### New features
+
+- **Accent color.** Pick the color of the whole app in Settings: twelve curated seeds plus the built in indigo, applied to every screen and control at once.
+- **Font size.** Four text sizes that multiply the phone's own accessibility scale, so the system setting keeps working underneath.
+- **Inter typography.** The app ships the Inter typeface in four weights, giving headings, cards and chips a distinct tidy voice.
+
+### Optimizations
+
+- **Scroll aware add button.** The add button slides away while scrolling down and returns on the first upward scroll.
+- **Section counts.** Every Today section header shows how many tasks sit in it as a quiet pill.
+- **Gentle entrances.** The empty Today screen fades and scales in once instead of popping.
+- **Leaner rebuilds.** Cards receive their urgency score precomputed, and lists skip automatic keep alives.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.2.0 - Smoother interface and lighter lists
 
 ### Optimizations
