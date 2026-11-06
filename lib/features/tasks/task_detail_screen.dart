@@ -67,9 +67,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            task.title,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                          Hero(
+                            tag: 'task-title:${task.id}',
+                            child: Text(
+                              task.title,
+                              style:
+                                  Theme.of(context).textTheme.headlineSmall,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           if (task.notes != null && task.notes!.isNotEmpty)

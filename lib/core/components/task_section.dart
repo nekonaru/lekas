@@ -133,6 +133,7 @@ class TaskCard extends StatelessWidget {
     required this.locale,
     this.score,
     this.selected = false,
+    this.enableHero = false,
     this.onTaskTap,
     this.onTaskDone,
     this.onTaskSnooze,
@@ -148,6 +149,11 @@ class TaskCard extends StatelessWidget {
   final double? score;
 
   final bool selected;
+
+  /// Opts the title into a hero flight to the detail screen. Only the owner
+  /// of the screen the task list lives on may turn it on: two visible cards
+  /// with the same tag would collide during a shared transition.
+  final bool enableHero;
 
   /// Tap: open the task, or toggle it while multi select is on.
   final void Function(Task)? onTaskTap;
@@ -198,7 +204,12 @@ class TaskCard extends StatelessWidget {
                 ),
         ),
         selected: selected,
-        title: Text(task.title),
+        title: enableHero
+            ? Hero(
+                tag: 'task-title:${task.id}',
+                child: Text(task.title),
+              )
+            : Text(task.title),
         subtitle: Text(_subtitleText(l10n)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

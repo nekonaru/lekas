@@ -638,6 +638,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                       locale: locale,
                       score: score,
                       selected: _isSelected(task),
+                      enableHero: true,
                       onTaskTap: _onTaskTap,
                       onTaskDone: _completeOne,
                       onTaskSnooze: _openSnooze,

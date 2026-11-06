@@ -2983,6 +2983,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Bawaan'**
   String get colorDefault;
+
+  /// No description provided for @previewLight.
+  ///
+  /// In id, this message translates to:
+  /// **'Terang'**
+  String get previewLight;
+
+  /// No description provided for @previewDark.
+  ///
+  /// In id, this message translates to:
+  /// **'Gelap'**
+  String get previewDark;
+
+  /// No description provided for @presetMidnight.
+  ///
+  /// In id, this message translates to:
+  /// **'Tengah malam'**
+  String get presetMidnight;
+
+  /// No description provided for @presetSunset.
+  ///
+  /// In id, this message translates to:
+  /// **'Senja'**
+  String get presetSunset;
+
+  /// No description provided for @presetForest.
+  ///
+  /// In id, this message translates to:
+  /// **'Hutan'**
+  String get presetForest;
 }
 
 class _AppLocalizationsDelegate

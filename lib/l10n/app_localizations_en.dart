@@ -1617,4 +1617,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colorDefault => 'Default';
+
+  @override
+  String get previewLight => 'Light';
+
+  @override
+  String get previewDark => 'Dark';
+
+  @override
+  String get presetMidnight => 'Midnight';
+
+  @override
+  String get presetSunset => 'Sunset';
+
+  @override
+  String get presetForest => 'Forest';
 }

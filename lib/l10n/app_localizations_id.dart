@@ -1617,4 +1617,19 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get colorDefault => 'Bawaan';
+
+  @override
+  String get previewLight => 'Terang';
+
+  @override
+  String get previewDark => 'Gelap';
+
+  @override
+  String get presetMidnight => 'Tengah malam';
+
+  @override
+  String get presetSunset => 'Senja';
+
+  @override
+  String get presetForest => 'Hutan';
 }

@@ -546,5 +546,10 @@
   "fontNormal": "Normal",
   "fontLarge": "Large",
   "fontXlarge": "Extra large",
-  "colorDefault": "Default"
+  "colorDefault": "Default",
+  "previewLight": "Light",
+  "previewDark": "Dark",
+  "presetMidnight": "Midnight",
+  "presetSunset": "Sunset",
+  "presetForest": "Forest"
 }

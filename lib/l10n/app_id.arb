@@ -546,5 +546,10 @@
   "fontNormal": "Normal",
   "fontLarge": "Besar",
   "fontXlarge": "Sangat besar",
-  "colorDefault": "Bawaan"
+  "colorDefault": "Bawaan",
+  "previewLight": "Terang",
+  "previewDark": "Gelap",
+  "presetMidnight": "Tengah malam",
+  "presetSunset": "Senja",
+  "presetForest": "Hutan"
 }

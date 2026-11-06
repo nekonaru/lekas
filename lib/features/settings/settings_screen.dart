@@ -115,85 +115,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() => _themeMode = selected);
   }
 
-  /// The accent recolors the whole app through colorSchemeFromSeed; the
-  /// first swatch resets to the built in indigo.
+  /// Opens the accent picker. The result carries an optional color and an
+  /// optional theme mode, because the presets set both at once.
   Future<void> _pickAccent() async {
-    final l10n = AppLocalizations.of(context)!;
-    final current = _accent ?? AppTheme.accentColor;
-    final selected = await showDialog<Color>(
+    final pick = await showDialog<AccentPick>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.accentColor),
-        content: Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            _swatch(dialogContext, null, current, l10n.colorDefault),
-            for (final color in AppTheme.containerColors)
-              _swatch(dialogContext, color, current, null),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.closeLabel),
-          ),
-        ],
-      ),
+      builder: (dialogContext) =>
+          _AccentPickerDialog(current: _accent ?? AppTheme.accentColor),
     );
-    if (selected == null || selected == current) return;
-    await ref
-        .read(settingsRepositoryProvider)
-        .set('accent_color', selected.toARGB32().toString());
+    if (pick == null) return;
+    if (pick.color == null && pick.mode == null) return;
+    final repository = ref.read(settingsRepositoryProvider);
+    await repository.set(
+      'accent_color',
+      pick.color == null ? '' : pick.color!.toARGB32().toString(),
+    );
+    if (pick.mode != null) {
+      await repository.set('theme_mode', pick.mode!.name);
+    }
     if (!mounted) return;
     ref.invalidate(accentColorProvider);
-    setState(() => _accent = selected == AppTheme.accentColor ? null : selected);
-  }
-
-  Widget _swatch(
-    BuildContext dialogContext,
-    Color? color,
-    Color current,
-    String? label,
-  ) {
-    final resolved = color ?? AppTheme.accentColor;
-    final chosen = color == null
-        ? current == AppTheme.accentColor
-        : current.toARGB32() == resolved.toARGB32();
-    return InkWell(
-      onTap: () => Navigator.pop(
-        dialogContext,
-        color ?? AppTheme.accentColor,
-      ),
-      customBorder: const CircleBorder(),
-      child: Tooltip(
-        message: label ?? '',
-        child: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: resolved,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: chosen
-                  ? Theme.of(dialogContext).colorScheme.onSurface
-                  : Theme.of(dialogContext).colorScheme.outlineVariant,
-              width: chosen ? 3 : 1,
-            ),
-          ),
-          child: chosen
-              ? Icon(
-                  Icons.check,
-                  size: 20,
-                  color: ThemeData.estimateBrightnessForColor(resolved) ==
-                          Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                )
-              : null,
-        ),
-      ),
-    );
+    ref.invalidate(themeModeProvider);
+    setState(() {
+      _accent = (pick.color == null || pick.color == AppTheme.accentColor)
+          ? null
+          : pick.color;
+      if (pick.mode != null) _themeMode = pick.mode;
+    });
   }
 
   /// Font size multiplies the system text scale, so the accessibility
@@ -476,6 +424,171 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             subtitle: Text(appVersion),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// What the accent dialog hands back: a color, a theme mode, or both.
+class AccentPick {
+  const AccentPick({this.color, this.mode});
+
+  /// Null means the built in indigo.
+  final Color? color;
+
+  /// Null means keep the current mode.
+  final ThemeMode? mode;
+}
+
+/// The accent picker: a light and dark preview toggle, swatches rendered
+/// with the colors the seed actually produces, and one tap presets.
+class _AccentPickerDialog extends StatefulWidget {
+  const _AccentPickerDialog({required this.current});
+
+  final Color current;
+
+  @override
+  State<_AccentPickerDialog> createState() => _AccentPickerDialogState();
+}
+
+class _AccentPickerDialogState extends State<_AccentPickerDialog> {
+  bool? _darkPreview;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    _darkPreview ??= Theme.of(context).brightness == Brightness.dark;
+    final previewBrightness =
+        _darkPreview! ? Brightness.dark : Brightness.light;
+
+    return AlertDialog(
+      title: Text(l10n.accentColor),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment(
+                value: false,
+                icon: const Icon(Icons.light_mode_outlined, size: 18),
+                label: Text(l10n.previewLight),
+              ),
+              ButtonSegment(
+                value: true,
+                icon: const Icon(Icons.dark_mode_outlined, size: 18),
+                label: Text(l10n.previewDark),
+              ),
+            ],
+            selected: {_darkPreview!},
+            onSelectionChanged: (selection) =>
+                setState(() => _darkPreview = selection.first),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _previewSwatch(null, previewBrightness, l10n.colorDefault),
+              for (final color in AppTheme.containerColors)
+                _previewSwatch(color, previewBrightness, null),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ActionChip(
+                label: Text(l10n.colorDefault),
+                onPressed: () => Navigator.pop(
+                  context,
+                  const AccentPick(color: null, mode: null),
+                ),
+              ),
+              ActionChip(
+                label: Text(l10n.presetMidnight),
+                onPressed: () => Navigator.pop(
+                  context,
+                  const AccentPick(
+                    color: Color(0xFF312E81),
+                    mode: ThemeMode.dark,
+                  ),
+                ),
+              ),
+              ActionChip(
+                label: Text(l10n.presetSunset),
+                onPressed: () => Navigator.pop(
+                  context,
+                  const AccentPick(color: Color(0xFFF97316), mode: null),
+                ),
+              ),
+              ActionChip(
+                label: Text(l10n.presetForest),
+                onPressed: () => Navigator.pop(
+                  context,
+                  const AccentPick(color: Color(0xFF10B981), mode: null),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.closeLabel),
+        ),
+      ],
+    );
+  }
+
+  /// One swatch drawn with the container colors the seed produces in the
+  /// previewed brightness, so what you tap is what the app becomes.
+  Widget _previewSwatch(
+    Color? color,
+    Brightness previewBrightness,
+    String? label,
+  ) {
+    final resolved = color ?? AppTheme.accentColor;
+    final scheme = ColorScheme.fromSeed(
+      seedColor: resolved,
+      brightness: previewBrightness,
+    );
+    final chosen =
+        widget.current.toARGB32() == resolved.toARGB32();
+    return InkWell(
+      onTap: () => Navigator.pop(
+        context,
+        AccentPick(color: color, mode: null),
+      ),
+      borderRadius: BorderRadius.circular(12),
+      child: Tooltip(
+        message: label ?? '',
+        child: Container(
+          width: 72,
+          height: 48,
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: chosen
+                  ? scheme.onSurface
+                  : scheme.outlineVariant,
+              width: chosen ? 3 : 1,
+            ),
+          ),
+          child: Center(
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: scheme.primary,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
