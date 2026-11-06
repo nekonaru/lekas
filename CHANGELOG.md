@@ -2,6 +2,22 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.4.0 - Theme presets and hero transitions
+
+### New features
+
+- **Theme presets.** One tap applies a whole look: Midnight switches to a dark deep indigo, Sunset warms the app orange, Forest cools it emerald, and Default returns everything to the built in style.
+- **Light and dark preview.** The accent picker shows what each seed produces in both brightnesses before you commit to it, with swatches drawn from the real generated palette.
+
+### Optimizations
+
+- **Hero transitions.** Opening a task from Today carries its title into the detail screen and back as one continuous motion.
+- **Safer transitions.** Only the Today list opts into hero flights, so screens that stack over each other can never collide on a shared tag.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.3.0 - Custom colors, font size and Inter
 
 ### New features

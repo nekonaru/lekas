@@ -2,6 +2,22 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.4.0 - Preset tema dan transisi hero
+
+### Fitur baru
+
+- **Preset tema.** Satu ketukan menerapkan tampilan utuh: Tengah malam beralih ke indigo gelap, Senja menghangatkan aplikasi dengan oranye, Hutan mendinginkan dengan hijau emerald, dan Bawaan mengembalikan semuanya ke gaya asli.
+- **Pratinjau terang dan gelap.** Pemilih warna menunjukkan hasil setiap warna di kedua mode terang sebelum kamu memilihnya, dengan swatch dari palet asli yang dihasilkan.
+
+### Optimisasi
+
+- **Transisi hero.** Membuka tugas dari Today membawa judulnya ke layar detail dan kembali sebagai satu gerakan menyambung.
+- **Transisi lebih aman.** Hanya daftar Today yang memakai penerbangan hero, sehingga layar yang bertumpuk tidak pernah bertabrakan pada tag yang sama.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.3.0 - Warna kustom, ukuran font, dan Inter
 
 ### Fitur baru
