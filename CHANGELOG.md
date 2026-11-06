@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.2.0 - Smoother interface and lighter lists
+
+### Optimizations
+
+- **Shared motion.** Tab switches, page pushes and card actions now use one easing curve and timing, so every movement reads as the same calm motion.
+- **Selection animation.** Marking a task in multi select crossfades the check over the priority dot instead of swapping it instantly.
+- **Modern surfaces.** Cards, snackbars, dialogs, sheets and form fields follow one Material 3 shape language, and every modal sheet gains a drag handle.
+- **Calmer drawer.** The drawer opens with a compact branded header instead of a full grey block.
+- **Friendlier empty state.** An empty Today screen shows a tinted check icon and a centered title instead of a grey glyph.
+- **Lighter lists.** The urgency score sits in a quiet pill, the swipe reveal is rounded like the cards, and the last task scrolls clear of the action button.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.1.0 - Task dependencies and smarter Quick Add
 
 ### New features

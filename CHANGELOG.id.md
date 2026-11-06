@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.2.0 - Antarmuka lebih halus dan daftar lebih ringan
+
+### Optimisasi
+
+- **Gerak bersama.** Pindah tab, buka halaman dan aksi kartu kini memakai satu kurva dan durasi yang sama, sehingga semua gerakan terasa tenang dan konsisten.
+- **Animasi seleksi.** Menandai tugas dalam mode multi pilih menampilkan centang dengan crossfade di atas titik prioritas, bukan berganti seketika.
+- **Permukaan modern.** Kartu, snackbar, dialog, bottom sheet dan kolom form memakai satu bahasa bentuk Material 3, dan semua modal sheet kini punya drag handle.
+- **Drawer lebih tenang.** Drawer dibuka dengan header ringkas berlogo, bukan blok abu besar.
+- **Layar kosong lebih ramah.** Today yang kosong menampilkan ikon centang berwarna dan judul di tengah, bukan glif abu.
+- **Daftar lebih ringan.** Skor urgensi tampil dalam pill kecil, gerak swipe berbentuk rounded seperti kartu, dan tugas terakhir tergulir bebas dari tombol aksi.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.1.0 - Dependensi tugas dan Quick Add yang lebih pintar
 
 ### Fitur baru
