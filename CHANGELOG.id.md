@@ -2,6 +2,16 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.4.1 - Perbaikan crash saat dibuka pada build release
+
+### Perbaikan bug
+
+- **Tidak ada lagi force close saat dibuka.** Penyusut build release memotong kelas database WorkManager yang Android inisialisasi sebelum frame pertama, sehingga APK release mati begitu dibuka di HP asli sementara build debug tetap jalan. Kelas tersebut kini dijaga, dan aplikasi terbuka normal.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.4.0 - Preset tema dan transisi hero
 
 ### Fitur baru

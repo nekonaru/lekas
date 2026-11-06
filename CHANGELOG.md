@@ -2,6 +2,16 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.4.1 - Fix the release startup crash
+
+### Bug fixes
+
+- **No more force close on launch.** The release shrinker stripped the WorkManager database classes that Android initializes before the first frame, so the release APK died the moment it opened on real devices while debug builds kept working. The classes are now preserved, and the app opens normally.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.4.0 - Theme presets and hero transitions
 
 ### New features
