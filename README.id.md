@@ -239,10 +239,12 @@ lekas/
 │   ├── domain/                   # skor urgensi dan aturan fokus
 │   ├── features/                 # satu folder per layar (home, today, quick_add, share_intake, ...)
 │   ├── l10n/                     # app_id.arb, app_en.arb, dan lokalisasi hasil generate
+│   ├── lock/                     # kunci aplikasi: hash PIN, layanan, layar buka kunci
 │   ├── parser/                   # normalizer, time extractor, matcher, kamus per bahasa
 │   ├── reminders/                # layanan pengingat, kebijakan notifikasi, rangkuman digest
 │   └── voice/                    # pembungkus speech di balik Voice Quick Add
 ├── test/                         # unit dan widget test, satu *_test.dart per area
+├── tool/                         # generator logo, subset font, audit glif
 ├── l10n.yaml                     # konfigurasi lokalisasi
 ├── .github/
 │   └── workflows/

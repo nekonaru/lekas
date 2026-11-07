@@ -39,6 +39,10 @@ Download the APK matching your device below (`app-arm64-v8a-release.apk` for mos
 
 - **Refreshed app icon.** The bolt is replaced with a bold white check on the same indigo to violet gradient, including the launcher icon, the rounded and adaptive variants, and the in app logo. The check stays clear at small sizes.
 
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.5.0 - New logo and polished interface
 
 ### New features

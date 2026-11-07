@@ -39,6 +39,10 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 
 - **Ikon aplikasi baru.** Petir diganti dengan centang putih tebal di gradasi indigo ke violet yang sama, termasuk ikon launcher, varian bundar dan adaptif, serta logo di dalam aplikasi. Centang tetap jelas pada ukuran kecil.
 
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.5.0 - Logo baru dan tampilan yang lebih rapi
 
 ### Fitur baru

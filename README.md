@@ -239,10 +239,12 @@ lekas/
 │   ├── domain/                   # urgency score and focus rules
 │   ├── features/                 # one folder per screen (home, today, quick_add, share_intake, ...)
 │   ├── l10n/                     # app_id.arb, app_en.arb and the generated localizations
+│   ├── lock/                     # app lock: PIN hash, service, unlock screen
 │   ├── parser/                   # normalizer, time extractor, matcher, dictionaries per language
 │   ├── reminders/                # reminder service, notification policy, digest summaries
 │   └── voice/                    # speech wrapper behind Voice Quick Add
 ├── test/                         # unit and widget tests, one *_test.dart per area
+├── tool/                         # logo generator, font subsetter, glyph auditor
 ├── l10n.yaml                     # localization config
 ├── .github/
 │   └── workflows/
