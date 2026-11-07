@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/bulk_action_bar.dart';
+import '../../core/components/empty_state.dart';
 import '../../core/components/undo_snackbar.dart';
 import '../../core/date_util.dart';
 import '../../data/providers.dart';
@@ -112,7 +113,7 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
           final tasks = snapshot.data ?? const <Task>[];
           _tasks = tasks;
           if (tasks.isEmpty) {
-            return Center(child: Text(l10n.emptyTrash));
+            return EmptyState(message: l10n.emptyTrash, icon: Icons.delete_outline);
           }
 
           return ListView.builder(

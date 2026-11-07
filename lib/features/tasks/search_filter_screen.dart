@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
+import '../../core/components/empty_state.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -344,7 +345,7 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   Widget _taskList(List<Task> tasks, AppLocalizations l10n) {
     _shown = tasks;
     if (tasks.isEmpty) {
-      return Center(child: Text(l10n.emptyTaskList));
+      return EmptyState(message: l10n.emptyTaskList, icon: Icons.search);
     }
     final selecting = _selection.isNotEmpty;
     return ListView.builder(

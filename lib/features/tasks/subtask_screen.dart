@@ -115,7 +115,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           if (_titleController.text.isEmpty) return;
           // New rows append after the last one the list shows instead of
@@ -134,7 +134,8 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
           _titleController.clear();
           if (mounted) setState(() {});
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.addLabel),
       ),
     );
   }

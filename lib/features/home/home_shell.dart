@@ -138,7 +138,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(labels[_i]),
+        title: AnimatedSwitcher(
+          duration: AppMotion.fast,
+          switchInCurve: AppMotion.ease,
+          switchOutCurve: AppMotion.ease,
+          transitionBuilder: (child, animation) =>
+              FadeTransition(opacity: animation, child: child),
+          child: Text(
+            labels[_i],
+            key: ValueKey(labels[_i]),
+          ),
+        ),
         actions: [
           if (_i == 0)
             IconButton(
@@ -150,25 +160,28 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       drawer: NavigationDrawer(
         children: [
-          // A compact branded header instead of a full DrawerHeader: it
-          // keeps the drawer from feeling like a wall of grey.
-          SafeArea(
-            top: true,
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-              child: Row(
-                children: [
-                  const LekasLogo(size: 44),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Lekas',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ],
+          // The brand band: the indigo to violet gradient behind the logo,
+          // so the drawer opens with the same mark as the launcher.
+          Container(
+            decoration: BoxDecoration(gradient: AppTheme.brandGradient),
+            child: SafeArea(
+              top: true,
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                child: Row(
+                  children: [
+                    const LekasLogo(size: 44),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Lekas',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

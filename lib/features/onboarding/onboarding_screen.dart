@@ -41,7 +41,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              const FadeSlideIn(child: Center(child: LekasLogo(size: 72))),
+              // The brand band: the launcher gradient carries the logo, so
+              // the first frame already looks like the app.
+              Container(
+                decoration: BoxDecoration(
+                  gradient: AppTheme.brandGradient,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: const FadeSlideIn(
+                    child: Center(child: LekasLogo(size: 72))),
+              ),
               const SizedBox(height: 20),
               Text(
                 _step == 0 ? l10n.welcome : l10n.addFirstSpace,

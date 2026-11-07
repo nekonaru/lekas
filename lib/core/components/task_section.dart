@@ -82,12 +82,23 @@ class TaskSectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
-          Icon(
-            sectionIcon(section),
-            size: 20,
-            color: colors.primary,
+          // The glyph sits in its own tinted disc, so a section reads the
+          // same as a row at a glance.
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: colors.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              sectionIcon(section),
+              size: 18,
+              color: colors.onPrimaryContainer,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Text(
             sectionTitle(section, l10n),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(

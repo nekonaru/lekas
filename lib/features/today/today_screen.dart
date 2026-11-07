@@ -539,7 +539,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           child: AnimatedScale(
             duration: AppMotion.fast,
             scale: _fabVisible ? 1 : 0.6,
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
@@ -547,7 +547,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                   builder: (_) => const TaskFormSheet(),
                 );
               },
-              child: const Icon(Icons.add),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.addTask),
             ),
           ),
         ),

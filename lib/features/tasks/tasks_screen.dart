@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/date_util.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
+import '../../core/components/empty_state.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -81,7 +82,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                 .compareTo(b.deadline ?? 1 << 62));
           _tasks = tasks;
           if (tasks.isEmpty) {
-            return Center(child: Text(l10n.emptyTaskList));
+            return EmptyState(message: l10n.emptyTaskList, icon: Icons.task_alt);
           }
           return ListView.builder(
             itemCount: tasks.length,

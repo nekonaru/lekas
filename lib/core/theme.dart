@@ -38,6 +38,15 @@ class AppTheme {
 
   static Color get accentColor => const Color(0xFF6366F1);
 
+  /// The brand gradient behind the logo bands: the same indigo to violet
+  /// the launcher icon uses, so the drawer and setup headers carry the
+  /// mark wherever the app opens.
+  static LinearGradient get brandGradient => const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+      );
+
   static ThemeData lightTheme({Color? seed}) => _base(Brightness.light, seed);
 
   static ThemeData darkTheme({Color? seed}) => _base(Brightness.dark, seed);
@@ -87,7 +96,7 @@ class AppTheme {
         color: scheme.surfaceContainerLow,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(
             color: scheme.outlineVariant.withValues(alpha: 0.6),
           ),
@@ -119,6 +128,8 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
+        backgroundColor: scheme.inverseSurface,
+        contentTextStyle: TextStyle(color: scheme.onInverseSurface),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
