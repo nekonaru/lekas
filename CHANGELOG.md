@@ -2,6 +2,12 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.5.1 - New app icon
+
+### New features
+
+- **Refreshed app icon.** The bolt is replaced with a bold white check on the same indigo to violet gradient, including the launcher icon, the rounded and adaptive variants, and the in app logo. The check stays clear at small sizes.
+
 ## v1.5.0 - New logo and polished interface
 
 ### New features

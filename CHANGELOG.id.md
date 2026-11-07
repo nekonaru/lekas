@@ -2,6 +2,12 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.5.1 - Ikon aplikasi baru
+
+### Fitur baru
+
+- **Ikon aplikasi baru.** Petir diganti dengan centang putih tebal di gradasi indigo ke violet yang sama, termasuk ikon launcher, varian bundar dan adaptif, serta logo di dalam aplikasi. Centang tetap jelas pada ukuran kecil.
+
 ## v1.5.0 - Logo baru dan tampilan yang lebih rapi
 
 ### Fitur baru
