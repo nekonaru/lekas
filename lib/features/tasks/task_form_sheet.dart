@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -72,11 +73,33 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
             maxLines: 2,
           ),
           const SizedBox(height: 12),
-          DropdownButtonFormField<String>(
-            initialValue: _spaceId,
-            decoration: InputDecoration(labelText: l10n.taskContainer),
-            items: const [],
-            onChanged: (v) => setState(() => _spaceId = v),
+          // The container list loads the live spaces: the old empty list
+          // meant the choice could never actually change, and a stored id
+          // that no longer exists falls back to the inbox instead of
+          // breaking the picker.
+          FutureBuilder<List<Space>>(
+            future: ref.read(spaceRepositoryProvider).getSpaces(),
+            builder: (context, snapshot) {
+              final spaces = snapshot.data ?? const <Space>[];
+              final known = _spaceId == null ||
+                  spaces.any((space) => space.id == _spaceId);
+              return DropdownButtonFormField<String>(
+                initialValue: known ? _spaceId : null,
+                decoration: InputDecoration(labelText: l10n.taskContainer),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: null,
+                    child: Text(l10n.inboxTitle),
+                  ),
+                  for (final space in spaces)
+                    DropdownMenuItem<String>(
+                      value: space.id,
+                      child: Text(space.name),
+                    ),
+                ],
+                onChanged: (v) => setState(() => _spaceId = v),
+              );
+            },
           ),
           const SizedBox(height: 12),
           Row(
@@ -85,10 +108,18 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
               const Spacer(),
               TextButton(
                 onPressed: () async {
+                  final now = DateTime.now();
                   final date = await showDatePicker(
                     context: context,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                    // A kept deadline from the past stays pickable: an edit
+                    // always shows its own date first.
+                    initialDate: _deadline ?? now,
+                    firstDate: _deadline != null &&
+                            _deadline!.isBefore(now)
+                        ? DateTime(_deadline!.year, _deadline!.month,
+                            _deadline!.day)
+                        : now,
+                    lastDate: now.add(const Duration(days: 365)),
                   );
                   if (date != null) {
                     setState(() => _deadline = date);
@@ -139,20 +170,35 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
   Future<void> _save() async {
     if (_titleController.text.isEmpty) return;
     final repo = ref.read(taskRepositoryProvider);
-    final task = Task(
-      id: widget.task?.id ?? const Uuid().v4(),
-      spaceId: _spaceId,
-      title: _titleController.text,
-      notes: _notesController.text.isEmpty ? null : _notesController.text,
-      priority: _priority,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      deadline: _deadline?.millisecondsSinceEpoch,
-      createdAt: widget.task?.createdAt ?? DateTime.now().millisecondsSinceEpoch,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-      inbox: _spaceId == null,
-    );
+    final now = DateTime.now().millisecondsSinceEpoch;
+    // Editing keeps the task's status, pin and group state: the old fresh
+    // copy silently reopened done tasks and unpinned pinned ones.
+    final task = widget.task == null
+        ? Task(
+            id: const Uuid().v4(),
+            spaceId: _spaceId,
+            title: _titleController.text,
+            notes: _notesController.text.isEmpty ? null : _notesController.text,
+            priority: _priority,
+            status: 'todo',
+            isGroup: false,
+            pinned: false,
+            deadline: _deadline?.millisecondsSinceEpoch,
+            createdAt: now,
+            updatedAt: now,
+            inbox: _spaceId == null,
+          )
+        : widget.task!.copyWith(
+            title: _titleController.text,
+            notes: Value(_notesController.text.isEmpty
+                ? null
+                : _notesController.text),
+            spaceId: Value(_spaceId),
+            priority: _priority,
+            deadline: Value(_deadline?.millisecondsSinceEpoch),
+            inbox: _spaceId == null,
+            updatedAt: now,
+          );
     if (widget.task == null) {
       await repo.insertTask(task);
       if (_deadline != null) {
