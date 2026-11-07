@@ -2,6 +2,17 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.7.0 - App lock and calendar day actions
+
+### New features
+
+- **App lock.** A four to six digit PIN (set in Settings, App Lock) gates the app whenever it comes back to the foreground. Only a salted hash is stored, so no PIN ever sits in the database. Changing and disabling always ask for the current PIN first.
+- **Calendar day actions.** Tapping any day opens its due tasks, which can be ticked off and managed in bulk like every other list. Today is highlighted with the dot that marks days with tasks.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.6.0 - Bulk actions, reorder, level switch, refreshed interface
 
 ### New features

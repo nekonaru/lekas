@@ -2,6 +2,17 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.7.0 - Kunci aplikasi dan aksi hari kalender
+
+### Fitur baru
+
+- **Kunci aplikasi.** PIN empat sampai enam digit (diatur di Settings, App Lock) mengunci aplikasi setiap kembali ke foreground. Hanya hash ber-salt yang disimpan, sehingga tidak ada PIN yang tersimpan di database. Mengganti dan mematikan selalu meminta PIN saat ini dulu.
+- **Aksi hari kalender.** Mengetuk hari mana pun membuka tugas jatuh temponya, yang bisa dicentang dan dikelola massal seperti daftar lainnya. Hari ini ditandai dengan titik yang menandai hari bertugas.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.6.0 - Aksi massal, urutan, ganti jenjang, tampilan baru
 
 ### Fitur baru
