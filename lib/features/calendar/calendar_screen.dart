@@ -5,6 +5,7 @@ import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/date_util.dart';
 import '../../l10n/app_localizations.dart';
+import 'day_tasks_screen.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -63,25 +64,51 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     }
                     final day = index - (firstWeekday - 1) + 1;
                     final date = DateTime(_focusedMonth.year, _focusedMonth.month, day);
+                    final today = DateTime.now();
+                    final isToday = DateUtil.isSameDay(date, today);
                     final dayTasks = tasks.where((t) =>
                         t.deadline != null &&
                         DateUtil.isSameDay(DateTime.fromMillisecondsSinceEpoch(t.deadline!), date)).length;
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('$day'),
-                        if (dayTasks > 0)
-                          Container(
-                            margin: const EdgeInsets.only(top: 4),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle,
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => DayTasksScreen(date: date),
+                        ),
+                      ),
+                      child: Container(
+                        margin: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: isToday
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : null,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '$day',
+                              style: TextStyle(
+                                fontWeight:
+                                    isToday ? FontWeight.bold : FontWeight.normal,
+                              ),
                             ),
-                          ),
-                      ],
+                            if (dayTasks > 0)
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),
