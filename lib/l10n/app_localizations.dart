@@ -908,6 +908,66 @@ abstract class AppLocalizations {
   /// **'Kunci Aplikasi'**
   String get appLockTitle;
 
+  /// No description provided for @appLockOn.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif'**
+  String get appLockOn;
+
+  /// No description provided for @appLockOff.
+  ///
+  /// In id, this message translates to:
+  /// **'Nonaktif'**
+  String get appLockOff;
+
+  /// No description provided for @changePinLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah PIN'**
+  String get changePinLabel;
+
+  /// No description provided for @pinLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN'**
+  String get pinLabel;
+
+  /// No description provided for @pinConfirmLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi PIN'**
+  String get pinConfirmLabel;
+
+  /// No description provided for @pinMismatch.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN tidak sama'**
+  String get pinMismatch;
+
+  /// No description provided for @pinTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai 4 sampai 6 digit'**
+  String get pinTooShort;
+
+  /// No description provided for @wrongPin.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN salah'**
+  String get wrongPin;
+
+  /// No description provided for @unlockLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get unlockLabel;
+
+  /// No description provided for @unlockTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Lekas'**
+  String get unlockTitle;
+
   /// No description provided for @levelLabel.
   ///
   /// In id, this message translates to:

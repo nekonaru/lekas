@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../reminders/reminder_service.dart';
 import 'backup_screen.dart';
 import 'diagnostic_screen.dart';
+import '../tasks/app_lock_screen.dart';
 import '../tasks/backup_auto_screen.dart';
 import '../tasks/duplicate_detection_screen.dart';
 import '../tasks/export_gambar_pdf_screen.dart';
@@ -405,6 +406,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.checkReminder),
             trailing: const Icon(Icons.notifications),
             onTap: () => _push(const DiagnosticScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.lock),
+            title: Text(l10n.appLockTitle),
+            onTap: () => _push(const AppLockScreen()),
           ),
           const Divider(),
           ListTile(

@@ -11,6 +11,7 @@ import 'attendance_repository.dart';
 import 'class_slot_repository.dart';
 import 'reminder_repository.dart';
 import 'settings_repository.dart';
+import '../lock/lock_service.dart';
 import 'attachment_repository.dart';
 import 'task_event_repository.dart';
 import 'focus_session_repository.dart';
@@ -32,6 +33,18 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase(LazyDatabase(_openNativeDatabase));
   ref.onDispose(db.close);
   return db;
+});
+
+/// The app lock, stored as a salted hash. Enabled when the user sets a
+/// PIN; the unlock gate watches this to know whether to challenge.
+final lockServiceProvider = Provider<LockService>((ref) {
+  return LockService(ref.watch(settingsRepositoryProvider));
+});
+
+/// Cached copy of the app lock state for the unlock gate.
+final appLockEnabledProvider = FutureProvider<bool>((ref) async {
+  final repo = ref.watch(settingsRepositoryProvider);
+  return await repo.get('app_lock_enabled') == '1';
 });
 
 /// Opens the same database outside the provider tree. Used by background

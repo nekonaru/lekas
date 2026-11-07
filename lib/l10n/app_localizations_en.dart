@@ -442,6 +442,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appLockTitle => 'App Lock';
 
   @override
+  String get appLockOn => 'On';
+
+  @override
+  String get appLockOff => 'Off';
+
+  @override
+  String get changePinLabel => 'Change PIN';
+
+  @override
+  String get pinLabel => 'PIN';
+
+  @override
+  String get pinConfirmLabel => 'Confirm PIN';
+
+  @override
+  String get pinMismatch => 'PINs do not match';
+
+  @override
+  String get pinTooShort => 'Use 4 to 6 digits';
+
+  @override
+  String get wrongPin => 'Wrong PIN';
+
+  @override
+  String get unlockLabel => 'Unlock';
+
+  @override
+  String get unlockTitle => 'Unlock Lekas';
+
+  @override
   String get levelLabel => 'Level';
 
   @override

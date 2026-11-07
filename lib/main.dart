@@ -14,6 +14,7 @@ import 'features/quick_add/quick_add_sheet.dart';
 import 'features/share_intake/share_intake_screen.dart';
 import 'features/tasks/fokus_hari_ini_screen.dart';
 import 'features/tasks/attendance_screen.dart';
+import 'lock/unlock_screen.dart';
 import 'reminders/reminder_service.dart';
 
 /// Used by the share intake flow to push a screen before the first frame.
@@ -52,6 +53,10 @@ class LekasApp extends ConsumerStatefulWidget {
 }
 
 class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver {
+  /// True while the pin gate covers the app. Starts locked so an enabled
+  /// lock challenges on launch, then every foreground return locks again.
+  bool _locked = true;
+
   StreamSubscription<List<SharedMediaFile>>? _shareSubscription;
   StreamSubscription<Uri?>? _widgetSubscription;
 
@@ -147,7 +152,8 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Covers the time zone change case: reconcile on every return to the
-    // foreground (design section 4.6, point 7).
+    // foreground (design section 4.6, point 7). The app lock also engages
+    // on every return to the foreground.
     if (state == AppLifecycleState.resumed) {
       ref.read(reminderServiceProvider).syncAll();
       // A background action button may have stored a route while paused.
@@ -158,6 +164,15 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
           debugPrint('widget sync failed: $error\n$stack');
         },
       ));
+      _lockIfEnabled();
+    }
+  }
+
+  /// When the lock is on, the app asks for the PIN again on return.
+  Future<void> _lockIfEnabled() async {
+    final enabled = await ref.read(lockServiceProvider).isEnabled();
+    if (enabled && mounted) {
+      setState(() => _locked = true);
     }
   }
 
@@ -219,6 +234,7 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final themeMode = ref.watch(themeModeProvider);
     final accent = ref.watch(accentColorProvider);
     final fontScale = ref.watch(fontScaleProvider);
+    final lockEnabled = ref.watch(appLockEnabledProvider).valueOrNull ?? false;
     // Keeps the schedule in line with every task change.
     ref.watch(reminderSyncProvider);
     // One soft notice when a completion frees a waiting task (design 5.27).
@@ -243,8 +259,8 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       theme: AppTheme.lightTheme(seed: accent.valueOrNull),
       darkTheme: AppTheme.darkTheme(seed: accent.valueOrNull),
       themeMode: themeMode.value ?? ThemeMode.system,
-      // Multiplies the chosen font size on top of the system text scale, so
-      // the accessibility setting of the phone keeps working.
+      // The unlock gate sits above the running app, so unlocking never
+      // rebuilds the navigation stack behind it.
       builder: (context, child) {
         final scale =
             MediaQuery.textScalerOf(context).scale(1.0) *
@@ -252,7 +268,15 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
         return MediaQuery(
           data: MediaQuery.of(context)
               .copyWith(textScaler: TextScaler.linear(scale)),
-          child: child!,
+          child: Stack(
+            children: [
+              child!,
+              if (lockEnabled && _locked)
+                UnlockScreen(
+                  onUnlock: () => setState(() => _locked = false),
+                ),
+            ],
+          ),
         );
       },
       home: _Home(onboarded: onboarded),

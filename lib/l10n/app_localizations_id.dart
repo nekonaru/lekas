@@ -442,6 +442,36 @@ class AppLocalizationsId extends AppLocalizations {
   String get appLockTitle => 'Kunci Aplikasi';
 
   @override
+  String get appLockOn => 'Aktif';
+
+  @override
+  String get appLockOff => 'Nonaktif';
+
+  @override
+  String get changePinLabel => 'Ubah PIN';
+
+  @override
+  String get pinLabel => 'PIN';
+
+  @override
+  String get pinConfirmLabel => 'Konfirmasi PIN';
+
+  @override
+  String get pinMismatch => 'PIN tidak sama';
+
+  @override
+  String get pinTooShort => 'Pakai 4 sampai 6 digit';
+
+  @override
+  String get wrongPin => 'PIN salah';
+
+  @override
+  String get unlockLabel => 'Buka';
+
+  @override
+  String get unlockTitle => 'Buka Lekas';
+
+  @override
   String get levelLabel => 'Jenjang';
 
   @override
