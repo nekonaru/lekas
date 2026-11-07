@@ -143,6 +143,7 @@
   "weekView": "Week view",
   "agendaView": "Chronological agenda",
   "appLockTitle": "App Lock",
+  "levelLabel": "Level",
   "enableAppLock": "Enable App Lock",
   "appLockMethod": "Fingerprint or PIN",
   "schoolModeTheme": "High School Mode Theme",

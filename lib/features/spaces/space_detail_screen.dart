@@ -61,8 +61,11 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                       const SizedBox(height: 8),
                       if (space.code != null)
                         Text(l10n.spaceCodeValue(space.code!)),
-                      if (space.level != null)
-                        Text(l10n.spaceLevelValue(space.level!)),
+                      if (space.level == 'college' || space.level == 'school')
+                        Text(l10n.spaceLevelValue(
+                            space.level == 'school'
+                                ? l10n.school
+                                : l10n.college)),
                       if (space.period != null)
                         Text(l10n.spacePeriodValue(space.period!)),
                       if (space.sks != null)

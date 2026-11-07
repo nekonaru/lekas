@@ -143,6 +143,7 @@
   "weekView": "Tampilan minggu",
   "agendaView": "Agenda kronologis",
   "appLockTitle": "Kunci Aplikasi",
+  "levelLabel": "Jenjang",
   "enableAppLock": "Aktifkan Kunci Aplikasi",
   "appLockMethod": "Sidik jari atau PIN",
   "schoolModeTheme": "Tema Mode SMA",

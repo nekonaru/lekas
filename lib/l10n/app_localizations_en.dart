@@ -442,6 +442,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appLockTitle => 'App Lock';
 
   @override
+  String get levelLabel => 'Level';
+
+  @override
   String get enableAppLock => 'Enable App Lock';
 
   @override

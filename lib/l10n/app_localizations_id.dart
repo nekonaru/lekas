@@ -442,6 +442,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get appLockTitle => 'Kunci Aplikasi';
 
   @override
+  String get levelLabel => 'Jenjang';
+
+  @override
   String get enableAppLock => 'Aktifkan Kunci Aplikasi';
 
   @override

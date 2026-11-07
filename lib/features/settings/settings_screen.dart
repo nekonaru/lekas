@@ -26,6 +26,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _language;
+  String _level = 'college';
   ThemeMode? _themeMode;
   Color? _accent;
   double _fontScale = 1.0;
@@ -45,6 +46,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _load() async {
     final settings = ref.read(settingsRepositoryProvider);
     final language = await settings.getLanguage();
+    final level = await ref.read(levelProvider.future);
     final themeMode = await ref.read(themeModeProvider.future);
     final accent = await ref.read(accentColorProvider.future);
     final fontScale = await ref.read(fontScaleProvider.future);
@@ -57,6 +59,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (!mounted) return;
     setState(() {
       _language = language;
+      _level = level;
       _themeMode = themeMode;
       _accent = accent;
       _fontScale = fontScale;
@@ -91,6 +94,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (!mounted) return;
     ref.invalidate(localeProvider);
     setState(() => _language = selected);
+  }
+
+  /// College or school: stored as one setting and applied to every space
+  /// at once, so switching never needs a reinstall.
+  Future<void> _pickLevel() async {
+    final l10n = AppLocalizations.of(context)!;
+    final selected = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.levelLabel),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(dialogContext, 'college'),
+            child: Text(l10n.college),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(dialogContext, 'school'),
+            child: Text(l10n.school),
+          ),
+        ],
+      ),
+    );
+    if (selected == null || selected == _level || !mounted) return;
+    await applyLevel(ref, selected);
+    if (!mounted) return;
+    setState(() => _level = selected);
   }
 
   Future<void> _pickThemeMode() async {
@@ -268,6 +297,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.language),
             subtitle: Text(language == 'id' ? l10n.indonesian : l10n.english),
             onTap: _pickLanguage,
+          ),
+          ListTile(
+            title: Text(l10n.levelLabel),
+            subtitle: Text(
+                _level == 'school' ? l10n.school : l10n.college),
+            onTap: _pickLevel,
           ),
           ListTile(
             title: Text(l10n.darkMode),

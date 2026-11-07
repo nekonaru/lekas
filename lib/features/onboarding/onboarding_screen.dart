@@ -265,6 +265,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
     await spaceRepo.insertSpace(space);
     await settingsRepo.set('language', _language);
+    await settingsRepo.set('level', _level);
     await settingsRepo.set('onboarded', 'true');
     if (!mounted) return;
     // Onboarding is the root route, so popping it would empty the navigator

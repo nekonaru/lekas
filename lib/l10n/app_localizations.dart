@@ -908,6 +908,12 @@ abstract class AppLocalizations {
   /// **'Kunci Aplikasi'**
   String get appLockTitle;
 
+  /// No description provided for @levelLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenjang'**
+  String get levelLabel;
+
   /// No description provided for @enableAppLock.
   ///
   /// In id, this message translates to:

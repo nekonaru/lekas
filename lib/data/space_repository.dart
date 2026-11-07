@@ -46,6 +46,17 @@ class SpaceRepository {
     await (db.delete(db.spaces)..where((t) => t.id.equals(id))).go();
   }
 
+  /// Rewrites the jenjang of every live space in one write, so the level
+  /// switch in settings applies without reinstalling.
+  Future<void> setAllLevels(String level) async {
+    await (db.update(db.spaces)).write(
+      SpacesCompanion(
+        level: Value(level),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
   Future<void> insertAlias(SpaceAliase alias) async {
     await db.into(db.spaceAliases).insert(alias);
   }

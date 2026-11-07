@@ -157,6 +157,31 @@ final localeProvider = FutureProvider<Locale>((ref) async {
   return Locale(await repo.getLanguage());
 });
 
+/// The current jenjang: college or school. Stored as one setting so it
+/// can change without reinstalling; an older install that only has spaces
+/// falls back to the first space's stored level.
+final levelProvider = FutureProvider<String>((ref) async {
+  final settings = ref.watch(settingsRepositoryProvider);
+  final stored = await settings.get('level');
+  if (stored == 'college' || stored == 'school') return stored!;
+  final spaces = await ref.watch(spaceRepositoryProvider).getSpaces();
+  for (final space in spaces) {
+    if (space.level == 'college' || space.level == 'school') {
+      return space.level!;
+    }
+  }
+  return 'college';
+});
+
+/// Applies a jenjang to every space at once, so switching mode updates
+/// the labels without reinstalling. Kept in the providers file because
+/// Settings and onboarding both need it.
+Future<void> applyLevel(WidgetRef ref, String level) async {
+  await ref.read(settingsRepositoryProvider).set('level', level);
+  await ref.read(spaceRepositoryProvider).setAllLevels(level);
+  ref.invalidate(levelProvider);
+}
+
 /// Theme preference: system, light or dark. Default follows the system.
 final themeModeProvider = FutureProvider<ThemeMode>((ref) async {
   final repo = ref.watch(settingsRepositoryProvider);
