@@ -2,6 +2,26 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.6.0 - Bulk actions, reorder, level switch, refreshed interface
+
+### New features
+
+- **Bulk select everywhere.** Long press any task row in Inbox, Tasks, Search, Trash or Spaces to select it and run the same actions as Today (complete, priority, move, delete) plus select all. Trash adds bulk restore, Spaces adds bulk archive.
+- **Edit spaces, delete tasks.** Spaces can be renamed and edited from the list or the detail screen, tasks can be deleted from the detail screen, all with undo. Spaces and subtasks also drag into your own order, saved between launches.
+- **Level switch without reinstall.** Settings has a Level row (College/School) that applies to every space at once. The level chosen at setup is remembered, and space detail shows it as a readable label.
+- **Refreshed interface.** Brand gradient bands carry the logo in the drawer and setup, add buttons are extended, empty lists use one illustrated state, and the tab title crossfades between destinations.
+
+### Bug fixes
+
+- **Undo banner clears on time.** The banner now shows once for five seconds, and a new one replaces the old instead of queueing behind it.
+- **Task edit keeps its state.** Editing no longer reopens done tasks or unpins pinned ones, the container list loads the spaces, and a past deadline stays pickable.
+- **Old backups import.** Space rows from pre-v1.6.0 backups without a drag order import with the default order.
+- **Old databases upgrade to schema 4.** The spaces drag order column migrates cleanly: existing data and indexes are preserved.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.5.1 - New app icon
 
 ### New features

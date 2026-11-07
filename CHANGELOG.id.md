@@ -2,6 +2,26 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.6.0 - Aksi massal, urutan, ganti jenjang, tampilan baru
+
+### Fitur baru
+
+- **Pilih massal di semua daftar.** Tekan lama baris tugas mana pun di Inbox, Tasks, Search, Trash atau Spaces untuk memilihnya dan menjalankan aksi yang sama seperti Today (selesai, prioritas, pindah, hapus) plus pilih semua. Trash menambah pulihkan massal, Spaces menambah arsip massal.
+- **Ubah wadah, hapus tugas.** Wadah bisa diganti nama dan diubah dari daftar atau layar detail, tugas bisa dihapus dari layar detail, semuanya dengan urungkan. Spaces dan subtugas juga bisa diseret ke susunan sendiri, tersimpan antar bukaan.
+- **Ganti jenjang tanpa reinstall.** Settings punya baris Jenjang (Kuliah/SMA) yang diterapkan ke semua wadah sekaligus. Pilihan jenjang di setup diingat, dan layar detail menampilkannya sebagai label yang jelas.
+- **Tampilan baru.** Pita gradasi membawa logo di drawer dan setup, tombol tambah memanjang, daftar kosong memakai satu gaya berilustrasi, dan judul tab berganti dengan transisi silang.
+
+### Perbaikan bug
+
+- **Banner urungkan hilang tepat waktu.** Banner kini tampil sekali selama lima detik, dan banner baru menggantikan yang lama, bukan mengantre di belakangnya.
+- **Edit tugas menjaga keadaannya.** Edit tidak lagi membuka kembali tugas yang selesai atau melepas pin tugas terpin, daftar wadah memuat wadah, dan deadline lama tetap bisa dipilih.
+- **Backup lama tetap bisa diimpor.** Baris wadah dari backup sebelum v1.6.0 tanpa susunan seret diimpor dengan susunan bawaan.
+- **Database lama naik ke schema 4.** Kolom susunan seret wadah dimigrasi dengan bersih: data lama dan indeks terjaga.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.5.1 - Ikon aplikasi baru
 
 ### Fitur baru
