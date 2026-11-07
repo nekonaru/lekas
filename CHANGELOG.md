@@ -2,6 +2,23 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.5.0 - New logo and polished interface
+
+### New features
+
+- **New app logo.** A white bolt on an indigo to violet gradient now marks the launcher icon, the onboarding screen and the navigation drawer, with round and adaptive variants for older and newer Android versions.
+- **Polished interface.** Bars, cards, the bottom bar and task rows share one refined theme: flatter app bars, outlined cards, filled icons on the open tab, and a ringed priority dot on every task row.
+- **Smooth list animations.** Cards on Today and Inbox fade and slide in with a short stagger, and the setup screen shows a stretching step indicator. All animations finish quickly and leave no layer behind, so scrolling stays light.
+
+### Optimizations
+
+- **Smaller download.** The unused Cupertino icon font is removed and the bundled Inter fonts are subset to the glyphs the app uses, which cuts the bundled font data by over 1 MB.
+- **Lighter lists.** Settled rows return their child without an extra opacity layer, so long lists stay cheap to draw.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.4.2 - Fix the black screen after setup
 
 ### Bug fixes

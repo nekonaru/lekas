@@ -2,6 +2,23 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.5.0 - Logo baru dan tampilan yang lebih rapi
+
+### Fitur baru
+
+- **Logo aplikasi baru.** Petir putih di atas gradasi indigo ke violet kini tampil pada ikon launcher, layar setup dan laci navigasi, dengan varian bundar dan adaptif untuk Android lama dan baru.
+- **Tampilan lebih rapi.** Bilah atas, kartu, bilah bawah dan baris tugas berbagi satu tema yang halus: bilah atas yang lebih datar, kartu berbingkai, ikon terisi pada tab yang terbuka, dan titik prioritas berlingkar pada setiap baris tugas.
+- **Animasi daftar yang halus.** Kartu di Today dan Inbox memudar dan bergeser masuk dengan jeda singkat, dan layar setup menampilkan penanda langkah yang memanjang. Semua animasi selesai dengan cepat dan tidak meninggalkan lapisan, sehingga gulir tetap ringan.
+
+### Optimisasi
+
+- **Unduhan lebih kecil.** Font ikon Cupertino yang tidak digunakan dihapus dan font Inter bawaan disubset ke glif yang dipakai aplikasi, sehingga data font bawaan berkurang lebih dari 1 MB.
+- **Daftar lebih ringan.** Baris yang sudah diam mengembalikan child tanpa lapisan opacity tambahan, sehingga daftar yang panjang tetap murah digambar.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.4.2 - Perbaikan layar hitam setelah setup
 
 ### Perbaikan bug
