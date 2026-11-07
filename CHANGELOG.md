@@ -2,6 +2,17 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.4.2 - Fix the black screen after setup
+
+### Bug fixes
+
+- **No more black screen after setup.** Finishing the first run popped the root route, which emptied the navigator and left the screen black on real devices. The setup now hands over to the home screen in place, with no empty frame in between.
+- **The setup language choice responds.** The language and level buttons now show which option is picked (filled with a check) and crossfade between states, and the picked language applies immediately instead of only at the last step.
+
+### Install / Update
+
+Download the APK matching your device below (`app-arm64-v8a-release.apk` for most modern phones, `app-armeabi-v7a-release.apk` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Minimum Android 7.0 (API 24).
+
 ## v1.4.1 - Fix the release startup crash
 
 ### Bug fixes

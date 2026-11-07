@@ -2,6 +2,17 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.4.2 - Perbaikan layar hitam setelah setup
+
+### Perbaikan bug
+
+- **Tidak ada lagi layar hitam setelah setup.** Menyelesaikan rangkaian awal menutup route akar, sehingga navigator kosong dan layar hitam di HP asli. Setup kini langsung berpindah ke layar utama di tempat, tanpa frame kosong di antaranya.
+- **Pilihan bahasa di setup langsung bereaksi.** Tombol bahasa dan jenjang kini menunjukkan opsi yang dipilih (terisi dengan tanda centang) dengan transisi silang antar status, dan bahasa yang dipilih langsung diterapkan, bukan hanya di langkah terakhir.
+
+### Instalasi / Update
+
+Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+
 ## v1.4.1 - Perbaikan crash saat dibuka pada build release
 
 ### Perbaikan bug
