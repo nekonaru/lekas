@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Lekas logo" width="110" />
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Lekas logo" width="120" />
   <h1>Lekas: Task & Deadline Tracker for Students</h1>
-  <p><b>Capture tasks from chat in 5 seconds, auto-organized per course,<br/>
-  reminded on time, and fully offline.</b></p>
+  <p><b>Track student tasks and deadlines offline-first,<br/>
+  capture them from chat in 5 seconds, fully offline.</b></p>
 
   <a href="https://github.com/nekonaru/lekas/releases"><img src="https://img.shields.io/github/v/release/nekonaru/lekas?style=flat-square&color=blue" alt="Release" /></a>
   <a href="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml"><img src="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml/badge.svg" alt="CI" /></a>
@@ -32,6 +32,7 @@
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Testing](#testing)
+- [Security](#security)
 - [Continuous Integration](#continuous-integration)
 - [FAQ](#faq)
 - [Author](#author)
@@ -283,9 +284,18 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (436 tests) |
+| `flutter test` | Must pass the full suite (455 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
+
+---
+
+## Security
+
+Lekas stores your data locally: tasks, spaces, settings and attachments live in a SQLite database through Drift, and the backup file you export is either plain JSON or AES-GCM encrypted with your password. The app makes no network calls of its own, ships no analytics, ads or crash reporting SDKs, and only requests notification, exact alarm, vibration, microphone and speech permission. An optional app lock keeps a salted SHA-256 hash of your PIN instead of the PIN itself.
+
+> [!NOTE]
+> Found a security issue? Report it through the private route in [`SECURITY.md`](SECURITY.md) so it can be fixed before it is published.
 
 ---
 

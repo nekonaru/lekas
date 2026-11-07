@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Lekas logo" width="110" />
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Lekas logo" width="120" />
   <h1>Lekas: Pencatat Tugas & Deadline untuk Mahasiswa</h1>
-  <p><b>Catat tugas dari chat dalam 5 detik, otomatis tertata per mata kuliah,<br/>
-  diingatkan tepat waktu, dan sepenuhnya offline.</b></p>
+  <p><b>Lacak tugas dan deadline mahasiswa secara offline-first,<br/>
+  tangkap dari chat dalam 5 detik, sepenuhnya offline.</b></p>
 
   <a href="https://github.com/nekonaru/lekas/releases"><img src="https://img.shields.io/github/v/release/nekonaru/lekas?style=flat-square&color=blue" alt="Release" /></a>
   <a href="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml"><img src="https://github.com/nekonaru/lekas/actions/workflows/build-apk.yml/badge.svg" alt="CI" /></a>
@@ -32,6 +32,7 @@
 - [Struktur Proyek](#struktur-proyek)
 - [Pengembangan](#pengembangan)
 - [Pengujian](#pengujian)
+- [Keamanan](#keamanan)
 - [Continuous Integration](#continuous-integration)
 - [FAQ](#faq)
 - [Penulis](#penulis)
@@ -283,9 +284,18 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (436 tes) |
+| `flutter test` | Seluruh suite harus lulus (455 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
+
+---
+
+## Keamanan
+
+Lekas menyimpan data kamu secara lokal: tugas, wadah, pengaturan, dan lampiran berada dalam database SQLite melalui Drift, dan file cadangan yang kamu ekspor berupa JSON polos atau terenkripsi AES-GCM dengan kata sandi milikmu. Aplikasi tidak melakukan panggilan jaringan sendiri, tidak membawa SDK analitik, iklan, atau pelaporan crash, dan hanya meminta izin notifikasi, alarm tepat, getaran, mikrofon, dan speech. Kunci aplikasi opsional menyimpan hash SHA-256 ber-salt dari PIN kamu, bukan PIN-nya sendiri.
+
+> [!NOTE]
+> Menemukan masalah keamanan? Laporkan lewat rute privat di [`SECURITY.md`](SECURITY.md) supaya bisa diperbaiki sebelum dipublikasikan.
 
 ---
 

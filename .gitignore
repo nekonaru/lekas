@@ -56,6 +56,12 @@ rules.md
 rancangan.md
 
 # Local-only dev guides and security toolkits (rules.md section 14)
+guide.md
+docs.md
+reference.md
+security-web.md
+security-app.md
+security-general.md
 /dev tools/
 /.dev/
 SECURITY_MAP.md
