@@ -5,8 +5,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../quick_add/quick_add_sheet.dart';
 import '../settings/backup_screen.dart';
-import '../settings/diagnostic_screen.dart';
-import '../tasks/morning_night_summary.dart';
+import '../settings/diagnostic_screen.dart';import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/quick_add_suara_screen.dart';
 import '../tasks/saved_filter_screen.dart';
@@ -22,6 +21,7 @@ import '../settings/settings_screen.dart';
 import '../spaces/spaces_screen.dart';
 import '../today/today_screen.dart';
 import '../../core/theme.dart';
+import '../../core/components/lekas_logo.dart';
 import '../../l10n/app_localizations.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
@@ -159,18 +159,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
               child: Row(
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.bolt,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
+                  const LekasLogo(size: 44),
                   const SizedBox(width: 12),
                   Text(
                     'Lekas',
@@ -273,6 +262,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         destinations: labels.asMap().entries.map((e) {
           return NavigationDestination(
             icon: Icon(_icons(e.key)),
+            selectedIcon: Icon(_selectedIcons(e.key)),
             label: e.value,
           );
         }).toList(),
@@ -281,6 +271,25 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   }
 
   IconData _icons(int index) {
+    switch (index) {
+      case 0:
+        return Icons.today_outlined;
+      case 1:
+        return Icons.inbox_outlined;
+      case 2:
+        return Icons.folder_outlined;
+      case 3:
+        return Icons.calendar_month_outlined;
+      case 4:
+        return Icons.settings_outlined;
+      default:
+        return Icons.today_outlined;
+    }
+  }
+
+  /// The filled twin shown on the tab that is open, so the active tab
+  /// reads as one motion instead of a plain color change.
+  IconData _selectedIcons(int index) {
     switch (index) {
       case 0:
         return Icons.today;

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/theme.dart';
+import '../../core/components/lekas_logo.dart';
+import '../../core/components/motion.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -37,7 +39,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 16),
+              const FadeSlideIn(
+                child: Center(child: LekasLogo(size: 72)),
+              ),
+              const SizedBox(height: 20),
               Text(
                 _step == 0 ? l10n.welcome : l10n.addFirstSpace,
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -75,6 +81,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 const SizedBox(height: 24),
               ],
               const Spacer(),
+              _stepDots(),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   if (_step > 0)
@@ -98,6 +106,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Two dots that stretch into a pill on the active step and shrink back
+  /// on the other, so moving forward reads as one motion instead of a
+  /// page swap.
+  Widget _stepDots() {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var step = 0; step < 2; step++) ...[
+          if (step > 0) const SizedBox(width: 8),
+          AnimatedContainer(
+            duration: AppMotion.fast,
+            curve: AppMotion.ease,
+            width: _step == step ? 24 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: _step == step
+                  ? colors.primary
+                  : colors.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+        ],
+      ],
     );
   }
 

@@ -7,6 +7,7 @@ import '../../core/date_util.dart';
 import '../../domain/focus.dart';
 import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
+import '../../core/components/motion.dart';
 import '../../core/components/undo_snackbar.dart';
 import '../../core/theme.dart';
 import '../../data/providers.dart';
@@ -631,18 +632,21 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                       section: section,
                       count: count,
                     ),
-                  _TaskEntry(:final task, :final score) => TaskCard(
-                      key: ValueKey('today-task:${task.id}'),
-                      task: task,
-                      now: now,
-                      locale: locale,
-                      score: score,
-                      selected: _isSelected(task),
-                      enableHero: true,
-                      onTaskTap: _onTaskTap,
-                      onTaskDone: _completeOne,
-                      onTaskSnooze: _openSnooze,
-                      onTaskLongPress: _onTaskLongPress,
+                  _TaskEntry(:final task, :final score) => FadeSlideIn(
+                      index: index,
+                      child: TaskCard(
+                        key: ValueKey('today-task:${task.id}'),
+                        task: task,
+                        now: now,
+                        locale: locale,
+                        score: score,
+                        selected: _isSelected(task),
+                        enableHero: true,
+                        onTaskTap: _onTaskTap,
+                        onTaskDone: _completeOne,
+                        onTaskSnooze: _openSnooze,
+                        onTaskLongPress: _onTaskLongPress,
+                      ),
                     ),
                 };
               },

@@ -182,6 +182,14 @@ class TaskCard extends StatelessWidget {
           estimateMinutes: task.estimateMinutes,
         );
     final card = Card(
+      // Selected rows get a primary edge so multi select reads at a glance;
+      // unselected rows keep the flat outline from the card theme.
+      shape: selected
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(color: colors.primary, width: 1.5),
+            )
+          : null,
       child: ListTile(
         // The selection check crossfades in over the priority dot instead of
         // popping, so entering multi select reads as one motion.
@@ -336,16 +344,30 @@ class TaskCard extends StatelessWidget {
   }
 
   Widget _priorityIcon(int priority) {
+    // A small ringed dot: the ring keeps the color readable on the tinted
+    // card surface in both brightnesses. Still the same Icon glyph the
+    // list was built around, just framed.
+    final Color dot;
     switch (priority) {
       case 0:
-        return const Icon(Icons.circle, size: 12, color: Colors.green);
+        dot = const Color(0xFF16A34A);
       case 1:
-        return const Icon(Icons.circle, size: 12, color: Colors.orange);
+        dot = const Color(0xFFF97316);
       case 2:
-        return const Icon(Icons.circle, size: 12, color: Colors.red);
+        dot = const Color(0xFFDC2626);
       default:
-        return const Icon(Icons.circle, size: 12, color: Colors.grey);
+        dot = const Color(0xFF6B7280);
     }
+    return Container(
+      width: 22,
+      height: 22,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: dot.withValues(alpha: 0.4), width: 1.5),
+      ),
+      child: Icon(Icons.circle, size: 10, color: dot),
+    );
   }
 }
 

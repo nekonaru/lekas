@@ -11,6 +11,11 @@ class AppMotion {
   /// Tab switches, sheet and section transitions.
   static const Duration normal = Duration(milliseconds: 220);
 
+  /// Extra time per step in a staggered entrance. Six steps add at most
+  /// 180ms, so the longest entrance stays under 400ms and still settles
+  /// inside the 350ms fixed pumps the navigation tests use.
+  static const Duration stagger = Duration(milliseconds: 30);
+
   /// The one easing curve the app uses, decelerating into place.
   static const Curve ease = Curves.easeOutCubic;
 }
@@ -48,6 +53,21 @@ class AppTheme {
       // of the platform default.
       fontFamily: 'Inter',
       colorScheme: scheme,
+      // A flat, low elevation bar: the tab title stays readable, and the
+      // bar lifts by one point once the body scrolls under it.
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        scrolledUnderElevation: 1,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: scheme.onSurface,
+        ),
+      ),
       // One page transition everywhere: a short zoom that reads smooth on
       // every Android version and finishes fast enough for tests.
       pageTransitionsTheme: const PageTransitionsTheme(
@@ -68,6 +88,28 @@ class AppTheme {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: scheme.outlineVariant.withValues(alpha: 0.6),
+          ),
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: scheme.surface,
+        indicatorColor: scheme.primaryContainer,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return TextStyle(
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            color: selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+          );
+        }),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        elevation: 2,
+        highlightElevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
       listTileTheme: ListTileThemeData(

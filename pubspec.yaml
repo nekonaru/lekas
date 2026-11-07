@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.3
@@ -68,6 +67,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/branding/logo.png
 
   fonts:
     - family: Inter

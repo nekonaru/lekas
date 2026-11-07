@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
+import '../../core/components/empty_state.dart';
+import '../../core/components/motion.dart';
 import '../../l10n/app_localizations.dart';
 import '../tasks/task_detail_screen.dart';
 
@@ -27,25 +29,32 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
         final tasks = snapshot.data?.where((t) => t.inbox).toList() ?? [];
 
         if (tasks.isEmpty) {
-          return Center(child: Text(l10n.emptyInboxNote));
+          return EmptyState(message: l10n.emptyInboxNote, icon: Icons.inbox);
         }
 
         return ListView.builder(
+          padding: const EdgeInsets.only(top: 8, bottom: 88),
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             final task = tasks[index];
-            return ListTile(
-              title: Text(task.title),
-              subtitle: Text(task.notes ?? l10n.noNotesLabel),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TaskDetailScreen(taskId: task.id),
-                  ),
-                );
-              },
+            return FadeSlideIn(
+              index: index,
+              child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  title: Text(task.title),
+                  subtitle: Text(task.notes ?? l10n.noNotesLabel),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TaskDetailScreen(taskId: task.id),
+                      ),
+                    );
+                  },
+                ),
+              ),
             );
           },
         );

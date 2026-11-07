@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Soft shadow copy of the bolt, offset down and right. -->
+    <path
+        android:fillColor="#1E1B4B"
+        android:pathData="M63.7,22.6 L39.5,60.6 L55.3,60.6 L46.9,88 L72.2,47.9 L56.4,47.9 Z" />
+    <!-- White bolt, drawn from the same geometry as tool/generate_logo.py. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62.2,21.1 L38,59.1 L53.8,59.1 L45.4,86.5 L70.7,46.4 L54.9,46.4 Z" />
+</vector>
