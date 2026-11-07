@@ -291,12 +291,16 @@ class _HomeState extends ConsumerState<_Home> {
 
   @override
   Widget build(BuildContext context) {
+    // After setup the flag is re-read through an invalidate. The skip flags
+    // keep the current screen during that reload, so the swap to the shell
+    // never flashes a spinner in between.
     return widget.onboarded.when(
       data: (value) => value ? const HomeShell() : const OnboardingScreen(),
       loading: () => const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (error, stack) => const OnboardingScreen(),
+      skipLoadingOnReload: true,
     );
   }
 }

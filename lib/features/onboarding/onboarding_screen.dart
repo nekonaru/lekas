@@ -110,16 +110,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () => setState(() => _language = 'id'),
-                child: Text(l10n.indonesian),
+              child: _choiceButton(
+                selected: _language == 'id',
+                label: l10n.indonesian,
+                onPressed: () => _selectLanguage('id'),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: OutlinedButton(
-                onPressed: () => setState(() => _language = 'en'),
-                child: Text(l10n.english),
+              child: _choiceButton(
+                selected: _language == 'en',
+                label: l10n.english,
+                onPressed: () => _selectLanguage('en'),
               ),
             ),
           ],
@@ -137,22 +139,70 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Row(
           children: [
             Expanded(
-              child: ElevatedButton(
+              child: _choiceButton(
+                selected: _level == 'college',
+                label: l10n.college,
                 onPressed: () => setState(() => _level = 'college'),
-                child: Text(l10n.college),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: OutlinedButton(
+              child: _choiceButton(
+                selected: _level == 'school',
+                label: l10n.school,
                 onPressed: () => setState(() => _level = 'school'),
-                child: Text(l10n.school),
               ),
             ),
           ],
         ),
       ],
     );
+  }
+
+  /// One option of the language and level rows. The chosen option is filled
+  /// with the accent color and shows a check, the other one stays outlined,
+  /// and the two crossfade on every tap so a press always answers back.
+  Widget _choiceButton({
+    required bool selected,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return AnimatedSwitcher(
+      duration: AppMotion.fast,
+      transitionBuilder: (child, animation) =>
+          FadeTransition(opacity: animation, child: child),
+      child: selected
+          ? ElevatedButton(
+              key: const ValueKey('onboarding-choice-selected'),
+              onPressed: onPressed,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.check_rounded, size: 18),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(label, textAlign: TextAlign.center),
+                  ),
+                ],
+              ),
+            )
+          : OutlinedButton(
+              key: const ValueKey('onboarding-choice-idle'),
+              onPressed: onPressed,
+              child: Text(label, textAlign: TextAlign.center),
+            ),
+    );
+  }
+
+  /// Applies the picked language right away: the choice flips on screen and
+  /// the whole setup switches language before the next tap, so the control
+  /// never feels dead (the stored value is what every later launch reads).
+  Future<void> _selectLanguage(String language) async {
+    setState(() => _language = language);
+    await ref.read(settingsRepositoryProvider).setLanguage(language);
+    if (!mounted) return;
+    ref.invalidate(localeProvider);
   }
 
   void _next() {
@@ -181,6 +231,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     await spaceRepo.insertSpace(space);
     await settingsRepo.set('language', _language);
     await settingsRepo.set('onboarded', 'true');
-    if (mounted) Navigator.pop(context);
+    if (!mounted) return;
+    // Onboarding is the root route, so popping it would empty the navigator
+    // and leave a black screen (the v1.4.1 bug on real devices). Flip the
+    // flag instead and let _Home swap this screen for the shell in place.
+    ref.invalidate(onboardedProvider);
   }
 }
