@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../core/theme.dart';
 import '../../core/components/lekas_logo.dart';
 import '../../core/components/motion.dart';
@@ -40,9 +41,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              const FadeSlideIn(
-                child: Center(child: LekasLogo(size: 72)),
-              ),
+              const FadeSlideIn(child: Center(child: LekasLogo(size: 72))),
               const SizedBox(height: 20),
               Text(
                 _step == 0 ? l10n.welcome : l10n.addFirstSpace,
@@ -51,7 +50,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                _step == 0 ? l10n.welcomeSubtitle : l10n.enterFirstCourseSubtitle,
+                _step == 0
+                    ? l10n.welcomeSubtitle
+                    : l10n.enterFirstCourseSubtitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
@@ -93,11 +94,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: _next,
-                    child: Text(_step == 0
-                        ? l10n.start
-                        : _step == 1
-                            ? l10n.saveContinue
-                            : l10n.finish),
+                    child: Text(
+                      _step == 0
+                          ? l10n.start
+                          : _step == 1
+                          ? l10n.saveContinue
+                          : l10n.finish,
+                    ),
                   ),
                 ],
               ),
@@ -140,7 +143,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.chooseLanguage, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          l10n.chooseLanguage,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -169,7 +175,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.chooseLevel, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          l10n.chooseLevel,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -216,9 +225,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   const Icon(Icons.check_rounded, size: 18),
                   const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(label, textAlign: TextAlign.center),
-                  ),
+                  Flexible(child: Text(label, textAlign: TextAlign.center)),
                 ],
               ),
             )
@@ -260,6 +267,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       level: _level,
       kind: 'course',
       archived: false,
+      sortOrder: 0,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );

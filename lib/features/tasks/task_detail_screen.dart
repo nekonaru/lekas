@@ -155,7 +155,11 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                           ),
                           const Spacer(),
                           TextButton(
-                            onPressed: () => _addSubtask(context, task.id),
+                            onPressed: () => _addSubtask(
+                              context,
+                              task.id,
+                              subtasks.length,
+                            ),
                             child: Text(l10n.addLabel),
                           ),
                         ],
@@ -478,7 +482,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _addSubtask(BuildContext context, String taskId) async {
+  Future<void> _addSubtask(BuildContext context, String taskId, int nextOrder) async {
     final controller = TextEditingController();
     final l10n = AppLocalizations.of(context)!;
     await showDialog(
@@ -504,7 +508,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 taskId: taskId,
                 title: controller.text,
                 done: false,
-                sortOrder: 0,
+                sortOrder: nextOrder,
                 updatedAt: DateTime.now().millisecondsSinceEpoch,
               ));
               navigator.pop();

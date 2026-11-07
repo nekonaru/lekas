@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -23,32 +24,37 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
     final taskRepo = ref.read(taskRepositoryProvider);
     final now = DateTime.now();
     final spaceId = const Uuid().v4();
-    await spaceRepo.insertSpace(Space(
-      id: spaceId,
-      name: l10n.trySampleData,
-      color: AppTheme.containerColors[1].toARGB32(),
-      kind: 'demo',
-      archived: false,
-      createdAt: now.millisecondsSinceEpoch,
-      updatedAt: now.millisecondsSinceEpoch,
-    ));
+    await spaceRepo.insertSpace(
+      Space(
+        id: spaceId,
+        name: l10n.trySampleData,
+        color: AppTheme.containerColors[1].toARGB32(),
+        kind: 'demo',
+        archived: false,
+        sortOrder: 0,
+        createdAt: now.millisecondsSinceEpoch,
+        updatedAt: now.millisecondsSinceEpoch,
+      ),
+    );
     final titles = [l10n.typeLabReport, l10n.typePaper, l10n.typePresentation];
     for (var i = 0; i < titles.length; i++) {
       final due = DateTime(now.year, now.month, now.day + i + 1, 17);
-      await taskRepo.insertTask(Task(
-        id: const Uuid().v4(),
-        spaceId: spaceId,
-        title: titles[i],
-        priority: 1,
-        status: 'todo',
-        isGroup: false,
-        pinned: false,
-        inbox: false,
-        deadline: due.millisecondsSinceEpoch,
-        sourceText: _demoMarker,
-        createdAt: now.millisecondsSinceEpoch,
-        updatedAt: now.millisecondsSinceEpoch,
-      ));
+      await taskRepo.insertTask(
+        Task(
+          id: const Uuid().v4(),
+          spaceId: spaceId,
+          title: titles[i],
+          priority: 1,
+          status: 'todo',
+          isGroup: false,
+          pinned: false,
+          inbox: false,
+          deadline: due.millisecondsSinceEpoch,
+          sourceText: _demoMarker,
+          createdAt: now.millisecondsSinceEpoch,
+          updatedAt: now.millisecondsSinceEpoch,
+        ),
+      );
     }
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -88,9 +94,8 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
       await spaceRepo.deleteSpace(space.id);
     }
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.sampleDataRemoved)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.sampleDataRemoved)));
   }
 
   @override

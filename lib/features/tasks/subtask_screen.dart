@@ -41,11 +41,23 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
             return Center(child: Text(l10n.noSubtasksYet));
           }
 
-          return ListView.builder(
+          return ReorderableListView.builder(
             itemCount: subtasks.length,
+            onReorderItem: (oldIndex, newIndex) async {
+              setState(() {
+                final moved = subtasks.removeAt(oldIndex);
+                subtasks.insert(newIndex, moved);
+              });
+              // Persist the drop position as an explicit sort order so the
+              // list reopens in the same sequence.
+              for (var i = 0; i < subtasks.length; i++) {
+                await repo.updateSubtask(subtasks[i].copyWith(sortOrder: i));
+              }
+            },
             itemBuilder: (context, index) {
               final subtask = subtasks[index];
               return CheckboxListTile(
+                key: ValueKey('subtask:${subtask.id}'),
                 title: Text(subtask.title),
                 value: subtask.done,
                 onChanged: (v) async {
@@ -106,12 +118,17 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           if (_titleController.text.isEmpty) return;
+          // New rows append after the last one the list shows instead of
+          // all starting at zero and scrambling the order.
+          final existing = await ref
+              .read(subtaskRepositoryProvider)
+              .getSubtasks(widget.taskId);
           await repo.insertSubtask(Subtask(
             id: const Uuid().v4(),
             taskId: widget.taskId,
             title: _titleController.text,
             done: false,
-            sortOrder: 0,
+            sortOrder: existing.length,
             updatedAt: DateTime.now().millisecondsSinceEpoch,
           ));
           _titleController.clear();

@@ -9,7 +9,7 @@ class SpaceRepository {
     return (db.select(db.spaces)
           ..where((t) =>
               includeArchived ? const Constant(true) : t.archived.equals(false))
-          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder), (t) => OrderingTerm.asc(t.name)]))
         .watch();
   }
 
@@ -17,7 +17,7 @@ class SpaceRepository {
     return (db.select(db.spaces)
           ..where((t) =>
               includeArchived ? const Constant(true) : t.archived.equals(false))
-          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder), (t) => OrderingTerm.asc(t.name)]))
         .get();
   }
 
@@ -55,6 +55,21 @@ class SpaceRepository {
         updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
       ),
     );
+  }
+
+  /// Persists the drag order in stepped values (1024 per row), so one
+  /// drag rarely rewrites every row.
+  Future<void> setSpaceOrder(List<String> orderedIds) async {
+    await db.transaction(() async {
+      for (var i = 0; i < orderedIds.length; i++) {
+        await (db.update(db.spaces)..where((t) => t.id.equals(orderedIds[i]))).write(
+          SpacesCompanion(
+            sortOrder: Value((i + 1) * 1024),
+            updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> insertAlias(SpaceAliase alias) async {

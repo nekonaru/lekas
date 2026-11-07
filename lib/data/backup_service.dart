@@ -289,6 +289,10 @@ class BackupService {
         throw BackupFormatException('Row $i of "$key" is not a JSON object.');
       }
       final json = item.map((dynamic k, dynamic v) => MapEntry(k.toString(), v));
+      // Older backups predate the spaces drag order column, so rows from a
+      // pre-v1.6.0 file have no sortOrder to decode. Default them to zero
+      // (alphabetical tie breaker) instead of rejecting the whole import.
+      if (key == 'spaces') json['sortOrder'] ??= 0;
       try {
         rows.add(fromJson(json));
       } catch (e) {

@@ -1297,6 +1297,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectAllLabel => 'Select all';
 
   @override
+  String get reorderLabel => 'Reorder';
+
+  @override
   String get archiveLabel => 'Archive';
 
   @override

@@ -151,13 +151,13 @@ void main() {
   }
 
   Widget host(AppDatabase db, Widget home) => ProviderScope(
-        overrides: [appDatabaseProvider.overrideWithValue(db)],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: home,
-        ),
-      );
+    overrides: [appDatabaseProvider.overrideWithValue(db)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    ),
+  );
 
   testWidgets('the drawer opens the finished global tools', (tester) async {
     final db = AppDatabase(NativeDatabase.memory());
@@ -174,8 +174,11 @@ void main() {
     };
     for (final entry in drawerTools.entries) {
       await openDrawerEntry(tester, entry.key);
-      expect(find.byType(entry.value), findsOneWidget,
-          reason: '${entry.key} must open ${entry.value}');
+      expect(
+        find.byType(entry.value),
+        findsOneWidget,
+        reason: '${entry.key} must open ${entry.value}',
+      );
       await goBack(tester);
     }
 
@@ -219,28 +222,35 @@ void main() {
         find.text(entry.key),
         scrollable: settingsScrollable,
       );
-      expect(find.byType(entry.value), findsOneWidget,
-          reason: '${entry.key} must open ${entry.value}');
+      expect(
+        find.byType(entry.value),
+        findsOneWidget,
+        reason: '${entry.key} must open ${entry.value}',
+      );
       await goBack(tester);
     }
 
     await disposeTree(tester);
   });
 
-  testWidgets('spaces open the non course creator and grade prediction',
-      (tester) async {
+  testWidgets('spaces open the non course creator and grade prediction', (
+    tester,
+  ) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final now = DateTime.now().millisecondsSinceEpoch;
-    await SpaceRepository(db).insertSpace(Space(
-      id: 'sp1',
-      name: 'Basdat',
-      color: 0xFF42A5F5,
-      kind: 'course',
-      archived: false,
-      createdAt: now,
-      updatedAt: now,
-    ));
+    await SpaceRepository(db).insertSpace(
+      Space(
+        id: 'sp1',
+        name: 'Basdat',
+        color: 0xFF42A5F5,
+        kind: 'course',
+        archived: false,
+        sortOrder: 0,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
 
     await tester.pumpWidget(host(db, const HomeShell()));
     await settle(tester);
@@ -282,52 +292,59 @@ void main() {
     await disposeTree(tester);
   });
 
-  testWidgets('task detail opens attachments, subtasks and the personal target',
-      (tester) async {
-    final db = AppDatabase(NativeDatabase.memory());
-    addTearDown(db.close);
-    final now = DateTime.now().millisecondsSinceEpoch;
-    await TaskRepository(db).insertTask(Task(
-      id: 't1',
-      spaceId: 'sp1',
-      title: 'Laprak Basdat',
-      notes: 'buat ERD',
-      deadline: now + 86400000,
-      priority: 1,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      inbox: false,
-      createdAt: now,
-      updatedAt: now,
-    ));
-
-    await tester.pumpWidget(host(db, const TaskDetailScreen(taskId: 't1')));
-    await settle(tester);
-
-    final detailScrollable = find
-        .descendant(
-          of: find.byType(TaskDetailScreen),
-          matching: find.byType(Scrollable),
-        )
-        .first;
-    final detailTools = <String, Type>{
-      'Subtasks': SubtaskScreen,
-      'Attachments': AttachmentScreen,
-      'Task Dependencies': DependensiTugasScreen,
-      'Personal Target': TargetPribadiScreen,
-    };
-    for (final entry in detailTools.entries) {
-      await tapTile(
-        tester,
-        find.text(entry.key),
-        scrollable: detailScrollable,
+  testWidgets(
+    'task detail opens attachments, subtasks and the personal target',
+    (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      await TaskRepository(db).insertTask(
+        Task(
+          id: 't1',
+          spaceId: 'sp1',
+          title: 'Laprak Basdat',
+          notes: 'buat ERD',
+          deadline: now + 86400000,
+          priority: 1,
+          status: 'todo',
+          isGroup: false,
+          pinned: false,
+          inbox: false,
+          createdAt: now,
+          updatedAt: now,
+        ),
       );
-      expect(find.byType(entry.value), findsOneWidget,
-          reason: '${entry.key} must open ${entry.value}');
-      await goBack(tester);
-    }
 
-    await disposeTree(tester);
-  });
+      await tester.pumpWidget(host(db, const TaskDetailScreen(taskId: 't1')));
+      await settle(tester);
+
+      final detailScrollable = find
+          .descendant(
+            of: find.byType(TaskDetailScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final detailTools = <String, Type>{
+        'Subtasks': SubtaskScreen,
+        'Attachments': AttachmentScreen,
+        'Task Dependencies': DependensiTugasScreen,
+        'Personal Target': TargetPribadiScreen,
+      };
+      for (final entry in detailTools.entries) {
+        await tapTile(
+          tester,
+          find.text(entry.key),
+          scrollable: detailScrollable,
+        );
+        expect(
+          find.byType(entry.value),
+          findsOneWidget,
+          reason: '${entry.key} must open ${entry.value}',
+        );
+        await goBack(tester);
+      }
+
+      await disposeTree(tester);
+    },
+  );
 }

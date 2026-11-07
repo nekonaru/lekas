@@ -22,13 +22,7 @@ void main() {
         totalMeetings: 11,
         maxAbsentPercent: 25,
         excusedCountsAbsent: false,
-        statuses: const [
-          'present',
-          'present',
-          'present',
-          'absent',
-          'absent',
-        ],
+        statuses: const ['present', 'present', 'present', 'absent', 'absent'],
       );
       expect(summary.attended, 3);
       expect(summary.absentCount, 2);
@@ -101,8 +95,14 @@ void main() {
         from: DateTime(2026, 10, 26, 8, 0),
         horizon: DateTime(2026, 11, 9, 8, 0),
         windows: [
-          (start: DateTime(2026, 10, 27, 9, 0), end: DateTime(2026, 10, 27, 10, 30)),
-          (start: DateTime(2026, 10, 26, 9, 0), end: DateTime(2026, 10, 26, 10, 30)),
+          (
+            start: DateTime(2026, 10, 27, 9, 0),
+            end: DateTime(2026, 10, 27, 10, 30),
+          ),
+          (
+            start: DateTime(2026, 10, 26, 9, 0),
+            end: DateTime(2026, 10, 26, 10, 30),
+          ),
         ],
       );
       expect(moments, [
@@ -117,9 +117,15 @@ void main() {
         horizon: DateTime(2026, 10, 26, 20, 0),
         windows: [
           // Prompt at 09:00, already behind the sync moment.
-          (start: DateTime(2026, 10, 26, 7, 0), end: DateTime(2026, 10, 26, 8, 50)),
+          (
+            start: DateTime(2026, 10, 26, 7, 0),
+            end: DateTime(2026, 10, 26, 8, 50),
+          ),
           // Prompt at 00:00 tomorrow, past the horizon.
-          (start: DateTime(2026, 10, 26, 23, 0), end: DateTime(2026, 10, 26, 23, 50)),
+          (
+            start: DateTime(2026, 10, 26, 23, 0),
+            end: DateTime(2026, 10, 26, 23, 50),
+          ),
         ],
       );
       expect(moments, isEmpty);
@@ -142,17 +148,20 @@ void main() {
     });
 
     Future<void> makeSpace() async {
-      await spaces.insertSpace(Space(
-        id: 's1',
-        name: 'Basdat',
-        color: 0,
-        kind: 'course',
-        totalMeetings: 11,
-        maxAbsentPercent: 25,
-        archived: false,
-        createdAt: 0,
-        updatedAt: 0,
-      ));
+      await spaces.insertSpace(
+        Space(
+          id: 's1',
+          name: 'Basdat',
+          color: 0,
+          kind: 'course',
+          totalMeetings: 11,
+          maxAbsentPercent: 25,
+          archived: false,
+          sortOrder: 0,
+          createdAt: 0,
+          updatedAt: 0,
+        ),
+      );
     }
 
     test('marking the same day twice corrects the record', () async {
@@ -176,11 +185,7 @@ void main() {
     test('the summary reads the settings of the course', () async {
       await makeSpace();
       for (final date in ['2026-10-20', '2026-10-22']) {
-        await attendance.mark(
-          spaceId: 's1',
-          date: date,
-          status: 'present',
-        );
+        await attendance.mark(spaceId: 's1', date: date, status: 'present');
       }
       await attendance.mark(
         spaceId: 's1',

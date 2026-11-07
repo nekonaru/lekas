@@ -27,6 +27,12 @@ class Spaces extends Table {
   BoolColumn get attendPrompt => boolean().nullable()();
 
   BoolColumn get archived => boolean().withDefault(const Constant(false))();
+
+  /// Manual drag order for the spaces list (design: spaces reorder). New
+  /// spaces start at 0 and sort by name until the first drag writes
+  /// stepped values in.
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
   IntColumn get deletedAt => integer().nullable()();
@@ -378,7 +384,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -415,6 +421,11 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(idxSpaceItemsSpace);
             await m.createIndex(idxClassNotesSpace);
             await m.createIndex(idxAttendanceSpaceDate);
+          }
+          if (from < 4) {
+            // Manual spaces order, drag written in steps of 1024 so a new
+            // drag rarely rewrites the whole column.
+            await m.addColumn(spaces, spaces.sortOrder);
           }
         },
       );

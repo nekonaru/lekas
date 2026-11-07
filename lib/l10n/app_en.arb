@@ -433,6 +433,7 @@
   "selectedCount": "{count} selected",
   "@selectedCount": { "placeholders": { "count": { "type": "int" } } },
   "selectAllLabel": "Select all",
+  "reorderLabel": "Reorder",
   "archiveLabel": "Archive",
   "editSpaceTitle": "Edit space",
   "taskDeletedUndo": "Task deleted",

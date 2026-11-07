@@ -47,27 +47,34 @@ Future<void> showSpaceFormDialog(
             onPressed: () async {
               if (nameController.text.isEmpty) return;
               final repo = ref.read(spaceRepositoryProvider);
-              final code = codeController.text.isEmpty ? null : codeController.text;
+              final code = codeController.text.isEmpty
+                  ? null
+                  : codeController.text;
               final now = DateTime.now().millisecondsSinceEpoch;
               if (existing == null) {
                 final level = await ref.read(levelProvider.future);
-                await repo.insertSpace(Space(
-                  id: const Uuid().v4(),
-                  name: nameController.text,
-                  code: code,
-                  color: AppTheme.containerColors[0].toARGB32(),
-                  level: level,
-                  kind: 'course',
-                  archived: false,
-                  createdAt: now,
-                  updatedAt: now,
-                ));
+                await repo.insertSpace(
+                  Space(
+                    id: const Uuid().v4(),
+                    name: nameController.text,
+                    code: code,
+                    color: AppTheme.containerColors[0].toARGB32(),
+                    level: level,
+                    kind: 'course',
+                    archived: false,
+                    sortOrder: 0,
+                    createdAt: now,
+                    updatedAt: now,
+                  ),
+                );
               } else {
-                await repo.updateSpace(existing.copyWith(
-                  name: nameController.text,
-                  code: Value(code),
-                  updatedAt: now,
-                ));
+                await repo.updateSpace(
+                  existing.copyWith(
+                    name: nameController.text,
+                    code: Value(code),
+                    updatedAt: now,
+                  ),
+                );
               }
               if (context.mounted) Navigator.pop(context);
             },

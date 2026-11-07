@@ -167,6 +167,18 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -217,6 +229,7 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     excusedCountsAbsent,
     attendPrompt,
     archived,
+    sortOrder,
     createdAt,
     updatedAt,
     deletedAt,
@@ -341,6 +354,12 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta),
       );
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -432,6 +451,10 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         DriftSqlType.bool,
         data['${effectivePrefix}archived'],
       )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -474,6 +497,11 @@ class Space extends DataClass implements Insertable<Space> {
   /// The optional "mark your attendance" prompt of design section 5.19.
   final bool? attendPrompt;
   final bool archived;
+
+  /// Manual drag order for the spaces list (design: spaces reorder). New
+  /// spaces start at 0 and sort by name until the first drag writes
+  /// stepped values in.
+  final int sortOrder;
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
@@ -493,6 +521,7 @@ class Space extends DataClass implements Insertable<Space> {
     this.excusedCountsAbsent,
     this.attendPrompt,
     required this.archived,
+    required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -535,6 +564,7 @@ class Space extends DataClass implements Insertable<Space> {
       map['attend_prompt'] = Variable<bool>(attendPrompt);
     }
     map['archived'] = Variable<bool>(archived);
+    map['sort_order'] = Variable<int>(sortOrder);
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
@@ -576,6 +606,7 @@ class Space extends DataClass implements Insertable<Space> {
           ? const Value.absent()
           : Value(attendPrompt),
       archived: Value(archived),
+      sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
@@ -607,6 +638,7 @@ class Space extends DataClass implements Insertable<Space> {
       ),
       attendPrompt: serializer.fromJson<bool?>(json['attendPrompt']),
       archived: serializer.fromJson<bool>(json['archived']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
@@ -631,6 +663,7 @@ class Space extends DataClass implements Insertable<Space> {
       'excusedCountsAbsent': serializer.toJson<bool?>(excusedCountsAbsent),
       'attendPrompt': serializer.toJson<bool?>(attendPrompt),
       'archived': serializer.toJson<bool>(archived),
+      'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
@@ -653,6 +686,7 @@ class Space extends DataClass implements Insertable<Space> {
     Value<bool?> excusedCountsAbsent = const Value.absent(),
     Value<bool?> attendPrompt = const Value.absent(),
     bool? archived,
+    int? sortOrder,
     int? createdAt,
     int? updatedAt,
     Value<int?> deletedAt = const Value.absent(),
@@ -678,6 +712,7 @@ class Space extends DataClass implements Insertable<Space> {
         : this.excusedCountsAbsent,
     attendPrompt: attendPrompt.present ? attendPrompt.value : this.attendPrompt,
     archived: archived ?? this.archived,
+    sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -711,6 +746,7 @@ class Space extends DataClass implements Insertable<Space> {
           ? data.attendPrompt.value
           : this.attendPrompt,
       archived: data.archived.present ? data.archived.value : this.archived,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -735,6 +771,7 @@ class Space extends DataClass implements Insertable<Space> {
           ..write('excusedCountsAbsent: $excusedCountsAbsent, ')
           ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -759,6 +796,7 @@ class Space extends DataClass implements Insertable<Space> {
     excusedCountsAbsent,
     attendPrompt,
     archived,
+    sortOrder,
     createdAt,
     updatedAt,
     deletedAt,
@@ -782,6 +820,7 @@ class Space extends DataClass implements Insertable<Space> {
           other.excusedCountsAbsent == this.excusedCountsAbsent &&
           other.attendPrompt == this.attendPrompt &&
           other.archived == this.archived &&
+          other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -803,6 +842,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
   final Value<bool?> excusedCountsAbsent;
   final Value<bool?> attendPrompt;
   final Value<bool> archived;
+  final Value<int> sortOrder;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int?> deletedAt;
@@ -823,6 +863,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.excusedCountsAbsent = const Value.absent(),
     this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -844,6 +885,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.excusedCountsAbsent = const Value.absent(),
     this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.deletedAt = const Value.absent(),
@@ -869,6 +911,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Expression<bool>? excusedCountsAbsent,
     Expression<bool>? attendPrompt,
     Expression<bool>? archived,
+    Expression<int>? sortOrder,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? deletedAt,
@@ -891,6 +934,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
         'excused_counts_absent': excusedCountsAbsent,
       if (attendPrompt != null) 'attend_prompt': attendPrompt,
       if (archived != null) 'archived': archived,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -914,6 +958,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Value<bool?>? excusedCountsAbsent,
     Value<bool?>? attendPrompt,
     Value<bool>? archived,
+    Value<int>? sortOrder,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int?>? deletedAt,
@@ -935,6 +980,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
       excusedCountsAbsent: excusedCountsAbsent ?? this.excusedCountsAbsent,
       attendPrompt: attendPrompt ?? this.attendPrompt,
       archived: archived ?? this.archived,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -990,6 +1036,9 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     if (archived.present) {
       map['archived'] = Variable<bool>(archived.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -1023,6 +1072,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
           ..write('excusedCountsAbsent: $excusedCountsAbsent, ')
           ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -11114,6 +11164,7 @@ typedef $$SpacesTableCreateCompanionBuilder = SpacesCompanion Function({
   Value<bool?> excusedCountsAbsent,
   Value<bool?> attendPrompt,
   Value<bool> archived,
+  Value<int> sortOrder,
   required int createdAt,
   required int updatedAt,
   Value<int?> deletedAt,
@@ -11135,6 +11186,7 @@ typedef $$SpacesTableUpdateCompanionBuilder = SpacesCompanion Function({
   Value<bool?> excusedCountsAbsent,
   Value<bool?> attendPrompt,
   Value<bool> archived,
+  Value<int> sortOrder,
   Value<int> createdAt,
   Value<int> updatedAt,
   Value<int?> deletedAt,
@@ -11374,6 +11426,11 @@ class $$SpacesTableFilterComposer
 
   ColumnFilters<bool> get archived => $composableBuilder(
     column: $table.archived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11677,6 +11734,11 @@ class $$SpacesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -11758,6 +11820,9 @@ class $$SpacesTableAnnotationComposer
 
   GeneratedColumn<bool> get archived =>
       $composableBuilder(column: $table.archived, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -12021,6 +12086,7 @@ class $$SpacesTableTableManager
                 Value<bool?> excusedCountsAbsent = const Value.absent(),
                 Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
@@ -12041,6 +12107,7 @@ class $$SpacesTableTableManager
                 excusedCountsAbsent: excusedCountsAbsent,
                 attendPrompt: attendPrompt,
                 archived: archived,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -12063,6 +12130,7 @@ class $$SpacesTableTableManager
                 Value<bool?> excusedCountsAbsent = const Value.absent(),
                 Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int?> deletedAt = const Value.absent(),
@@ -12083,6 +12151,7 @@ class $$SpacesTableTableManager
                 excusedCountsAbsent: excusedCountsAbsent,
                 attendPrompt: attendPrompt,
                 archived: archived,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,

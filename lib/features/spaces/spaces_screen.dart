@@ -22,6 +22,10 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
   final Set<String> _selection = {};
   List<Space> _spaces = const [];
 
+  /// Drag mode: long press selects everywhere else, so reordering needs
+  /// its own mode (tap the reorder button, drag, tap again to done).
+  bool _reordering = false;
+
   void _toggleSelection(String id) {
     setState(() {
       if (!_selection.remove(id)) _selection.add(id);
@@ -87,6 +91,11 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
               tooltip: l10n.addSpace,
             ),
             IconButton(
+              icon: Icon(_reordering ? Icons.check : Icons.reorder),
+              onPressed: () => setState(() => _reordering = !_reordering),
+              tooltip: l10n.reorderLabel,
+            ),
+            IconButton(
               icon: const Icon(Icons.category_outlined),
               onPressed: () {
                 Navigator.push(
@@ -101,16 +110,51 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           ],
         ],
       ),
-      body: FutureBuilder<List<Space>>(
-        future: repo.getSpaces(),
+      // The stream keeps the rows in drag order from the table, so a
+      // reorder writes the order and the list follows; it also means a
+      // rename or archive anywhere else shows up at once.
+      body: StreamBuilder<List<Space>>(
+        stream: repo.watchSpaces(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          final spaces = snapshot.data ?? [];
+          final spaces = snapshot.data ?? const <Space>[];
+          // The drag mutates this list directly for instant feedback; the
+          // stream emission after the write carries the same order.
           _spaces = spaces;
           if (spaces.isEmpty) {
             return EmptyState(message: l10n.emptySpaces, icon: Icons.folder);
+          }
+          if (_reordering) {
+            return ReorderableListView.builder(
+              itemCount: spaces.length,
+              onReorderItem: (oldIndex, newIndex) async {
+                setState(() {
+                  final moved = spaces.removeAt(oldIndex);
+                  spaces.insert(newIndex, moved);
+                });
+                await repo.setSpaceOrder(
+                  [for (final space in spaces) space.id],
+                );
+              },
+              itemBuilder: (context, index) {
+                final space = spaces[index];
+                return ListTile(
+                  key: ValueKey('space:${space.id}'),
+                  leading: CircleAvatar(
+                    backgroundColor: Color(space.color),
+                    child: Text(
+                      space.name.isNotEmpty ? space.name[0] : '?',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  title: Text(space.name),
+                  subtitle: Text(space.code ?? ''),
+                  trailing: const Icon(Icons.drag_handle),
+                );
+              },
+            );
           }
           return ListView.builder(
             itemCount: spaces.length,

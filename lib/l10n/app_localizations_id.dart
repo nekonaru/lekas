@@ -1298,6 +1298,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectAllLabel => 'Pilih semua';
 
   @override
+  String get reorderLabel => 'Ubah urutan';
+
+  @override
   String get archiveLabel => 'Arsipkan';
 
   @override

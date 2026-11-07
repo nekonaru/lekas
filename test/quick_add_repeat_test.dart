@@ -15,13 +15,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   Widget host(QuickAddSheet sheet, AppDatabase db) => ProviderScope(
-        overrides: [appDatabaseProvider.overrideWithValue(db)],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: sheet),
-        ),
-      );
+    overrides: [appDatabaseProvider.overrideWithValue(db)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: sheet),
+    ),
+  );
 
   /// Fixed pumps instead of pumpAndSettle: the sheet holds an autofocused
   /// text field whose blinking cursor would keep the settle loop busy.
@@ -44,37 +44,50 @@ void main() {
         '${deadline.hour.toString().padLeft(2, '0')}.$two';
   }
 
-  testWidgets('the repeat chip copies space, type and deadline time',
-      (tester) async {
+  testWidgets('the repeat chip copies space, type and deadline time', (
+    tester,
+  ) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
 
     const previousDeadline = 7;
     const previousMinute = 30;
-    await db.into(db.spaces).insert(Space(
-          id: 's1',
-          name: 'Basdat',
-          color: 0xFF2196F3,
-          archived: false,
-          kind: 'course',
-          createdAt: 1,
-          updatedAt: 1,
-        ));
-    await TaskRepository(db).insertTask(Task(
-      id: 'old',
-      spaceId: 's1',
-      title: 'Laprak 1',
-      type: 'laprak',
-      deadline: DateTime(2026, 1, 10, previousDeadline, previousMinute)
-          .millisecondsSinceEpoch,
-      priority: 1,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      inbox: false,
-      createdAt: 1,
-      updatedAt: 1,
-    ));
+    await db
+        .into(db.spaces)
+        .insert(
+          Space(
+            id: 's1',
+            name: 'Basdat',
+            color: 0xFF2196F3,
+            archived: false,
+            sortOrder: 0,
+            kind: 'course',
+            createdAt: 1,
+            updatedAt: 1,
+          ),
+        );
+    await TaskRepository(db).insertTask(
+      Task(
+        id: 'old',
+        spaceId: 's1',
+        title: 'Laprak 1',
+        type: 'laprak',
+        deadline: DateTime(
+          2026,
+          1,
+          10,
+          previousDeadline,
+          previousMinute,
+        ).millisecondsSinceEpoch,
+        priority: 1,
+        status: 'todo',
+        isGroup: false,
+        pinned: false,
+        inbox: false,
+        createdAt: 1,
+        updatedAt: 1,
+      ),
+    );
 
     await tester.pumpWidget(host(const QuickAddSheet(), db));
     await settle(tester);
@@ -95,8 +108,17 @@ void main() {
 
     final tomorrow = DateTime.now().add(const Duration(days: 1));
     expect(
-      find.text(chipLabel(DateTime(tomorrow.year, tomorrow.month,
-          tomorrow.day, previousDeadline, previousMinute))),
+      find.text(
+        chipLabel(
+          DateTime(
+            tomorrow.year,
+            tomorrow.month,
+            tomorrow.day,
+            previousDeadline,
+            previousMinute,
+          ),
+        ),
+      ),
       findsOneWidget,
     );
 

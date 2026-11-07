@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -10,7 +11,8 @@ class WadahNonMatkulScreen extends ConsumerStatefulWidget {
   const WadahNonMatkulScreen({super.key});
 
   @override
-  ConsumerState<WadahNonMatkulScreen> createState() => _WadahNonMatkulScreenState();
+  ConsumerState<WadahNonMatkulScreen> createState() =>
+      _WadahNonMatkulScreenState();
 }
 
 class _WadahNonMatkulScreenState extends ConsumerState<WadahNonMatkulScreen> {
@@ -45,19 +47,23 @@ class _WadahNonMatkulScreenState extends ConsumerState<WadahNonMatkulScreen> {
     controller.dispose();
     if (confirmed != true || name.isEmpty || !mounted) return;
     final now = DateTime.now().millisecondsSinceEpoch;
-    await ref.read(spaceRepositoryProvider).insertSpace(Space(
-          id: const Uuid().v4(),
-          name: name,
-          color: AppTheme.containerColors[0].toARGB32(),
-          kind: kind,
-          archived: false,
-          createdAt: now,
-          updatedAt: now,
-        ));
+    await ref
+        .read(spaceRepositoryProvider)
+        .insertSpace(
+          Space(
+            id: const Uuid().v4(),
+            name: name,
+            color: AppTheme.containerColors[0].toARGB32(),
+            kind: kind,
+            archived: false,
+            sortOrder: 0,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.spaceCreated(name))),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.spaceCreated(name))));
   }
 
   @override

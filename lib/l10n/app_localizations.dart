@@ -2462,6 +2462,12 @@ abstract class AppLocalizations {
   /// **'Pilih semua'**
   String get selectAllLabel;
 
+  /// No description provided for @reorderLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah urutan'**
+  String get reorderLabel;
+
   /// No description provided for @archiveLabel.
   ///
   /// In id, this message translates to:

@@ -17,15 +17,18 @@ void main() {
     final repo = SpaceRepository(db);
     final now = DateTime.now().millisecondsSinceEpoch;
     for (final id in ['a', 'b']) {
-      await repo.insertSpace(Space(
-        id: id,
-        name: 'Space $id',
-        color: 0xFF6366F1,
-        kind: 'course',
-        archived: false,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      await repo.insertSpace(
+        Space(
+          id: id,
+          name: 'Space $id',
+          color: 0xFF6366F1,
+          kind: 'course',
+          archived: false,
+          sortOrder: 0,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
     }
     return repo;
   }

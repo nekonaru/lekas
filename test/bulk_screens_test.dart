@@ -21,13 +21,13 @@ void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   Widget host(AppDatabase db, Widget home) => ProviderScope(
-        overrides: [appDatabaseProvider.overrideWithValue(db)],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: home,
-        ),
-      );
+    overrides: [appDatabaseProvider.overrideWithValue(db)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    ),
+  );
 
   /// Drives the snackbar and stream timers out, then unmounts so the
   /// drift subscription closes before the database does.
@@ -44,17 +44,19 @@ void main() {
     addTearDown(db.close);
     final repo = TaskRepository(db);
     final now = DateTime.now().millisecondsSinceEpoch;
-    await repo.insertTask(Task(
-      id: 'i1',
-      title: 'Inbox one',
-      priority: 1,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      inbox: true,
-      createdAt: now,
-      updatedAt: now,
-    ));
+    await repo.insertTask(
+      Task(
+        id: 'i1',
+        title: 'Inbox one',
+        priority: 1,
+        status: 'todo',
+        isGroup: false,
+        pinned: false,
+        inbox: true,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
     await tester.pumpWidget(host(db, const InboxScreen()));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
@@ -71,9 +73,9 @@ void main() {
     expect(find.text('Inbox one'), findsNothing);
     // Direct table read instead of a stream future: the test would wait on
     // an emission that only a pump can deliver.
-    final row = await (db.select(db.tasks)
-          ..where((t) => t.id.equals('i1')))
-        .getSingle();
+    final row = await (db.select(
+      db.tasks,
+    )..where((t) => t.id.equals('i1'))).getSingle();
     expect(row.deletedAt, isNotNull);
 
     await settle(tester);
@@ -84,17 +86,19 @@ void main() {
     addTearDown(db.close);
     final repo = TaskRepository(db);
     final now = DateTime.now().millisecondsSinceEpoch;
-    await repo.insertTask(Task(
-      id: 'd1',
-      title: 'Gone one',
-      priority: 1,
-      status: 'todo',
-      isGroup: false,
-      pinned: false,
-      inbox: false,
-      createdAt: now,
-      updatedAt: now,
-    ));
+    await repo.insertTask(
+      Task(
+        id: 'd1',
+        title: 'Gone one',
+        priority: 1,
+        status: 'todo',
+        isGroup: false,
+        pinned: false,
+        inbox: false,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
     await repo.softDeleteTask('d1');
 
     await tester.pumpWidget(host(db, const TrashScreen()));
@@ -109,29 +113,33 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
     expect(find.text('Gone one'), findsNothing);
-    final row = await (db.select(db.tasks)
-          ..where((t) => t.id.equals('d1')))
-        .getSingle();
+    final row = await (db.select(
+      db.tasks,
+    )..where((t) => t.id.equals('d1'))).getSingle();
     expect(row.deletedAt, isNull);
 
     await settle(tester);
   });
 
-  testWidgets('spaces long press selects and bulk archive works',
-      (tester) async {
+  testWidgets('spaces long press selects and bulk archive works', (
+    tester,
+  ) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final repo = SpaceRepository(db);
     final now = DateTime.now().millisecondsSinceEpoch;
-    await repo.insertSpace(Space(
-      id: 'sp1',
-      name: 'Basdat',
-      color: 0xFF6366F1,
-      kind: 'course',
-      archived: false,
-      createdAt: now,
-      updatedAt: now,
-    ));
+    await repo.insertSpace(
+      Space(
+        id: 'sp1',
+        name: 'Basdat',
+        color: 0xFF6366F1,
+        kind: 'course',
+        archived: false,
+        sortOrder: 0,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
 
     await tester.pumpWidget(host(db, const SpacesScreen()));
     await tester.pump();

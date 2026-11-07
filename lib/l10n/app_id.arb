@@ -433,6 +433,7 @@
   "selectedCount": "{count} dipilih",
   "@selectedCount": { "placeholders": { "count": { "type": "int" } } },
   "selectAllLabel": "Pilih semua",
+  "reorderLabel": "Ubah urutan",
   "archiveLabel": "Arsipkan",
   "editSpaceTitle": "Ubah wadah",
   "taskDeletedUndo": "Tugas dihapus",

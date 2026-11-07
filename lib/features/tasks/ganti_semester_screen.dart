@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:uuid/uuid.dart';
+
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../core/theme.dart';
@@ -11,7 +12,8 @@ class GantiSemesterScreen extends ConsumerStatefulWidget {
   const GantiSemesterScreen({super.key});
 
   @override
-  ConsumerState<GantiSemesterScreen> createState() => _GantiSemesterScreenState();
+  ConsumerState<GantiSemesterScreen> createState() =>
+      _GantiSemesterScreenState();
 }
 
 class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
@@ -58,8 +60,10 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.newSemester,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              l10n.newSemester,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _periodController,
@@ -69,8 +73,10 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            Text(l10n.unfinishedTasksOptionsLabel,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              l10n.unfinishedTasksOptionsLabel,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             ListTile(
               title: Text(l10n.keepInArchive),
@@ -111,6 +117,7 @@ class _GantiSemesterScreenState extends ConsumerState<GantiSemesterScreen> {
                   color: AppTheme.containerColors[0].toARGB32(),
                   kind: 'course',
                   archived: false,
+                  sortOrder: 0,
                   createdAt: now,
                   updatedAt: now,
                 );
