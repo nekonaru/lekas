@@ -1,18 +1,18 @@
 """Generate the Lekas launcher icons and in-app logo from one master drawing.
 
-Design: a bold white lightning bolt (fast, matching the old bolt glyph in the
-drawer) over a diagonal indigo (0xFF6366F1) to violet (0xFF8B5CF6) gradient,
-the same accent the app ships with. The bolt gets a soft offset shadow so it
-stays readable at 48px.
+Design: a bold white checkmark (a finished task, quick) over a diagonal
+indigo (0xFF6366F1) to violet (0xFF8B5CF6) gradient, the same accent the
+app ships with. The check gets a soft offset shadow so it stays readable
+at 48px. (The first version used a bolt; the check replaced it in v1.5.1
+because it reads better at small sizes.)
 
 Outputs (run with `python tool/generate_logo.py`):
   android/app/src/main/res/mipmap-*/ic_launcher{,_round}.png (legacy sizes)
-  android/app/src/main/res/drawable/ic_launcher_background.xml (vector)
-  android/app/src/main/res/drawable/ic_launcher_foreground.xml (vector)
-  android/app/src/main/res/mipmap-anydpi-v26/*.xml (adaptive icons)
-  assets/branding/lekas_logo.svg is the hand-written vector source; this
-  script renders the PNGs from the same geometry (bolt path in 108dp
-  foreground space) so the two never drift.
+  assets/branding/logo.png (in-app, rounded square with transparency)
+  assets/branding/lekas_logo.svg is the hand-written vector source; the
+  adaptive icon drawables (drawable/ic_launcher_background.xml and
+  ic_launcher_foreground.xml) carry the same geometry, so the three never
+  drift.
 
 Only Pillow is needed: `pip install pillow`. No native dependencies.
 """
@@ -31,19 +31,14 @@ BRANDING = ROOT / "assets" / "branding"
 INDIGO = (99, 102, 241)   # 0xFF6366F1, the app accent
 VIOLET = (139, 92, 246)   # 0xFF8B5CF6
 
-# Bolt in 1024px master space. A single zigzag, wide enough to read at
-# 48px, with a check-like foot at the bottom (the low point sweeps right).
-BOLT_1024 = [
-    (590, 200),   # top tip
-    (360, 560),   # left shoulder
-    (510, 560),   # inner notch
-    (430, 820),   # bottom tip
-    (670, 440),   # right shoulder
-    (520, 440),   # inner top
+# Check polyline in 1024px master space. A single two-stroke check with
+# round caps, wide enough to read at 48px, with a short first arm.
+CHECK_1024 = [
+    (275, 540),   # left tip
+    (455, 725),   # low point
+    (765, 315),   # right tip
 ]
-
-# Same bolt in 108dp adaptive-foreground space (divide by 1024/108).
-BOLT_108 = [(x * 108 / 1024, y * 108 / 1024) for x, y in BOLT_1024]
+CHECK_WIDTH = 128
 
 
 def gradient(width: int, height: int) -> Image.Image:
@@ -61,24 +56,33 @@ def gradient(width: int, height: int) -> Image.Image:
     return img
 
 
-def draw_bolt(base: Image.Image, scale: float, shadow: bool = True) -> Image.Image:
-    """Draw the white bolt (with soft shadow) onto a copy of base."""
+def _check(d: ImageDraw.ImageDraw, scale: float, fill, offset: int = 0) -> None:
+    """Draw the check as a thick polyline with round joints and caps."""
+    # Joint circle first so the low bend is round, then both segments.
+    pts = [(x * scale + offset, y * scale + offset) for x, y in CHECK_1024]
+    # Shadow copy, offset down right, used beneath the white check.
+    d.line(pts, fill=fill, width=round(CHECK_WIDTH * scale), joint="curve")
+    r = CHECK_WIDTH * scale / 2
+    for x, y in pts:
+        d.ellipse([x - r, y - r, x + r, y + r], fill=fill)
+
+
+def draw_check(base: Image.Image, scale: float, shadow: bool = True) -> Image.Image:
+    """Draw the white check (with soft shadow) onto a copy of base."""
     layer = base.copy()
     w, h = layer.size
-    pts = [(x * scale, y * scale) for x, y in BOLT_1024]
 
     if shadow:
         ghost = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(ghost)
-        off = 14 * scale
-        d.polygon([(x + off, y + off) for x, y in pts], fill=(30, 27, 75, 90))
+        _check(d, scale, (30, 27, 75, 90), offset=round(14 * scale))
         ghost = ghost.filter(ImageFilter.GaussianBlur(8 * scale))
         layer = Image.alpha_composite(layer.convert("RGBA"), ghost)
 
-    bolt = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(bolt)
-    d.polygon(pts, fill=(255, 255, 255, 255))
-    layer = Image.alpha_composite(layer.convert("RGBA"), bolt)
+    mark = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(mark)
+    _check(d, scale, (255, 255, 255, 255))
+    layer = Image.alpha_composite(layer.convert("RGBA"), mark)
     return layer
 
 
@@ -86,7 +90,7 @@ def render_master(size: int, rounded: bool = False) -> Image.Image:
     """One icon at the given size, supersampled 3x for antialiased edges."""
     ss = 3
     big = gradient(size * ss, size * ss)
-    im = draw_bolt(big, 1.0)
+    im = draw_check(big, (size * ss) / 1024)
     im = im.resize((size, size), Image.LANCZOS)
     if rounded:
         mask = Image.new("L", (size, size), 0)
@@ -113,8 +117,8 @@ def main() -> None:
 
     # Adaptive icon drawables are hand-written vectors next to this script
     # (drawable/ic_launcher_background.xml and ic_launcher_foreground.xml);
-    # the bolt path above documents the same geometry. The in-app logo is a
-    # rounded square with transparent corners.
+    # CHECK_1024 documents the same geometry in 1024px space. The in-app
+    # logo is a rounded square with transparent corners.
 
     # In-app logo: rounded square, 512px (crisp on xxxhdpi at 72dp).
     render_master(512, rounded=True).save(BRANDING / "logo.png", optimize=True)
