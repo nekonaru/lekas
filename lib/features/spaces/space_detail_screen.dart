@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/components/undo_snackbar.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -11,6 +12,7 @@ import '../tasks/prediksi_nilai_screen.dart';
 import '../tasks/tasks_screen.dart';
 import '../tasks/weight_component_screen.dart';
 import 'class_schedule_screen.dart';
+import 'space_form_dialog.dart';
 
 class SpaceDetailScreen extends ConsumerStatefulWidget {
   final String spaceId;
@@ -132,9 +134,48 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _push(const DaftarBawaanScreen()),
               ),
+              const Divider(),
+              ListTile(
+                title: Text(l10n.editSpaceTitle),
+                leading: const Icon(Icons.edit_outlined),
+                trailing: const Icon(Icons.edit),
+                onTap: () async {
+                  await showSpaceFormDialog(context, ref, existing: space);
+                  if (mounted) setState(() {});
+                },
+              ),
+              ListTile(
+                title: Text(l10n.archiveLabel),
+                leading: const Icon(Icons.archive_outlined),
+                trailing: const Icon(Icons.archive),
+                onTap: () => _archive(space),
+              ),
             ],
           ),
         );
+      },
+    );
+  }
+
+  /// Archive hides the space from the list; the undo brings it back. The
+  /// messenger is captured before popping so the banner survives.
+  Future<void> _archive(Space space) async {
+    final l10n = AppLocalizations.of(context)!;
+    final repo = ref.read(spaceRepositoryProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    await repo.archiveSpace(space.id);
+    if (!mounted) return;
+    Navigator.pop(context);
+    UndoSnackbar.showOnMessenger(
+      messenger,
+      l10n.undo,
+      l10n.spacesArchivedUndo(1),
+      () async {
+        final current = await repo.getSpace(space.id);
+        await repo.updateSpace(current.copyWith(
+          archived: false,
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ));
       },
     );
   }

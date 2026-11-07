@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../core/components/undo_snackbar.dart';
 import '../../core/date_util.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -304,6 +305,11 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       );
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.delete_outline, color: Colors.red),
+                    title: Text(l10n.deleteLabel),
+                    onTap: () => _deleteTask(task),
+                  ),
                 ],
               ),
               floatingActionButton: FloatingActionButton(
@@ -360,6 +366,25 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       case 'done': return l10n.done;
       default: return l10n.statusTodo;
     }
+  }
+
+  /// Delete the task to the trash, then pop: the undo banner is shown on
+  /// the messenger captured before the pop, so it survives navigation.
+  Future<void> _deleteTask(Task task) async {
+    final l10n = AppLocalizations.of(context)!;
+    final repo = ref.read(taskRepositoryProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    await repo.softDeleteTask(task.id);
+    if (!mounted) return;
+    Navigator.pop(context);
+    UndoSnackbar.showOnMessenger(
+      messenger,
+      l10n.undo,
+      l10n.taskDeletedUndo,
+      () async {
+        await repo.restoreTask(task.id);
+      },
+    );
   }
 
   /// Design section 5.9: duplicating a weekly lab report takes one tap.

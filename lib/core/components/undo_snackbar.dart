@@ -16,8 +16,23 @@ class UndoSnackbar {
   static Timer? _closeTimer;
 
   static void show(BuildContext context, String message, VoidCallback onUndo) {
-    final l10n = AppLocalizations.of(context)!;
-    final messenger = ScaffoldMessenger.of(context);
+    showOnMessenger(
+      ScaffoldMessenger.of(context),
+      AppLocalizations.of(context)!.undo,
+      message,
+      onUndo,
+    );
+  }
+
+  /// Same banner, shown from a messenger the caller captured before
+  /// popping: after a pop the detail context is gone, but the root
+  /// messenger still outlives it, so the undo survives the navigation.
+  static void showOnMessenger(
+    ScaffoldMessengerState messenger,
+    String undoLabel,
+    String message,
+    VoidCallback onUndo,
+  ) {
     messenger.removeCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
@@ -28,7 +43,7 @@ class UndoSnackbar {
           borderRadius: BorderRadius.circular(12),
         ),
         action: SnackBarAction(
-          label: l10n.undo,
+          label: undoLabel,
           onPressed: onUndo,
         ),
       ),

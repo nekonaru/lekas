@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/components/bulk_action_bar.dart';
+import '../../core/components/bulk_actions.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -22,6 +24,41 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   String? _spaceFilter;
   String? _typeFilter;
   String? _tagFilter;
+
+  /// Long press selection, like every other list (design section 5.5).
+  final Set<String> _selection = {};
+  List<Task> _shown = const [];
+
+  void _toggleSelection(String id) {
+    setState(() {
+      if (!_selection.remove(id)) _selection.add(id);
+    });
+  }
+
+  List<Task> get _picked => _shown.where((t) => _selection.contains(t.id)).toList();
+
+  /// The cached queries are only valid until a bulk action writes, so drop
+  /// them before refreshing: reusing them would re-render the pre action
+  /// list.
+  void _refresh() {
+    _cachedTasks = null;
+    _cachedTags = null;
+    setState(() {});
+  }
+
+  Future<void> _complete() async {
+    final picked = _picked;
+    setState(_selection.clear);
+    await BulkActions.complete(context, ref, picked);
+    _refresh();
+  }
+
+  Future<void> _delete() async {
+    final picked = _picked;
+    setState(_selection.clear);
+    await BulkActions.softDelete(context, ref, picked);
+    _refresh();
+  }
 
   /// The settled search text. Every keystroke used to rebuild the whole
   /// list, so the filter now waits until typing pauses (design section 5.9).
@@ -173,9 +210,34 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final selecting = _selection.isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.searchFilterTitle)),
+      appBar: AppBar(
+        title: Text(selecting
+            ? l10n.selectedCount(_selection.length)
+            : l10n.searchFilterTitle),
+        actions: [
+          if (selecting)
+            BulkSelectionBar(
+              count: _selection.length,
+              onSelectAll: () => setState(
+                () => _selection.addAll(_shown.map((task) => task.id)),
+              ),
+              onComplete: _complete,
+              onPriority: () async {
+                await BulkActions.pickPriority(context, ref, _picked);
+                _refresh();
+              },
+              onSpace: () async {
+                await BulkActions.pickSpace(context, ref, _picked);
+                _refresh();
+              },
+              onDelete: _delete,
+              onClose: () => setState(_selection.clear),
+            ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -280,23 +342,36 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   }
 
   Widget _taskList(List<Task> tasks, AppLocalizations l10n) {
+    _shown = tasks;
     if (tasks.isEmpty) {
       return Center(child: Text(l10n.emptyTaskList));
     }
+    final selecting = _selection.isNotEmpty;
     return ListView.builder(
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
+        final selected = _selection.contains(task.id);
         return ListTile(
+          selected: selected,
+          leading: selected
+              ? Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).colorScheme.primary,
+                )
+              : null,
           title: Text(task.title),
           subtitle: Text(task.notes ?? ''),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (_) => TaskDetailScreen(taskId: task.id),
-            ),
-          ),
+          trailing: selected ? null : const Icon(Icons.chevron_right),
+          onTap: selecting
+              ? () => _toggleSelection(task.id)
+              : () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => TaskDetailScreen(taskId: task.id),
+                    ),
+                  ),
+          onLongPress: () => _toggleSelection(task.id),
         );
       },
     );

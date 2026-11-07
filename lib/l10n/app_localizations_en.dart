@@ -1294,6 +1294,28 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get selectAllLabel => 'Select all';
+
+  @override
+  String get archiveLabel => 'Archive';
+
+  @override
+  String get editSpaceTitle => 'Edit space';
+
+  @override
+  String get taskDeletedUndo => 'Task deleted';
+
+  @override
+  String tasksRestored(int count) {
+    return '$count tasks restored';
+  }
+
+  @override
+  String spacesArchivedUndo(int count) {
+    return '$count spaces archived';
+  }
+
+  @override
   String get taskCompletedUndo => 'Task completed';
 
   @override

@@ -7,6 +7,8 @@ import '../../core/date_util.dart';
 import '../../domain/focus.dart';
 import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
+import '../../core/components/bulk_action_bar.dart';
+import '../../core/components/bulk_actions.dart';
 import '../../core/components/motion.dart';
 import '../../core/components/undo_snackbar.dart';
 import '../../core/theme.dart';
@@ -223,148 +225,46 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     });
   }
 
-  /// Bulk complete with an undo, as required by design section 5.5.
+  /// Bulk complete with an undo, as required by design section 5.5. The
+  /// shared helper runs the same transaction and banner every other list
+  /// uses; clearing first dismisses the action bar at once.
   Future<void> _completeSelected(List<Task> tasks) async {
-    final l10n = AppLocalizations.of(context)!;
-    final repository = ref.read(taskRepositoryProvider);
     final picked = _picked(tasks);
-    if (picked.isEmpty) return;
-    // One transaction for the whole selection: a single commit instead of
-    // one per task, and the stream reports the change once.
-    await ref.read(appDatabaseProvider).transaction(() async {
-      for (final task in picked) {
-        await repository.markDone(task.id);
-      }
-    });
     _clearSelection();
-    if (!mounted) return;
-    UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      await ref.read(appDatabaseProvider).transaction(() async {
-        for (final task in picked) {
-          await repository.updateTask(task.copyWith(
-            status: 'todo',
-            completedAt: const Value(null),
-            updatedAt: now,
-          ));
-        }
-      });
-      if (mounted) setState(() {});
-    });
+    await BulkActions.complete(context, ref, picked);
   }
 
   Future<void> _deleteSelected(List<Task> tasks) async {
-    final l10n = AppLocalizations.of(context)!;
-    final repository = ref.read(taskRepositoryProvider);
     final picked = _picked(tasks);
-    if (picked.isEmpty) return;
-    await ref.read(appDatabaseProvider).transaction(() async {
-      for (final task in picked) {
-        await repository.softDeleteTask(task.id);
-      }
-    });
     _clearSelection();
-    if (!mounted) return;
-    UndoSnackbar.show(context, l10n.tasksDeletedUndo(picked.length), () async {
-      await ref.read(appDatabaseProvider).transaction(() async {
-        for (final task in picked) {
-          await repository.restoreTask(task.id);
-        }
-      });
-      if (mounted) setState(() {});
-    });
+    await BulkActions.softDelete(context, ref, picked);
   }
 
   Future<void> _pickPriority(List<Task> tasks) async {
-    final l10n = AppLocalizations.of(context)!;
     final picked = _picked(tasks);
-    if (picked.isEmpty) return;
-    final priority = await showModalBottomSheet<int>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.flag_outlined),
-              title: Text(l10n.priorityLow),
-              onTap: () => Navigator.pop(sheetContext, 0),
-            ),
-            ListTile(
-              leading: const Icon(Icons.flag),
-              title: Text(l10n.priorityMedium),
-              onTap: () => Navigator.pop(sheetContext, 1),
-            ),
-            ListTile(
-              leading: const Icon(Icons.flag),
-              title: Text(l10n.priorityHigh),
-              onTap: () => Navigator.pop(sheetContext, 2),
-            ),
-          ],
-        ),
-      ),
-    );
-    if (priority == null || !mounted) return;
-    final repository = ref.read(taskRepositoryProvider);
-    final now = DateTime.now().millisecondsSinceEpoch;
-    await ref.read(appDatabaseProvider).transaction(() async {
-      for (final task in picked) {
-        await repository
-            .updateTask(task.copyWith(priority: priority, updatedAt: now));
-      }
-    });
-    if (!mounted) return;
-    setState(() {});
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.bulkUpdated(picked.length))),
-    );
+    await BulkActions.pickPriority(context, ref, picked);
+    if (mounted) setState(() {});
   }
 
   Future<void> _pickSpace(List<Task> tasks) async {
-    final l10n = AppLocalizations.of(context)!;
     final picked = _picked(tasks);
-    if (picked.isEmpty) return;
-    final spaces = await ref.read(spaceRepositoryProvider).getSpaces();
-    if (!mounted) return;
-    final spaceId = await showModalBottomSheet<String>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.block),
-              title: Text(l10n.inboxTitle),
-              onTap: () => Navigator.pop(sheetContext, ''),
-            ),
-            for (final space in spaces)
-              ListTile(
-                leading: const Icon(Icons.folder_outlined),
-                title: Text(space.name),
-                onTap: () => Navigator.pop(sheetContext, space.id),
-              ),
-          ],
-        ),
+    await BulkActions.pickSpace(context, ref, picked);
+    if (mounted) setState(() {});
+  }
+
+  /// The selection bar while multi select is on: every task action plus
+  /// select all, shared with the other lists.
+  Widget _selectionBar(List<Task> tasks) {
+    return BulkSelectionBar(
+      count: _selection.length,
+      onSelectAll: () => setState(
+        () => _selection.addAll(tasks.map((task) => task.id)),
       ),
-    );
-    if (spaceId == null || !mounted) return;
-    final repository = ref.read(taskRepositoryProvider);
-    final now = DateTime.now().millisecondsSinceEpoch;
-    await ref.read(appDatabaseProvider).transaction(() async {
-      for (final task in picked) {
-        await repository.updateTask(task.copyWith(
-          spaceId: Value(spaceId.isEmpty ? null : spaceId),
-          inbox: spaceId.isEmpty,
-          updatedAt: now,
-        ));
-      }
-    });
-    if (!mounted) return;
-    setState(() {});
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.bulkUpdated(picked.length))),
+      onComplete: () => _completeSelected(tasks),
+      onPriority: () => _pickPriority(tasks),
+      onSpace: () => _pickSpace(tasks),
+      onDelete: () => _deleteSelected(tasks),
+      onClose: _clearSelection,
     );
   }
 
@@ -471,33 +371,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             ? l10n.selectedCount(_selection.length)
             : l10n.todayTitle),
         actions: [
-          if (selecting) ...[
-            IconButton(
-              icon: const Icon(Icons.check),
-              tooltip: l10n.markLabel,
-              onPressed: () => _completeSelected(_tasks),
-            ),
-            IconButton(
-              icon: const Icon(Icons.flag_outlined),
-              tooltip: l10n.priorityMedium,
-              onPressed: () => _pickPriority(_tasks),
-            ),
-            IconButton(
-              icon: const Icon(Icons.folder_outlined),
-              tooltip: l10n.taskContainer,
-              onPressed: () => _pickSpace(_tasks),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.deleteLabel,
-              onPressed: () => _deleteSelected(_tasks),
-            ),
-            IconButton(
-              icon: const Icon(Icons.close),
-              tooltip: l10n.closeLabel,
-              onPressed: _clearSelection,
-            ),
-          ] else
+          if (selecting)
+            _selectionBar(_tasks)
+          else
             IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {

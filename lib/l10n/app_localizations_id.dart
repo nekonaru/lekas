@@ -1295,6 +1295,28 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get selectAllLabel => 'Pilih semua';
+
+  @override
+  String get archiveLabel => 'Arsipkan';
+
+  @override
+  String get editSpaceTitle => 'Ubah wadah';
+
+  @override
+  String get taskDeletedUndo => 'Tugas dihapus';
+
+  @override
+  String tasksRestored(int count) {
+    return '$count tugas dipulihkan';
+  }
+
+  @override
+  String spacesArchivedUndo(int count) {
+    return '$count wadah diarsipkan';
+  }
+
+  @override
   String get taskCompletedUndo => 'Tugas diselesaikan';
 
   @override

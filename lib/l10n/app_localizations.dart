@@ -2456,6 +2456,42 @@ abstract class AppLocalizations {
   /// **'{count} dipilih'**
   String selectedCount(int count);
 
+  /// No description provided for @selectAllLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih semua'**
+  String get selectAllLabel;
+
+  /// No description provided for @archiveLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan'**
+  String get archiveLabel;
+
+  /// No description provided for @editSpaceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah wadah'**
+  String get editSpaceTitle;
+
+  /// No description provided for @taskDeletedUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas dihapus'**
+  String get taskDeletedUndo;
+
+  /// No description provided for @tasksRestored.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas dipulihkan'**
+  String tasksRestored(int count);
+
+  /// No description provided for @spacesArchivedUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} wadah diarsipkan'**
+  String spacesArchivedUndo(int count);
+
   /// No description provided for @taskCompletedUndo.
   ///
   /// In id, this message translates to:
