@@ -28,6 +28,13 @@ subprojects {
                 androidExt.compileSdk = 37
             }
         }
+        val appExt = extensions.findByType(com.android.build.api.dsl.ApplicationExtension::class.java)
+        if (appExt != null) {
+            val current = appExt.compileSdk
+            if (current == null || current < 37) {
+                appExt.compileSdk = 37
+            }
+        }
     }
 }
 
