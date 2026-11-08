@@ -2,18 +2,18 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
-## v1.7.0 - Kunci aplikasi dan aksi hari kalender
+## v1.7.0
+
+Lekas menambahkan kunci aplikasi PIN dan ketuk kalender untuk mengelola tugas harian.
 
 ### Fitur baru
 
 - **Kunci aplikasi.** PIN empat sampai enam digit (diatur di Settings, App Lock) mengunci aplikasi setiap kembali ke foreground. Hanya hash ber-salt yang disimpan, sehingga tidak ada PIN yang tersimpan di database. Mengganti dan mematikan selalu meminta PIN saat ini dulu.
 - **Aksi hari kalender.** Mengetuk hari mana pun membuka tugas jatuh temponya, yang bisa dicentang dan dikelola massal seperti daftar lainnya. Hari ini ditandai dengan titik yang menandai hari bertugas.
 
-### Instalasi / Update
+## v1.6.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.6.0 - Aksi massal, urutan, ganti jenjang, tampilan baru
+Lekas menambahkan pilih massal di semua daftar, seret susun, saklar jenjang, dan tampilan baru.
 
 ### Fitur baru
 
@@ -29,21 +29,17 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Backup lama tetap bisa diimpor.** Baris wadah dari backup sebelum v1.6.0 tanpa susunan seret diimpor dengan susunan bawaan.
 - **Database lama naik ke schema 4.** Kolom susunan seret wadah dimigrasi dengan bersih: data lama dan indeks terjaga.
 
-### Instalasi / Update
+## v1.5.1
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.5.1 - Ikon aplikasi baru
+Lekas menyegarkan ikon aplikasi dari petir ke centang tebal.
 
 ### Fitur baru
 
 - **Ikon aplikasi baru.** Petir diganti dengan centang putih tebal di gradasi indigo ke violet yang sama, termasuk ikon launcher, varian bundar dan adaptif, serta logo di dalam aplikasi. Centang tetap jelas pada ukuran kecil.
 
-### Instalasi / Update
+## v1.5.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.5.0 - Logo baru dan tampilan yang lebih rapi
+Lekas membawa logo baru, tema yang lebih rapi, dan daftar yang lebih halus dan ringan.
 
 ### Fitur baru
 
@@ -51,53 +47,45 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Tampilan lebih rapi.** Bilah atas, kartu, bilah bawah dan baris tugas berbagi satu tema yang halus: bilah atas yang lebih datar, kartu berbingkai, ikon terisi pada tab yang terbuka, dan titik prioritas berlingkar pada setiap baris tugas.
 - **Animasi daftar yang halus.** Kartu di Today dan Inbox memudar dan bergeser masuk dengan jeda singkat, dan layar setup menampilkan penanda langkah yang memanjang. Semua animasi selesai dengan cepat dan tidak meninggalkan lapisan, sehingga gulir tetap ringan.
 
-### Optimisasi
+### Peningkatan
 
 - **Unduhan lebih kecil.** Font ikon Cupertino yang tidak digunakan dihapus dan font Inter bawaan disubset ke glif yang dipakai aplikasi, sehingga data font bawaan berkurang lebih dari 1 MB.
 - **Daftar lebih ringan.** Baris yang sudah diam mengembalikan child tanpa lapisan opacity tambahan, sehingga daftar yang panjang tetap murah digambar.
 
-### Instalasi / Update
+## v1.4.2
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.4.2 - Perbaikan layar hitam setelah setup
+Lekas memperbaiki layar hitam setelah setup dan membuat pilihan bahasa bereaksi.
 
 ### Perbaikan bug
 
 - **Tidak ada lagi layar hitam setelah setup.** Menyelesaikan rangkaian awal menutup route akar, sehingga navigator kosong dan layar hitam di HP asli. Setup kini langsung berpindah ke layar utama di tempat, tanpa frame kosong di antaranya.
 - **Pilihan bahasa di setup langsung bereaksi.** Tombol bahasa dan jenjang kini menunjukkan opsi yang dipilih (terisi dengan tanda centang) dengan transisi silang antar status, dan bahasa yang dipilih langsung diterapkan, bukan hanya di langkah terakhir.
 
-### Instalasi / Update
+## v1.4.1
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.4.1 - Perbaikan crash saat dibuka pada build release
+Lekas memperbaiki crash saat dibuka yang disebabkan penyusut memotong kelas WorkManager.
 
 ### Perbaikan bug
 
 - **Tidak ada lagi force close saat dibuka.** Penyusut build release memotong kelas database WorkManager yang Android inisialisasi sebelum frame pertama, sehingga APK release mati begitu dibuka di HP asli sementara build debug tetap jalan. Kelas tersebut kini dijaga, dan aplikasi terbuka normal.
 
-### Instalasi / Update
+## v1.4.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.4.0 - Preset tema dan transisi hero
+Lekas menambahkan preset tema sekali ketuk dan transisi hero ke detail tugas.
 
 ### Fitur baru
 
 - **Preset tema.** Satu ketukan menerapkan tampilan utuh: Tengah malam beralih ke indigo gelap, Senja menghangatkan aplikasi dengan oranye, Hutan mendinginkan dengan hijau emerald, dan Bawaan mengembalikan semuanya ke gaya asli.
 - **Pratinjau terang dan gelap.** Pemilih warna menunjukkan hasil setiap warna di kedua mode terang sebelum kamu memilihnya, dengan swatch dari palet asli yang dihasilkan.
 
-### Optimisasi
+### Peningkatan
 
 - **Transisi hero.** Membuka tugas dari Today membawa judulnya ke layar detail dan kembali sebagai satu gerakan menyambung.
 - **Transisi lebih aman.** Hanya daftar Today yang memakai penerbangan hero, sehingga layar yang bertumpuk tidak pernah bertabrakan pada tag yang sama.
 
-### Instalasi / Update
+## v1.3.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.3.0 - Warna kustom, ukuran font, dan Inter
+Lekas menambahkan warna aksen, empat ukuran font, dan tipografi Inter bawaan.
 
 ### Fitur baru
 
@@ -105,20 +93,18 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Ukuran font.** Empat pilihan ukuran teks yang mengalikan skala aksesibilitas HP, jadi pengaturan sistem tetap jalan di bawahnya.
 - **Tipografi Inter.** Aplikasi membawa huruf Inter dalam empat ketebalan, memberi judul, kartu dan chip tampilan yang rapi dan khas.
 
-### Optimisasi
+### Peningkatan
 
 - **Tombol tambah sadar gulir.** Tombol tambah bergeser menghilang saat menggulir ke bawah dan kembali pada guliran pertama ke atas.
 - **Hitungan seksi.** Setiap judul seksi di Today menampilkan jumlah tugasnya dalam pill kecil.
 - **Masuk yang lembut.** Layar Today yang kosong tampil dengan fade dan skala sekali, bukan muncul mendadak.
 - **Pembangunan ulang lebih ramping.** Kartu menerima skor urgensi yang sudah dihitung, dan daftar melepas keep alive otomatis.
 
-### Instalasi / Update
+## v1.2.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+Lekas menyatukan gerakan di antarmuka dan membuat daftar panjang lebih ringan digambar.
 
-## v1.2.0 - Antarmuka lebih halus dan daftar lebih ringan
-
-### Optimisasi
+### Peningkatan
 
 - **Gerak bersama.** Pindah tab, buka halaman dan aksi kartu kini memakai satu kurva dan durasi yang sama, sehingga semua gerakan terasa tenang dan konsisten.
 - **Animasi seleksi.** Menandai tugas dalam mode multi pilih menampilkan centang dengan crossfade di atas titik prioritas, bukan berganti seketika.
@@ -127,11 +113,9 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Layar kosong lebih ramah.** Today yang kosong menampilkan ikon centang berwarna dan judul di tengah, bukan glif abu.
 - **Daftar lebih ringan.** Skor urgensi tampil dalam pill kecil, gerak swipe berbentuk rounded seperti kartu, dan tugas terakhir tergulir bebas dari tombol aksi.
 
-### Instalasi / Update
+## v1.1.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.1.0 - Dependensi tugas dan Quick Add yang lebih pintar
+Lekas menambahkan dependensi tugas dan Quick Add yang lebih pintar, plus menyerahkan layar jadi ke menu.
 
 ### Fitur baru
 
@@ -147,13 +131,11 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Drawer tertutup sebelum navigasi.** Membuka layar dari drawer utama tidak lagi meninggalkan drawer di belakangnya.
 - **Tombol kembali di trash.** Layar trash bisa ditutup dengan panah kembali seperti layar lain.
 
-### Instalasi / Update
+## v1.0.1
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
+Lekas langsung membuka layar utama, meringankan daftar Today, dan memperbaiki sejumlah crash pasca update.
 
-## v1.0.1 - Perbaikan stabilitas dan kecepatan
-
-### Optimisasi
+### Peningkatan
 
 - **Layar utama lebih dulu.** Aplikasi kini langsung menggambar layar utama dan mengisi jadwal pengingat di belakangnya, bukan selalu membuka dengan spinner.
 - **Hanya kartu terlihat yang dibangun.** Daftar Hari Ini menata satu kartu pada satu waktu, sehingga daftar panjang tetap lancar dan setiap tap tidak lagi membangun ulang seluruh layar.
@@ -170,11 +152,9 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Start up selamat dari rute rusak.** Rute yang gagal dibaca saat awal kini jatuh ke layar utama, bukan crash.
 - **Tulisan lambat tak menyentuh layar tertutup.** Tiga pemilih di Pengaturan dan Quick Add kini berhenti setelah layarnya hilang.
 
-### Instalasi / Update
+## v1.0.0
 
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
-
-## v1.0.0 - Rilis publik pertama
+Lekas merilis versi publik pertamanya dengan Quick Add, pengingat offline, Today, widget, dan dukungan dua bahasa.
 
 ### Fitur baru
 
@@ -187,7 +167,7 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 - **Kehadiran dan fokus.** Presensi kelas dengan passing grade kampus, peringatan kuota izin, dan mode fokus maksimal tiga tugas sehari (bagian 5.19 dan 5.24).
 - **Dua bahasa dan mode gelap.** Indonesia bawaan, Inggris sebagai pilihan, baik di antarmuka maupun di parser (bagian 8).
 
-### Optimisasi
+### Peningkatan
 
 - **Ringkasan dibangun saat sync.** Ringkasan pagi, malam dan minggu diperbarui saat aplikasi dibuka, HP menyala atau tugas berubah, bukan menunggu timer.
 - **Penyegaran widget diredam.** Debounce 400 ms plus periode 30 menit menjaga peluncur tetap ringan sementara data tetap segar.
@@ -197,7 +177,3 @@ Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP
 
 - **Liburan mengosongkan seluruh hari.** Hari libur nasional kini melewati semua kelas pada hari itu, bukan hanya slot pertama.
 - **Nama bulan menyimpan tanggalnya.** "25 oktober" dan "october 25" mendarat di tanggal 25, bukan jatuh ke akhir bulan.
-
-### Instalasi / Update
-
-Download APK sesuai HP di bawah (`app-arm64-v8a-release.apk` untuk kebanyakan HP modern, `app-armeabi-v7a-release.apk` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Minimum Android 7.0 (API 24).
