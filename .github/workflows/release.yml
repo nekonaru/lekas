@@ -66,22 +66,45 @@ jobs:
       - name: Build release notes from the changelog
         run: |
           TAG="$GITHUB_REF_NAME"
-          DESC=$(grep -E "^## $TAG - " CHANGELOG.md | head -n 1 | sed "s/^## $TAG - //")
-          if [ -z "$DESC" ]; then
-            echo "No changelog entry for $TAG"
+
+          # The changelog entry is "## <tag>", one summary sentence, then the
+          # content sections. The notes keep that shape: one sentence per
+          # language, the same sections, then Install / Update.
+          extract_sections() {
+            awk -v tag="$TAG" '
+              $0 == "## " tag { grab = 1; next }
+              grab && /^## v/ { exit }
+              grab && /^### / { show = 1 }
+              grab && show { print }
+            ' "$1" | sed 's/^### /## /'
+          }
+
+          en_summary=$(awk -v tag="$TAG" '
+            $0 == "## " tag { grab = 1; next }
+            grab && /^## v/ { exit }
+            grab && NF > 0 && !/^### / { print; exit }
+          ' CHANGELOG.md)
+          id_summary=$(awk -v tag="$TAG" '
+            $0 == "## " tag { grab = 1; next }
+            grab && /^## v/ { exit }
+            grab && NF > 0 && !/^### / { print; exit }
+          ' CHANGELOG.id.md)
+
+          if [ -z "$en_summary" ] || [ -z "$id_summary" ]; then
+            echo "No summary line under ## $TAG"
             exit 1
           fi
-
-          extract() {
-            awk -v tag="$TAG" 'index($0, "## " tag) == 1 {grab=1; next} grab && /^## v/ {exit} grab {print}' "$1" | sed 's/^### /## /'
-          }
 
           {
             echo "# English"
             echo
-            echo "**Lekas $TAG - $DESC (EN)**"
+            echo "$en_summary"
             echo
-            extract CHANGELOG.md
+            extract_sections CHANGELOG.md
+            echo
+            echo "## Install / Update"
+            echo
+            echo "Download the APK matching your device (\`app-arm64-v8a-release.apk\` for most modern phones, \`app-armeabi-v7a-release.apk\` for older 32-bit ones). Open it on your phone and allow installs from unknown sources if asked. Grant notification permission when the app first asks, and leave battery optimization unrestricted for Lekas. Requires Android 7.0 (API 24)."
             echo
             echo "<br>"
             echo
@@ -91,9 +114,13 @@ jobs:
             echo
             echo "# Bahasa Indonesia"
             echo
-            echo "**Lekas $TAG - $DESC (ID)**"
+            echo "$id_summary"
             echo
-            extract CHANGELOG.id.md
+            extract_sections CHANGELOG.id.md
+            echo
+            echo "## Instalasi / Update"
+            echo
+            echo "Download APK sesuai HP di bawah (\`app-arm64-v8a-release.apk\` untuk kebanyakan HP modern, \`app-armeabi-v7a-release.apk\` untuk yang 32-bit lama). Buka di HP dan izinkan instalasi dari sumber tidak dikenal bila diminta. Berikan izin notifikasi saat aplikasi pertama kali meminta, dan biarkan optimalisasi baterai tanpa batasan untuk Lekas. Membutuhkan Android 7.0 (API 24)."
           } > release-notes.md
           cat release-notes.md
 
@@ -102,14 +129,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="$GITHUB_REF_NAME"
-          DESC=$(grep -E "^## $TAG - " CHANGELOG.md | head -n 1 | sed "s/^## $TAG - //")
           APKS="build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
           if gh release view "$TAG" > /dev/null 2>&1; then
             gh release upload "$TAG" --clobber $APKS
-            gh release edit "$TAG" --title "Lekas $TAG - $DESC" --notes-file release-notes.md
+            gh release edit "$TAG" --title "Lekas $TAG" --notes-file release-notes.md
           else
             gh release create "$TAG" $APKS \
-              --title "Lekas $TAG - $DESC" \
+              --title "Lekas $TAG" \
               --notes-file release-notes.md \
               --verify-tag
           fi
