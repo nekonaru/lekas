@@ -50,7 +50,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: const FadeSlideIn(
-                    child: Center(child: LekasLogo(size: 72))),
+                  child: Center(child: LekasLogo(size: 72)),
+                ),
               ),
               const SizedBox(height: 20),
               Text(

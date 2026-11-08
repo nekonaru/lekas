@@ -20,6 +20,27 @@ class AppMotion {
   static const Curve ease = Curves.easeOutCubic;
 }
 
+/// The spacing scale every screen follows, in multiples of four, so
+/// padding and margins read the same from the drawer to the last card.
+class AppSpacing {
+  AppSpacing._();
+
+  /// Small gaps inside one component (icon to label, chip to chip).
+  static const double xs = 4;
+
+  /// Row and section gaps.
+  static const double sm = 8;
+
+  /// Standard margins: list rows, sheet padding, drawer insets.
+  static const double md = 16;
+
+  /// Large gaps: page top, dialog buttons, hero bands.
+  static const double lg = 24;
+
+  /// Biggest gaps: onboarding top spacer, first frame breathing room.
+  static const double xl = 32;
+}
+
 class AppTheme {
   static const List<Color> containerColors = [
     Color(0xFF6366F1), // indigo
@@ -42,10 +63,10 @@ class AppTheme {
   /// the launcher icon uses, so the drawer and setup headers carry the
   /// mark wherever the app opens.
   static LinearGradient get brandGradient => const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-      );
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+  );
 
   static ThemeData lightTheme({Color? seed}) => _base(Brightness.light, seed);
 
@@ -97,9 +118,7 @@ class AppTheme {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(
-            color: scheme.outlineVariant.withValues(alpha: 0.6),
-          ),
+          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -110,29 +129,32 @@ class AppTheme {
           return TextStyle(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-            color: selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+            color: selected
+                ? scheme.onPrimaryContainer
+                : scheme.onSurfaceVariant,
           );
         }),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         elevation: 2,
         highlightElevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       listTileTheme: ListTileThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: scheme.inverseSurface,
         contentTextStyle: TextStyle(color: scheme.onInverseSurface),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      textTheme: const TextTheme(
+        headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        bodyMedium: TextStyle(fontSize: 14),
+        bodySmall: TextStyle(fontSize: 12),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         shape: const RoundedRectangleBorder(
@@ -141,9 +163,7 @@ class AppTheme {
         showDragHandle: true,
       ),
       dialogTheme: DialogThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

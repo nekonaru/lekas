@@ -30,7 +30,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     });
   }
 
-  List<Task> get _picked => _tasks.where((t) => _selection.contains(t.id)).toList();
+  List<Task> get _picked =>
+      _tasks.where((t) => _selection.contains(t.id)).toList();
 
   Future<void> _complete() async {
     final picked = _picked;
@@ -53,9 +54,11 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(selecting
-            ? l10n.selectedCount(_selection.length)
-            : l10n.taskListTitle),
+        title: Text(
+          selecting
+              ? l10n.selectedCount(_selection.length)
+              : l10n.taskListTitle,
+        ),
         actions: [
           if (selecting)
             BulkSelectionBar(
@@ -78,11 +81,16 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           final tasks = (snapshot.data ?? <Task>[])
-            ..sort((a, b) => (a.deadline ?? 1 << 62)
-                .compareTo(b.deadline ?? 1 << 62));
+            ..sort(
+              (a, b) =>
+                  (a.deadline ?? 1 << 62).compareTo(b.deadline ?? 1 << 62),
+            );
           _tasks = tasks;
           if (tasks.isEmpty) {
-            return EmptyState(message: l10n.emptyTaskList, icon: Icons.task_alt);
+            return EmptyState(
+              message: l10n.emptyTaskList,
+              icon: Icons.task_alt,
+            );
           }
           return ListView.builder(
             itemCount: tasks.length,
@@ -90,52 +98,57 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
               final task = tasks[index];
               final done = task.status == 'done';
               final selected = _selection.contains(task.id);
-              return ListTile(
-                selected: selected,
-                leading: IconButton(
-                  icon: Icon(
-                    selected
-                        ? Icons.check_circle
-                        : done
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_outlined,
-                    color: selected || done
-                        ? Theme.of(context).colorScheme.primary
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  selected: selected,
+                  leading: IconButton(
+                    icon: Icon(
+                      selected
+                          ? Icons.check_circle
+                          : done
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked_outlined,
+                      color: selected || done
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                    tooltip: l10n.markLabel,
+                    onPressed: () => selecting
+                        ? _toggleSelection(task.id)
+                        : _toggleDone(task, done),
+                  ),
+                  title: Text(
+                    task.title,
+                    style: done
+                        ? const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                          )
                         : null,
                   ),
-                  tooltip: l10n.markLabel,
-                  onPressed: () => selecting
-                      ? _toggleSelection(task.id)
-                      : _toggleDone(task, done),
-                ),
-                title: Text(
-                  task.title,
-                  style: done
-                      ? const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                        )
-                      : null,
-                ),
-                // `DateTime.toString()` never contains a "T" (only
-                // toIso8601String does), so splitting on it printed the whole
-                // timestamp with milliseconds. Show the date like every other
-                // screen does.
-                subtitle: task.deadline == null
-                    ? null
-                    : Text(DateUtil.formatDate(
-                        DateTime.fromMillisecondsSinceEpoch(task.deadline!),
-                        locale,
-                      )),
-                trailing: selected ? null : const Icon(Icons.chevron_right),
-                onTap: selecting
-                    ? () => _toggleSelection(task.id)
-                    : () => Navigator.push(
+                  // `DateTime.toString()` never contains a "T" (only
+                  // toIso8601String does), so splitting on it printed the whole
+                  // timestamp with milliseconds. Show the date like every other
+                  // screen does.
+                  subtitle: task.deadline == null
+                      ? null
+                      : Text(
+                          DateUtil.formatDate(
+                            DateTime.fromMillisecondsSinceEpoch(task.deadline!),
+                            locale,
+                          ),
+                        ),
+                  trailing: selected ? null : const Icon(Icons.chevron_right),
+                  onTap: selecting
+                      ? () => _toggleSelection(task.id)
+                      : () => Navigator.push(
                           context,
                           MaterialPageRoute<void>(
                             builder: (_) => TaskDetailScreen(taskId: task.id),
                           ),
                         ),
-                onLongPress: () => _toggleSelection(task.id),
+                  onLongPress: () => _toggleSelection(task.id),
+                ),
               );
             },
           );
@@ -159,11 +172,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
   Future<void> _toggleDone(Task task, bool done) async {
     final repo = ref.read(taskRepositoryProvider);
     if (done) {
-      await repo.updateTask(task.copyWith(
-        status: 'todo',
-        completedAt: const Value(null),
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await repo.updateTask(
+        task.copyWith(
+          status: 'todo',
+          completedAt: const Value(null),
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
     } else {
       await repo.markDone(task.id);
     }

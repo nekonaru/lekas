@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -87,10 +88,13 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                               TextButton(
                                 onPressed: () async {
                                   final navigator = Navigator.of(context);
-                                  await repo.updateSubtask(subtask.copyWith(
-                                    title: _titleController.text,
-                                    updatedAt: DateTime.now().millisecondsSinceEpoch,
-                                  ));
+                                  await repo.updateSubtask(
+                                    subtask.copyWith(
+                                      title: _titleController.text,
+                                      updatedAt:
+                                          DateTime.now().millisecondsSinceEpoch,
+                                    ),
+                                  );
                                   navigator.pop();
                                   if (mounted) setState(() {});
                                 },
@@ -102,7 +106,11 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                      icon: const Icon(
+                        Icons.delete,
+                        size: 20,
+                        color: Colors.red,
+                      ),
                       onPressed: () async {
                         await repo.deleteSubtask(subtask.id);
                         if (mounted) setState(() {});
@@ -123,14 +131,16 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
           final existing = await ref
               .read(subtaskRepositoryProvider)
               .getSubtasks(widget.taskId);
-          await repo.insertSubtask(Subtask(
-            id: const Uuid().v4(),
-            taskId: widget.taskId,
-            title: _titleController.text,
-            done: false,
-            sortOrder: existing.length,
-            updatedAt: DateTime.now().millisecondsSinceEpoch,
-          ));
+          await repo.insertSubtask(
+            Subtask(
+              id: const Uuid().v4(),
+              taskId: widget.taskId,
+              title: _titleController.text,
+              done: false,
+              sortOrder: existing.length,
+              updatedAt: DateTime.now().millisecondsSinceEpoch,
+            ),
+          );
           _titleController.clear();
           if (mounted) setState(() {});
         },

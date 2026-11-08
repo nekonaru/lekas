@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../core/date_util.dart';
 import '../../domain/focus.dart';
 import '../../domain/urgency.dart' hide TaskSection;
@@ -125,11 +126,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   /// The one warning card of this screen, or null when there is nothing to
   /// warn about (design section 4.4: permission revoked, busy week, inbox
   /// pile-up; at most one card, and the user can close it).
-  Widget? _warningCard(
-    AppLocalizations l10n,
-    List<Task> tasks,
-    DateTime now,
-  ) {
+  Widget? _warningCard(AppLocalizations l10n, List<Task> tasks, DateTime now) {
     if (_notificationsOn == false && _dismissedWarning != 'permission') {
       return _buildWarning(
         key: 'permission',
@@ -193,7 +190,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             color: colors.onErrorContainer,
           ),
         ),
-        subtitle: Text(message, style: TextStyle(color: colors.onErrorContainer)),
+        subtitle: Text(
+          message,
+          style: TextStyle(color: colors.onErrorContainer),
+        ),
         trailing: IconButton(
           icon: const Icon(Icons.close),
           tooltip: l10n.closeLabel,
@@ -203,6 +203,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       ),
     );
   }
+
   List<Task> _picked(List<Task> tasks) =>
       tasks.where((task) => _selection.contains(task.id)).toList();
 
@@ -216,11 +217,13 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     if (!mounted) return;
     setState(() {});
     UndoSnackbar.show(context, l10n.taskCompletedUndo, () async {
-      await repository.updateTask(task.copyWith(
-        status: 'todo',
-        completedAt: const Value(null),
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await repository.updateTask(
+        task.copyWith(
+          status: 'todo',
+          completedAt: const Value(null),
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
       if (mounted) setState(() {});
     });
   }
@@ -257,9 +260,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   Widget _selectionBar(List<Task> tasks) {
     return BulkSelectionBar(
       count: _selection.length,
-      onSelectAll: () => setState(
-        () => _selection.addAll(tasks.map((task) => task.id)),
-      ),
+      onSelectAll: () =>
+          setState(() => _selection.addAll(tasks.map((task) => task.id))),
       onComplete: () => _completeSelected(tasks),
       onPriority: () => _pickPriority(tasks),
       onSpace: () => _pickSpace(tasks),
@@ -280,8 +282,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
         l10n.tonight7pmLabel,
         now.hour < 19
             ? DateTime(now.year, now.month, now.day, 19)
-            : DateTime(now.year, now.month, now.day, 19)
-                .add(const Duration(days: 1)),
+            : DateTime(
+                now.year,
+                now.month,
+                now.day,
+                19,
+              ).add(const Duration(days: 1)),
       ),
       MapEntry(
         l10n.tomorrow7amLabel,
@@ -330,7 +336,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 Navigator.pop(
                   sheetContext,
                   DateTime(
-                      date.year, date.month, date.day, time.hour, time.minute),
+                    date.year,
+                    date.month,
+                    date.day,
+                    time.hour,
+                    time.minute,
+                  ),
                 );
               },
             ),
@@ -367,9 +378,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(selecting
-            ? l10n.selectedCount(_selection.length)
-            : l10n.todayTitle),
+        title: Text(
+          selecting ? l10n.selectedCount(_selection.length) : l10n.todayTitle,
+        ),
         actions: [
           if (selecting)
             _selectionBar(_tasks)
@@ -412,8 +423,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             final section = isFocusOnDay(task.focusDate, now)
                 ? TodaySection.focus
                 : task.pinned
-                    ? TodaySection.pinned
-                    : _classifyTask(task, now, blockedIds);
+                ? TodaySection.pinned
+                : _classifyTask(task, now, blockedIds);
             sections.putIfAbsent(section, () => []).add(task);
           }
 
@@ -435,8 +446,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 ),
             };
             scoresById.addAll(scores);
-            tasks.sort((a, b) =>
-                scores[b.id]!.compareTo(scores[a.id]!));
+            tasks.sort((a, b) => scores[b.id]!.compareTo(scores[a.id]!));
           });
 
           if (allTasks.isEmpty) {
@@ -483,8 +493,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           return NotificationListener<UserScrollNotification>(
             onNotification: (notification) {
-              final visible =
-                  notification.direction != ScrollDirection.reverse;
+              final visible = notification.direction != ScrollDirection.reverse;
               if (visible != _fabVisible) {
                 setState(() => _fabVisible = visible);
               }
@@ -500,30 +509,31 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 final entry = entries[index];
                 return switch (entry) {
                   _WarningEntry(:final warning) => KeyedSubtree(
-                      key: const ValueKey('today-warning'),
-                      child: warning,
-                    ),
-                  _TitleEntry(:final section, :final count) => TaskSectionHeader(
+                    key: const ValueKey('today-warning'),
+                    child: warning,
+                  ),
+                  _TitleEntry(:final section, :final count) =>
+                    TaskSectionHeader(
                       key: ValueKey('today-title:$section'),
                       section: section,
                       count: count,
                     ),
                   _TaskEntry(:final task, :final score) => FadeSlideIn(
-                      index: index,
-                      child: TaskCard(
-                        key: ValueKey('today-task:${task.id}'),
-                        task: task,
-                        now: now,
-                        locale: locale,
-                        score: score,
-                        selected: _isSelected(task),
-                        enableHero: true,
-                        onTaskTap: _onTaskTap,
-                        onTaskDone: _completeOne,
-                        onTaskSnooze: _openSnooze,
-                        onTaskLongPress: _onTaskLongPress,
-                      ),
+                    index: index,
+                    child: TaskCard(
+                      key: ValueKey('today-task:${task.id}'),
+                      task: task,
+                      now: now,
+                      locale: locale,
+                      score: score,
+                      selected: _isSelected(task),
+                      enableHero: true,
+                      onTaskTap: _onTaskTap,
+                      onTaskDone: _completeOne,
+                      onTaskSnooze: _openSnooze,
+                      onTaskLongPress: _onTaskLongPress,
                     ),
+                  ),
                 };
               },
             ),
@@ -559,9 +569,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   void _navigateToDetail(BuildContext context, String taskId) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => TaskDetailScreen(taskId: taskId),
-      ),
+      MaterialPageRoute(builder: (_) => TaskDetailScreen(taskId: taskId)),
     );
   }
 

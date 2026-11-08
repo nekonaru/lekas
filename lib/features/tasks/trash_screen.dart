@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/empty_state.dart';
 import '../../core/components/undo_snackbar.dart';
@@ -26,7 +27,8 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
     });
   }
 
-  List<Task> get _picked => _tasks.where((t) => _selection.contains(t.id)).toList();
+  List<Task> get _picked =>
+      _tasks.where((t) => _selection.contains(t.id)).toList();
 
   /// Bulk restore with an undo that sends them back to the trash.
   Future<void> _restoreSelected() async {
@@ -91,9 +93,9 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
     // would leave the user with no visible way out.
     return Scaffold(
       appBar: AppBar(
-        title: Text(selecting
-            ? l10n.selectedCount(_selection.length)
-            : l10n.trashTitle),
+        title: Text(
+          selecting ? l10n.selectedCount(_selection.length) : l10n.trashTitle,
+        ),
         actions: [
           if (selecting)
             BulkSelectionBar(
@@ -113,7 +115,10 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
           final tasks = snapshot.data ?? const <Task>[];
           _tasks = tasks;
           if (tasks.isEmpty) {
-            return EmptyState(message: l10n.emptyTrash, icon: Icons.delete_outline);
+            return EmptyState(
+              message: l10n.emptyTrash,
+              icon: Icons.delete_outline,
+            );
           }
 
           return ListView.builder(
@@ -124,39 +129,54 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
               final deletedAt = DateTime.fromMillisecondsSinceEpoch(
                 task.deletedAt ?? 0,
               );
-              return ListTile(
-                selected: selected,
-                leading: selected
-                    ? Icon(
-                        Icons.check_circle,
-                        color: Theme.of(context).colorScheme.primary,
-                      )
-                    : null,
-                title: Text(task.title),
-                subtitle: Text(
-                  l10n.deletedAtLabel(
-                    DateUtil.formatDateTime(deletedAt, locale),
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  key: ValueKey('trash:${task.id}'),
+                  selected: selected,
+                  leading: selected
+                      ? Icon(
+                          Icons.check_circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                  title: Text(task.title),
+                  subtitle: Text(
+                    l10n.deletedAtLabel(
+                      DateUtil.formatDateTime(deletedAt, locale),
+                    ),
                   ),
+                  trailing: selecting
+                      ? null
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: l10n.restoreLabel,
+                              icon: const Icon(
+                                Icons.restore,
+                                color: Colors.green,
+                              ),
+                              onPressed: () => repo.restoreTask(task.id),
+                            ),
+                            IconButton(
+                              tooltip: l10n.deletePermanentlyLabel,
+                              icon: const Icon(
+                                Icons.delete_forever,
+                                color: Colors.red,
+                              ),
+                              onPressed: () => _confirmPermanentDelete(
+                                context,
+                                l10n,
+                                repo,
+                                task,
+                              ),
+                            ),
+                          ],
+                        ),
+                  onTap: selecting ? () => _toggleSelection(task.id) : null,
+                  onLongPress: () => _toggleSelection(task.id),
                 ),
-                trailing: selecting
-                    ? null
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            tooltip: l10n.restoreLabel,
-                            icon: const Icon(Icons.restore, color: Colors.green),
-                            onPressed: () => repo.restoreTask(task.id),
-                          ),
-                          IconButton(
-                            tooltip: l10n.deletePermanentlyLabel,
-                            icon: const Icon(Icons.delete_forever, color: Colors.red),
-                            onPressed: () => _confirmPermanentDelete(context, l10n, repo, task),
-                          ),
-                        ],
-                      ),
-                onTap: selecting ? () => _toggleSelection(task.id) : null,
-                onLongPress: () => _toggleSelection(task.id),
               );
             },
           );

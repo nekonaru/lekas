@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
 import '../../core/components/empty_state.dart';
@@ -36,7 +37,8 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     });
   }
 
-  List<Task> get _picked => _shown.where((t) => _selection.contains(t.id)).toList();
+  List<Task> get _picked =>
+      _shown.where((t) => _selection.contains(t.id)).toList();
 
   /// The cached queries are only valid until a bulk action writes, so drop
   /// them before refreshing: reusing them would re-render the pre action
@@ -107,7 +109,14 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     final spaces = await ref.read(spaceRepositoryProvider).getSpaces();
     final allTags = await ref.read(tagRepositoryProvider).getTags();
     if (!mounted) return;
-    final types = const ['quiz', 'lab_report', 'paper', 'presentation', 'midterm', 'final'];
+    final types = const [
+      'quiz',
+      'lab_report',
+      'paper',
+      'presentation',
+      'midterm',
+      'final',
+    ];
 
     await showModalBottomSheet<void>(
       context: context,
@@ -118,13 +127,15 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
             children: [
               ListTile(
                 title: Text(l10n.taskContainer),
-                subtitle: Text(_spaceFilter == null
-                    ? l10n.allLabel
-                    : spaces
-                        .where((s) => s.id == _spaceFilter)
-                        .map((s) => s.name)
-                        .firstOrNull ??
-                    l10n.allLabel),
+                subtitle: Text(
+                  _spaceFilter == null
+                      ? l10n.allLabel
+                      : spaces
+                                .where((s) => s.id == _spaceFilter)
+                                .map((s) => s.name)
+                                .firstOrNull ??
+                            l10n.allLabel,
+                ),
               ),
               ListTile(
                 leading: const Icon(Icons.folder_outlined),
@@ -148,7 +159,11 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
               const Divider(),
               ListTile(
                 title: Text(l10n.typeLabel),
-                subtitle: Text(_typeFilter == null ? l10n.allLabel : _typeName(l10n, _typeFilter!)),
+                subtitle: Text(
+                  _typeFilter == null
+                      ? l10n.allLabel
+                      : _typeName(l10n, _typeFilter!),
+                ),
               ),
               ListTile(
                 leading: const Icon(Icons.category_outlined),
@@ -215,9 +230,11 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(selecting
-            ? l10n.selectedCount(_selection.length)
-            : l10n.searchFilterTitle),
+        title: Text(
+          selecting
+              ? l10n.selectedCount(_selection.length)
+              : l10n.searchFilterTitle,
+        ),
         actions: [
           if (selecting)
             BulkSelectionBar(
@@ -257,7 +274,8 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
           ListTile(
             title: Text(l10n.filterLabel),
             subtitle: Text(l10n.filterSubtitle),
-            selected: _spaceFilter != null ||
+            selected:
+                _spaceFilter != null ||
                 _typeFilter != null ||
                 _tagFilter != null,
             trailing: const Icon(Icons.chevron_right),
@@ -274,11 +292,13 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final tasks = (snapshot.data ?? [])
-                    .where((t) =>
-                        (_typeFilter == null || t.type == _typeFilter) &&
-                        (_query.isEmpty ||
-                            t.title.toLowerCase().contains(_query) ||
-                            (t.notes ?? '').toLowerCase().contains(_query)))
+                    .where(
+                      (t) =>
+                          (_typeFilter == null || t.type == _typeFilter) &&
+                          (_query.isEmpty ||
+                              t.title.toLowerCase().contains(_query) ||
+                              (t.notes ?? '').toLowerCase().contains(_query)),
+                    )
                     .toList();
                 if (_tagFilter == null) return _taskList(tasks, l10n);
                 // Design section 5.9: the tag filter combines with the
@@ -291,8 +311,9 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     final tagged = tasks
-                        .where((t) =>
-                            (tagsByTask[t.id] ?? []).contains(_tagFilter))
+                        .where(
+                          (t) => (tagsByTask[t.id] ?? []).contains(_tagFilter),
+                        )
                         .toList();
                     return _taskList(tagged, l10n);
                   },
@@ -353,26 +374,29 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
       itemBuilder: (context, index) {
         final task = tasks[index];
         final selected = _selection.contains(task.id);
-        return ListTile(
-          selected: selected,
-          leading: selected
-              ? Icon(
-                  Icons.check_circle,
-                  color: Theme.of(context).colorScheme.primary,
-                )
-              : null,
-          title: Text(task.title),
-          subtitle: Text(task.notes ?? ''),
-          trailing: selected ? null : const Icon(Icons.chevron_right),
-          onTap: selecting
-              ? () => _toggleSelection(task.id)
-              : () => Navigator.push(
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: ListTile(
+            selected: selected,
+            leading: selected
+                ? Icon(
+                    Icons.check_circle,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                : null,
+            title: Text(task.title),
+            subtitle: Text(task.notes ?? ''),
+            trailing: selected ? null : const Icon(Icons.chevron_right),
+            onTap: selecting
+                ? () => _toggleSelection(task.id)
+                : () => Navigator.push(
                     context,
                     MaterialPageRoute<void>(
                       builder: (_) => TaskDetailScreen(taskId: task.id),
                     ),
                   ),
-          onLongPress: () => _toggleSelection(task.id),
+            onLongPress: () => _toggleSelection(task.id),
+          ),
         );
       },
     );

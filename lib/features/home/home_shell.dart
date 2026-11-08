@@ -5,7 +5,8 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../quick_add/quick_add_sheet.dart';
 import '../settings/backup_screen.dart';
-import '../settings/diagnostic_screen.dart';import '../tasks/morning_night_summary.dart';
+import '../settings/diagnostic_screen.dart';
+import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/quick_add_suara_screen.dart';
 import '../tasks/saved_filter_screen.dart';
@@ -86,18 +87,22 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final tasks = await ref
         .read(taskRepositoryProvider)
         .getTasks(includeInbox: true)
-        .then((list) => list
-            .where((task) =>
-                task.status != 'done' &&
-                task.deadline != null &&
-                task.deletedAt == null)
-            .toList()
-          ..sort((a, b) => (a.deadline ?? 0).compareTo(b.deadline ?? 0)));
+        .then(
+          (list) =>
+              list
+                  .where(
+                    (task) =>
+                        task.status != 'done' &&
+                        task.deadline != null &&
+                        task.deletedAt == null,
+                  )
+                  .toList()
+                ..sort((a, b) => (a.deadline ?? 0).compareTo(b.deadline ?? 0)),
+        );
     if (!mounted) return;
     if (tasks.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.emptyToday)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.emptyToday)));
       return;
     }
     final picked = await showModalBottomSheet<Task>(
@@ -144,10 +149,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           switchOutCurve: AppMotion.ease,
           transitionBuilder: (child, animation) =>
               FadeTransition(opacity: animation, child: child),
-          child: Text(
-            labels[_i],
-            key: ValueKey(labels[_i]),
-          ),
+          child: Text(labels[_i], key: ValueKey(labels[_i])),
         ),
         actions: [
           if (_i == 0)
@@ -176,15 +178,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     Text(
                       'Lekas',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
+          // Tasks first: the tools that end at a task being done.
+          _drawerSection(l10n.drawerSectionTasks),
           ListTile(
             leading: const Icon(Icons.add_circle),
             title: Text(l10n.quickAddMenuLabel),
@@ -235,7 +239,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             title: Text(l10n.globalQuickLinksTitle),
             onTap: () => _push(const TautanCepatScreen()),
           ),
-          const Divider(),
+          // Data tools: backups and the reminder checker answer the same
+          // job at different times.
+          _drawerSection(l10n.drawerSectionData),
           ListTile(
             leading: const Icon(Icons.file_download),
             title: Text(l10n.exportBackupShort),
@@ -251,6 +257,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             title: Text(l10n.checkReminder),
             onTap: () => _push(const DiagnosticScreen()),
           ),
+          // Housekeeping last: the trash, where deletes can still come back.
+          _drawerSection(l10n.drawerSectionSystem),
           ListTile(
             leading: const Icon(Icons.delete_outline),
             title: Text(l10n.trashTitle),
@@ -264,10 +272,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         duration: AppMotion.normal,
         switchInCurve: AppMotion.ease,
         switchOutCurve: AppMotion.ease,
-        child: KeyedSubtree(
-          key: ValueKey(_i),
-          child: _pages[_i],
-        ),
+        child: KeyedSubtree(key: ValueKey(_i), child: _pages[_i]),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _i,
@@ -279,6 +284,23 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             label: e.value,
           );
         }).toList(),
+      ),
+    );
+  }
+
+  /// One labeled group header of the drawer, in small caps and the accent
+  /// color, so the entries group visually the way they group in the menus.
+  Widget _drawerSection(String label) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.8,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
