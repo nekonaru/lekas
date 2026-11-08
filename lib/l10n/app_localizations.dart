@@ -2534,6 +2534,60 @@ abstract class AppLocalizations {
   /// **'Arsipkan'**
   String get archiveLabel;
 
+  /// No description provided for @archiveActive.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif'**
+  String get archiveActive;
+
+  /// No description provided for @archiveArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsip'**
+  String get archiveArchive;
+
+  /// No description provided for @archiveEmptyText.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada wadah yang diarsipkan di sini. Saat kamu mengarsip sebuah wadah, wadah itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.'**
+  String get archiveEmptyText;
+
+  /// No description provided for @deleteSpaceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus wadah'**
+  String get deleteSpaceTitle;
+
+  /// No description provided for @deleteSpaceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ini menghapus wadah beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.'**
+  String get deleteSpaceBody;
+
+  /// No description provided for @spaceRestored.
+  ///
+  /// In id, this message translates to:
+  /// **'Wadah dipulihkan'**
+  String get spaceRestored;
+
+  /// No description provided for @drawerSectionTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas'**
+  String get drawerSectionTasks;
+
+  /// No description provided for @drawerSectionData.
+  ///
+  /// In id, this message translates to:
+  /// **'Data'**
+  String get drawerSectionData;
+
+  /// No description provided for @drawerSectionSystem.
+  ///
+  /// In id, this message translates to:
+  /// **'Sistem'**
+  String get drawerSectionSystem;
+
   /// No description provided for @editSpaceTitle.
   ///
   /// In id, this message translates to:

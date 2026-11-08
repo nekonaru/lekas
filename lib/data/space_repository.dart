@@ -72,6 +72,45 @@ class SpaceRepository {
     });
   }
 
+  /// Deletes a space with everything that hangs off it: schedule, attendance,
+  /// notes, grade weights, checklists, aliases and metadata, in one
+  /// transaction. Tasks are never lost: they move to the inbox instead.
+  Future<void> deleteSpaceCascade(String id) async {
+    await db.transaction(() async {
+      await (db.delete(db.attendance)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.classSlots)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.classNotes)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.gradeComponents)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.spaceItems)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.spaceAliases)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.delete(db.spaceMeta)
+            ..where((t) => t.spaceId.equals(id)))
+          .go();
+      await (db.update(db.tasks)
+            ..where((t) => t.spaceId.equals(id)))
+          .write(
+        TasksCompanion(
+          spaceId: const Value(null),
+          inbox: const Value(true),
+          updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        ),
+      );
+      await deleteSpace(id);
+    });
+  }
+
   Future<void> insertAlias(SpaceAliase alias) async {
     await db.into(db.spaceAliases).insert(alias);
   }

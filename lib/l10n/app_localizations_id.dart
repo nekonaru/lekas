@@ -1334,6 +1334,35 @@ class AppLocalizationsId extends AppLocalizations {
   String get archiveLabel => 'Arsipkan';
 
   @override
+  String get archiveActive => 'Aktif';
+
+  @override
+  String get archiveArchive => 'Arsip';
+
+  @override
+  String get archiveEmptyText =>
+      'Tidak ada wadah yang diarsipkan di sini. Saat kamu mengarsip sebuah wadah, wadah itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.';
+
+  @override
+  String get deleteSpaceTitle => 'Hapus wadah';
+
+  @override
+  String get deleteSpaceBody =>
+      'Ini menghapus wadah beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.';
+
+  @override
+  String get spaceRestored => 'Wadah dipulihkan';
+
+  @override
+  String get drawerSectionTasks => 'Tugas';
+
+  @override
+  String get drawerSectionData => 'Data';
+
+  @override
+  String get drawerSectionSystem => 'Sistem';
+
+  @override
   String get editSpaceTitle => 'Ubah wadah';
 
   @override

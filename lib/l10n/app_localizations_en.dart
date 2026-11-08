@@ -1333,6 +1333,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get archiveLabel => 'Archive';
 
   @override
+  String get archiveActive => 'Active';
+
+  @override
+  String get archiveArchive => 'Archive';
+
+  @override
+  String get archiveEmptyText =>
+      'No archived spaces here. When you archive a space it waits here, and you can restore it or delete it for good.';
+
+  @override
+  String get deleteSpaceTitle => 'Delete space';
+
+  @override
+  String get deleteSpaceBody =>
+      'This removes the space with its schedule, attendance, notes, grade components and checklists. Its tasks move to the Inbox. This cannot be undone.';
+
+  @override
+  String get spaceRestored => 'Space restored';
+
+  @override
+  String get drawerSectionTasks => 'Tasks';
+
+  @override
+  String get drawerSectionData => 'Data';
+
+  @override
+  String get drawerSectionSystem => 'System';
+
+  @override
   String get editSpaceTitle => 'Edit space';
 
   @override

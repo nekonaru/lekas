@@ -150,6 +150,12 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 trailing: const Icon(Icons.archive),
                 onTap: () => _archive(space),
               ),
+              ListTile(
+                title: Text(l10n.deleteSpaceTitle),
+                leading:
+                    Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.error),
+                onTap: () => _delete(space),
+              ),
             ],
           ),
         );
@@ -178,5 +184,37 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
         ));
       },
     );
+  }
+
+  /// Delete asks first, then the row is gone in one transaction: its
+  /// schedule, attendance, notes, grades and checklist children are
+  /// removed, and its tasks land in the inbox.
+  Future<void> _delete(Space space) async {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.deleteSpaceTitle),
+        content: Text(l10n.deleteSpaceBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              l10n.deleteLabel,
+              style: TextStyle(color: colors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final repo = ref.read(spaceRepositoryProvider);
+    await repo.deleteSpaceCascade(space.id);
+    if (mounted) Navigator.pop(context);
   }
 }
