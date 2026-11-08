@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.8.0
+
+Lekas adds an archived spaces list, permanent space delete, grouped drawer sections and a tidier spacing scale.
+
+### New features
+
+- **Archived spaces list.** The Wadah tab switches between Active and Archive with a segmented control. Archived rows wait there with one tap restore or permanent delete, and an empty state explains what the list is for.
+- **Delete spaces for good.** A three-dot menu on each space, the archive list and the detail screen now offer delete with a confirm dialog: its schedule, attendance, notes, grade components and checklist are removed with it, and its tasks move to the Inbox instead of disappearing.
+- **Grouped drawer.** The flat drawer is grouped into labeled sections: tasks first, then data tools (backups and the reminder checker), then housekeeping.
+
+### Improvements
+
+- **One spacing scale.** Padding and margins follow multiples of four through the theme, cards use one radius, and the typography scale is explicit in both modes.
+
 ## v1.7.0
 
 Lekas adds a PIN app lock and tap to manage calendar days.

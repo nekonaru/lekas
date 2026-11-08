@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.8.0
+
+Lekas menambahkan daftar wadah yang diarsipkan, hapus wadah permanen, seksi drawer berkelompok, dan skala spacing yang lebih rapi.
+
+### Fitur baru
+
+- **Daftar wadah arsip.** Tab Wadah beralih antara Aktif dan Arsip dengan kontrol tersegmentasi. Baris arsip menunggu di sana dengan pulihkan sekali ketuk atau hapus permanen, dan tampilan kosong menjelaskan fungsi daftar ini.
+- **Hapus wadah permanen.** Menu titik-tiga di setiap wadah, daftar arsip, dan layar detail kini menawarkan hapus dengan dialog konfirmasi: jadwal, presensi, catatan, komponen nilai, dan checklist-nya ikut terhapus, dan tugasnya pindah ke Inbox, bukan hilang.
+- **Drawer berkelompok.** Drawer datar kini dikelompokkan menjadi seksi berlabel: tugas dulu, lalu alat data (cadangan dan pemeriksa pengingat), kemudian tata kelola.
+
+### Peningkatan
+
+- **Satu skala spacing.** Padding dan margin mengikuti kelipatan empat lewat tema, kartu memakai satu radius, dan skala tipografi eksplisit di kedua mode.
+
 ## v1.7.0
 
 Lekas menambahkan kunci aplikasi PIN dan ketuk kalender untuk mengelola tugas harian.
