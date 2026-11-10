@@ -117,8 +117,7 @@ class AppTheme {
         color: scheme.surfaceContainerLow,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
+          borderRadius: BorderRadius.circular(18),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -142,7 +141,44 @@ class AppTheme {
       ),
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        minVerticalPadding: 10,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+            letterSpacing: 0.1,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(color: scheme.outlineVariant),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+            letterSpacing: 0.1,
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: scheme.surfaceContainerHigh,
+        selectedColor: scheme.primaryContainer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        side: BorderSide.none,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        labelStyle: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      dividerTheme: DividerThemeData(color: scheme.outlineVariant),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: scheme.inverseSurface,
@@ -150,11 +186,29 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       textTheme: const TextTheme(
-        headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        bodyMedium: TextStyle(fontSize: 14),
-        bodySmall: TextStyle(fontSize: 12),
+        headlineSmall: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.2,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.1,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.05,
+        ),
+        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        bodyMedium: TextStyle(fontSize: 14, height: 1.4),
+        bodySmall: TextStyle(fontSize: 12, height: 1.35),
+        labelLarge: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.1,
+        ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         shape: const RoundedRectangleBorder(

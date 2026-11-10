@@ -7,7 +7,7 @@ import '../../core/components/undo_snackbar.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
-import '../tasks/wadah_non_matkul_screen.dart';
+import '../tasks/non_course_category_screen.dart';
 import 'space_detail_screen.dart';
 import 'space_form_dialog.dart';
 
@@ -150,7 +150,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (_) => const WadahNonMatkulScreen(),
+                    builder: (_) => const NonCourseCategoryScreen(),
                   ),
                 );
               },

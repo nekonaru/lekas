@@ -74,6 +74,7 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       // A tap on a notification action while the app was killed stores its
       // route before the app finishes starting (design section 5.24).
       _consumeStoredRoute();
+      _maybeAskPermissions();
     });
   }
 
@@ -173,6 +174,26 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     final enabled = await ref.read(lockServiceProvider).isEnabled();
     if (enabled && mounted) {
       setState(() => _locked = true);
+    }
+  }
+
+  /// Ask for the two permissions reminders depend on, exactly once after
+  /// setup finishes: notifications (Android 13+) and exact alarms
+  /// (Android 12+). The flag stops the system dialogs on every launch.
+  Future<void> _maybeAskPermissions() async {
+    try {
+      final settings = ref.read(settingsRepositoryProvider);
+      if (await settings.get('permissions_asked') == '1') return;
+      if (!mounted) return;
+      final onboarded = await ref.read(onboardedProvider.future);
+      if (!mounted || !onboarded) return;
+      await settings.set('permissions_asked', '1');
+      final service = ref.read(reminderServiceProvider);
+      await service.requestNotificationPermission();
+      await service.requestExactAlarmPermission();
+    } catch (error, stack) {
+      // A missing plugin or settings table must never block the shell.
+      debugPrint('permission prompt failed: $error\n$stack');
     }
   }
 

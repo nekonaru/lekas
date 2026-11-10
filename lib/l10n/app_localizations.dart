@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @spacesTitle.
   ///
   /// In id, this message translates to:
-  /// **'Wadah'**
+  /// **'Kategori'**
   String get spacesTitle;
 
   /// No description provided for @calendarTitle.
@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @addSpace.
   ///
   /// In id, this message translates to:
-  /// **'Tambah Wadah'**
+  /// **'Tambah Kategori'**
   String get addSpace;
 
   /// No description provided for @cancel.
@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @spaceName.
   ///
   /// In id, this message translates to:
-  /// **'Nama wadah'**
+  /// **'Nama kategori'**
   String get spaceName;
 
   /// No description provided for @spaceCode.
@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @taskContainer.
   ///
   /// In id, this message translates to:
-  /// **'Wadah'**
+  /// **'Kategori'**
   String get taskContainer;
 
   /// No description provided for @taskDeadline.
@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @addFirstSpace.
   ///
   /// In id, this message translates to:
-  /// **'Tambah Matkul Pertama'**
+  /// **'Tambah Kategori Pertama'**
   String get addFirstSpace;
 
   /// No description provided for @start.
@@ -401,7 +401,7 @@ abstract class AppLocalizations {
   /// No description provided for @spaceNameLabel.
   ///
   /// In id, this message translates to:
-  /// **'Nama Matkul'**
+  /// **'Nama Kategori'**
   String get spaceNameLabel;
 
   /// No description provided for @inboxCount.
@@ -1205,7 +1205,7 @@ abstract class AppLocalizations {
   /// No description provided for @nonCourseSpaceTitle.
   ///
   /// In id, this message translates to:
-  /// **'Wadah Non-Matkul'**
+  /// **'Kategori Non-Matkul'**
   String get nonCourseSpaceTitle;
 
   /// No description provided for @orgSpace.
@@ -1253,7 +1253,7 @@ abstract class AppLocalizations {
   /// No description provided for @otherSpaceSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Wadah lainnya'**
+  /// **'Kategori lainnya'**
   String get otherSpaceSubtitle;
 
   /// No description provided for @advancedWidgetsTitle.
@@ -1661,7 +1661,7 @@ abstract class AppLocalizations {
   /// No description provided for @filterSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Wadah, jenis, status'**
+  /// **'Kategori, jenis, status'**
   String get filterSubtitle;
 
   /// No description provided for @changeSemesterTitle.
@@ -1697,7 +1697,7 @@ abstract class AppLocalizations {
   /// No description provided for @moveToNewSpace.
   ///
   /// In id, this message translates to:
-  /// **'Pindahkan ke wadah baru'**
+  /// **'Pindahkan ke kategori baru'**
   String get moveToNewSpace;
 
   /// No description provided for @deleteLabel.
@@ -2141,7 +2141,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptySpaces.
   ///
   /// In id, this message translates to:
-  /// **'Belum ada wadah (matkul).'**
+  /// **'Belum ada kategori.'**
   String get emptySpaces;
 
   /// No description provided for @spaceCodeValue.
@@ -2261,19 +2261,19 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Lekas membantu kamu mencatat tugas dan deadline kuliah.'**
+  /// **'Lekas membantumu mencatat tugas dan deadline kuliah.'**
   String get welcomeSubtitle;
 
   /// No description provided for @enterFirstCourseSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Masukkan nama matkul pertama kamu.'**
+  /// **'Masukkan nama kategori pertama kamu.'**
   String get enterFirstCourseSubtitle;
 
   /// No description provided for @firstCourseFallback.
   ///
   /// In id, this message translates to:
-  /// **'Matkul Pertama'**
+  /// **'Kategori Pertama'**
   String get firstCourseFallback;
 
   /// No description provided for @allLabel.
@@ -2375,7 +2375,7 @@ abstract class AppLocalizations {
   /// No description provided for @spaceCreated.
   ///
   /// In id, this message translates to:
-  /// **'Wadah dibuat: {name}'**
+  /// **'Kategori dibuat: {name}'**
   String spaceCreated(String name);
 
   /// No description provided for @tasksProcessed.
@@ -2495,7 +2495,7 @@ abstract class AppLocalizations {
   /// No description provided for @warningInboxPile.
   ///
   /// In id, this message translates to:
-  /// **'Inbox menumpuk: {count} tugas tanpa wadah. Ketuk untuk membereskan.'**
+  /// **'Inbox menumpuk: {count} tugas tanpa kategori. Ketuk untuk membereskan.'**
   String warningInboxPile(int count);
 
   /// No description provided for @warningBusyWeek.
@@ -2549,25 +2549,25 @@ abstract class AppLocalizations {
   /// No description provided for @archiveEmptyText.
   ///
   /// In id, this message translates to:
-  /// **'Tidak ada wadah yang diarsipkan di sini. Saat kamu mengarsip sebuah wadah, wadah itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.'**
+  /// **'Tidak ada kategori yang diarsipkan di sini. Saat kamu mengarsip sebuah kategori, kategori itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.'**
   String get archiveEmptyText;
 
   /// No description provided for @deleteSpaceTitle.
   ///
   /// In id, this message translates to:
-  /// **'Hapus wadah'**
+  /// **'Hapus kategori'**
   String get deleteSpaceTitle;
 
   /// No description provided for @deleteSpaceBody.
   ///
   /// In id, this message translates to:
-  /// **'Ini menghapus wadah beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.'**
+  /// **'Ini menghapus kategori beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.'**
   String get deleteSpaceBody;
 
   /// No description provided for @spaceRestored.
   ///
   /// In id, this message translates to:
-  /// **'Wadah dipulihkan'**
+  /// **'Kategori dipulihkan'**
   String get spaceRestored;
 
   /// No description provided for @drawerSectionTasks.
@@ -2591,7 +2591,7 @@ abstract class AppLocalizations {
   /// No description provided for @editSpaceTitle.
   ///
   /// In id, this message translates to:
-  /// **'Ubah wadah'**
+  /// **'Ubah kategori'**
   String get editSpaceTitle;
 
   /// No description provided for @taskDeletedUndo.
@@ -2609,7 +2609,7 @@ abstract class AppLocalizations {
   /// No description provided for @spacesArchivedUndo.
   ///
   /// In id, this message translates to:
-  /// **'{count} wadah diarsipkan'**
+  /// **'{count} kategori diarsipkan'**
   String spacesArchivedUndo(int count);
 
   /// No description provided for @taskCompletedUndo.

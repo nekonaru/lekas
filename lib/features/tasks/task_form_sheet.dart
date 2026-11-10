@@ -102,11 +102,23 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
             },
           ),
           const SizedBox(height: 12),
-          Row(
+          // Deadline with date and time: one chip for the date, one for
+          // the time, both filled with the current values so the row
+          // always shows what will be saved.
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(l10n.taskDeadline),
-              const Spacer(),
-              TextButton(
+              ActionChip(
+                avatar: const Icon(Icons.calendar_today, size: 18),
+                label: Text(_deadline == null
+                    ? l10n.pickDate
+                    : DateUtil.formatDate(
+                        _deadline!,
+                        Localizations.localeOf(context).languageCode,
+                      )),
                 onPressed: () async {
                   final now = DateTime.now();
                   final date = await showDatePicker(
@@ -114,22 +126,50 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
                     // A kept deadline from the past stays pickable: an edit
                     // always shows its own date first.
                     initialDate: _deadline ?? now,
-                    firstDate: _deadline != null &&
-                            _deadline!.isBefore(now)
+                    firstDate: _deadline != null && _deadline!.isBefore(now)
                         ? DateTime(_deadline!.year, _deadline!.month,
                             _deadline!.day)
                         : now,
                     lastDate: now.add(const Duration(days: 365)),
                   );
-                  if (date != null) {
-                    setState(() => _deadline = date);
-                  }
+                  if (date == null) return;
+                  setState(() {
+                    _deadline = _withPickedDate(_deadline, date);
+                  });
                 },
-                child: Text(_deadline != null
-                    ? DateUtil.formatDate(
-                        _deadline!, Localizations.localeOf(context).languageCode)
-                    : l10n.pickDate),
               ),
+              ActionChip(
+                avatar: const Icon(Icons.access_time, size: 18),
+                label: Text(_deadline != null
+                    ? TimeOfDay.fromDateTime(_deadline!).format(context)
+                    : l10n.pickTimeLabel),
+                onPressed: () async {
+                  final now = DateTime.now();
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: _deadline != null
+                        ? TimeOfDay.fromDateTime(_deadline!)
+                        : TimeOfDay(hour: now.hour, minute: now.minute),
+                  );
+                  if (time == null) return;
+                  setState(() {
+                    final base = _deadline ?? now;
+                    _deadline = DateTime(
+                      base.year,
+                      base.month,
+                      base.day,
+                      time.hour,
+                      time.minute,
+                    );
+                  });
+                },
+              ),
+              if (_deadline != null)
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  tooltip: l10n.closeLabel,
+                  onPressed: () => setState(() => _deadline = null),
+                ),
             ],
           ),
           const SizedBox(height: 12),
@@ -164,6 +204,22 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
           ),
         ],
       ),
+    );
+  }
+
+  /// Keeps the currently picked time when the date moves: the user chose
+  /// a day change, not a time change.
+  DateTime _withPickedDate(DateTime? current, DateTime picked) {
+    if (current == null) {
+      final now = DateTime.now();
+      return DateTime(picked.year, picked.month, picked.day, now.hour, now.minute);
+    }
+    return DateTime(
+      picked.year,
+      picked.month,
+      picked.day,
+      current.hour,
+      current.minute,
     );
   }
 

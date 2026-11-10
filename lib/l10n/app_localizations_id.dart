@@ -21,7 +21,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get inboxTitle => 'Inbox';
 
   @override
-  String get spacesTitle => 'Wadah';
+  String get spacesTitle => 'Kategori';
 
   @override
   String get calendarTitle => 'Kalender';
@@ -65,7 +65,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get addSpace => 'Tambah Wadah';
+  String get addSpace => 'Tambah Kategori';
 
   @override
   String get cancel => 'Batal';
@@ -74,7 +74,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get save => 'Simpan';
 
   @override
-  String get spaceName => 'Nama wadah';
+  String get spaceName => 'Nama kategori';
 
   @override
   String get spaceCode => 'Kode (opsional)';
@@ -86,7 +86,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get taskNotes => 'Catatan';
 
   @override
-  String get taskContainer => 'Wadah';
+  String get taskContainer => 'Kategori';
 
   @override
   String get taskDeadline => 'Deadline';
@@ -134,7 +134,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get welcome => 'Selamat Datang';
 
   @override
-  String get addFirstSpace => 'Tambah Matkul Pertama';
+  String get addFirstSpace => 'Tambah Kategori Pertama';
 
   @override
   String get start => 'Mulai';
@@ -167,7 +167,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get school => 'SMA';
 
   @override
-  String get spaceNameLabel => 'Nama Matkul';
+  String get spaceNameLabel => 'Nama Kategori';
 
   @override
   String inboxCount(int count) {
@@ -593,7 +593,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportDeadlineHistorySubtitle => 'PDF bukti perubahan deadline';
 
   @override
-  String get nonCourseSpaceTitle => 'Wadah Non-Matkul';
+  String get nonCourseSpaceTitle => 'Kategori Non-Matkul';
 
   @override
   String get orgSpace => 'Organisasi';
@@ -617,7 +617,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get otherSpace => 'Lainnya';
 
   @override
-  String get otherSpaceSubtitle => 'Wadah lainnya';
+  String get otherSpaceSubtitle => 'Kategori lainnya';
 
   @override
   String get advancedWidgetsTitle => 'Widget Lanjutan';
@@ -847,7 +847,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get filterLabel => 'Penyaring';
 
   @override
-  String get filterSubtitle => 'Wadah, jenis, status';
+  String get filterSubtitle => 'Kategori, jenis, status';
 
   @override
   String get changeSemesterTitle => 'Ganti Semester';
@@ -866,7 +866,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get keepInArchive => 'Biarkan di arsip';
 
   @override
-  String get moveToNewSpace => 'Pindahkan ke wadah baru';
+  String get moveToNewSpace => 'Pindahkan ke kategori baru';
 
   @override
   String get deleteLabel => 'Hapus';
@@ -1106,7 +1106,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get importBackupShort => 'Impor Cadangan';
 
   @override
-  String get emptySpaces => 'Belum ada wadah (matkul).';
+  String get emptySpaces => 'Belum ada kategori.';
 
   @override
   String spaceCodeValue(String value) {
@@ -1177,13 +1177,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get welcomeSubtitle =>
-      'Lekas membantu kamu mencatat tugas dan deadline kuliah.';
+      'Lekas membantumu mencatat tugas dan deadline kuliah.';
 
   @override
-  String get enterFirstCourseSubtitle => 'Masukkan nama matkul pertama kamu.';
+  String get enterFirstCourseSubtitle => 'Masukkan nama kategori pertama kamu.';
 
   @override
-  String get firstCourseFallback => 'Matkul Pertama';
+  String get firstCourseFallback => 'Kategori Pertama';
 
   @override
   String get allLabel => 'Semua';
@@ -1237,7 +1237,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String spaceCreated(String name) {
-    return 'Wadah dibuat: $name';
+    return 'Kategori dibuat: $name';
   }
 
   @override
@@ -1308,7 +1308,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String warningInboxPile(int count) {
-    return 'Inbox menumpuk: $count tugas tanpa wadah. Ketuk untuk membereskan.';
+    return 'Inbox menumpuk: $count tugas tanpa kategori. Ketuk untuk membereskan.';
   }
 
   @override
@@ -1341,17 +1341,17 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get archiveEmptyText =>
-      'Tidak ada wadah yang diarsipkan di sini. Saat kamu mengarsip sebuah wadah, wadah itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.';
+      'Tidak ada kategori yang diarsipkan di sini. Saat kamu mengarsip sebuah kategori, kategori itu menunggu di sini, dan bisa kamu pulihkan atau hapus permanen.';
 
   @override
-  String get deleteSpaceTitle => 'Hapus wadah';
+  String get deleteSpaceTitle => 'Hapus kategori';
 
   @override
   String get deleteSpaceBody =>
-      'Ini menghapus wadah beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.';
+      'Ini menghapus kategori beserta jadwal, presensi, catatan, komponen nilai, dan checklist. Tugasnya pindah ke Inbox. Tindakan ini tidak bisa dibatalkan.';
 
   @override
-  String get spaceRestored => 'Wadah dipulihkan';
+  String get spaceRestored => 'Kategori dipulihkan';
 
   @override
   String get drawerSectionTasks => 'Tugas';
@@ -1363,7 +1363,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get drawerSectionSystem => 'Sistem';
 
   @override
-  String get editSpaceTitle => 'Ubah wadah';
+  String get editSpaceTitle => 'Ubah kategori';
 
   @override
   String get taskDeletedUndo => 'Tugas dihapus';
@@ -1375,7 +1375,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String spacesArchivedUndo(int count) {
-    return '$count wadah diarsipkan';
+    return '$count kategori diarsipkan';
   }
 
   @override

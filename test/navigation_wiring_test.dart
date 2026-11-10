@@ -32,7 +32,7 @@ import 'package:lekas/features/tasks/target_pribadi_screen.dart';
 import 'package:lekas/features/tasks/task_detail_screen.dart';
 import 'package:lekas/features/tasks/trash_screen.dart';
 import 'package:lekas/features/tasks/tugas_berulang_screen.dart';
-import 'package:lekas/features/tasks/wadah_non_matkul_screen.dart';
+import 'package:lekas/features/tasks/non_course_category_screen.dart';
 import 'package:lekas/features/tasks/widget_lanjutan_screen.dart';
 import 'package:lekas/l10n/app_localizations.dart';
 
@@ -254,13 +254,13 @@ void main() {
 
     await tester.pumpWidget(host(db, const HomeShell()));
     await settle(tester);
-    await openTab(tester, 'Spaces');
+    await openTab(tester, 'Categories');
     await settle(tester);
 
     // The category action creates an org, project, personal or other space.
     await tester.tap(find.byIcon(Icons.category_outlined));
     await settle(tester);
-    expect(find.byType(WadahNonMatkulScreen), findsOneWidget);
+    expect(find.byType(NonCourseCategoryScreen), findsOneWidget);
     await goBack(tester);
 
     await tapTile(

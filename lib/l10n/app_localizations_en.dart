@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inboxTitle => 'Inbox';
 
   @override
-  String get spacesTitle => 'Spaces';
+  String get spacesTitle => 'Categories';
 
   @override
   String get calendarTitle => 'Calendar';
@@ -65,7 +65,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get addSpace => 'Add Space';
+  String get addSpace => 'Add Category';
 
   @override
   String get cancel => 'Cancel';
@@ -74,7 +74,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
-  String get spaceName => 'Space name';
+  String get spaceName => 'Category name';
 
   @override
   String get spaceCode => 'Code (optional)';
@@ -86,7 +86,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskNotes => 'Notes';
 
   @override
-  String get taskContainer => 'Space';
+  String get taskContainer => 'Category';
 
   @override
   String get taskDeadline => 'Deadline';
@@ -134,7 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome';
 
   @override
-  String get addFirstSpace => 'Add First Space';
+  String get addFirstSpace => 'Add Your First Category';
 
   @override
   String get start => 'Start';
@@ -167,7 +167,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get school => 'School';
 
   @override
-  String get spaceNameLabel => 'Space Name';
+  String get spaceNameLabel => 'Category Name';
 
   @override
   String inboxCount(int count) {
@@ -593,7 +593,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportDeadlineHistorySubtitle => 'PDF proof of deadline changes';
 
   @override
-  String get nonCourseSpaceTitle => 'Non-Course Spaces';
+  String get nonCourseSpaceTitle => 'Non-Course Categories';
 
   @override
   String get orgSpace => 'Organization';
@@ -617,7 +617,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otherSpace => 'Others';
 
   @override
-  String get otherSpaceSubtitle => 'Other spaces';
+  String get otherSpaceSubtitle => 'Other categories';
 
   @override
   String get advancedWidgetsTitle => 'Advanced Widgets';
@@ -846,7 +846,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterLabel => 'Filter';
 
   @override
-  String get filterSubtitle => 'Space, type, status';
+  String get filterSubtitle => 'Category, type, status';
 
   @override
   String get changeSemesterTitle => 'Change Semester';
@@ -865,7 +865,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepInArchive => 'Leave in archive';
 
   @override
-  String get moveToNewSpace => 'Move to a new space';
+  String get moveToNewSpace => 'Move to a new category';
 
   @override
   String get deleteLabel => 'Delete';
@@ -1105,7 +1105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importBackupShort => 'Import Backup';
 
   @override
-  String get emptySpaces => 'No spaces (courses) yet.';
+  String get emptySpaces => 'No categories yet.';
 
   @override
   String spaceCodeValue(String value) {
@@ -1236,7 +1236,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String spaceCreated(String name) {
-    return 'Space created: $name';
+    return 'Category created: $name';
   }
 
   @override
@@ -1340,17 +1340,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get archiveEmptyText =>
-      'No archived spaces here. When you archive a space it waits here, and you can restore it or delete it for good.';
+      'No archived categories here. When you archive a category it waits here, and you can restore it or delete it for good.';
 
   @override
-  String get deleteSpaceTitle => 'Delete space';
+  String get deleteSpaceTitle => 'Delete category';
 
   @override
   String get deleteSpaceBody =>
-      'This removes the space with its schedule, attendance, notes, grade components and checklists. Its tasks move to the Inbox. This cannot be undone.';
+      'This removes the category with its schedule, attendance, notes, grade components and checklists. Its tasks move to the Inbox. This cannot be undone.';
 
   @override
-  String get spaceRestored => 'Space restored';
+  String get spaceRestored => 'Category restored';
 
   @override
   String get drawerSectionTasks => 'Tasks';
@@ -1362,7 +1362,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerSectionSystem => 'System';
 
   @override
-  String get editSpaceTitle => 'Edit space';
+  String get editSpaceTitle => 'Edit category';
 
   @override
   String get taskDeletedUndo => 'Task deleted';
@@ -1374,7 +1374,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String spacesArchivedUndo(int count) {
-    return '$count spaces archived';
+    return '$count categories archived';
   }
 
   @override
