@@ -42,6 +42,11 @@ subprojects {
                 jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
             }
         }
+        tasks.withType(JavaCompile::class.java).configureEach {
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
+            options.encoding = "UTF-8"
+        }
     }
 }
 
