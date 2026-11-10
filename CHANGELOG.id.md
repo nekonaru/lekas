@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.9.0
+
+Lekas mengganti nama wadah menjadi kategori, menambahkan deadline dengan jam, meminta izin notifikasi, dan memperhalus tema flat brand.
+
+### Fitur baru
+
+- **Kategori di semua tempat.** Seluruh aplikasi kini menyebut mata kuliah dan wadah sebagai kategori dalam bahasa Inggris dan kategori dalam bahasa Indonesia, di teks, test, dan dokumen.
+- **Deadline dengan jam.** Tugas bisa membawa deadline lengkap dengan jam, dipilih lewat chip pada bar deadline, sehingga pengingat bisa berbunyi tepat pada menitnya.
+- **Izin notifikasi diminta sekali.** Setelah setup, Lekas meminta izin notifikasi dan alarm tepat saat pertama dibuka, sehingga pengingat benar-benar bisa berbunyi; flag tersimpan di settings dan dialog sistem tidak muncul di setiap pembukaan.
+
+### Peningkatan
+
+- **Tema flat brand.** Kartu, chip, tombol, dan snackbar memakai radius dan palet yang sama: warna primer indigo, container yang lembut, kartu tanpa garis tepi, skala tipografi yang lebih rapi.
+
 ## v1.8.0
 
 Lekas menambahkan daftar wadah yang diarsipkan, hapus wadah permanen, seksi drawer berkelompok, dan skala spacing yang lebih rapi.

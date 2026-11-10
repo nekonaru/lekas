@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.9.0
+
+Lekas renames spaces to categories, adds deadlines with time, asks for notification permissions, and polishes the flat brand theme.
+
+### New features
+
+- **Categories everywhere.** The whole app now calls courses and containers categories in EN and Kategori in ID, in text, tests and docs.
+- **Deadlines with time.** Tasks can carry a deadline with time, picked with chips right on the deadline row, so reminders fire at the exact minute.
+- **Notification permissions asked once.** After setup, Lekas asks for notifications and exact alarms the first time it runs, so reminders can actually fire; the flag lives in settings and the system dialog never appears on every launch.
+
+### Improvements
+
+- **Flat brand theme.** Cards, chips, buttons and snackbars follow one radius and palette: indigo primaries, soft containers, no card border, tighter typography scale.
+
 ## v1.8.0
 
 Lekas adds an archived spaces list, permanent space delete, grouped drawer sections and a tidier spacing scale.
