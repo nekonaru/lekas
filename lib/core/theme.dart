@@ -73,10 +73,49 @@ class AppTheme {
   static ThemeData darkTheme({Color? seed}) => _base(Brightness.dark, seed);
 
   static ThemeData _base(Brightness brightness, Color? seed) {
-    final scheme = ColorScheme.fromSeed(
+    final light = brightness == Brightness.light;
+    // Honor the user's accent pick as it arrives, but give the default
+    // seed the polished brand colors: indigo-violet, whites with an
+    // indigo cast, and true dark-slate surfaces instead of the default grey.
+    final base = ColorScheme.fromSeed(
       seedColor: seed ?? accentColor,
       brightness: brightness,
     );
+    final scheme = light
+        ? base.copyWith(
+            primary: const Color(0xFF4F46E5),
+            onPrimary: Colors.white,
+            primaryContainer: const Color(0xFFE0E7FF),
+            onPrimaryContainer: const Color(0xFF1E1B4B),
+            secondary: const Color(0xFF7C3AED),
+            secondaryContainer: const Color(0xFFF3E8FF),
+            onSecondaryContainer: const Color(0xFF2E1065),
+            surface: const Color(0xFFFFFFFF),
+            onSurface: const Color(0xFF111827),
+            surfaceContainerLowest: Colors.white,
+            surfaceContainerLow: const Color(0xFFF5F4FF),
+            surfaceContainer: const Color(0xFFEEEDFB),
+            surfaceContainerHigh: const Color(0xFFE7E6F8),
+            surfaceContainerHighest: const Color(0xFFE2E1F4),
+            outlineVariant: const Color(0xFFC7C5D9),
+          )
+        : base.copyWith(
+            primary: const Color(0xFFA5B4FC),
+            onPrimary: const Color(0xFF1E1B4B),
+            primaryContainer: const Color(0xFF3730A3),
+            onPrimaryContainer: const Color(0xFFE0E7FF),
+            secondary: const Color(0xFFA78BFA),
+            secondaryContainer: const Color(0xFF4C1D95),
+            onSecondaryContainer: const Color(0xFFF3E8FF),
+            surface: const Color(0xFF12131F),
+            onSurface: const Color(0xFFE2E1F4),
+            surfaceContainerLowest: const Color(0xFF12131F),
+            surfaceContainerLow: const Color(0xFF1A1B2E),
+            surfaceContainer: const Color(0xFF1F2036),
+            surfaceContainerHigh: const Color(0xFF2A2B44),
+            surfaceContainerHighest: const Color(0xFF353651),
+            outlineVariant: const Color(0xFF3F4059),
+          );
     return ThemeData(
       useMaterial3: true,
       // The bundled Inter family gives every screen its own voice instead
@@ -116,9 +155,7 @@ class AppTheme {
         elevation: 0,
         color: scheme.surfaceContainerLow,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: scheme.surface,
@@ -147,7 +184,9 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 15,
@@ -158,7 +197,9 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           side: BorderSide(color: scheme.outlineVariant),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w600,
@@ -173,10 +214,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         side: BorderSide.none,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        labelStyle: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
+        labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
       ),
       dividerTheme: DividerThemeData(color: scheme.outlineVariant),
       snackBarTheme: SnackBarThemeData(
