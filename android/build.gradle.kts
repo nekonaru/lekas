@@ -19,6 +19,8 @@ subprojects {
 // Beberapa plugin masih meng-compile dengan compileSdk 34/35, padahal
 // flutter_plugin_android_lifecycle (dan lainnya) mensyaratkan >= 36.
 // Samakan semua modul plugin ke compileSdk 37 agar lolos AAR metadata check.
+// Samakan target JVM semua modul plugin ke 17 agar cocok dengan app
+// yang di-compile dengan Java 17.
 subprojects {
     afterEvaluate {
         val androidExt = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class.java)
@@ -33,6 +35,11 @@ subprojects {
             val current = appExt.compileSdk
             if (current == null || current < 37) {
                 appExt.compileSdk = 37
+            }
+        }
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
             }
         }
     }
