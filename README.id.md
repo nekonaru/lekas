@@ -61,12 +61,14 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Voice Quick Add** | Mikrofon di Quick Add dan di layarnya sendiri; angka yang diucapkan seperti "jam tujuh" menjadi deadline |
 | **Share intake** | Teks yang dibagikan dari WhatsApp atau aplikasi apa pun dipecah menjadi kandidat dan diurai sebelum disimpan, tidak ada yang tersimpan otomatis |
 
-### Tugas dan Space
+### Tugas, Wadah dan Semester
 
 | Fitur | Deskripsi |
 |-------|-----------|
 | **Space** | Mata kuliah dan wadah lain dengan warna, kode, alias untuk parser, dan catatan untuk dosen, ruang, dan tautan |
+| **Semester** | Tab semester aktif: hero dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah, semester lain sekali ketuk; buat, ubah nama, aktifkan, dan hapus semester (space-nya ikut terhapus, tugasnya pindah ke Inbox) |
 | **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
+| **Filter dan pengelompokan tugas** | Kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat atau terjauh, terbaru dibuat, prioritas tertinggi) dalam satu sheet filter; opsi pengelompokan per kategori dengan jumlah per grup |
 | **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagian tersendiri, prasyarat yang selesai mengirim satu pemberitahuan lembut "siap dimulai", dan penyimpanan yang akan membentuk putaran ditolak |
 | **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam sebuah space |
 | **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah, dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
@@ -286,7 +288,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (457 tes) |
+| `flutter test` | Seluruh suite harus lulus (476 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

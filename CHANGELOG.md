@@ -2,6 +2,29 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.10.0
+
+Lekas replaces the Categories tab with a Semester tab, puts a filter system and category grouping on the task lists, and fixes the layout bugs in the task sheet and the tab screens.
+
+### New features
+
+- **Semester tab.** The category tab is now Semester: an active-semester hero with course count, task progress and an overdue badge, the course list below it, and every other semester one tap away. Creating, renaming, activating and deleting a semester all live there; existing spaces keep their period, which becomes their semester on upgrade.
+- **Task category filters.** Task lists can filter by category, status (not done or done) and sort order (nearest deadline, farthest deadline, recently created, highest priority) through one shared sheet; Search & Filter gained the same status and sort controls.
+- **Group by category.** The task list switches between a flat list and groups by category, with per-group counts, so one course's tasks sit together.
+- **Inbox searchable.** Global search now includes Inbox tasks; a task captured there is visible to every search.
+
+### Improvements
+
+- **One app bar per tab.** The duplicate header on every tab is gone; the shell owns the single bar, selection mode moved to a bottom action bar, and the calendar's month navigation and weekday labels live in the body.
+- **Task sheet fits the screen.** The add-task sheet scrolls, clears the keyboard, and the priority control is a full width segmented button; the deadline row lost the floating clear icon for a labeled button.
+- **Flat calmer design.** The notification permission banner sits on a soft surface tint instead of the dark red card; deadline and priority labels use the section style.
+
+### Bug fixes
+
+- **Add task sheet no longer overflows** with long labels or a small screen; the priority row no longer runs off the edge.
+- **Double add button.** Today and the shell each carried an add action; the shell's is gone and the floating button stays.
+- **Semester-safe backups.** A backup written before this release is repaired on import: an empty or active-less semester table gets a default active semester, so the Semester tab never opens empty.
+
 ## v1.9.0
 
 Lekas renames spaces to categories, adds deadlines with time, asks for notification permissions, and polishes the flat brand theme.

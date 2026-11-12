@@ -61,12 +61,14 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Voice Quick Add** | Microphone in Quick Add and on its own screen; spoken numbers such as "jam tujuh" become a deadline |
 | **Share intake** | Text shared from WhatsApp or any app is split into candidates and parsed before saving, nothing is stored automatically |
 
-### Tasks and Spaces
+### Tasks, Spaces and Semesters
 
 | Feature | Description |
 |---------|-------------|
 | **Spaces** | Courses and other containers with color, code, aliases for the parser, and notes for lecturer, room and link |
+| **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
+| **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |
 | **Task dependencies** | Prerequisites per task; blocked tasks wait in their own section, a finished prerequisite sends one soft "ready to start" notice, and a save that would close a loop is refused |
 | **Personal target and grade prediction** | A target date before the deadline, plus grade prediction inside a space |
 | **Inbox and trash** | Quick capture without a course, and a trash that keeps deleted tasks restorable |
@@ -286,7 +288,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (457 tests) |
+| `flutter test` | Must pass the full suite (476 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

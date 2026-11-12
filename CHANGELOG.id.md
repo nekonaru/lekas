@@ -2,6 +2,29 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.10.0
+
+Lekas mengganti tab Kategori dengan tab Semester, menambahkan sistem filter dan pengelompokan per kategori di daftar tugas, serta memperbaiki bug tata letak pada sheet tugas dan layar tab.
+
+### Fitur baru
+
+- **Tab Semester.** Tab Kategori kini menjadi Semester: hero semester aktif dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah di bawahnya, dan semester lain sekali ketuk. Buat, ubah nama, aktifkan, dan hapus semester semuanya di sana; space yang sudah ada membawa periodenya, yang menjadi semesternya saat upgrade.
+- **Filter kategori tugas.** Daftar tugas bisa memfilter berdasarkan kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat, deadline terjauh, terbaru dibuat, prioritas tertinggi) lewat satu sheet bersama; Search & Filter juga mendapat kontrol status dan urutan yang sama.
+- **Kelompokkan per kategori.** Daftar tugas bisa beralih antara daftar datar dan grup per kategori, dengan jumlah per grup, sehingga tugas satu mata kuliah berkumpul.
+- **Inbox bisa dicari.** Pencarian global kini menyertakan tugas Inbox; tugas yang tercatat di sana terlihat oleh semua pencarian.
+
+### Peningkatan
+
+- **Satu app bar per tab.** Header ganda di setiap tab dihapus; shell yang memegang bar tunggal, mode pilih pindah ke action bar bawah, dan navigasi bulan serta label hari pada kalender kini berada di body.
+- **Sheet tugas muat di layar.** Sheet tambah tugas bisa digulir, menepi dari keyboard, dan kontrol prioritasnya tombol segmen selebar layar; bar deadline kehilangan ikon silang melayang, diganti tombol berlabel.
+- **Desain flat yang lebih tenang.** Banner izin notifikasi berada di permukaan lembut, bukan kartu merah gelap; label deadline dan prioritas memakai gaya seksi.
+
+### Perbaikan bug
+
+- **Sheet tambah tugas tidak lagi meluap** dengan label panjang atau layar kecil; bar prioritas tidak lagi keluar tepi.
+- **Tombol tambah ganda.** Hari Ini dan shell sama-sama punya aksi tambah; punya shell dihapus, tombol mengambang tetap ada.
+- **Cadangan aman untuk semester.** Cadangan dari versi sebelum ini diperbaiki saat import: tabel semester yang kosong atau tanpa flag aktif mendapat semester aktif bawaan, sehingga tab Semester tidak pernah terbuka kosong.
+
 ## v1.9.0
 
 Lekas mengganti nama wadah menjadi kategori, menambahkan deadline dengan jam, meminta izin notifikasi, dan memperhalus tema flat brand.
