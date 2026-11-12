@@ -1,6 +1,22 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 part 'database.g.dart';
+
+/// One academic semester. Exactly one row should be active at a time, but
+/// the schema does not enforce it: an install that has never seen a write
+/// keeps its single default row, and the repository transaction flips the
+/// flag for everyone else.
+class Semesters extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(false))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
 
 /// One tracked course or container. Lookups by id use the primary key;
 /// the secondary indexes below cover the filters of the lists (schema 3).
@@ -32,6 +48,10 @@ class Spaces extends Table {
   /// spaces start at 0 and sort by name until the first drag writes
   /// stepped values in.
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  /// The semester this space belongs to. Nullable: rows written before
+  /// schema 5 fall into the default semester during the migration.
+  TextColumn get semesterId => text().nullable().references(Semesters, #id)();
 
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
@@ -355,6 +375,7 @@ class Attendance extends Table {
 }
 
 @DriftDatabase(tables: [
+  Semesters,
   Spaces,
   SpaceAliases,
   SpaceMeta,
@@ -384,11 +405,93 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
+
+  /// Creates the default semester of a fresh install, active, so every
+  /// space has a home and the tab is never empty on first run.
+  static Future<void> createDefaultSemester(AppDatabase db) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.into(db.semesters).insert(
+          SemestersCompanion.insert(
+            id: const Uuid().v4(),
+            name: 'Semester 1',
+            isActive: const Value(true),
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+  }
+
+  /// Schema 4 to 5: build one semester per distinct non empty period used
+  /// by the spaces, attach each space to its period, and mark the semester
+  /// of the most recently touched space active. Spaces with no period all
+  /// land in one default semester; an empty database gets that one active.
+  static Future<void> backfillSemesters(AppDatabase db) async {
+    final allSpaces = await db.select(db.spaces).get();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final byPeriod = <String, String>{};
+    for (final space in allSpaces) {
+      final period = space.period?.trim() ?? '';
+      if (period.isEmpty) continue;
+      byPeriod.putIfAbsent(period, () => const Uuid().v4());
+    }
+    var order = 0;
+    for (final entry in byPeriod.entries) {
+      await db.into(db.semesters).insert(
+            SemestersCompanion.insert(
+              id: entry.value,
+              name: entry.key,
+              createdAt: now + order,
+              updatedAt: now + order,
+            ),
+          );
+      order++;
+    }
+    String? defaultId;
+    if (allSpaces.isEmpty ||
+        allSpaces.any((space) => (space.period?.trim() ?? '').isEmpty)) {
+      defaultId = const Uuid().v4();
+      await db.into(db.semesters).insert(
+            SemestersCompanion.insert(
+              id: defaultId,
+              name: 'Semester 1',
+              createdAt: now + order,
+              updatedAt: now + order,
+            ),
+          );
+    }
+    for (final space in allSpaces) {
+      final period = space.period?.trim() ?? '';
+      final semesterId = period.isEmpty ? defaultId : byPeriod[period];
+      if (semesterId == null) continue;
+      await (db.update(db.spaces)..where((t) => t.id.equals(space.id))).write(
+        SpacesCompanion(semesterId: Value(semesterId)),
+      );
+    }
+    // The semester holding the most recently updated space becomes active,
+    // so the tab opens on what the user was last working on.
+    final sorted = [...allSpaces]
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    String? activeId;
+    if (sorted.isEmpty) {
+      activeId = defaultId;
+    } else {
+      final newest = sorted.first;
+      final period = newest.period?.trim() ?? '';
+      activeId = period.isEmpty ? defaultId : byPeriod[period];
+    }
+    if (activeId != null) {
+      await (db.update(db.semesters)..where((t) => t.id.equals(activeId!)))
+          .write(const SemestersCompanion(isActive: Value(true)));
+    }
+  }
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
+        onCreate: (m) async {
+          await m.createAll();
+          await createDefaultSemester(this);
+        },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
             // Attendance and the per course settings of design 5.19.
@@ -426,6 +529,14 @@ class AppDatabase extends _$AppDatabase {
             // Manual spaces order, drag written in steps of 1024 so a new
             // drag rarely rewrites the whole column.
             await m.addColumn(spaces, spaces.sortOrder);
+          }
+          if (from < 5) {
+            // Semesters become a first class row and every space points at
+            // one; existing periods turn into semesters instead of being
+            // lost (schema 5).
+            await m.createTable(semesters);
+            await m.addColumn(spaces, spaces.semesterId);
+            await backfillSemesters(this);
           }
         },
       );

@@ -26,7 +26,19 @@ class SpaceRepository {
   }
 
   Future<void> insertSpace(Space space) async {
-    await db.into(db.spaces).insert(space);
+    var toInsert = space;
+    if (space.semesterId == null) {
+      // The active semester is the natural home of a new course; an empty
+      // result here means the user deleted every semester, so the space
+      // stays unassigned instead of being dropped.
+      final active = await (db.select(db.semesters)
+            ..where((t) => t.isActive.equals(true)))
+          .getSingleOrNull();
+      if (active != null) {
+        toInsert = space.copyWith(semesterId: Value(active.id));
+      }
+    }
+    await db.into(db.spaces).insert(toInsert);
   }
 
   Future<void> updateSpace(Space space) async {

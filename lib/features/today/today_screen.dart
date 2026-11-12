@@ -10,6 +10,7 @@ import '../../domain/urgency.dart' hide TaskSection;
 import '../../core/components/task_section.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
+import '../../core/components/selection_bottom_bar.dart';
 import '../../core/components/motion.dart';
 import '../../core/components/undo_snackbar.dart';
 import '../../core/theme.dart';
@@ -60,8 +61,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   bool? _notificationsOn;
 
   /// The FAB slides away while the list scrolls down and comes back on the
-  /// first upward scroll, so it never covers the card being read.
-  bool _fabVisible = true;
+  /// first upward scroll, so it never covers the card being read. A notifier
+  /// instead of state: flipping it never rebuilds the list, only the FAB.
+  final ValueNotifier<bool> _fabVisible = ValueNotifier<bool>(true);
 
   /// Tasks picked by a long press, for the bulk actions of design 5.5.
   final Set<String> _selection = {};
@@ -74,6 +76,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   String? _dismissedWarning;
 
   void _toggleSelection(String id) {
+    HapticFeedback.selectionClick();
     setState(() {
       if (!_selection.remove(id)) _selection.add(id);
     });
@@ -101,6 +104,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   void initState() {
     super.initState();
     _loadWarnings();
+  }
+
+  @override
+  void dispose() {
+    _fabVisible.dispose();
+    super.dispose();
   }
 
   Future<void> _loadWarnings() async {
@@ -180,19 +189,20 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final colors = Theme.of(context).colorScheme;
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      color: colors.errorContainer,
+      color: colors.surfaceContainerHigh,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ListTile(
-        leading: Icon(icon, color: colors.onErrorContainer),
+        leading: Icon(icon, color: const Color(0xFFF59E0B)),
         title: Text(
           l10n.warningTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: colors.onErrorContainer,
+            color: colors.onSurface,
           ),
         ),
         subtitle: Text(
           message,
-          style: TextStyle(color: colors.onErrorContainer),
+          style: TextStyle(color: colors.onSurfaceVariant),
         ),
         trailing: IconButton(
           icon: const Icon(Icons.close),
@@ -255,18 +265,21 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     if (mounted) setState(() {});
   }
 
-  /// The selection bar while multi select is on: every task action plus
-  /// select all, shared with the other lists.
+  /// The selection bar shown under the list while rows are picked: it keeps
+  /// the shell app bar untouched and puts every action one thumb away.
   Widget _selectionBar(List<Task> tasks) {
-    return BulkSelectionBar(
+    return SelectionBottomBar(
       count: _selection.length,
-      onSelectAll: () =>
-          setState(() => _selection.addAll(tasks.map((task) => task.id))),
-      onComplete: () => _completeSelected(tasks),
-      onPriority: () => _pickPriority(tasks),
-      onSpace: () => _pickSpace(tasks),
-      onDelete: () => _deleteSelected(tasks),
-      onClose: _clearSelection,
+      child: BulkSelectionBar(
+        count: _selection.length,
+        onSelectAll: () =>
+            setState(() => _selection.addAll(tasks.map((task) => task.id))),
+        onComplete: () => _completeSelected(tasks),
+        onPriority: () => _pickPriority(tasks),
+        onSpace: () => _pickSpace(tasks),
+        onDelete: () => _deleteSelected(tasks),
+        onClose: _clearSelection,
+      ),
     );
   }
 
@@ -376,30 +389,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
     final selecting = _selection.isNotEmpty;
 
+    // The shell app bar carries the tab title and the drawer; the list
+    // only provides its body, its FAB and, while rows are picked, the
+    // selection bar along the bottom.
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          selecting ? l10n.selectedCount(_selection.length) : l10n.todayTitle,
-        ),
-        actions: [
-          if (selecting)
-            _selectionBar(_tasks)
-          else
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (_) => const TaskFormSheet(),
-                );
-              },
-              tooltip: l10n.quickAddHint,
-            ),
-        ],
-      ),
-      // The list follows the table, so a write shows up on its own and the
-      // body never falls back to a spinner after the first frame.
       body: StreamBuilder<List<Task>>(
         stream: repo.watchTasks(includeInbox: false),
         builder: (context, snapshot) {
@@ -494,8 +487,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           return NotificationListener<UserScrollNotification>(
             onNotification: (notification) {
               final visible = notification.direction != ScrollDirection.reverse;
-              if (visible != _fabVisible) {
-                setState(() => _fabVisible = visible);
+              if (visible != _fabVisible.value) {
+                _fabVisible.value = visible;
               }
               return false;
             },
@@ -540,29 +533,39 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           );
         },
       ),
-      floatingActionButton: IgnorePointer(
-        ignoring: !_fabVisible,
-        child: AnimatedSlide(
-          duration: AppMotion.normal,
-          curve: AppMotion.ease,
-          offset: _fabVisible ? Offset.zero : const Offset(0, 1.4),
-          child: AnimatedScale(
-            duration: AppMotion.fast,
-            scale: _fabVisible ? 1 : 0.6,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (_) => const TaskFormSheet(),
+      bottomNavigationBar:
+          selecting ? _selectionBar(_tasks) : null,
+      floatingActionButton: selecting
+          ? null
+          : AnimatedBuilder(
+              animation: _fabVisible,
+              builder: (context, child) {
+                final visible = _fabVisible.value;
+                return IgnorePointer(
+                  ignoring: !visible,
+                  child: AnimatedSlide(
+                    duration: AppMotion.normal,
+                    curve: AppMotion.ease,
+                    offset: visible ? Offset.zero : const Offset(0, 1.4),
+                    child: AnimatedScale(
+                      duration: AppMotion.fast,
+                      scale: visible ? 1 : 0.6,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => const TaskFormSheet(),
+                          );
+                        },
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.addTask),
+                      ),
+                    ),
+                  ),
                 );
               },
-              icon: const Icon(Icons.add),
-              label: Text(l10n.addTask),
             ),
-          ),
-        ),
-      ),
     );
   }
 

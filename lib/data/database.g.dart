@@ -3,6 +3,367 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
+class $SemestersTable extends Semesters
+    with TableInfo<$SemestersTable, Semester> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SemestersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    isActive,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'semesters';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Semester> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Semester map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Semester(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SemestersTable createAlias(String alias) {
+    return $SemestersTable(attachedDatabase, alias);
+  }
+}
+
+class Semester extends DataClass implements Insertable<Semester> {
+  final String id;
+  final String name;
+  final bool isActive;
+  final int createdAt;
+  final int updatedAt;
+  const Semester({
+    required this.id,
+    required this.name,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  SemestersCompanion toCompanion(bool nullToAbsent) {
+    return SemestersCompanion(
+      id: Value(id),
+      name: Value(name),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Semester.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Semester(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  Semester copyWith({
+    String? id,
+    String? name,
+    bool? isActive,
+    int? createdAt,
+    int? updatedAt,
+  }) => Semester(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    isActive: isActive ?? this.isActive,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Semester copyWithCompanion(SemestersCompanion data) {
+    return Semester(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Semester(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, isActive, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Semester &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SemestersCompanion extends UpdateCompanion<Semester> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<bool> isActive;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const SemestersCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SemestersCompanion.insert({
+    required String id,
+    required String name,
+    this.isActive = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Semester> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<bool>? isActive,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SemestersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<bool>? isActive,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SemestersCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SemestersCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -179,6 +540,20 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _semesterIdMeta = const VerificationMeta(
+    'semesterId',
+  );
+  @override
+  late final GeneratedColumn<String> semesterId = GeneratedColumn<String>(
+    'semester_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES semesters (id)',
+    ),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -230,6 +605,7 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
     attendPrompt,
     archived,
     sortOrder,
+    semesterId,
     createdAt,
     updatedAt,
     deletedAt,
@@ -360,6 +736,12 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
       );
     }
+    if (data.containsKey('semester_id')) {
+      context.handle(
+        _semesterIdMeta,
+        semesterId.isAcceptableOrUnknown(data['semester_id']!, _semesterIdMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -455,6 +837,10 @@ class $SpacesTable extends Spaces with TableInfo<$SpacesTable, Space> {
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      semesterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}semester_id'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -502,6 +888,10 @@ class Space extends DataClass implements Insertable<Space> {
   /// spaces start at 0 and sort by name until the first drag writes
   /// stepped values in.
   final int sortOrder;
+
+  /// The semester this space belongs to. Nullable: rows written before
+  /// schema 5 fall into the default semester during the migration.
+  final String? semesterId;
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
@@ -522,6 +912,7 @@ class Space extends DataClass implements Insertable<Space> {
     this.attendPrompt,
     required this.archived,
     required this.sortOrder,
+    this.semesterId,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -565,6 +956,9 @@ class Space extends DataClass implements Insertable<Space> {
     }
     map['archived'] = Variable<bool>(archived);
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || semesterId != null) {
+      map['semester_id'] = Variable<String>(semesterId);
+    }
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
@@ -607,6 +1001,9 @@ class Space extends DataClass implements Insertable<Space> {
           : Value(attendPrompt),
       archived: Value(archived),
       sortOrder: Value(sortOrder),
+      semesterId: semesterId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(semesterId),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
@@ -639,6 +1036,7 @@ class Space extends DataClass implements Insertable<Space> {
       attendPrompt: serializer.fromJson<bool?>(json['attendPrompt']),
       archived: serializer.fromJson<bool>(json['archived']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      semesterId: serializer.fromJson<String?>(json['semesterId']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
@@ -664,6 +1062,7 @@ class Space extends DataClass implements Insertable<Space> {
       'attendPrompt': serializer.toJson<bool?>(attendPrompt),
       'archived': serializer.toJson<bool>(archived),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'semesterId': serializer.toJson<String?>(semesterId),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
@@ -687,6 +1086,7 @@ class Space extends DataClass implements Insertable<Space> {
     Value<bool?> attendPrompt = const Value.absent(),
     bool? archived,
     int? sortOrder,
+    Value<String?> semesterId = const Value.absent(),
     int? createdAt,
     int? updatedAt,
     Value<int?> deletedAt = const Value.absent(),
@@ -713,6 +1113,7 @@ class Space extends DataClass implements Insertable<Space> {
     attendPrompt: attendPrompt.present ? attendPrompt.value : this.attendPrompt,
     archived: archived ?? this.archived,
     sortOrder: sortOrder ?? this.sortOrder,
+    semesterId: semesterId.present ? semesterId.value : this.semesterId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -747,6 +1148,9 @@ class Space extends DataClass implements Insertable<Space> {
           : this.attendPrompt,
       archived: data.archived.present ? data.archived.value : this.archived,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      semesterId: data.semesterId.present
+          ? data.semesterId.value
+          : this.semesterId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -772,6 +1176,7 @@ class Space extends DataClass implements Insertable<Space> {
           ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('semesterId: $semesterId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -797,6 +1202,7 @@ class Space extends DataClass implements Insertable<Space> {
     attendPrompt,
     archived,
     sortOrder,
+    semesterId,
     createdAt,
     updatedAt,
     deletedAt,
@@ -821,6 +1227,7 @@ class Space extends DataClass implements Insertable<Space> {
           other.attendPrompt == this.attendPrompt &&
           other.archived == this.archived &&
           other.sortOrder == this.sortOrder &&
+          other.semesterId == this.semesterId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -843,6 +1250,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
   final Value<bool?> attendPrompt;
   final Value<bool> archived;
   final Value<int> sortOrder;
+  final Value<String?> semesterId;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int?> deletedAt;
@@ -864,6 +1272,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.semesterId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -886,6 +1295,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     this.attendPrompt = const Value.absent(),
     this.archived = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.semesterId = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.deletedAt = const Value.absent(),
@@ -912,6 +1322,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Expression<bool>? attendPrompt,
     Expression<bool>? archived,
     Expression<int>? sortOrder,
+    Expression<String>? semesterId,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? deletedAt,
@@ -935,6 +1346,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
       if (attendPrompt != null) 'attend_prompt': attendPrompt,
       if (archived != null) 'archived': archived,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (semesterId != null) 'semester_id': semesterId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -959,6 +1371,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     Value<bool?>? attendPrompt,
     Value<bool>? archived,
     Value<int>? sortOrder,
+    Value<String?>? semesterId,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int?>? deletedAt,
@@ -981,6 +1394,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
       attendPrompt: attendPrompt ?? this.attendPrompt,
       archived: archived ?? this.archived,
       sortOrder: sortOrder ?? this.sortOrder,
+      semesterId: semesterId ?? this.semesterId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -1039,6 +1453,9 @@ class SpacesCompanion extends UpdateCompanion<Space> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (semesterId.present) {
+      map['semester_id'] = Variable<String>(semesterId.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -1073,6 +1490,7 @@ class SpacesCompanion extends UpdateCompanion<Space> {
           ..write('attendPrompt: $attendPrompt, ')
           ..write('archived: $archived, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('semesterId: $semesterId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -10993,6 +11411,7 @@ class AttendanceCompanion extends UpdateCompanion<AttendanceData> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $SemestersTable semesters = $SemestersTable(this);
   late final $SpacesTable spaces = $SpacesTable(this);
   late final $SpaceAliasesTable spaceAliases = $SpaceAliasesTable(this);
   late final $SpaceMetaTable spaceMeta = $SpaceMetaTable(this);
@@ -11102,6 +11521,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    semesters,
     spaces,
     spaceAliases,
     spaceMeta,
@@ -11148,6 +11568,303 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   ];
 }
 
+typedef $$SemestersTableCreateCompanionBuilder = SemestersCompanion Function({
+  required String id,
+  required String name,
+  Value<bool> isActive,
+  required int createdAt,
+  required int updatedAt,
+  Value<int> rowid,
+});
+typedef $$SemestersTableUpdateCompanionBuilder = SemestersCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<bool> isActive,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int> rowid,
+});
+
+final class $$SemestersTableReferences
+    extends BaseReferences<_$AppDatabase, $SemestersTable, Semester> {
+  $$SemestersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SpacesTable, List<Space>> _spacesRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.spaces,
+    aliasName: 'semesters__id__spaces__semester_id',
+  );
+
+  $$SpacesTableProcessedTableManager get spacesRefs {
+    final manager = $$SpacesTableTableManager(
+      $_db,
+      $_db.spaces,
+    ).filter((f) => f.semesterId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_spacesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$SemestersTableFilterComposer
+    extends Composer<_$AppDatabase, $SemestersTable> {
+  $$SemestersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> spacesRefs(
+    Expression<bool> Function($$SpacesTableFilterComposer f) f,
+  ) {
+    final $$SpacesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.semesterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableFilterComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SemestersTableOrderingComposer
+    extends Composer<_$AppDatabase, $SemestersTable> {
+  $$SemestersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SemestersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SemestersTable> {
+  $$SemestersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> spacesRefs<T extends Object>(
+    Expression<T> Function($$SpacesTableAnnotationComposer a) f,
+  ) {
+    final $$SpacesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.semesterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SemestersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SemestersTable,
+          Semester,
+          $$SemestersTableFilterComposer,
+          $$SemestersTableOrderingComposer,
+          $$SemestersTableAnnotationComposer,
+          $$SemestersTableCreateCompanionBuilder,
+          $$SemestersTableUpdateCompanionBuilder,
+          (Semester, $$SemestersTableReferences),
+          Semester,
+          PrefetchHooks Function({bool spacesRefs})
+        > {
+  $$SemestersTableTableManager(_$AppDatabase db, $SemestersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SemestersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SemestersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SemestersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SemestersCompanion(
+                id: id,
+                name: name,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<bool> isActive = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SemestersCompanion.insert(
+                id: id,
+                name: name,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SemestersTable, Semester>(table),
+                  $$SemestersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({spacesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (spacesRefs) db.spaces],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (spacesRefs)
+                    await $_getPrefetchedDataByColumns<
+                      Semester,
+                      $SemestersTable,
+                      Space,
+                      $SpacesTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$SemestersTableReferences
+                          ._spacesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$SemestersTableReferences(db, table, p0).spacesRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'semester_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SemestersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SemestersTable,
+      Semester,
+      $$SemestersTableFilterComposer,
+      $$SemestersTableOrderingComposer,
+      $$SemestersTableAnnotationComposer,
+      $$SemestersTableCreateCompanionBuilder,
+      $$SemestersTableUpdateCompanionBuilder,
+      (Semester, $$SemestersTableReferences),
+      Semester,
+      PrefetchHooks Function({bool spacesRefs})
+    >;
 typedef $$SpacesTableCreateCompanionBuilder = SpacesCompanion Function({
   required String id,
   required String name,
@@ -11165,6 +11882,7 @@ typedef $$SpacesTableCreateCompanionBuilder = SpacesCompanion Function({
   Value<bool?> attendPrompt,
   Value<bool> archived,
   Value<int> sortOrder,
+  Value<String?> semesterId,
   required int createdAt,
   required int updatedAt,
   Value<int?> deletedAt,
@@ -11187,6 +11905,7 @@ typedef $$SpacesTableUpdateCompanionBuilder = SpacesCompanion Function({
   Value<bool?> attendPrompt,
   Value<bool> archived,
   Value<int> sortOrder,
+  Value<String?> semesterId,
   Value<int> createdAt,
   Value<int> updatedAt,
   Value<int?> deletedAt,
@@ -11196,6 +11915,23 @@ typedef $$SpacesTableUpdateCompanionBuilder = SpacesCompanion Function({
 final class $$SpacesTableReferences
     extends BaseReferences<_$AppDatabase, $SpacesTable, Space> {
   $$SpacesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SemestersTable _semesterIdTable(_$AppDatabase db) =>
+      db.semesters.createAlias('spaces__semester_id__semesters__id');
+
+  $$SemestersTableProcessedTableManager? get semesterId {
+    final $_column = $_itemColumn<String>('semester_id');
+    if ($_column == null) return null;
+    final manager = $$SemestersTableTableManager(
+      $_db,
+      $_db.semesters,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_semesterIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static MultiTypedResultKey<$SpaceAliasesTable, List<SpaceAliase>>
   _spaceAliasesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
@@ -11448,6 +12184,29 @@ class $$SpacesTableFilterComposer
     column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$SemestersTableFilterComposer get semesterId {
+    final $$SemestersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.semesterId,
+      referencedTable: $db.semesters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SemestersTableFilterComposer(
+            $db: $db,
+            $table: $db.semesters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<bool> spaceAliasesRefs(
     Expression<bool> Function($$SpaceAliasesTableFilterComposer f) f,
@@ -11753,6 +12512,29 @@ class $$SpacesTableOrderingComposer
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$SemestersTableOrderingComposer get semesterId {
+    final $$SemestersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.semesterId,
+      referencedTable: $db.semesters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SemestersTableOrderingComposer(
+            $db: $db,
+            $table: $db.semesters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$SpacesTableAnnotationComposer
@@ -11832,6 +12614,29 @@ class $$SpacesTableAnnotationComposer
 
   GeneratedColumn<int> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$SemestersTableAnnotationComposer get semesterId {
+    final $$SemestersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.semesterId,
+      referencedTable: $db.semesters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SemestersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.semesters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<T> spaceAliasesRefs<T extends Object>(
     Expression<T> Function($$SpaceAliasesTableAnnotationComposer a) f,
@@ -12048,6 +12853,7 @@ class $$SpacesTableTableManager
           (Space, $$SpacesTableReferences),
           Space,
           PrefetchHooks Function({
+            bool semesterId,
             bool spaceAliasesRefs,
             bool spaceMetaRefs,
             bool tasksRefs,
@@ -12087,6 +12893,7 @@ class $$SpacesTableTableManager
                 Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> semesterId = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
@@ -12108,6 +12915,7 @@ class $$SpacesTableTableManager
                 attendPrompt: attendPrompt,
                 archived: archived,
                 sortOrder: sortOrder,
+                semesterId: semesterId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -12131,6 +12939,7 @@ class $$SpacesTableTableManager
                 Value<bool?> attendPrompt = const Value.absent(),
                 Value<bool> archived = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> semesterId = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int?> deletedAt = const Value.absent(),
@@ -12152,6 +12961,7 @@ class $$SpacesTableTableManager
                 attendPrompt: attendPrompt,
                 archived: archived,
                 sortOrder: sortOrder,
+                semesterId: semesterId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -12167,6 +12977,7 @@ class $$SpacesTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                semesterId = false,
                 spaceAliasesRefs = false,
                 spaceMetaRefs = false,
                 tasksRefs = false,
@@ -12188,7 +12999,36 @@ class $$SpacesTableTableManager
                     if (gradeComponentsRefs) db.gradeComponents,
                     if (attendanceRefs) db.attendance,
                   ],
-                  addJoins: null,
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (semesterId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.semesterId,
+                            referencedTable: $$SpacesTableReferences
+                                ._semesterIdTable(db),
+                            referencedColumn: $$SpacesTableReferences
+                                ._semesterIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (spaceAliasesRefs)
@@ -12368,6 +13208,7 @@ typedef $$SpacesTableProcessedTableManager =
       (Space, $$SpacesTableReferences),
       Space,
       PrefetchHooks Function({
+        bool semesterId,
         bool spaceAliasesRefs,
         bool spaceMetaRefs,
         bool tasksRefs,
@@ -20824,6 +21665,8 @@ typedef $$AttendanceTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$SemestersTableTableManager get semesters =>
+      $$SemestersTableTableManager(_db, _db.semesters);
   $$SpacesTableTableManager get spaces =>
       $$SpacesTableTableManager(_db, _db.spaces);
   $$SpaceAliasesTableTableManager get spaceAliases =>

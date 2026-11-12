@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
 import '../../core/components/empty_state.dart';
+import '../../core/task_filter.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -26,6 +27,8 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   String? _spaceFilter;
   String? _typeFilter;
   String? _tagFilter;
+  TaskStatusFilter _statusFilter = TaskStatusFilter.all;
+  TaskSort _sort = TaskSort.deadlineAsc;
 
   /// Long press selection, like every other list (design section 5.5).
   final Set<String> _selection = {};
@@ -81,6 +84,17 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  List<({IconData icon, TaskSort sort, String label})> _sortOptions(
+    AppLocalizations l10n,
+  ) {
+    return [
+      (icon: Icons.south, sort: TaskSort.deadlineAsc, label: l10n.sortDeadlineAsc),
+      (icon: Icons.north, sort: TaskSort.deadlineDesc, label: l10n.sortDeadlineDesc),
+      (icon: Icons.schedule, sort: TaskSort.createdDesc, label: l10n.sortCreatedDesc),
+      (icon: Icons.flag_outlined, sort: TaskSort.priorityHighFirst, label: l10n.sortPriorityHighFirst),
+    ];
   }
 
   String _typeName(AppLocalizations l10n, String type) {
@@ -153,6 +167,76 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                   selected: _spaceFilter == space.id,
                   onTap: () {
                     setSheetState(() => _spaceFilter = space.id);
+                    setState(() {});
+                  },
+                ),
+              const Divider(),
+              ListTile(
+                title: Text(l10n.statusLabel),
+                subtitle: Text(
+                  switch (_statusFilter) {
+                    TaskStatusFilter.all => l10n.allLabel,
+                    TaskStatusFilter.pending => l10n.pendingLabel,
+                    TaskStatusFilter.done => l10n.doneLabel,
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ChoiceChip(
+                      avatar: const Icon(Icons.list, size: 18),
+                      label: Text(l10n.allLabel),
+                      selected: _statusFilter == TaskStatusFilter.all,
+                      onSelected: (_) {
+                        setSheetState(() => _statusFilter = TaskStatusFilter.all);
+                        setState(() {});
+                      },
+                    ),
+                    ChoiceChip(
+                      avatar: const Icon(Icons.radio_button_unchecked, size: 18),
+                      label: Text(l10n.pendingLabel),
+                      selected: _statusFilter == TaskStatusFilter.pending,
+                      onSelected: (_) {
+                        setSheetState(() => _statusFilter = TaskStatusFilter.pending);
+                        setState(() {});
+                      },
+                    ),
+                    ChoiceChip(
+                      avatar: const Icon(Icons.check_circle_outline, size: 18),
+                      label: Text(l10n.doneLabel),
+                      selected: _statusFilter == TaskStatusFilter.done,
+                      onSelected: (_) {
+                        setSheetState(() => _statusFilter = TaskStatusFilter.done);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              ListTile(title: Text(l10n.sortLabel)),
+              for (final option in _sortOptions(l10n))
+                ListTile(
+                  leading: Icon(
+                    option.icon,
+                    color: _sort == option.sort
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                  ),
+                  title: Text(option.label),
+                  selected: _sort == option.sort,
+                  trailing: _sort == option.sort
+                      ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                  onTap: () {
+                    setSheetState(() => _sort = option.sort);
                     setState(() {});
                   },
                 ),
@@ -291,15 +375,16 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final tasks = (snapshot.data ?? [])
-                    .where(
-                      (t) =>
-                          (_typeFilter == null || t.type == _typeFilter) &&
-                          (_query.isEmpty ||
-                              t.title.toLowerCase().contains(_query) ||
-                              (t.notes ?? '').toLowerCase().contains(_query)),
-                    )
-                    .toList();
+                final tasks = TaskFilter(status: _statusFilter, sort: _sort)
+                    .apply(
+                  (snapshot.data ?? []).where(
+                    (t) =>
+                        (_typeFilter == null || t.type == _typeFilter) &&
+                        (_query.isEmpty ||
+                            t.title.toLowerCase().contains(_query) ||
+                            (t.notes ?? '').toLowerCase().contains(_query)),
+                  ),
+                );
                 if (_tagFilter == null) return _taskList(tasks, l10n);
                 // Design section 5.9: the tag filter combines with the
                 // space and type filters applied above.
@@ -355,9 +440,11 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     final key = _spaceFilter ?? '';
     final cached = _cachedTasks;
     if (cached != null && _cachedSpaceKey == key) return cached;
+    // The inbox is searchable too: a task captured there is still a task,
+    // and the old query silently hid it from every search result.
     final future = ref
         .read(taskRepositoryProvider)
-        .getTasks(spaceId: _spaceFilter, includeInbox: false);
+        .getTasks(spaceId: _spaceFilter, includeInbox: true);
     _cachedTasks = future;
     _cachedSpaceKey = key;
     return future;

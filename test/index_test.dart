@@ -54,8 +54,8 @@ void main() {
     ]);
   });
 
-  test('the schema version is 4', () {
-    expect(db.schemaVersion, 4);
+  test('the schema version is 5', () {
+    expect(db.schemaVersion, 5);
   });
 
   test('the database declares nineteen secondary indexes', () {

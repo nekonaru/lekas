@@ -847,26 +847,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get filterLabel => 'Penyaring';
 
   @override
-  String get filterSubtitle => 'Kategori, jenis, status';
-
-  @override
-  String get changeSemesterTitle => 'Ganti Semester';
+  String get filterSubtitle => 'Kategori, status, urutan';
 
   @override
   String get newSemester => 'Semester Baru';
 
   @override
   String get semesterPeriodExample => 'Contoh: Ganjil 2026/2027';
-
-  @override
-  String get unfinishedTasksOptionsLabel =>
-      'Pilih opsi untuk tugas belum selesai:';
-
-  @override
-  String get keepInArchive => 'Biarkan di arsip';
-
-  @override
-  String get moveToNewSpace => 'Pindahkan ke kategori baru';
 
   @override
   String get deleteLabel => 'Hapus';
@@ -1238,11 +1225,6 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String spaceCreated(String name) {
     return 'Kategori dibuat: $name';
-  }
-
-  @override
-  String tasksProcessed(int count) {
-    return '$count tugas diproses';
   }
 
   @override
@@ -1719,4 +1701,107 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get presetForest => 'Hutan';
+
+  @override
+  String get semesterTitle => 'Semester';
+
+  @override
+  String get semesterActiveLabel => 'Semester Aktif';
+
+  @override
+  String get semesterOtherLabel => 'Semester Lain';
+
+  @override
+  String courseCount(int count) {
+    return '$count mata kuliah';
+  }
+
+  @override
+  String openTasksCount(int count) {
+    return '$count tugas';
+  }
+
+  @override
+  String tasksDoneOf(int done, int total) {
+    return '$done dari $total tugas selesai';
+  }
+
+  @override
+  String semesterOverdue(int count) {
+    return '$count terlambat';
+  }
+
+  @override
+  String get manageCoursesLabel => 'Kelola Kategori';
+
+  @override
+  String get courseListTitle => 'Kategori Semester Ini';
+
+  @override
+  String get makeActiveLabel => 'Jadikan Aktif';
+
+  @override
+  String get noSemesterTitle => 'Belum ada semester';
+
+  @override
+  String get noSemesterBody =>
+      'Buat semester pertamamu untuk mengelompokkan mata kuliah.';
+
+  @override
+  String get semesterCreated => 'Semester dibuat';
+
+  @override
+  String get semesterDeleted => 'Semester dihapus';
+
+  @override
+  String get semesterDeleteTitle => 'Hapus Semester?';
+
+  @override
+  String get semesterDeleteBody =>
+      'Semua kategori di semester ini dihapus beserta jadwal, catatan, nilai dan absensinya. Tugasnya pindah ke Kotak Masuk. Tindakan ini tidak bisa dibatalkan.';
+
+  @override
+  String get editSemesterLabel => 'Ubah nama semester';
+
+  @override
+  String get clearDeadline => 'Hapus';
+
+  @override
+  String get resetLabel => 'Atur Ulang';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get pendingLabel => 'Belum Selesai';
+
+  @override
+  String get doneLabel => 'Selesai';
+
+  @override
+  String get sortLabel => 'Urutkan';
+
+  @override
+  String get sortDeadlineAsc => 'Deadline terdekat dulu';
+
+  @override
+  String get sortDeadlineDesc => 'Deadline terjauh dulu';
+
+  @override
+  String get sortCreatedDesc => 'Terbaru dibuat dulu';
+
+  @override
+  String get sortPriorityHighFirst => 'Prioritas tertinggi dulu';
+
+  @override
+  String get groupByCategory => 'Kelompokkan per kategori';
+
+  @override
+  String get listViewLabel => 'Daftar';
+
+  @override
+  String get noFilterMatch => 'Tidak ada tugas yang cocok dengan filter ini.';
+
+  @override
+  String get noCategoryFallback => 'Tanpa kategori';
 }

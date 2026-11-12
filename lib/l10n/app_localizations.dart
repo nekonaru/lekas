@@ -1661,14 +1661,8 @@ abstract class AppLocalizations {
   /// No description provided for @filterSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Kategori, jenis, status'**
+  /// **'Kategori, status, urutan'**
   String get filterSubtitle;
-
-  /// No description provided for @changeSemesterTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Ganti Semester'**
-  String get changeSemesterTitle;
 
   /// No description provided for @newSemester.
   ///
@@ -1681,24 +1675,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Contoh: Ganjil 2026/2027'**
   String get semesterPeriodExample;
-
-  /// No description provided for @unfinishedTasksOptionsLabel.
-  ///
-  /// In id, this message translates to:
-  /// **'Pilih opsi untuk tugas belum selesai:'**
-  String get unfinishedTasksOptionsLabel;
-
-  /// No description provided for @keepInArchive.
-  ///
-  /// In id, this message translates to:
-  /// **'Biarkan di arsip'**
-  String get keepInArchive;
-
-  /// No description provided for @moveToNewSpace.
-  ///
-  /// In id, this message translates to:
-  /// **'Pindahkan ke kategori baru'**
-  String get moveToNewSpace;
 
   /// No description provided for @deleteLabel.
   ///
@@ -2377,12 +2353,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kategori dibuat: {name}'**
   String spaceCreated(String name);
-
-  /// No description provided for @tasksProcessed.
-  ///
-  /// In id, this message translates to:
-  /// **'{count} tugas diproses'**
-  String tasksProcessed(int count);
 
   /// No description provided for @deleted.
   ///
@@ -3175,6 +3145,192 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Hutan'**
   String get presetForest;
+
+  /// No description provided for @semesterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Semester'**
+  String get semesterTitle;
+
+  /// No description provided for @semesterActiveLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Semester Aktif'**
+  String get semesterActiveLabel;
+
+  /// No description provided for @semesterOtherLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Semester Lain'**
+  String get semesterOtherLabel;
+
+  /// No description provided for @courseCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} mata kuliah'**
+  String courseCount(int count);
+
+  /// No description provided for @openTasksCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas'**
+  String openTasksCount(int count);
+
+  /// No description provided for @tasksDoneOf.
+  ///
+  /// In id, this message translates to:
+  /// **'{done} dari {total} tugas selesai'**
+  String tasksDoneOf(int done, int total);
+
+  /// No description provided for @semesterOverdue.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} terlambat'**
+  String semesterOverdue(int count);
+
+  /// No description provided for @manageCoursesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola Kategori'**
+  String get manageCoursesLabel;
+
+  /// No description provided for @courseListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori Semester Ini'**
+  String get courseListTitle;
+
+  /// No description provided for @makeActiveLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan Aktif'**
+  String get makeActiveLabel;
+
+  /// No description provided for @noSemesterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada semester'**
+  String get noSemesterTitle;
+
+  /// No description provided for @noSemesterBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat semester pertamamu untuk mengelompokkan mata kuliah.'**
+  String get noSemesterBody;
+
+  /// No description provided for @semesterCreated.
+  ///
+  /// In id, this message translates to:
+  /// **'Semester dibuat'**
+  String get semesterCreated;
+
+  /// No description provided for @semesterDeleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Semester dihapus'**
+  String get semesterDeleted;
+
+  /// No description provided for @semesterDeleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus Semester?'**
+  String get semesterDeleteTitle;
+
+  /// No description provided for @semesterDeleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kategori di semester ini dihapus beserta jadwal, catatan, nilai dan absensinya. Tugasnya pindah ke Kotak Masuk. Tindakan ini tidak bisa dibatalkan.'**
+  String get semesterDeleteBody;
+
+  /// No description provided for @editSemesterLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah nama semester'**
+  String get editSemesterLabel;
+
+  /// No description provided for @clearDeadline.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get clearDeadline;
+
+  /// No description provided for @resetLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur Ulang'**
+  String get resetLabel;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get statusLabel;
+
+  /// No description provided for @pendingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum Selesai'**
+  String get pendingLabel;
+
+  /// No description provided for @doneLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get doneLabel;
+
+  /// No description provided for @sortLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Urutkan'**
+  String get sortLabel;
+
+  /// No description provided for @sortDeadlineAsc.
+  ///
+  /// In id, this message translates to:
+  /// **'Deadline terdekat dulu'**
+  String get sortDeadlineAsc;
+
+  /// No description provided for @sortDeadlineDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Deadline terjauh dulu'**
+  String get sortDeadlineDesc;
+
+  /// No description provided for @sortCreatedDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Terbaru dibuat dulu'**
+  String get sortCreatedDesc;
+
+  /// No description provided for @sortPriorityHighFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Prioritas tertinggi dulu'**
+  String get sortPriorityHighFirst;
+
+  /// No description provided for @groupByCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelompokkan per kategori'**
+  String get groupByCategory;
+
+  /// No description provided for @listViewLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar'**
+  String get listViewLabel;
+
+  /// No description provided for @noFilterMatch.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada tugas yang cocok dengan filter ini.'**
+  String get noFilterMatch;
+
+  /// No description provided for @noCategoryFallback.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa kategori'**
+  String get noCategoryFallback;
 }
 
 class _AppLocalizationsDelegate

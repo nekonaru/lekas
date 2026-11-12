@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'database.dart';
 import 'space_repository.dart';
+import 'semester_repository.dart';
 import 'task_repository.dart';
 import 'subtask_repository.dart';
 import 'tag_repository.dart';
@@ -61,6 +62,10 @@ Future<QueryExecutor> _openNativeDatabase() async {
 
 final spaceRepositoryProvider = Provider<SpaceRepository>((ref) {
   return SpaceRepository(ref.read(appDatabaseProvider));
+});
+
+final semesterRepositoryProvider = Provider<SemesterRepository>((ref) {
+  return SemesterRepository(ref.read(appDatabaseProvider));
 });
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {

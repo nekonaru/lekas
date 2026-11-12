@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
 import '../data/database.dart';
 import '../data/models.dart';
 import 'package:drift/drift.dart';
@@ -67,6 +68,7 @@ class BackupService {
     data['exportedAt'] = DateTime.now().millisecondsSinceEpoch;
 
     // Export all tables
+    data['semesters'] = (await db.select(db.semesters).get()).map((e) => e.toJson()).toList();
     data['spaces'] = (await db.select(db.spaces).get()).map((e) => e.toJson()).toList();
     data['space_aliases'] = (await db.select(db.spaceAliases).get()).map((e) => e.toJson()).toList();
     data['space_meta'] = (await db.select(db.spaceMeta).get()).map((e) => e.toJson()).toList();
@@ -137,6 +139,7 @@ class BackupService {
     }
 
     // Decode every row before anything is deleted.
+    final semesters = _decode<Semester>(data, 'semesters', Semester.fromJson);
     final spaces = _decode<Space>(data, 'spaces', Space.fromJson);
     final aliases = _decode<SpaceAliase>(data, 'space_aliases', SpaceAliase.fromJson);
     final spaceMeta = _decode<SpaceMetaData>(data, 'space_meta', SpaceMetaData.fromJson);
@@ -180,6 +183,7 @@ class BackupService {
       if (data.containsKey(key)) stats[key] = rows.length;
     }
 
+    count('semesters', semesters);
     count('spaces', spaces);
     count('space_aliases', aliases);
     count('space_meta', spaceMeta);
@@ -237,9 +241,12 @@ class BackupService {
         await db.delete(db.tasks).go();
         await db.delete(db.spaceMeta).go();
         await db.delete(db.spaceAliases).go();
+        // Spaces reference the semesters, so spaces go first.
         await db.delete(db.spaces).go();
+        await db.delete(db.semesters).go();
       }
 
+      await putAll(semesters, (row) => db.into(db.semesters).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaces, (row) => db.into(db.spaces).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(aliases, (row) => db.into(db.spaceAliases).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaceMeta, (row) => db.into(db.spaceMeta).insert(row, mode: InsertMode.insertOrReplace));
@@ -264,9 +271,58 @@ class BackupService {
       await putAll(grades, (row) => db.into(db.gradeComponents).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(filters, (row) => db.into(db.savedFilters).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(attendance, (row) => db.into(db.attendance).insert(row, mode: InsertMode.insertOrReplace));
+
+      // A backup written before schema 5 carries no semesters, and a replace
+      // import wipes them: give the imported rows a home anyway, so no
+      // space is left pointing at nothing.
+      await _ensureSemesterConsistency();
     });
 
     return stats;
+  }
+
+  /// Repairs the semester structure after an import: an empty table gets a
+  /// default active semester, one without an active flag gets its newest
+  /// semester promoted, and spaces that point at nothing land in the
+  /// fallback. Idempotent; a consistent backup is left untouched.
+  Future<void> _ensureSemesterConsistency() async {
+    final semesters = await db.select(db.semesters).get();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    String? fallbackId;
+    if (semesters.isEmpty) {
+      fallbackId = const Uuid().v4();
+      await db.into(db.semesters).insert(
+            SemestersCompanion.insert(
+              id: fallbackId,
+              name: 'Semester 1',
+              isActive: const Value(true),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+    } else {
+      final actives = semesters.where((s) => s.isActive).toList();
+      final fallback = actives.isNotEmpty
+          ? actives.first
+          : ([...semesters]..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+              .first;
+      if (!fallback.isActive) {
+        await (db.update(db.semesters)..where((t) => t.id.equals(fallback.id)))
+            .write(const SemestersCompanion(isActive: Value(true)));
+      }
+      fallbackId = fallback.id;
+    }
+    final semesterIds =
+        (await db.select(db.semesters).get()).map((s) => s.id).toList();
+    await (db.update(db.spaces)
+          ..where((t) =>
+              t.semesterId.isNull() | t.semesterId.isNotIn(semesterIds)))
+        .write(
+      SpacesCompanion(
+        semesterId: Value(fallbackId),
+        updatedAt: Value(now),
+      ),
+    );
   }
 
   /// Reads one table out of a backup and checks every row, or throws

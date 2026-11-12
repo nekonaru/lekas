@@ -846,26 +846,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterLabel => 'Filter';
 
   @override
-  String get filterSubtitle => 'Category, type, status';
-
-  @override
-  String get changeSemesterTitle => 'Change Semester';
+  String get filterSubtitle => 'Category, status, sort';
 
   @override
   String get newSemester => 'New Semester';
 
   @override
   String get semesterPeriodExample => 'Example: Even 2026/2027';
-
-  @override
-  String get unfinishedTasksOptionsLabel =>
-      'Choose an option for unfinished tasks:';
-
-  @override
-  String get keepInArchive => 'Leave in archive';
-
-  @override
-  String get moveToNewSpace => 'Move to a new category';
 
   @override
   String get deleteLabel => 'Delete';
@@ -1237,11 +1224,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String spaceCreated(String name) {
     return 'Category created: $name';
-  }
-
-  @override
-  String tasksProcessed(int count) {
-    return '$count tasks processed';
   }
 
   @override
@@ -1719,4 +1701,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get presetForest => 'Forest';
+
+  @override
+  String get semesterTitle => 'Semester';
+
+  @override
+  String get semesterActiveLabel => 'Active Semester';
+
+  @override
+  String get semesterOtherLabel => 'Other Semesters';
+
+  @override
+  String courseCount(int count) {
+    return '$count courses';
+  }
+
+  @override
+  String openTasksCount(int count) {
+    return '$count open';
+  }
+
+  @override
+  String tasksDoneOf(int done, int total) {
+    return '$done of $total tasks done';
+  }
+
+  @override
+  String semesterOverdue(int count) {
+    return '$count overdue';
+  }
+
+  @override
+  String get manageCoursesLabel => 'Manage Categories';
+
+  @override
+  String get courseListTitle => 'Courses This Semester';
+
+  @override
+  String get makeActiveLabel => 'Activate';
+
+  @override
+  String get noSemesterTitle => 'No semester yet';
+
+  @override
+  String get noSemesterBody =>
+      'Create your first semester to group your courses.';
+
+  @override
+  String get semesterCreated => 'Semester created';
+
+  @override
+  String get semesterDeleted => 'Semester deleted';
+
+  @override
+  String get semesterDeleteTitle => 'Delete Semester?';
+
+  @override
+  String get semesterDeleteBody =>
+      'Every category in this semester is deleted with its schedule, notes, grades and attendance. Its tasks move to the Inbox. This cannot be undone.';
+
+  @override
+  String get editSemesterLabel => 'Rename semester';
+
+  @override
+  String get clearDeadline => 'Clear';
+
+  @override
+  String get resetLabel => 'Reset';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get pendingLabel => 'Not done';
+
+  @override
+  String get doneLabel => 'Done';
+
+  @override
+  String get sortLabel => 'Sort by';
+
+  @override
+  String get sortDeadlineAsc => 'Nearest deadline first';
+
+  @override
+  String get sortDeadlineDesc => 'Farthest deadline first';
+
+  @override
+  String get sortCreatedDesc => 'Recently created first';
+
+  @override
+  String get sortPriorityHighFirst => 'Highest priority first';
+
+  @override
+  String get groupByCategory => 'Group by category';
+
+  @override
+  String get listViewLabel => 'List';
+
+  @override
+  String get noFilterMatch => 'No tasks match this filter.';
+
+  @override
+  String get noCategoryFallback => 'Uncategorized';
 }

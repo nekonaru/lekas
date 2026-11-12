@@ -19,7 +19,7 @@ import 'package:lekas/features/tasks/backup_auto_screen.dart';
 import 'package:lekas/features/tasks/duplicate_detection_screen.dart';
 import 'package:lekas/features/tasks/dependensi_tugas_screen.dart';
 import 'package:lekas/features/tasks/export_gambar_pdf_screen.dart';
-import 'package:lekas/features/tasks/ganti_semester_screen.dart';
+import 'package:lekas/features/semester/semester_screen.dart';
 import 'package:lekas/features/tasks/import_merge_screen.dart';
 import 'package:lekas/features/tasks/mode_demo_screen.dart';
 import 'package:lekas/features/tasks/pintasan_ikon_screen.dart';
@@ -205,7 +205,7 @@ void main() {
       'Automatic Backup': BackupAutoScreen,
       'Import and Merge': ImportMergeScreen,
       'Export Image and PDF': ExportGambarPDFScreen,
-      'Change Semester': GantiSemesterScreen,
+      'Semester': SemesterScreen,
       'Advanced Widgets': WidgetLanjutanScreen,
       'Icon Shortcuts and Quick Settings': PintasanIkonScreen,
       'Demo Mode': ModeDemoScreen,
@@ -217,9 +217,14 @@ void main() {
         )
         .first;
     for (final entry in settingsTools.entries) {
+      // The bottom bar carries a "Semester" label too, so scope every tile
+      // lookup to the settings list itself.
       await tapTile(
         tester,
-        find.text(entry.key),
+        find.descendant(
+          of: find.byType(SettingsScreen),
+          matching: find.text(entry.key),
+        ),
         scrollable: settingsScrollable,
       );
       expect(
@@ -254,8 +259,14 @@ void main() {
 
     await tester.pumpWidget(host(db, const HomeShell()));
     await settle(tester);
-    await openTab(tester, 'Categories');
+    await openTab(tester, 'Semester');
     await settle(tester);
+
+    // The manage button opens the course list, which carries the category
+    // creator for non-course spaces.
+    await tester.tap(find.text('Manage Categories'));
+    await settle(tester);
+    expect(find.byType(SpacesScreen), findsOneWidget);
 
     // The category action creates an org, project, personal or other space.
     await tester.tap(find.byIcon(Icons.category_outlined));

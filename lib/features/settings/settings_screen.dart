@@ -11,7 +11,7 @@ import '../tasks/app_lock_screen.dart';
 import '../tasks/backup_auto_screen.dart';
 import '../tasks/duplicate_detection_screen.dart';
 import '../tasks/export_gambar_pdf_screen.dart';
-import '../tasks/ganti_semester_screen.dart';
+import '../semester/semester_screen.dart';
 import '../tasks/import_merge_screen.dart';
 import '../tasks/mode_demo_screen.dart';
 import '../tasks/pintasan_ikon_screen.dart';
@@ -290,8 +290,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final language = _language ?? 'id';
     final themeMode = _themeMode ?? ThemeMode.system;
 
+    // No app bar here: the shell owns the tab title and the drawer, so the
+    // settings list starts at the top of the body like every other tab.
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.settingsTitle)),
       body: ListView(
         children: [
           ListTile(
@@ -439,9 +440,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onTap: () => _push(const ExportGambarPDFScreen()),
           ),
           ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: Text(l10n.changeSemesterTitle),
-            onTap: () => _push(const GantiSemesterScreen()),
+            leading: const Icon(Icons.school_outlined),
+            title: Text(l10n.semesterTitle),
+            onTap: () => _push(const SemesterScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.widgets_outlined),

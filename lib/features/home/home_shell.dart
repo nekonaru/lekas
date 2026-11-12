@@ -18,8 +18,8 @@ import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../inbox/inbox_screen.dart';
+import '../semester/semester_screen.dart';
 import '../settings/settings_screen.dart';
-import '../spaces/spaces_screen.dart';
 import '../today/today_screen.dart';
 import '../../core/theme.dart';
 import '../../core/components/lekas_logo.dart';
@@ -48,8 +48,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     super.initState();
     _pages = const [
       TodayScreen(),
-      InboxScreen(),
-      SpacesScreen(),
+      InboxScreen(embedded: true),
+      SemesterScreen(embedded: true),
       CalendarScreen(),
       SettingsScreen(),
     ];
@@ -135,7 +135,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final labels = [
       l10n.todayTitle,
       l10n.inboxTitle,
-      l10n.spacesTitle,
+      l10n.semesterTitle,
       l10n.calendarTitle,
       l10n.settingsTitle,
     ];
@@ -151,14 +151,6 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               FadeTransition(opacity: animation, child: child),
           child: Text(labels[_i], key: ValueKey(labels[_i])),
         ),
-        actions: [
-          if (_i == 0)
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: _openQuickAdd,
-              tooltip: l10n.quickAddHint,
-            ),
-        ],
       ),
       drawer: NavigationDrawer(
         children: [
@@ -312,7 +304,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       case 1:
         return Icons.inbox_outlined;
       case 2:
-        return Icons.folder_outlined;
+        return Icons.school_outlined;
       case 3:
         return Icons.calendar_month_outlined;
       case 4:
@@ -331,7 +323,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       case 1:
         return Icons.inbox;
       case 2:
-        return Icons.folder;
+        return Icons.school;
       case 3:
         return Icons.calendar_month;
       case 4:

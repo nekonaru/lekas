@@ -24,21 +24,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(DateFormat('MMMM yyyy', locale).format(_focusedMonth)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            tooltip: l10n.previousMonth,
-            onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1)),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            tooltip: l10n.nextMonth,
-            onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1)),
-          ),
-        ],
-      ),
+      // The month navigation and the weekday header live in the body: the
+      // shell owns the only app bar, so the calendar reads flat instead of
+      // a bar stacked on another bar.
       body: FutureBuilder<List<Task>>(
         future: repo.getTasks(includeInbox: false),
         builder: (context, snapshot) {
@@ -51,6 +39,50 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
           return Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        DateFormat('MMMM yyyy', locale).format(_focusedMonth),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left),
+                      tooltip: l10n.previousMonth,
+                      onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1)),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      tooltip: l10n.nextMonth,
+                      onPressed: () => setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1)),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                child: Row(
+                  children: [
+                    for (var weekday = 1; weekday <= 7; weekday++)
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            DateFormat.E(locale).format(DateTime(2024, 1, weekday)),
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

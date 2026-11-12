@@ -50,7 +50,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).first, 'New title');
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Save'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await tester.pumpAndSettle();
 
     final saved = await TaskRepository(db).getTask('t1');
