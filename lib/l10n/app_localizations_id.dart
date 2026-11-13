@@ -286,10 +286,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get shareAsTextTitle => 'Bagikan sebagai Teks';
 
   @override
-  String get shareAsTextBody =>
-      'Bagikan tugas atau daftar mingguan ke WhatsApp.';
-
-  @override
   String get taskDependenciesTitle => 'Dependensi Tugas';
 
   @override
@@ -318,52 +314,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get importScheduleOcrTitle => 'Impor Jadwal dari Tangkapan Layar';
 
   @override
-  String get importScheduleOcrBody =>
-      'Impor jadwal KRS dari tangkapan layar atau teks portal.';
-
-  @override
   String get weeklyLoadMapTitle => 'Peta Beban Mingguan';
-
-  @override
-  String get weeklyLoadMapBody =>
-      'Peta beban mingguan dan jam efektif tersedia.';
 
   @override
   String get projectMilestoneTitle => 'Proyek dan Milestone';
 
   @override
-  String get projectMilestoneBody =>
-      'Manajemen proyek dengan milestone dan rencana mundur.';
-
-  @override
   String get freeTimeSuggestionTitle => 'Saran Waktu Kosong';
-
-  @override
-  String get freeTimeSuggestionBody => 'Saran celah waktu untuk fokus belajar.';
 
   @override
   String get gradeSimulatorTitle => 'Simulator Nilai';
 
   @override
-  String get gradeSimulatorBody => 'Simulator nilai \"bagaimana jika\".';
-
-  @override
   String get examStudyPlanTitle => 'Rencana Belajar Ujian';
-
-  @override
-  String get examStudyPlanBody => 'Rencana belajar otomatis untuk ujian.';
 
   @override
   String get taskListTitle => 'Daftar Tugas';
 
   @override
   String get taskListBody => 'Daftar tugas.';
-
-  @override
-  String get timerFocusTitle => 'Timer Fokus';
-
-  @override
-  String get timerFocusBody => 'Timer fokus 25/5 menit (Pomodoro).';
 
   @override
   String get encryptedBackupTitle => 'Cadangan Terenkripsi';
@@ -416,27 +385,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get deleteSampleDataSubtitle => 'Hapus semua data contoh';
-
-  @override
-  String get fullCalendarTitle => 'Kalender Lengkap';
-
-  @override
-  String get tabMonth => 'Bulan';
-
-  @override
-  String get tabWeek => 'Minggu';
-
-  @override
-  String get tabAgenda => 'Agenda';
-
-  @override
-  String get monthView => 'Tampilan bulan';
-
-  @override
-  String get weekView => 'Tampilan minggu';
-
-  @override
-  String get agendaView => 'Agenda kronologis';
 
   @override
   String get appLockTitle => 'Kunci Aplikasi';
@@ -591,33 +539,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportDeadlineHistorySubtitle => 'PDF bukti perubahan deadline';
-
-  @override
-  String get nonCourseSpaceTitle => 'Kategori Non-Matkul';
-
-  @override
-  String get orgSpace => 'Organisasi';
-
-  @override
-  String get orgSpaceSubtitle => 'Organisasi kampus';
-
-  @override
-  String get projectSpace => 'Proyek';
-
-  @override
-  String get projectSpaceSubtitle => 'Proyek kampus';
-
-  @override
-  String get personalSpace => 'Pribadi';
-
-  @override
-  String get personalSpaceSubtitle => 'Kegiatan pribadi';
-
-  @override
-  String get otherSpace => 'Lainnya';
-
-  @override
-  String get otherSpaceSubtitle => 'Kategori lainnya';
 
   @override
   String get advancedWidgetsTitle => 'Widget Lanjutan';
@@ -1732,10 +1653,10 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get manageCoursesLabel => 'Kelola Kategori';
+  String get manageCoursesLabel => 'Kelola Mata Kuliah';
 
   @override
-  String get courseListTitle => 'Kategori Semester Ini';
+  String get courseListTitle => 'Mata Kuliah Semester Ini';
 
   @override
   String get makeActiveLabel => 'Jadikan Aktif';
@@ -1842,4 +1763,210 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updateCheckFailed =>
       'Tidak bisa memeriksa pembaruan. Periksa koneksi internet.';
+
+  @override
+  String get kategoriTitle => 'Kategori';
+
+  @override
+  String get addCategory => 'Kategori Baru';
+
+  @override
+  String get categoryNameLabel => 'Nama kategori';
+
+  @override
+  String get kategoriEmpty =>
+      'Belum ada kategori. Buat untuk organisasi, kepanitiaan, komunitas, atau apa pun.';
+
+  @override
+  String get uncategorizedInfo => 'Tugas tanpa kategori tersimpan di sini';
+
+  @override
+  String get mataKuliahTitle => 'Mata Kuliah';
+
+  @override
+  String get addCourse => 'Mata Kuliah Baru';
+
+  @override
+  String get bringItemLabel => 'Bawaan';
+
+  @override
+  String get addBringItem => 'Tambah bawaan';
+
+  @override
+  String get editBringItem => 'Ubah bawaan';
+
+  @override
+  String get bringItemDeleted => 'Bawaan dihapus';
+
+  @override
+  String emptyBringList(String name) {
+    return 'Belum ada bawaan untuk $name.';
+  }
+
+  @override
+  String get broughtLabel => 'Sudah dibawa';
+
+  @override
+  String get attendanceHistory => 'Riwayat';
+
+  @override
+  String get attendanceHistoryEmpty => 'Belum ada catatan kehadiran.';
+
+  @override
+  String get editAttendanceRecord => 'Ubah catatan';
+
+  @override
+  String get deleteAttendanceRecord => 'Hapus catatan?';
+
+  @override
+  String get deleteAttendanceRecordBody =>
+      'Catatan kehadiran ini akan dihapus.';
+
+  @override
+  String get attendanceRecordDeleted => 'Catatan dihapus';
+
+  @override
+  String get attendanceNoteLabel => 'Catatan (opsional)';
+
+  @override
+  String get dateLabel => 'Tanggal';
+
+  @override
+  String get editLabel => 'Ubah';
+
+  @override
+  String get weekdayLabel => 'Hari';
+
+  @override
+  String get classKindLabel => 'Jenis';
+
+  @override
+  String get kindLecture => 'Kuliah';
+
+  @override
+  String get kindLab => 'Praktikum';
+
+  @override
+  String get classScheduleHint =>
+      'Kuliah dan praktikum beserta jam dan ruangnya';
+
+  @override
+  String get addClassSlot => 'Tambah Jadwal';
+
+  @override
+  String get editClassSlot => 'Ubah Jadwal';
+
+  @override
+  String get deleteClassSlot => 'Hapus Jadwal?';
+
+  @override
+  String get deleteClassSlotBody => 'Jadwal ini akan dihapus.';
+
+  @override
+  String get classTimeOrderError => 'Jam selesai harus setelah jam mulai.';
+
+  @override
+  String get monShort => 'Sen';
+
+  @override
+  String get tueShort => 'Sel';
+
+  @override
+  String get wedShort => 'Rab';
+
+  @override
+  String get thuShort => 'Kam';
+
+  @override
+  String get friShort => 'Jum';
+
+  @override
+  String get satShort => 'Sab';
+
+  @override
+  String get sunShort => 'Min';
+
+  @override
+  String get agendaTitle => 'Agenda';
+
+  @override
+  String get agendaEmpty => 'Tidak ada kelas atau tugas pada hari ini.';
+
+  @override
+  String get seeAllTasks => 'Lihat semua';
+
+  @override
+  String get filesLabel => 'Berkas';
+
+  @override
+  String get filesSetupTitle => 'Simpan berkas di penyimpanan HP';
+
+  @override
+  String get filesSetupBody =>
+      'Lekas menyimpan modul, catatan, soal, dan arsip di folder pada penyimpanan HP kamu, bukan di dalam aplikasi. Pilih folder untuk menyimpannya.';
+
+  @override
+  String get pickFilesFolder => 'Pilih folder';
+
+  @override
+  String get filesImportFailed =>
+      'Berkas tidak bisa diimpor. Pilih folder lagi atau coba berkas lain.';
+
+  @override
+  String get newFolderLabel => 'Folder baru';
+
+  @override
+  String get folderNameLabel => 'Nama folder';
+
+  @override
+  String get folderAlreadyExists => 'Folder dengan nama itu sudah ada.';
+
+  @override
+  String get deleteFolder => 'Hapus folder?';
+
+  @override
+  String get deleteFile => 'Hapus berkas?';
+
+  @override
+  String get deleteFolderBody => 'Semua isi folder akan dihapus.';
+
+  @override
+  String get filesOpenFailed =>
+      'Tidak ada aplikasi di HP ini yang bisa membuka berkas ini.';
+
+  @override
+  String get renameFolder => 'Ubah nama folder';
+
+  @override
+  String get renameFile => 'Ubah nama berkas';
+
+  @override
+  String get importFileLabel => 'Impor berkas';
+
+  @override
+  String get filesOpenInFileManager =>
+      'Berkas tersimpan di penyimpanan HP; kelola bebas dengan file manager apa pun.';
+
+  @override
+  String get folderEmpty => 'Folder ini kosong.';
+
+  @override
+  String get folderLabel => 'Folder';
+
+  @override
+  String get fileImported => 'Berkas diimpor';
+
+  @override
+  String get filesSurviveDeletion =>
+      'Berkas tertinggal di penyimpanan HP dan tidak terhapus saat mata kuliah dihapus.';
+
+  @override
+  String get unableToCreateFolder => 'Folder tidak bisa dibuat';
+
+  @override
+  String get permissionLostFolder =>
+      'Akses ke folder yang dipilih hilang; pilih ulang';
+
+  @override
+  String get filesOpFailed => 'Itu tidak berhasil';
 }

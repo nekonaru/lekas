@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../tasks/attendance_screen.dart';
 import '../tasks/catatan_pertemuan_screen.dart';
 import '../tasks/daftar_bawaan_screen.dart';
+import '../files/files_screen.dart';
 import '../tasks/kontak_kelas_screen.dart';
 import '../tasks/prediksi_nilai_screen.dart';
 import '../tasks/tasks_screen.dart';
@@ -45,6 +46,8 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
             body: Center(child: Text(l10n.recordNotFound)),
           );
         }
+        // Courses keep the grade tooling; free categories do not.
+        final isCourse = space.semesterId != null || space.kind == 'course';
         return Scaffold(
           appBar: AppBar(title: Text(space.name)),
           body: ListView(
@@ -103,19 +106,21 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _push(AttendanceScreen(spaceId: space.id)),
               ),
-              ListTile(
-                title: Text(l10n.componentWeightLabel),
-                leading: const Icon(Icons.percent),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _push(WeightComponentScreen(
-                    spaceId: space.id, spaceName: space.name)),
-              ),
-              ListTile(
-                title: Text(l10n.gradePredictionTitle),
-                leading: const Icon(Icons.grade_outlined),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _push(PrediksiNilaiScreen(spaceId: space.id)),
-              ),
+              if (isCourse) ...[
+                ListTile(
+                  title: Text(l10n.componentWeightLabel),
+                  leading: const Icon(Icons.percent),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _push(WeightComponentScreen(
+                      spaceId: space.id, spaceName: space.name)),
+                ),
+                ListTile(
+                  title: Text(l10n.gradePredictionTitle),
+                  leading: const Icon(Icons.grade_outlined),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _push(PrediksiNilaiScreen(spaceId: space.id)),
+                ),
+              ],
               ListTile(
                 title: Text(l10n.meetingNotesTitle),
                 leading: const Icon(Icons.note),
@@ -132,7 +137,20 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                 title: Text(l10n.defaultChecklistShort),
                 leading: const Icon(Icons.inventory),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => _push(const DaftarBawaanScreen()),
+                onTap: () => _push(DaftarBawaanScreen(
+                  spaceId: space.id,
+                  spaceName: space.name,
+                )),
+              ),
+              ListTile(
+                title: Text(l10n.filesLabel),
+                subtitle: Text(l10n.filesOpenInFileManager),
+                leading: const Icon(Icons.folder_open),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _push(FilesScreen(
+                  spaceId: space.id,
+                  spaceName: space.name,
+                )),
               ),
               const Divider(),
               ListTile(

@@ -27,10 +27,12 @@ class SpaceRepository {
 
   Future<void> insertSpace(Space space) async {
     var toInsert = space;
-    if (space.semesterId == null) {
-      // The active semester is the natural home of a new course; an empty
-      // result here means the user deleted every semester, so the space
-      // stays unassigned instead of being dropped.
+    // Kind 'category' is a free container by design: it belongs to no
+    // semester. Everything else (courses and legacy kinds) lands in the
+    // active semester while one exists. An empty result here means the
+    // user deleted every semester, so the space stays unassigned instead of
+    // being dropped.
+    if (space.semesterId == null && space.kind != 'category') {
       final active = await (db.select(db.semesters)
             ..where((t) => t.isActive.equals(true)))
           .getSingleOrNull();

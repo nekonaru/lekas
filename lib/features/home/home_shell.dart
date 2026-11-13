@@ -17,9 +17,9 @@ import '../tasks/task_template_screen.dart';
 import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
-import '../inbox/inbox_screen.dart';
 import '../semester/semester_screen.dart';
 import '../settings/settings_screen.dart';
+import '../spaces/spaces_screen.dart';
 import '../today/today_screen.dart';
 import '../../core/theme.dart';
 import '../../core/components/lekas_logo.dart';
@@ -50,7 +50,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     super.initState();
     _pages = const [
       TodayScreen(),
-      InboxScreen(embedded: true),
+      SpacesScreen(view: SpaceView.free, embedded: true),
       SemesterScreen(embedded: true),
       CalendarScreen(),
       SettingsScreen(),
@@ -170,7 +170,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final l10n = AppLocalizations.of(context)!;
     final labels = [
       l10n.todayTitle,
-      l10n.inboxTitle,
+      l10n.kategoriTitle,
       l10n.semesterTitle,
       l10n.calendarTitle,
       l10n.settingsTitle,
@@ -338,7 +338,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       case 0:
         return Icons.today_outlined;
       case 1:
-        return Icons.inbox_outlined;
+        return Icons.category_outlined;
       case 2:
         return Icons.school_outlined;
       case 3:
@@ -357,7 +357,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       case 0:
         return Icons.today;
       case 1:
-        return Icons.inbox;
+        return Icons.category;
       case 2:
         return Icons.school;
       case 3:

@@ -71,19 +71,41 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.byType(DayTasksScreen), findsOneWidget);
+    // Tapping a day only selects it: the agenda preview shows the day's
+    // tasks without leaving the calendar.
+    expect(find.byType(DayTasksScreen), findsNothing);
     expect(find.text('Due today'), findsOneWidget);
     expect(find.text('Due tomorrow'), findsNothing);
 
+    // The see-all action opens the full list for that day.
+    await tester.tap(find.textContaining('See all'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.byType(DayTasksScreen), findsOneWidget);
+    expect(find.text('Due tomorrow'), findsNothing);
+
+    final rows = find.descendant(
+      of: find.byType(DayTasksScreen),
+      matching: find.text('Due today'),
+    );
+    expect(rows, findsOneWidget);
+
     // Select and bulk delete the row entirely from the list.
-    await tester.longPress(find.text('Due today'));
+    await tester.longPress(rows);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
     expect(find.text('1 selected'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.delete_outline).first);
+    await tester.tap(
+      find
+          .descendant(
+            of: find.byType(DayTasksScreen),
+            matching: find.byIcon(Icons.delete_outline),
+          )
+          .first,
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
-    expect(find.text('Due today'), findsNothing);
+    expect(rows, findsNothing);
 
     // Drive the banner and stream timers out before unmounting.
     for (var i = 0; i < 12; i++) {

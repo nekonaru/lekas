@@ -145,6 +145,7 @@ class TaskCard extends StatelessWidget {
     this.score,
     this.selected = false,
     this.enableHero = false,
+    this.spaceLabel,
     this.onTaskTap,
     this.onTaskDone,
     this.onTaskSnooze,
@@ -165,6 +166,10 @@ class TaskCard extends StatelessWidget {
   /// of the screen the task list lives on may turn it on: two visible cards
   /// with the same tag would collide during a shared transition.
   final bool enableHero;
+
+  /// The category or course the task belongs to, when the caller knows it,
+  /// shown as the first part of the subtitle (design section 4.4).
+  final String? spaceLabel;
 
   /// Tap: open the task, or toggle it while multi select is on.
   final void Function(Task)? onTaskTap;
@@ -325,6 +330,10 @@ class TaskCard extends StatelessWidget {
     }
 
     final parts = <String>[text];
+    if (spaceLabel != null && spaceLabel!.isNotEmpty) {
+      // The owning category or course, so a mixed list reads apart.
+      parts.insert(0, spaceLabel!);
+    }
     if (task.weightPercent != null &&
         task.weightPercent! > 0 &&
         reason != UrgencyReason.heavyWeight) {

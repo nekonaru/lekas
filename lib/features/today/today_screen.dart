@@ -393,7 +393,16 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     // only provides its body, its FAB and, while rows are picked, the
     // selection bar along the bottom.
     return Scaffold(
-      body: StreamBuilder<List<Task>>(
+      body: StreamBuilder<List<Space>>(
+        stream: ref.watch(spaceRepositoryProvider).watchSpaces(
+              includeArchived: true,
+            ),
+        builder: (context, spaceSnapshot) {
+          final spaceNames = <String, String>{
+            for (final space in spaceSnapshot.data ?? const <Space>[])
+              space.id: space.name,
+          };
+          return StreamBuilder<List<Task>>(
         stream: repo.watchTasks(includeInbox: false),
         builder: (context, snapshot) {
           // The waiting set arrives on its own stream: without it the
@@ -521,6 +530,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                       score: score,
                       selected: _isSelected(task),
                       enableHero: true,
+                      spaceLabel:
+                          task.spaceId == null ? null : spaceNames[task.spaceId],
                       onTaskTap: _onTaskTap,
                       onTaskDone: _completeOne,
                       onTaskSnooze: _openSnooze,
@@ -531,6 +542,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
               },
             ),
           );
+        },
+      );
         },
       ),
       bottomNavigationBar:

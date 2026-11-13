@@ -5,6 +5,8 @@ import 'package:drift/native.dart';
 import 'database.dart';
 import 'space_repository.dart';
 import 'semester_repository.dart';
+import 'files_repository.dart';
+import '../core/files_channel.dart';
 import 'task_repository.dart';
 import '../core/version_checker.dart';
 import 'subtask_repository.dart';
@@ -73,6 +75,14 @@ final semesterRepositoryProvider = Provider<SemesterRepository>((ref) {
 /// screen and the once a day background check share it.
 final versionCheckerProvider = Provider<VersionChecker>((ref) {
   return VersionChecker();
+});
+
+/// The course file store; the files screen manages the picked folder.
+final filesRepositoryProvider = Provider<FilesRepository>((ref) {
+  return FilesRepository(
+    ref.read(settingsRepositoryProvider),
+    FilesChannel(),
+  );
 });
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {

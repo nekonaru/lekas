@@ -608,12 +608,6 @@ abstract class AppLocalizations {
   /// **'Bagikan sebagai Teks'**
   String get shareAsTextTitle;
 
-  /// No description provided for @shareAsTextBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Bagikan tugas atau daftar mingguan ke WhatsApp.'**
-  String get shareAsTextBody;
-
   /// No description provided for @taskDependenciesTitle.
   ///
   /// In id, this message translates to:
@@ -668,23 +662,11 @@ abstract class AppLocalizations {
   /// **'Impor Jadwal dari Tangkapan Layar'**
   String get importScheduleOcrTitle;
 
-  /// No description provided for @importScheduleOcrBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Impor jadwal KRS dari tangkapan layar atau teks portal.'**
-  String get importScheduleOcrBody;
-
   /// No description provided for @weeklyLoadMapTitle.
   ///
   /// In id, this message translates to:
   /// **'Peta Beban Mingguan'**
   String get weeklyLoadMapTitle;
-
-  /// No description provided for @weeklyLoadMapBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Peta beban mingguan dan jam efektif tersedia.'**
-  String get weeklyLoadMapBody;
 
   /// No description provided for @projectMilestoneTitle.
   ///
@@ -692,23 +674,11 @@ abstract class AppLocalizations {
   /// **'Proyek dan Milestone'**
   String get projectMilestoneTitle;
 
-  /// No description provided for @projectMilestoneBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Manajemen proyek dengan milestone dan rencana mundur.'**
-  String get projectMilestoneBody;
-
   /// No description provided for @freeTimeSuggestionTitle.
   ///
   /// In id, this message translates to:
   /// **'Saran Waktu Kosong'**
   String get freeTimeSuggestionTitle;
-
-  /// No description provided for @freeTimeSuggestionBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Saran celah waktu untuk fokus belajar.'**
-  String get freeTimeSuggestionBody;
 
   /// No description provided for @gradeSimulatorTitle.
   ///
@@ -716,23 +686,11 @@ abstract class AppLocalizations {
   /// **'Simulator Nilai'**
   String get gradeSimulatorTitle;
 
-  /// No description provided for @gradeSimulatorBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Simulator nilai \"bagaimana jika\".'**
-  String get gradeSimulatorBody;
-
   /// No description provided for @examStudyPlanTitle.
   ///
   /// In id, this message translates to:
   /// **'Rencana Belajar Ujian'**
   String get examStudyPlanTitle;
-
-  /// No description provided for @examStudyPlanBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Rencana belajar otomatis untuk ujian.'**
-  String get examStudyPlanBody;
 
   /// No description provided for @taskListTitle.
   ///
@@ -745,18 +703,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Daftar tugas.'**
   String get taskListBody;
-
-  /// No description provided for @timerFocusTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Timer Fokus'**
-  String get timerFocusTitle;
-
-  /// No description provided for @timerFocusBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Timer fokus 25/5 menit (Pomodoro).'**
-  String get timerFocusBody;
 
   /// No description provided for @encryptedBackupTitle.
   ///
@@ -859,48 +805,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Hapus semua data contoh'**
   String get deleteSampleDataSubtitle;
-
-  /// No description provided for @fullCalendarTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kalender Lengkap'**
-  String get fullCalendarTitle;
-
-  /// No description provided for @tabMonth.
-  ///
-  /// In id, this message translates to:
-  /// **'Bulan'**
-  String get tabMonth;
-
-  /// No description provided for @tabWeek.
-  ///
-  /// In id, this message translates to:
-  /// **'Minggu'**
-  String get tabWeek;
-
-  /// No description provided for @tabAgenda.
-  ///
-  /// In id, this message translates to:
-  /// **'Agenda'**
-  String get tabAgenda;
-
-  /// No description provided for @monthView.
-  ///
-  /// In id, this message translates to:
-  /// **'Tampilan bulan'**
-  String get monthView;
-
-  /// No description provided for @weekView.
-  ///
-  /// In id, this message translates to:
-  /// **'Tampilan minggu'**
-  String get weekView;
-
-  /// No description provided for @agendaView.
-  ///
-  /// In id, this message translates to:
-  /// **'Agenda kronologis'**
-  String get agendaView;
 
   /// No description provided for @appLockTitle.
   ///
@@ -1201,60 +1105,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'PDF bukti perubahan deadline'**
   String get exportDeadlineHistorySubtitle;
-
-  /// No description provided for @nonCourseSpaceTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kategori Non-Matkul'**
-  String get nonCourseSpaceTitle;
-
-  /// No description provided for @orgSpace.
-  ///
-  /// In id, this message translates to:
-  /// **'Organisasi'**
-  String get orgSpace;
-
-  /// No description provided for @orgSpaceSubtitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Organisasi kampus'**
-  String get orgSpaceSubtitle;
-
-  /// No description provided for @projectSpace.
-  ///
-  /// In id, this message translates to:
-  /// **'Proyek'**
-  String get projectSpace;
-
-  /// No description provided for @projectSpaceSubtitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Proyek kampus'**
-  String get projectSpaceSubtitle;
-
-  /// No description provided for @personalSpace.
-  ///
-  /// In id, this message translates to:
-  /// **'Pribadi'**
-  String get personalSpace;
-
-  /// No description provided for @personalSpaceSubtitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kegiatan pribadi'**
-  String get personalSpaceSubtitle;
-
-  /// No description provided for @otherSpace.
-  ///
-  /// In id, this message translates to:
-  /// **'Lainnya'**
-  String get otherSpace;
-
-  /// No description provided for @otherSpaceSubtitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kategori lainnya'**
-  String get otherSpaceSubtitle;
 
   /// No description provided for @advancedWidgetsTitle.
   ///
@@ -3191,13 +3041,13 @@ abstract class AppLocalizations {
   /// No description provided for @manageCoursesLabel.
   ///
   /// In id, this message translates to:
-  /// **'Kelola Kategori'**
+  /// **'Kelola Mata Kuliah'**
   String get manageCoursesLabel;
 
   /// No description provided for @courseListTitle.
   ///
   /// In id, this message translates to:
-  /// **'Kategori Semester Ini'**
+  /// **'Mata Kuliah Semester Ini'**
   String get courseListTitle;
 
   /// No description provided for @makeActiveLabel.
@@ -3391,6 +3241,396 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak bisa memeriksa pembaruan. Periksa koneksi internet.'**
   String get updateCheckFailed;
+
+  /// No description provided for @kategoriTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get kategoriTitle;
+
+  /// No description provided for @addCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori Baru'**
+  String get addCategory;
+
+  /// No description provided for @categoryNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kategori'**
+  String get categoryNameLabel;
+
+  /// No description provided for @kategoriEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kategori. Buat untuk organisasi, kepanitiaan, komunitas, atau apa pun.'**
+  String get kategoriEmpty;
+
+  /// No description provided for @uncategorizedInfo.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas tanpa kategori tersimpan di sini'**
+  String get uncategorizedInfo;
+
+  /// No description provided for @mataKuliahTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Kuliah'**
+  String get mataKuliahTitle;
+
+  /// No description provided for @addCourse.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Kuliah Baru'**
+  String get addCourse;
+
+  /// No description provided for @bringItemLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawaan'**
+  String get bringItemLabel;
+
+  /// No description provided for @addBringItem.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah bawaan'**
+  String get addBringItem;
+
+  /// No description provided for @editBringItem.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah bawaan'**
+  String get editBringItem;
+
+  /// No description provided for @bringItemDeleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawaan dihapus'**
+  String get bringItemDeleted;
+
+  /// No description provided for @emptyBringList.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada bawaan untuk {name}.'**
+  String emptyBringList(String name);
+
+  /// No description provided for @broughtLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah dibawa'**
+  String get broughtLabel;
+
+  /// No description provided for @attendanceHistory.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat'**
+  String get attendanceHistory;
+
+  /// No description provided for @attendanceHistoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan kehadiran.'**
+  String get attendanceHistoryEmpty;
+
+  /// No description provided for @editAttendanceRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah catatan'**
+  String get editAttendanceRecord;
+
+  /// No description provided for @deleteAttendanceRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus catatan?'**
+  String get deleteAttendanceRecord;
+
+  /// No description provided for @deleteAttendanceRecordBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan kehadiran ini akan dihapus.'**
+  String get deleteAttendanceRecordBody;
+
+  /// No description provided for @attendanceRecordDeleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan dihapus'**
+  String get attendanceRecordDeleted;
+
+  /// No description provided for @attendanceNoteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get attendanceNoteLabel;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal'**
+  String get dateLabel;
+
+  /// No description provided for @editLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah'**
+  String get editLabel;
+
+  /// No description provided for @weekdayLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari'**
+  String get weekdayLabel;
+
+  /// No description provided for @classKindLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get classKindLabel;
+
+  /// No description provided for @kindLecture.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliah'**
+  String get kindLecture;
+
+  /// No description provided for @kindLab.
+  ///
+  /// In id, this message translates to:
+  /// **'Praktikum'**
+  String get kindLab;
+
+  /// No description provided for @classScheduleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliah dan praktikum beserta jam dan ruangnya'**
+  String get classScheduleHint;
+
+  /// No description provided for @addClassSlot.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah Jadwal'**
+  String get addClassSlot;
+
+  /// No description provided for @editClassSlot.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah Jadwal'**
+  String get editClassSlot;
+
+  /// No description provided for @deleteClassSlot.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus Jadwal?'**
+  String get deleteClassSlot;
+
+  /// No description provided for @deleteClassSlotBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal ini akan dihapus.'**
+  String get deleteClassSlotBody;
+
+  /// No description provided for @classTimeOrderError.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam selesai harus setelah jam mulai.'**
+  String get classTimeOrderError;
+
+  /// No description provided for @monShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Sen'**
+  String get monShort;
+
+  /// No description provided for @tueShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Sel'**
+  String get tueShort;
+
+  /// No description provided for @wedShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Rab'**
+  String get wedShort;
+
+  /// No description provided for @thuShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Kam'**
+  String get thuShort;
+
+  /// No description provided for @friShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Jum'**
+  String get friShort;
+
+  /// No description provided for @satShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Sab'**
+  String get satShort;
+
+  /// No description provided for @sunShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Min'**
+  String get sunShort;
+
+  /// No description provided for @agendaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Agenda'**
+  String get agendaTitle;
+
+  /// No description provided for @agendaEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kelas atau tugas pada hari ini.'**
+  String get agendaEmpty;
+
+  /// No description provided for @seeAllTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua'**
+  String get seeAllTasks;
+
+  /// No description provided for @filesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas'**
+  String get filesLabel;
+
+  /// No description provided for @filesSetupTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan berkas di penyimpanan HP'**
+  String get filesSetupTitle;
+
+  /// No description provided for @filesSetupBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lekas menyimpan modul, catatan, soal, dan arsip di folder pada penyimpanan HP kamu, bukan di dalam aplikasi. Pilih folder untuk menyimpannya.'**
+  String get filesSetupBody;
+
+  /// No description provided for @pickFilesFolder.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih folder'**
+  String get pickFilesFolder;
+
+  /// No description provided for @filesImportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas tidak bisa diimpor. Pilih folder lagi atau coba berkas lain.'**
+  String get filesImportFailed;
+
+  /// No description provided for @newFolderLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Folder baru'**
+  String get newFolderLabel;
+
+  /// No description provided for @folderNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama folder'**
+  String get folderNameLabel;
+
+  /// No description provided for @folderAlreadyExists.
+  ///
+  /// In id, this message translates to:
+  /// **'Folder dengan nama itu sudah ada.'**
+  String get folderAlreadyExists;
+
+  /// No description provided for @deleteFolder.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus folder?'**
+  String get deleteFolder;
+
+  /// No description provided for @deleteFile.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus berkas?'**
+  String get deleteFile;
+
+  /// No description provided for @deleteFolderBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua isi folder akan dihapus.'**
+  String get deleteFolderBody;
+
+  /// No description provided for @filesOpenFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada aplikasi di HP ini yang bisa membuka berkas ini.'**
+  String get filesOpenFailed;
+
+  /// No description provided for @renameFolder.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah nama folder'**
+  String get renameFolder;
+
+  /// No description provided for @renameFile.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah nama berkas'**
+  String get renameFile;
+
+  /// No description provided for @importFileLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor berkas'**
+  String get importFileLabel;
+
+  /// No description provided for @filesOpenInFileManager.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas tersimpan di penyimpanan HP; kelola bebas dengan file manager apa pun.'**
+  String get filesOpenInFileManager;
+
+  /// No description provided for @folderEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Folder ini kosong.'**
+  String get folderEmpty;
+
+  /// No description provided for @folderLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Folder'**
+  String get folderLabel;
+
+  /// No description provided for @fileImported.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas diimpor'**
+  String get fileImported;
+
+  /// No description provided for @filesSurviveDeletion.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas tertinggal di penyimpanan HP dan tidak terhapus saat mata kuliah dihapus.'**
+  String get filesSurviveDeletion;
+
+  /// No description provided for @unableToCreateFolder.
+  ///
+  /// In id, this message translates to:
+  /// **'Folder tidak bisa dibuat'**
+  String get unableToCreateFolder;
+
+  /// No description provided for @permissionLostFolder.
+  ///
+  /// In id, this message translates to:
+  /// **'Akses ke folder yang dipilih hilang; pilih ulang'**
+  String get permissionLostFolder;
+
+  /// No description provided for @filesOpFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Itu tidak berhasil'**
+  String get filesOpFailed;
 }
 
 class _AppLocalizationsDelegate

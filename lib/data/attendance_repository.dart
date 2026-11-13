@@ -68,6 +68,34 @@ class AttendanceRepository {
         ));
   }
 
+  /// Rewrites one record (date, status, note) after the user edits it in
+  /// the history list; the row is never recreated, so the id survives.
+  Future<void> updateRecord(
+    String id, {
+    required String date,
+    required String status,
+    String? note,
+  }) async {
+    await (db.update(db.attendance)..where((t) => t.id.equals(id))).write(
+      AttendanceCompanion(
+        date: Value(date),
+        status: Value(normalizeAttendanceStatus(status)),
+        note: Value(note?.trim().isEmpty ?? true ? null : note?.trim()),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
+  /// Soft deletes one record; it stays in the database but stops counting.
+  Future<void> deleteRecord(String id) async {
+    await (db.update(db.attendance)..where((t) => t.id.equals(id))).write(
+      AttendanceCompanion(
+        deletedAt: Value(DateTime.now().millisecondsSinceEpoch),
+        updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+      ),
+    );
+  }
+
   /// The quota numbers of one course (design section 5.19).
   Future<AttendanceSummary> summaryFor(Space space) async {
     final records = await getForSpace(space.id);

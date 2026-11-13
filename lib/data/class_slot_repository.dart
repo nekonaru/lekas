@@ -23,6 +23,13 @@ class ClassSlotRepository {
     return (db.select(db.classSlots)..where((t) => t.deletedAt.isNull())).get();
   }
 
+  /// Every slot across spaces as a stream, so the calendar can light up
+  /// class days live instead of loading them once per visit.
+  Stream<List<ClassSlot>> watchAllClassSlots() {
+    return (db.select(db.classSlots)..where((t) => t.deletedAt.isNull()))
+        .watch();
+  }
+
   Future<void> insertClassSlot(ClassSlot slot) async {
     await db.into(db.classSlots).insert(slot);
   }

@@ -35,4 +35,21 @@ class SpaceItemRepository {
       ),
     );
   }
+
+  /// Rewrites the order in stepped values (1024 per row), so one drag
+  /// rarely rewrites every row.
+  Future<void> setSpaceItemOrder(List<String> orderedIds) async {
+    await db.transaction(() async {
+      for (var i = 0; i < orderedIds.length; i++) {
+        await (db.update(db.spaceItems)
+              ..where((t) => t.id.equals(orderedIds[i])))
+            .write(
+          SpaceItemsCompanion(
+            sortOrder: Value((i + 1) * 1024),
+            updatedAt: Value(DateTime.now().millisecondsSinceEpoch),
+          ),
+        );
+      }
+    });
+  }
 }

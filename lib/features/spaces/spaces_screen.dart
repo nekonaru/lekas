@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/empty_state.dart';
+import '../../core/components/selection_bottom_bar.dart';
 import '../../core/components/undo_snackbar.dart';
+import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
-import '../tasks/non_course_category_screen.dart';
+import '../inbox/inbox_screen.dart';
 import 'space_detail_screen.dart';
 import 'space_form_dialog.dart';
 
+/// What the list shows: every space (the old manage view), the free,
+/// semester-less categories (the Kategori tab), or the courses of the
+/// active and past semesters (pushed from the Semester tab).
+enum SpaceView { all, free, courses }
+
 class SpacesScreen extends ConsumerStatefulWidget {
-  const SpacesScreen({super.key});
+  const SpacesScreen({super.key, this.view = SpaceView.all, this.embedded = false});
+
+  final SpaceView view;
+
+  /// True inside the shell's tab body; the shell owns the app bar then.
+  final bool embedded;
 
   @override
   ConsumerState<SpacesScreen> createState() => _SpacesScreenState();
@@ -29,7 +43,24 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
   /// Which side of the archive switch the list shows.
   bool _showingArchive = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  bool _inScope(Space space) {
+    switch (widget.view) {
+      case SpaceView.all:
+        return true;
+      case SpaceView.free:
+        return space.semesterId == null;
+      case SpaceView.courses:
+        return space.semesterId != null;
+    }
+  }
+
   void _toggleSelection(String id) {
+    HapticFeedback.selectionClick();
     setState(() {
       if (!_selection.remove(id)) _selection.add(id);
     });
@@ -37,6 +68,18 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
 
   List<Space> get _picked =>
       _spaces.where((space) => _selection.contains(space.id)).toList();
+
+  bool get _isFree => widget.view == SpaceView.free;
+
+  String _addLabel(AppLocalizations l10n) {
+    if (_isFree) return l10n.addCategory;
+    return widget.view == SpaceView.courses ? l10n.addCourse : l10n.addSpace;
+  }
+
+  String _emptyMessage(AppLocalizations l10n) {
+    if (_isFree) return l10n.kategoriEmpty;
+    return l10n.emptySpaces;
+  }
 
   /// Bulk archive with an undo that brings the spaces back.
   Future<void> _archiveSelected() async {
@@ -109,56 +152,81 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
     if (mounted) setState(() {});
   }
 
+  /// The create dialog for the tab: a free-form name for a category or a
+  /// course. Colors are derived from the name so the same name always
+  /// gets the same avatar.
+  Future<void> _create() async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController();
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(_addLabel(l10n)),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            labelText: l10n.categoryNameLabel,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (controller.text.trim().isEmpty) return;
+              Navigator.pop(dialogContext, true);
+            },
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    final name = controller.text.trim();
+    // Let the exit animation of the dialog finish before disposing the
+    // controller; dropping it right after pop crashes the closing frames.
+    Future<void>.delayed(
+      const Duration(milliseconds: 400),
+      controller.dispose,
+    );
+    if (created != true || name.isEmpty) return;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final color = AppTheme.containerColors[name.hashCode.abs() %
+        AppTheme.containerColors.length];
+    // A course lands in the active semester; a category belongs to none.
+    await ref.read(spaceRepositoryProvider).insertSpace(
+          Space(
+            id: const Uuid().v4(),
+            name: name,
+            color: color.toARGB32(),
+            kind: _isFree ? 'category' : 'course',
+            archived: false,
+            sortOrder: 0,
+            createdAt: now,
+            updatedAt: now,
+            semesterId: null,
+          ),
+        );
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final repo = ref.watch(spaceRepositoryProvider);
     final selecting = _selection.isNotEmpty;
 
+    final addLabel = _addLabel(l10n);
+    final emptyMessage = _emptyMessage(l10n);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(selecting
-            ? l10n.selectedCount(_selection.length)
-            : l10n.spacesTitle),
-        actions: [
-          if (selecting)
-            BulkSelectionBar(
-              count: _selection.length,
-              onSelectAll: () => setState(
-                () => _selection.addAll(_spaces.map((space) => space.id)),
-              ),
-              onArchive: _archiveSelected,
-              onClose: () => setState(_selection.clear),
-            )
-          else ...[
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                await showSpaceFormDialog(context, ref);
-                if (mounted) setState(() {});
-              },
-              tooltip: l10n.addSpace,
-            ),
-            IconButton(
-              icon: Icon(_reordering ? Icons.check : Icons.reorder),
-              onPressed: () => setState(() => _reordering = !_reordering),
-              tooltip: l10n.reorderLabel,
-            ),
-            IconButton(
-              icon: const Icon(Icons.category_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (_) => const NonCourseCategoryScreen(),
-                  ),
-                );
-              },
-              tooltip: l10n.nonCourseSpaceTitle,
-            ),
-          ],
-        ],
-      ),
+      appBar: widget.embedded
+          ? null
+          : AppBar(title: Text(_isFree ? l10n.kategoriTitle : widget.view == SpaceView.courses ? l10n.mataKuliahTitle : l10n.spacesTitle)),
       // The stream keeps the rows in drag order from the table, so a
       // reorder writes the order and the list follows; it also means a
       // rename or archive anywhere else shows up at once.
@@ -166,24 +234,39 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: SegmentedButton<bool>(
-              segments: [
-                ButtonSegment(
-                  value: false,
-                  label: Text(l10n.archiveActive),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SegmentedButton<bool>(
+                    segments: [
+                      ButtonSegment(
+                        value: false,
+                        label: Text(l10n.archiveActive),
+                      ),
+                      ButtonSegment(
+                        value: true,
+                        label: Text(l10n.archiveArchive),
+                      ),
+                    ],
+                    selected: {_showingArchive},
+                    onSelectionChanged: (selection) => setState(() {
+                      _showingArchive = selection.first;
+                      _selection.clear();
+                    }),
+                  ),
                 ),
-                ButtonSegment(
-                  value: true,
-                  label: Text(l10n.archiveArchive),
-                ),
+                if (!_showingArchive)
+                  IconButton(
+                    icon: Icon(_reordering ? Icons.check : Icons.reorder),
+                    tooltip: l10n.reorderLabel,
+                    onPressed: () =>
+                        setState(() => _reordering = !_reordering),
+                  ),
               ],
-              selected: {_showingArchive},
-              onSelectionChanged: (selection) => setState(() {
-                _showingArchive = selection.first;
-                _selection.clear();
-              }),
             ),
           ),
+          if (widget.view == SpaceView.free && !_showingArchive)
+            _UncategorizedRow(),
           Expanded(
             child: StreamBuilder<List<Space>>(
               stream: repo.watchSpaces(includeArchived: true),
@@ -192,6 +275,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final spaces = (snapshot.data ?? const <Space>[])
+                    .where(_inScope)
                     .where((space) => space.archived == _showingArchive)
                     .toList();
                 // The drag mutates this list directly for instant feedback;
@@ -203,7 +287,10 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
                           message: l10n.archiveEmptyText,
                           icon: Icons.archive,
                         )
-                      : EmptyState(message: l10n.emptySpaces, icon: Icons.folder);
+                      : EmptyState(
+                          message: emptyMessage,
+                          icon: _isFree ? Icons.folder_outlined : Icons.folder,
+                        );
                 }
                 if (_showingArchive) {
                   return _archiveList(spaces);
@@ -214,15 +301,32 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: selecting
+          ? SelectionBottomBar(
+              count: _selection.length,
+              child: BulkSelectionBar(
+                count: _selection.length,
+                onSelectAll: () => setState(
+                  () => _selection.addAll(_spaces.map((space) => space.id)),
+                ),
+                onArchive: _archiveSelected,
+                onClose: () => setState(_selection.clear),
+              ),
+            )
+          : null,
       floatingActionButton: selecting || _showingArchive
           ? null
           : FloatingActionButton.extended(
               onPressed: () async {
-                await showSpaceFormDialog(context, ref);
+                if (_isFree || widget.view == SpaceView.courses) {
+                  await _create();
+                } else {
+                  await showSpaceFormDialog(context, ref);
+                }
                 if (mounted) setState(() {});
               },
               icon: const Icon(Icons.add),
-              label: Text(l10n.addSpace),
+              label: Text(addLabel),
             ),
     );
   }
@@ -284,14 +388,9 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           subtitle: Text(space.code ?? ''),
           trailing: selecting
               ? null
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () => _spaceMenu(space),
-                    ),
-                  ],
+              : IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () => _spaceMenu(space),
                 ),
           onTap: selecting
               ? () => _toggleSelection(space.id)
@@ -371,7 +470,11 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
               title: Text(l10n.editSpaceTitle),
               onTap: () async {
                 Navigator.pop(sheetContext);
-                await showSpaceFormDialog(context, ref, existing: space);
+                if (widget.view != SpaceView.all) {
+                  await _rename(space);
+                } else {
+                  await showSpaceFormDialog(context, ref, existing: space);
+                }
                 if (mounted) setState(() {});
               },
             ),
@@ -412,6 +515,86 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  /// Rename dialog for the category and course flows (no code field).
+  Future<void> _rename(Space space) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(text: space.name);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.editSpaceTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            labelText: l10n.categoryNameLabel,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    final name = controller.text.trim();
+    Future<void>.delayed(
+      const Duration(milliseconds: 400),
+      controller.dispose,
+    );
+    if (confirmed != true || name.isEmpty || name == space.name) return;
+    await ref.read(spaceRepositoryProvider).updateSpace(
+          space.copyWith(
+            name: name,
+            updatedAt: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+  }
+}
+
+/// The uncategorized row of the Kategori tab: the tasks that fell out of
+/// every category land in the inbox, so the tab surfaces them here with
+/// their open count instead of hiding them behind another screen.
+class _UncategorizedRow extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final repo = ref.watch(taskRepositoryProvider);
+    final colors = Theme.of(context).colorScheme;
+    return StreamBuilder(
+      stream: repo.watchTasks(includeInbox: true),
+      builder: (context, snapshot) {
+        final tasks = (snapshot.data ?? const <Task>[])
+            .where((task) => task.inbox && task.status != 'done')
+            .toList();
+        return Material(
+          color: colors.surfaceContainerLow,
+          child: ListTile(
+            leading: const Icon(Icons.inbox_outlined),
+            title: Text(l10n.inboxTitle),
+            subtitle: Text(tasks.isEmpty
+                ? l10n.uncategorizedInfo
+                : l10n.openTasksCount(tasks.length)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const InboxScreen(),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

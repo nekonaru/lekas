@@ -66,7 +66,8 @@ class SemesterScreen extends ConsumerWidget {
                           onManage: () => Navigator.push(
                             context,
                             MaterialPageRoute<void>(
-                              builder: (_) => const SpacesScreen(),
+                              builder: (_) =>
+                                  const SpacesScreen(view: SpaceView.courses),
                             ),
                           ),
                         ),
@@ -585,7 +586,7 @@ Future<void> _createSemester(BuildContext context, WidgetRef ref) async {
     ),
   );
   final name = controller.text.trim();
-  controller.dispose();
+  Future<void>.delayed(const Duration(milliseconds: 400), controller.dispose);
   if (created != true || name.isEmpty) return;
   await ref.read(semesterRepositoryProvider).createSemester(name);
   HapticFeedback.lightImpact();
@@ -628,7 +629,7 @@ Future<void> _renameSemester(
     ),
   );
   final name = controller.text.trim();
-  controller.dispose();
+  Future<void>.delayed(const Duration(milliseconds: 400), controller.dispose);
   if (confirmed != true || name.isEmpty || name == semester.name) return;
   await ref.read(semesterRepositoryProvider).rename(semester.id, name);
 }

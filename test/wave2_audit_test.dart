@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lekas/data/attendance_repository.dart';
 import 'package:lekas/data/backup_service.dart';
@@ -36,15 +37,10 @@ void main() {
   });
 
   group('a class slot only accepts a real hour of the week', () {
-    test('a written time becomes minutes, anything else becomes null', () {
-      expect(parseHourMinute('07:30'), 7 * 60 + 30);
-      expect(parseHourMinute('23:59'), 23 * 60 + 59);
-      expect(parseHourMinute('99:99'), isNull);
-      expect(parseHourMinute('7.30'), isNull);
-      expect(parseHourMinute(''), isNull);
-      expect(parseHourMinute('730'), isNull);
-      expect(parseHourMinute('-1:30'), isNull);
-      expect(parseHourMinute('7:70'), isNull);
+    test('a picked time becomes minutes of the day', () {
+      expect(timeOfDayMinutes(const TimeOfDay(hour: 7, minute: 30)), 450);
+      expect(timeOfDayMinutes(const TimeOfDay(hour: 0, minute: 0)), 0);
+      expect(timeOfDayMinutes(const TimeOfDay(hour: 23, minute: 59)), 1439);
     });
   });
 

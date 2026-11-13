@@ -32,7 +32,6 @@ import 'package:lekas/features/tasks/target_pribadi_screen.dart';
 import 'package:lekas/features/tasks/task_detail_screen.dart';
 import 'package:lekas/features/tasks/trash_screen.dart';
 import 'package:lekas/features/tasks/tugas_berulang_screen.dart';
-import 'package:lekas/features/tasks/non_course_category_screen.dart';
 import 'package:lekas/features/tasks/widget_lanjutan_screen.dart';
 import 'package:lekas/l10n/app_localizations.dart';
 
@@ -238,7 +237,7 @@ void main() {
     await disposeTree(tester);
   });
 
-  testWidgets('spaces open the non course creator and grade prediction', (
+  testWidgets('courses open the grade prediction flow', (
     tester,
   ) async {
     final db = AppDatabase(NativeDatabase.memory());
@@ -262,17 +261,10 @@ void main() {
     await openTab(tester, 'Semester');
     await settle(tester);
 
-    // The manage button opens the course list, which carries the category
-    // creator for non-course spaces.
-    await tester.tap(find.text('Manage Categories'));
+    // The manage button opens the course list.
+    await tester.tap(find.text('Manage Courses'));
     await settle(tester);
     expect(find.byType(SpacesScreen), findsOneWidget);
-
-    // The category action creates an org, project, personal or other space.
-    await tester.tap(find.byIcon(Icons.category_outlined));
-    await settle(tester);
-    expect(find.byType(NonCourseCategoryScreen), findsOneWidget);
-    await goBack(tester);
 
     await tapTile(
       tester,
@@ -299,6 +291,42 @@ void main() {
     expect(find.byType(PrediksiNilaiScreen), findsOneWidget);
     await goBack(tester);
     await goBack(tester);
+
+    await disposeTree(tester);
+  });
+
+  testWidgets('the categories tab creates a free-form category', (
+    tester,
+  ) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    await tester.pumpWidget(host(db, const HomeShell()));
+    await settle(tester);
+    await openTab(tester, 'Categories');
+    await settle(tester);
+
+    // The FAB opens the create dialog for a free-form category.
+    await tester.tap(find.text('New Category'));
+    await settle(tester);
+    expect(find.byType(AlertDialog), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'BEM');
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await settle(tester);
+
+    // The category appears in the list and opens its detail screen.
+    await tapTile(
+      tester,
+      find.text('BEM'),
+      scrollable: find
+          .descendant(
+            of: find.byType(SpacesScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(find.byType(SpaceDetailScreen), findsOneWidget);
 
     await disposeTree(tester);
   });

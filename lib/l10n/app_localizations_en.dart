@@ -286,9 +286,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareAsTextTitle => 'Share as Text';
 
   @override
-  String get shareAsTextBody => 'Share tasks or a weekly list to WhatsApp.';
-
-  @override
   String get taskDependenciesTitle => 'Task Dependencies';
 
   @override
@@ -317,53 +314,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importScheduleOcrTitle => 'Import Schedule from Screenshot';
 
   @override
-  String get importScheduleOcrBody =>
-      'Import your course schedule from a screenshot or portal text.';
-
-  @override
   String get weeklyLoadMapTitle => 'Weekly Load Map';
-
-  @override
-  String get weeklyLoadMapBody =>
-      'Weekly load map and effective hours are available.';
 
   @override
   String get projectMilestoneTitle => 'Projects and Milestones';
 
   @override
-  String get projectMilestoneBody =>
-      'Project management with milestones and a countdown plan.';
-
-  @override
   String get freeTimeSuggestionTitle => 'Free Time Suggestions';
-
-  @override
-  String get freeTimeSuggestionBody =>
-      'Time gap suggestions for focused study.';
 
   @override
   String get gradeSimulatorTitle => 'Grade Simulator';
 
   @override
-  String get gradeSimulatorBody => '\"What if\" grade simulator.';
-
-  @override
   String get examStudyPlanTitle => 'Exam Study Plan';
-
-  @override
-  String get examStudyPlanBody => 'Automatic study plan for exams.';
 
   @override
   String get taskListTitle => 'Task List';
 
   @override
   String get taskListBody => 'Task list.';
-
-  @override
-  String get timerFocusTitle => 'Focus Timer';
-
-  @override
-  String get timerFocusBody => '25/5 minute focus timer (Pomodoro).';
 
   @override
   String get encryptedBackupTitle => 'Encrypted Backup';
@@ -416,27 +385,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteSampleDataSubtitle => 'Delete all sample data';
-
-  @override
-  String get fullCalendarTitle => 'Full Calendar';
-
-  @override
-  String get tabMonth => 'Month';
-
-  @override
-  String get tabWeek => 'Week';
-
-  @override
-  String get tabAgenda => 'Agenda';
-
-  @override
-  String get monthView => 'Month view';
-
-  @override
-  String get weekView => 'Week view';
-
-  @override
-  String get agendaView => 'Chronological agenda';
 
   @override
   String get appLockTitle => 'App Lock';
@@ -591,33 +539,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportDeadlineHistorySubtitle => 'PDF proof of deadline changes';
-
-  @override
-  String get nonCourseSpaceTitle => 'Non-Course Categories';
-
-  @override
-  String get orgSpace => 'Organization';
-
-  @override
-  String get orgSpaceSubtitle => 'Campus organization';
-
-  @override
-  String get projectSpace => 'Project';
-
-  @override
-  String get projectSpaceSubtitle => 'Campus project';
-
-  @override
-  String get personalSpace => 'Personal';
-
-  @override
-  String get personalSpaceSubtitle => 'Personal activities';
-
-  @override
-  String get otherSpace => 'Others';
-
-  @override
-  String get otherSpaceSubtitle => 'Other categories';
 
   @override
   String get advancedWidgetsTitle => 'Advanced Widgets';
@@ -1732,7 +1653,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get manageCoursesLabel => 'Manage Categories';
+  String get manageCoursesLabel => 'Manage Courses';
 
   @override
   String get courseListTitle => 'Courses This Semester';
@@ -1842,4 +1763,209 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updateCheckFailed =>
       'Could not check for updates. Check your connection.';
+
+  @override
+  String get kategoriTitle => 'Categories';
+
+  @override
+  String get addCategory => 'New Category';
+
+  @override
+  String get categoryNameLabel => 'Category name';
+
+  @override
+  String get kategoriEmpty =>
+      'No categories yet. Create one for organizations, committees or communities.';
+
+  @override
+  String get uncategorizedInfo => 'Tasks without a category land here';
+
+  @override
+  String get mataKuliahTitle => 'Courses';
+
+  @override
+  String get addCourse => 'New Course';
+
+  @override
+  String get bringItemLabel => 'What to bring';
+
+  @override
+  String get addBringItem => 'Add item';
+
+  @override
+  String get editBringItem => 'Edit item';
+
+  @override
+  String get bringItemDeleted => 'Item deleted';
+
+  @override
+  String emptyBringList(String name) {
+    return 'Nothing to bring for $name yet.';
+  }
+
+  @override
+  String get broughtLabel => 'Brought';
+
+  @override
+  String get attendanceHistory => 'History';
+
+  @override
+  String get attendanceHistoryEmpty => 'No attendance records yet.';
+
+  @override
+  String get editAttendanceRecord => 'Edit record';
+
+  @override
+  String get deleteAttendanceRecord => 'Delete record?';
+
+  @override
+  String get deleteAttendanceRecordBody =>
+      'This attendance record will be deleted.';
+
+  @override
+  String get attendanceRecordDeleted => 'Record deleted';
+
+  @override
+  String get attendanceNoteLabel => 'Note (optional)';
+
+  @override
+  String get dateLabel => 'Date';
+
+  @override
+  String get editLabel => 'Edit';
+
+  @override
+  String get weekdayLabel => 'Day';
+
+  @override
+  String get classKindLabel => 'Kind';
+
+  @override
+  String get kindLecture => 'Lecture';
+
+  @override
+  String get kindLab => 'Lab';
+
+  @override
+  String get classScheduleHint => 'Lectures and labs with times and rooms';
+
+  @override
+  String get addClassSlot => 'Add class';
+
+  @override
+  String get editClassSlot => 'Edit class';
+
+  @override
+  String get deleteClassSlot => 'Delete class?';
+
+  @override
+  String get deleteClassSlotBody => 'This slot will be removed.';
+
+  @override
+  String get classTimeOrderError => 'End must be after start.';
+
+  @override
+  String get monShort => 'Mon';
+
+  @override
+  String get tueShort => 'Tue';
+
+  @override
+  String get wedShort => 'Wed';
+
+  @override
+  String get thuShort => 'Thu';
+
+  @override
+  String get friShort => 'Fri';
+
+  @override
+  String get satShort => 'Sat';
+
+  @override
+  String get sunShort => 'Sun';
+
+  @override
+  String get agendaTitle => 'Agenda';
+
+  @override
+  String get agendaEmpty => 'No classes or tasks on this day.';
+
+  @override
+  String get seeAllTasks => 'See all';
+
+  @override
+  String get filesLabel => 'Files';
+
+  @override
+  String get filesSetupTitle => 'Store files in phone storage';
+
+  @override
+  String get filesSetupBody =>
+      'Lekas keeps your modules, notes, papers and archives in a folder on your phone, not in the app. Pick a folder to store them in.';
+
+  @override
+  String get pickFilesFolder => 'Pick folder';
+
+  @override
+  String get filesImportFailed =>
+      'The file could not be imported. Pick the folder again or try another file.';
+
+  @override
+  String get newFolderLabel => 'New folder';
+
+  @override
+  String get folderNameLabel => 'Folder name';
+
+  @override
+  String get folderAlreadyExists => 'A folder with that name already exists.';
+
+  @override
+  String get deleteFolder => 'Delete folder?';
+
+  @override
+  String get deleteFile => 'Delete file?';
+
+  @override
+  String get deleteFolderBody =>
+      'Everything inside the folder will be deleted.';
+
+  @override
+  String get filesOpenFailed => 'No app on this phone can open this file.';
+
+  @override
+  String get renameFolder => 'Rename folder';
+
+  @override
+  String get renameFile => 'Rename file';
+
+  @override
+  String get importFileLabel => 'Import file';
+
+  @override
+  String get filesOpenInFileManager =>
+      'Files live in your phone\'s storage; manage them freely with any file manager.';
+
+  @override
+  String get folderEmpty => 'This folder is empty.';
+
+  @override
+  String get folderLabel => 'Folder';
+
+  @override
+  String get fileImported => 'File imported';
+
+  @override
+  String get filesSurviveDeletion =>
+      'Files stay in storage and survive course deletion';
+
+  @override
+  String get unableToCreateFolder => 'The folder could not be created';
+
+  @override
+  String get permissionLostFolder =>
+      'Access to the picked folder is lost; pick it again';
+
+  @override
+  String get filesOpFailed => 'That did not work';
 }
