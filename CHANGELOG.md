@@ -2,6 +2,19 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.11.0
+
+Lekas can now check for a newer release on its own: Settings shows the installed version, asks GitHub on tap, and a quiet once a day check speaks up only when a newer APK exists.
+
+### New features
+
+- **Update check.** The Settings version tile checks the latest GitHub release on tap; when a newer one exists it offers the direct arm64 APK download or the release page. A quiet once a day check runs on launch with a single snackbar and a Download action, disableable in Settings.
+- **One request, nothing more.** The check is a read-only GET against the public GitHub releases API; no data is sent, there is no account, analytics or telemetry, and turning it off leaves the app fully offline as before.
+
+### Improvements
+
+- **Shared filter building blocks.** The filter sheet and the search screen now share the status chips and the sort order list, so the two cannot drift apart again.
+
 ## v1.10.0
 
 Lekas replaces the Categories tab with a Semester tab, puts a filter system and category grouping on the task lists, and fixes the layout bugs in the task sheet and the tab screens.

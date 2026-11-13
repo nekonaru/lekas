@@ -108,6 +108,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Backup and restore** | JSON export and import, everything stored locally with Drift (SQLite) |
 | **Import and merge** | Merge a backup into the current database without losing what is already there |
+| **Update check** | Settings shows the installed version; tap to check the latest GitHub release. A quiet once-a-day check runs on launch (disableable in Settings) and only speaks up when a newer version exists |
 
 ### Appearance and Language
 
@@ -288,7 +289,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (476 tests) |
+| `flutter test` | Must pass the full suite (492 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
@@ -296,7 +297,7 @@ Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_s
 
 ## Security
 
-Lekas stores your data locally: tasks, spaces, settings and attachments live in a SQLite database through Drift, and the backup file you export is either plain JSON or AES-GCM encrypted with your password. The app makes no network calls of its own, ships no analytics, ads or crash reporting SDKs, and only requests notification, exact alarm, vibration, microphone and speech permission. An optional app lock keeps a salted SHA-256 hash of your PIN instead of the PIN itself.
+Lekas stores your data locally: tasks, spaces, settings and attachments live in a SQLite database through Drift, and the backup file you export is either plain JSON or AES-GCM encrypted with your password. The only network call the app makes is the optional update check against the public GitHub API, on your tap or once a day on launch (disableable in Settings), which sends nothing but the request itself. The app ships no analytics, ads or crash reporting SDKs, and only requests notification, exact alarm, vibration, microphone and speech permission. An optional app lock keeps a salted SHA-256 hash of your PIN instead of the PIN itself.
 
 > [!NOTE]
 > Found a security issue? Report it through the private route in [`SECURITY.md`](SECURITY.md) so it can be fixed before it is published.

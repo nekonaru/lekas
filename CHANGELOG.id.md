@@ -2,6 +2,19 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.11.0
+
+Lekas kini bisa memeriksa rilis baru dengan sendirinya: Pengaturan menampilkan versi terpasang, bertanya ke GitHub saat diketuk, dan pemeriksaan senyap sekali sehari berbicara hanya saat APK baru tersedia.
+
+### Fitur baru
+
+- **Periksa pembaruan.** Tile versi di Pengaturan memeriksa rilis GitHub terbaru saat diketuk; saat ada yang lebih baru, tawaran langsung unduh APK arm64 atau halaman rilisnya. Pemeriksaan senyap sekali sehari berjalan saat membuka aplikasi dengan satu snackbar dan tombol Unduh, bisa dimatikan di Pengaturan.
+- **Satu permintaan, tidak lebih.** Pemeriksaan adalah GET baca-saja ke API rilis publik GitHub; tidak ada data yang dikirim, tanpa akun, analitik, atau telemetri, dan mematikannya mengembalikan aplikasi sepenuhnya offline seperti sebelumnya.
+
+### Peningkatan
+
+- **Komponen filter bersama.** Sheet filter dan layar pencarian kini memakai komponen chip status dan daftar urutan yang sama, sehingga keduanya tidak bisa melenceng lagi.
+
 ## v1.10.0
 
 Lekas mengganti tab Kategori dengan tab Semester, menambahkan sistem filter dan pengelompokan per kategori di daftar tugas, serta memperbaiki bug tata letak pada sheet tugas dan layar tab.

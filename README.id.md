@@ -108,6 +108,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Cadangkan dan pulihkan** | Ekspor dan impor JSON, semuanya disimpan lokal dengan Drift (SQLite) |
 | **Impor dan gabung** | Gabungkan cadangan ke database saat ini tanpa kehilangan yang sudah ada |
+| **Periksa pembaruan** | Settings menampilkan versi terpasang; ketuk untuk memeriksa rilis terbaru di GitHub. Pemeriksaan senyap sekali sehari berjalan saat membuka aplikasi (bisa dimatikan di Pengaturan) dan hanya berbicara saat ada versi baru |
 
 ### Tampilan dan Bahasa
 
@@ -288,7 +289,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (476 tes) |
+| `flutter test` | Seluruh suite harus lulus (492 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
@@ -296,7 +297,7 @@ Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single
 
 ## Keamanan
 
-Lekas menyimpan data kamu secara lokal: tugas, wadah, pengaturan, dan lampiran berada dalam database SQLite melalui Drift, dan file cadangan yang kamu ekspor berupa JSON polos atau terenkripsi AES-GCM dengan kata sandi milikmu. Aplikasi tidak melakukan panggilan jaringan sendiri, tidak membawa SDK analitik, iklan, atau pelaporan crash, dan hanya meminta izin notifikasi, alarm tepat, getaran, mikrofon, dan speech. Kunci aplikasi opsional menyimpan hash SHA-256 ber-salt dari PIN kamu, bukan PIN-nya sendiri.
+Lekas menyimpan data kamu secara lokal: tugas, wadah, pengaturan, dan lampiran berada dalam database SQLite melalui Drift, dan file cadangan yang kamu ekspor berupa JSON polos atau terenkripsi AES-GCM dengan kata sandi milikmu. Satu-satunya panggilan jaringan yang dilakukan aplikasi adalah pemeriksaan pembaruan opsional ke API publik GitHub, saat kamu ketuk atau sekali sehari saat membuka aplikasi (bisa dimatikan di Pengaturan), yang tidak mengirim apa pun selain permintaannya. Aplikasi tidak membawa SDK analitik, iklan, atau pelaporan crash, dan hanya meminta izin notifikasi, alarm tepat, getaran, mikrofon, dan speech. Kunci aplikasi opsional menyimpan hash SHA-256 ber-salt dari PIN kamu, bukan PIN-nya sendiri.
 
 > [!NOTE]
 > Menemukan masalah keamanan? Laporkan lewat rute privat di [`SECURITY.md`](SECURITY.md) supaya bisa diperbaiki sebelum dipublikasikan.
