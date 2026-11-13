@@ -3,8 +3,6 @@ package com.lekas.lekas;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.DocumentsContract;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
@@ -136,14 +134,6 @@ public final class LekasFileChannel implements MethodChannel.MethodCallHandler {
     private void openTreePicker() {
         lastError = null;
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Land the picker on Documents when possible so the user picks
-            // one folder under it instead of wandering the whole phone.
-            Uri suggested = DocumentsContract.buildDocumentUriUsingTree(
-                    DocumentsContract.EXTERNAL_STORAGE_PRIMARY_EMULATED_DOCUMENT_URI,
-                    "primary:Documents");
-            intent.putExtra(Intent.EXTRA_INITIAL_URI, suggested);
-        }
         try {
             activity.startActivityForResult(intent, REQUEST_PICK_TREE);
         } catch (Exception e) {
