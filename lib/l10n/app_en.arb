@@ -609,5 +609,18 @@
   "groupByCategory": "Group by category",
   "listViewLabel": "List",
   "noFilterMatch": "No tasks match this filter.",
-  "noCategoryFallback": "Uncategorized"
+  "noCategoryFallback": "Uncategorized",
+  "tapToCheckUpdates": "Tap to check for the latest version",
+  "autoUpdateCheckTitle": "Automatic update check",
+  "autoUpdateCheckSubtitle": "Once a day on launch; sends nothing to us",
+  "updateAvailableTitle": "Update available",
+  "updateAvailableBody": "Lekas {version} is available. Download and install the new APK to stay current.",
+  "@updateAvailableBody": { "placeholders": { "version": { "type": "String" } } },
+  "updateAvailableShort": "Update available: {version}",
+  "@updateAvailableShort": { "placeholders": { "version": { "type": "String" } } },
+  "updateDownload": "Download",
+  "updateLater": "Later",
+  "appUpToDate": "You are on the latest version ({version})",
+  "@appUpToDate": { "placeholders": { "version": { "type": "String" } } },
+  "updateCheckFailed": "Could not check for updates. Check your connection."
 }

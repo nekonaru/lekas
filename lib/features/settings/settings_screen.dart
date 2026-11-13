@@ -13,6 +13,8 @@ import '../tasks/duplicate_detection_screen.dart';
 import '../tasks/export_gambar_pdf_screen.dart';
 import '../semester/semester_screen.dart';
 import '../tasks/import_merge_screen.dart';
+import '../../core/version_checker.dart';
+import 'update_dialog.dart';
 import '../tasks/mode_demo_screen.dart';
 import '../tasks/pintasan_ikon_screen.dart';
 import '../tasks/tugas_berulang_screen.dart';
@@ -37,6 +39,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _morningSummary = true;
   bool _eveningSummary = true;
   bool _weeklySummary = true;
+  bool _autoUpdateCheck = true;
+  bool _checkingUpdate = false;
 
   @override
   void initState() {
@@ -57,6 +61,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final morning = await settings.get('summary_morning_enabled');
     final evening = await settings.get('summary_evening_enabled');
     final weekly = await settings.get('summary_weekly_enabled');
+    final autoUpdate = await settings.get('auto_update_check');
     if (!mounted) return;
     setState(() {
       _language = language;
@@ -70,6 +75,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _morningSummary = morning != '0';
       _eveningSummary = evening != '0';
       _weeklySummary = weekly != '0';
+      _autoUpdateCheck = autoUpdate != '0';
     });
   }
 
@@ -284,6 +290,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await ref.read(reminderServiceProvider).syncAll();
   }
 
+  /// Flips the once a day background update check; deliberately not wired
+  /// into [_setFlag], because it has nothing to do with reminder syncing.
+  Future<void> _setAutoUpdateCheck(bool value) async {
+    await ref.read(settingsRepositoryProvider).set(
+          'auto_update_check',
+          value ? '1' : '0',
+        );
+    if (!mounted) return;
+    setState(() => _autoUpdateCheck = value);
+  }
+
+  /// Asks GitHub for the newest release and, depending on the answer,
+  /// opens the update dialog, celebrates being current, or says the
+  /// check failed. The network call lives on the user's tap (or the once
+  /// a day background check), never on its own.
+  Future<void> _checkUpdate() async {
+    if (_checkingUpdate) return;
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _checkingUpdate = true);
+    final result = await ref.read(versionCheckerProvider).check();
+    if (!mounted) return;
+    setState(() => _checkingUpdate = false);
+    switch (result) {
+      case UpToDate(:final version):
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.appUpToDate(version))),
+        );
+      case UpdateAvailable(:final version, :final url):
+        await showUpdateAvailableDialog(
+          context,
+          version: version,
+          url: url,
+        );
+      case UpdateCheckFailed():
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.updateCheckFailed)),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -460,10 +507,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onTap: () => _push(const ModeDemoScreen()),
           ),
           const Divider(),
+          SwitchListTile(
+            title: Text(l10n.autoUpdateCheckTitle),
+            subtitle: Text(l10n.autoUpdateCheckSubtitle),
+            value: _autoUpdateCheck,
+            onChanged: _setAutoUpdateCheck,
+          ),
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.appVersionLabel),
-            subtitle: Text(appVersion),
+            subtitle: Text('$appVersion · ${l10n.tapToCheckUpdates}'),
+            trailing: _checkingUpdate
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2.2),
+                  )
+                : const Icon(Icons.system_update_alt),
+            onTap: _checkingUpdate ? null : _checkUpdate,
           ),
         ],
       ),

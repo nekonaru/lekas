@@ -23,6 +23,8 @@ import '../settings/settings_screen.dart';
 import '../today/today_screen.dart';
 import '../../core/theme.dart';
 import '../../core/components/lekas_logo.dart';
+import '../../core/version_checker.dart';
+import '../settings/update_dialog.dart';
 import '../../l10n/app_localizations.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
@@ -53,6 +55,40 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       CalendarScreen(),
       SettingsScreen(),
     ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Once a day, quietly: ask GitHub whether a newer release exists and,
+      // only then, offer the download. Off via the settings switch.
+      _maybeCheckForUpdate();
+    });
+  }
+
+  /// The background half of the update check: silent unless an update is
+  /// actually there, rate limited to once a day, and skipped entirely when
+  /// the user turned it off or the check fails.
+  Future<void> _maybeCheckForUpdate() async {
+    try {
+      final settings = ref.read(settingsRepositoryProvider);
+      if ((await settings.get('auto_update_check')) == '0') return;
+      final last = int.tryParse(await settings.get('last_version_check_at') ?? '0') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (now - last < 24 * 60 * 60 * 1000) return;
+      await settings.set('last_version_check_at', '$now');
+      final result = await ref.read(versionCheckerProvider).check();
+      if (!mounted) return;
+      if (result is! UpdateAvailable) return;
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.updateAvailableShort(result.version)),
+          action: SnackBarAction(
+            label: l10n.updateDownload,
+            onPressed: () => openUpdateUrl(result.url),
+          ),
+        ),
+      );
+    } catch (_) {
+      // No network, no GitHub, no permission: the check stays silent.
+    }
   }
 
   /// Closes the navigation drawer when it is open, so a push does not leave

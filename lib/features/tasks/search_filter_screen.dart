@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
 import '../../core/components/empty_state.dart';
+import '../../core/components/task_filter_sheet.dart';
 import '../../core/task_filter.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
@@ -84,17 +85,6 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
-  }
-
-  List<({IconData icon, TaskSort sort, String label})> _sortOptions(
-    AppLocalizations l10n,
-  ) {
-    return [
-      (icon: Icons.south, sort: TaskSort.deadlineAsc, label: l10n.sortDeadlineAsc),
-      (icon: Icons.north, sort: TaskSort.deadlineDesc, label: l10n.sortDeadlineDesc),
-      (icon: Icons.schedule, sort: TaskSort.createdDesc, label: l10n.sortCreatedDesc),
-      (icon: Icons.flag_outlined, sort: TaskSort.priorityHighFirst, label: l10n.sortPriorityHighFirst),
-    ];
   }
 
   String _typeName(AppLocalizations l10n, String type) {
@@ -183,43 +173,17 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ChoiceChip(
-                      avatar: const Icon(Icons.list, size: 18),
-                      label: Text(l10n.allLabel),
-                      selected: _statusFilter == TaskStatusFilter.all,
-                      onSelected: (_) {
-                        setSheetState(() => _statusFilter = TaskStatusFilter.all);
-                        setState(() {});
-                      },
-                    ),
-                    ChoiceChip(
-                      avatar: const Icon(Icons.radio_button_unchecked, size: 18),
-                      label: Text(l10n.pendingLabel),
-                      selected: _statusFilter == TaskStatusFilter.pending,
-                      onSelected: (_) {
-                        setSheetState(() => _statusFilter = TaskStatusFilter.pending);
-                        setState(() {});
-                      },
-                    ),
-                    ChoiceChip(
-                      avatar: const Icon(Icons.check_circle_outline, size: 18),
-                      label: Text(l10n.doneLabel),
-                      selected: _statusFilter == TaskStatusFilter.done,
-                      onSelected: (_) {
-                        setSheetState(() => _statusFilter = TaskStatusFilter.done);
-                        setState(() {});
-                      },
-                    ),
-                  ],
+                child: TaskStatusChips(
+                  status: _statusFilter,
+                  onChanged: (next) {
+                    setSheetState(() => _statusFilter = next);
+                    setState(() {});
+                  },
                 ),
               ),
               const Divider(),
               ListTile(title: Text(l10n.sortLabel)),
-              for (final option in _sortOptions(l10n))
+              for (final option in taskSortOptions(l10n))
                 ListTile(
                   leading: Icon(
                     option.icon,

@@ -6,6 +6,7 @@ import 'database.dart';
 import 'space_repository.dart';
 import 'semester_repository.dart';
 import 'task_repository.dart';
+import '../core/version_checker.dart';
 import 'subtask_repository.dart';
 import 'tag_repository.dart';
 import 'attendance_repository.dart';
@@ -66,6 +67,12 @@ final spaceRepositoryProvider = Provider<SpaceRepository>((ref) {
 
 final semesterRepositoryProvider = Provider<SemesterRepository>((ref) {
   return SemesterRepository(ref.read(appDatabaseProvider));
+});
+
+/// Update check against the public GitHub releases page; the settings
+/// screen and the once a day background check share it.
+final versionCheckerProvider = Provider<VersionChecker>((ref) {
+  return VersionChecker();
 });
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {

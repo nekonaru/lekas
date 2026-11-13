@@ -609,5 +609,18 @@
   "groupByCategory": "Kelompokkan per kategori",
   "listViewLabel": "Daftar",
   "noFilterMatch": "Tidak ada tugas yang cocok dengan filter ini.",
-  "noCategoryFallback": "Tanpa kategori"
+  "noCategoryFallback": "Tanpa kategori",
+  "tapToCheckUpdates": "Ketuk untuk memeriksa versi terbaru",
+  "autoUpdateCheckTitle": "Periksa pembaruan otomatis",
+  "autoUpdateCheckSubtitle": "Sekali sehari saat membuka aplikasi; tidak mengirim data",
+  "updateAvailableTitle": "Pembaruan tersedia",
+  "updateAvailableBody": "Lekas {version} sudah ada. Unduh dan pasang APK terbaru agar aplikasi selalu paling baru.",
+  "@updateAvailableBody": { "placeholders": { "version": { "type": "String" } } },
+  "updateAvailableShort": "Pembaruan tersedia: {version}",
+  "@updateAvailableShort": { "placeholders": { "version": { "type": "String" } } },
+  "updateDownload": "Unduh",
+  "updateLater": "Nanti",
+  "appUpToDate": "Kamu memakai versi terbaru ({version})",
+  "@appUpToDate": { "placeholders": { "version": { "type": "String" } } },
+  "updateCheckFailed": "Tidak bisa memeriksa pembaruan. Periksa koneksi internet."
 }

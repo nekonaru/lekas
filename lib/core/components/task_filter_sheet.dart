@@ -114,49 +114,25 @@ class _TaskFilterSheetState extends State<_TaskFilterSheet> {
           _SectionLabel(label: l10n.statusLabel),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                ChoiceChip(
-                  avatar: const Icon(Icons.list, size: 18),
-                  label: Text(l10n.allLabel),
-                  selected: _filter.status == TaskStatusFilter.all,
-                  onSelected: (_) =>
-                      _update(_filter.copyWith(status: TaskStatusFilter.all)),
-                ),
-                ChoiceChip(
-                  avatar: const Icon(Icons.radio_button_unchecked, size: 18),
-                  label: Text(l10n.pendingLabel),
-                  selected: _filter.status == TaskStatusFilter.pending,
-                  onSelected: (_) => _update(
-                    _filter.copyWith(status: TaskStatusFilter.pending),
-                  ),
-                ),
-                ChoiceChip(
-                  avatar: const Icon(Icons.check_circle_outline, size: 18),
-                  label: Text(l10n.doneLabel),
-                  selected: _filter.status == TaskStatusFilter.done,
-                  onSelected: (_) => _update(
-                    _filter.copyWith(status: TaskStatusFilter.done),
-                  ),
-                ),
-              ],
+            child: TaskStatusChips(
+              status: _filter.status,
+              onChanged: (next) =>
+                  _update(_filter.copyWith(status: next)),
             ),
           ),
           _SectionLabel(label: l10n.sortLabel),
-          for (final entry in _sortOptions(l10n))
+          for (final entry in taskSortOptions(l10n))
             ListTile(
               leading: Icon(
-                entry.key,
-                color: _filter.sort == entry.value ? colors.primary : null,
+                entry.icon,
+                color: _filter.sort == entry.sort ? colors.primary : null,
               ),
               title: Text(entry.label),
-              selected: _filter.sort == entry.value,
-              trailing: _filter.sort == entry.value
+              selected: _filter.sort == entry.sort,
+              trailing: _filter.sort == entry.sort
                   ? Icon(Icons.check, color: colors.primary)
                   : null,
-              onTap: () => _update(_filter.copyWith(sort: entry.value)),
+              onTap: () => _update(_filter.copyWith(sort: entry.sort)),
             ),
           const SizedBox(height: 12),
         ],
@@ -164,32 +140,6 @@ class _TaskFilterSheetState extends State<_TaskFilterSheet> {
     );
   }
 
-  List<({IconData key, TaskSort value, String label})> _sortOptions(
-    AppLocalizations l10n,
-  ) {
-    return [
-      (
-        key: Icons.south,
-        value: TaskSort.deadlineAsc,
-        label: l10n.sortDeadlineAsc,
-      ),
-      (
-        key: Icons.north,
-        value: TaskSort.deadlineDesc,
-        label: l10n.sortDeadlineDesc,
-      ),
-      (
-        key: Icons.schedule,
-        value: TaskSort.createdDesc,
-        label: l10n.sortCreatedDesc,
-      ),
-      (
-        key: Icons.flag_outlined,
-        value: TaskSort.priorityHighFirst,
-        label: l10n.sortPriorityHighFirst,
-      ),
-    ];
-  }
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -209,6 +159,77 @@ class _SectionLabel extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
       ),
+    );
+  }
+}
+
+/// The four sort orders of the shared filter system (design section 4.3).
+/// Used by the filter sheet and the search screen so the two never drift.
+List<({IconData icon, TaskSort sort, String label})> taskSortOptions(
+  AppLocalizations l10n,
+) {
+  return [
+    (
+      icon: Icons.south,
+      sort: TaskSort.deadlineAsc,
+      label: l10n.sortDeadlineAsc,
+    ),
+    (
+      icon: Icons.north,
+      sort: TaskSort.deadlineDesc,
+      label: l10n.sortDeadlineDesc,
+    ),
+    (
+      icon: Icons.schedule,
+      sort: TaskSort.createdDesc,
+      label: l10n.sortCreatedDesc,
+    ),
+    (
+      icon: Icons.flag_outlined,
+      sort: TaskSort.priorityHighFirst,
+      label: l10n.sortPriorityHighFirst,
+    ),
+  ];
+}
+
+/// The three status chips (all / pending / done) used by the filter sheet
+/// and the search screen.
+class TaskStatusChips extends StatelessWidget {
+  const TaskStatusChips({
+    super.key,
+    required this.status,
+    required this.onChanged,
+  });
+
+  final TaskStatusFilter status;
+  final ValueChanged<TaskStatusFilter> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        ChoiceChip(
+          avatar: const Icon(Icons.list, size: 18),
+          label: Text(l10n.allLabel),
+          selected: status == TaskStatusFilter.all,
+          onSelected: (_) => onChanged(TaskStatusFilter.all),
+        ),
+        ChoiceChip(
+          avatar: const Icon(Icons.radio_button_unchecked, size: 18),
+          label: Text(l10n.pendingLabel),
+          selected: status == TaskStatusFilter.pending,
+          onSelected: (_) => onChanged(TaskStatusFilter.pending),
+        ),
+        ChoiceChip(
+          avatar: const Icon(Icons.check_circle_outline, size: 18),
+          label: Text(l10n.doneLabel),
+          selected: status == TaskStatusFilter.done,
+          onSelected: (_) => onChanged(TaskStatusFilter.done),
+        ),
+      ],
     );
   }
 }

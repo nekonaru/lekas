@@ -1804,4 +1804,42 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noCategoryFallback => 'Tanpa kategori';
+
+  @override
+  String get tapToCheckUpdates => 'Ketuk untuk memeriksa versi terbaru';
+
+  @override
+  String get autoUpdateCheckTitle => 'Periksa pembaruan otomatis';
+
+  @override
+  String get autoUpdateCheckSubtitle =>
+      'Sekali sehari saat membuka aplikasi; tidak mengirim data';
+
+  @override
+  String get updateAvailableTitle => 'Pembaruan tersedia';
+
+  @override
+  String updateAvailableBody(String version) {
+    return 'Lekas $version sudah ada. Unduh dan pasang APK terbaru agar aplikasi selalu paling baru.';
+  }
+
+  @override
+  String updateAvailableShort(String version) {
+    return 'Pembaruan tersedia: $version';
+  }
+
+  @override
+  String get updateDownload => 'Unduh';
+
+  @override
+  String get updateLater => 'Nanti';
+
+  @override
+  String appUpToDate(String version) {
+    return 'Kamu memakai versi terbaru ($version)';
+  }
+
+  @override
+  String get updateCheckFailed =>
+      'Tidak bisa memeriksa pembaruan. Periksa koneksi internet.';
 }

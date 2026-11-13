@@ -1804,4 +1804,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noCategoryFallback => 'Uncategorized';
+
+  @override
+  String get tapToCheckUpdates => 'Tap to check for the latest version';
+
+  @override
+  String get autoUpdateCheckTitle => 'Automatic update check';
+
+  @override
+  String get autoUpdateCheckSubtitle =>
+      'Once a day on launch; sends nothing to us';
+
+  @override
+  String get updateAvailableTitle => 'Update available';
+
+  @override
+  String updateAvailableBody(String version) {
+    return 'Lekas $version is available. Download and install the new APK to stay current.';
+  }
+
+  @override
+  String updateAvailableShort(String version) {
+    return 'Update available: $version';
+  }
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String appUpToDate(String version) {
+    return 'You are on the latest version ($version)';
+  }
+
+  @override
+  String get updateCheckFailed =>
+      'Could not check for updates. Check your connection.';
 }

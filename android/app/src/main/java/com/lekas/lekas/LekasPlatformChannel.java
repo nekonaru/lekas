@@ -14,8 +14,9 @@ import io.flutter.plugin.common.MethodChannel;
 
 /**
  * Small platform channel for things that need no plugin: the device time zone
- * id (used to schedule reminders) and the system screens for notification and
- * battery settings (used by the reminder check screen).
+ * id (used to schedule reminders), the system screens for notification and
+ * battery settings (used by the reminder check screen) and the https-only web
+ * link for the update checker.
  */
 public final class LekasPlatformChannel implements MethodChannel.MethodCallHandler {
     public static final String NAME = "lekas/platform";
@@ -44,6 +45,10 @@ public final class LekasPlatformChannel implements MethodChannel.MethodCallHandl
         } else if ("openBatterySettings".equals(method)) {
             openBatterySettings();
             result.success(null);
+        } else if ("openUrl".equals(method)) {
+            Object arguments = call.arguments;
+            openUrl(arguments instanceof String ? (String) arguments : "");
+            result.success(null);
         } else {
             result.notImplemented();
         }
@@ -64,6 +69,20 @@ public final class LekasPlatformChannel implements MethodChannel.MethodCallHandl
     private void openBatterySettings() {
         // The battery saver list needs no permission to open.
         startSafely(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+    }
+
+    private void openUrl(String url) {
+        // Update links open in the browser; https only, so a crafted string
+        // cannot pivot into another scheme.
+        Uri uri;
+        try {
+            uri = Uri.parse(url);
+        } catch (Exception ignored) {
+            return;
+        }
+        String scheme = uri.getScheme();
+        if (scheme == null || !scheme.equalsIgnoreCase("https")) return;
+        startSafely(new Intent(Intent.ACTION_VIEW, uri));
     }
 
     private void startSafely(Intent intent) {

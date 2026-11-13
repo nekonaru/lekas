@@ -3331,6 +3331,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tanpa kategori'**
   String get noCategoryFallback;
+
+  /// No description provided for @tapToCheckUpdates.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk memeriksa versi terbaru'**
+  String get tapToCheckUpdates;
+
+  /// No description provided for @autoUpdateCheckTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa pembaruan otomatis'**
+  String get autoUpdateCheckTitle;
+
+  /// No description provided for @autoUpdateCheckSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekali sehari saat membuka aplikasi; tidak mengirim data'**
+  String get autoUpdateCheckSubtitle;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pembaruan tersedia'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lekas {version} sudah ada. Unduh dan pasang APK terbaru agar aplikasi selalu paling baru.'**
+  String updateAvailableBody(String version);
+
+  /// No description provided for @updateAvailableShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Pembaruan tersedia: {version}'**
+  String updateAvailableShort(String version);
+
+  /// No description provided for @updateDownload.
+  ///
+  /// In id, this message translates to:
+  /// **'Unduh'**
+  String get updateDownload;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti'**
+  String get updateLater;
+
+  /// No description provided for @appUpToDate.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu memakai versi terbaru ({version})'**
+  String appUpToDate(String version);
+
+  /// No description provided for @updateCheckFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa memeriksa pembaruan. Periksa koneksi internet.'**
+  String get updateCheckFailed;
 }
 
 class _AppLocalizationsDelegate
