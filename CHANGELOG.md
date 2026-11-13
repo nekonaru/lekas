@@ -2,6 +2,31 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.12.0
+
+Lekas swaps the Inbox tab for a Categories tab, makes the calendar a working agenda, stores course files on your phone, and manages attendance and the bring list per course.
+
+### New features
+
+- **Categories tab.** The Inbox tab is gone; in its place sits Kategori, free-form containers named however you want (organizations, committees, communities), plus an uncategorized row at the top of the list for tasks without a category.
+- **Files per course.** Each course keeps modules, notes, papers, archives and folders inside a real tree on your phone storage. Pick the folder once; every course gets a Lekas folder with its own subfolders; no file ever leaves the phone.
+- **Semester tab carries Mata Kuliah.** Manage the courses of the active semester from the Semester tab; free containers live under Kategori.
+- **The calendar is a real agenda.** Class times and tasks for the selected day are listed under the month grid; tap any entry or any day cell, see all tasks of a busy day, check tasks off, or dive into a course.
+- **Fuller attendance.** Mark present, absent, excused or sick per meeting; every past record can be edited or deleted from the course's attendance screen.
+- **Bring list per course.** The bring list is per course, editable, reorderable and checkable item by item.
+
+### Improvements
+
+- **Today shows the owner.** Every card in the Today list carries its category or course name in the subtitle.
+- **Class schedule meets the calendar.** Class days glow in the month grid, and the schedule screen is rebuilt around grouped weekday cards with inline edit and delete.
+- **One roof per course.** Attendance, the bring list, the class schedule, files and grade prediction all live inside a course's detail screen.
+- **Selection bars stay below.** Bulk action bars dock to the bottom, consistent across Today, Inbox, Categories and Tasks.
+
+### Bug fixes
+
+- **No more controller crashes on dialog close.** Text field controllers are disposed after the closing animation instead of cutting it off.
+- **Dead screens removed.** Nine placeholder screens and the old categories helper were never wired to anything and are gone for good.
+
 ## v1.11.0
 
 Lekas can now check for a newer release on its own: Settings shows the installed version, asks GitHub on tap, and a quiet once a day check speaks up only when a newer APK exists.

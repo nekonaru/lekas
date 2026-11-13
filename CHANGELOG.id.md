@@ -2,6 +2,31 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.12.0
+
+Lekas mengganti tab Inbox dengan tab Kategori, membuat kalender menjadi agenda yang berfungsi nyata, menyimpan berkas mata kuliah di penyimpanan HP, serta mengelola kehadiran dan daftar bawaan per mata kuliah.
+
+### Fitur baru
+
+- **Tab Kategori.** Tab Inbox dihapus; di posisi itu kini Kategori, wadah bebas bernama apa pun (organisasi, kepanitiaan, komunitas), plus baris tanpa kategori di atas daftar untuk tugas yang belum punya tempat.
+- **Berkas per mata kuliah.** Setiap mata kuliah menyimpan modul, catatan, soal, dan arsip di dalam pohon folder sungguhan pada penyimpanan HP. Pilih folder sekali; setiap mata kuliah mendapat folder Lekas dengan subfoldernya sendiri; tidak ada berkas yang meninggalkan HP.
+- **Tab Semester membawa Mata Kuliah.** Kelola mata kuliah semester aktif dari tab Semester; wadah bebas hidup di bawah Kategori.
+- **Kalender menjadi agenda sungguhan.** Jam kelas dan tugas untuk hari yang dipilih tercantum di bawah grid bulan; ketuk entri apa pun atau sel tanggal mana pun, lihat semua tugas pada hari yang sibuk, centang tugas, atau masuk ke mata kuliah.
+- **Kehadiran yang lengkap.** Tandai hadir, absen, izin, atau sakit per pertemuan; setiap catatan lama bisa diubah atau dihapus dari layar kehadiran mata kuliahnya.
+- **Daftar bawaan per mata kuliah.** Daftar bawaan kini per mata kuliah, bisa diubah, diurutkan ulang, dan dicentang per item.
+
+### Peningkatan
+
+- **Today menampilkan pemiliknya.** Setiap kartu di daftar Today membawa nama kategori atau mata kuliahnya di subtitle.
+- **Jadwal kelas bertemu kalender.** Hari-hari ada kelas menyala di grid bulan, dan layar jadwal dibangun ulang menjadi kartu per hari dengan ubah dan hapus langsung.
+- **Satu atap per mata kuliah.** Kehadiran, daftar bawaan, jadwal kelas, berkas, dan prediksi nilai semuanya tinggal di layar detail mata kuliah.
+- **Bar pilih massal di bawah.** Bar aksi massal berlabuh di bawah, konsisten di Today, Inbox, Kategori, dan Tugas.
+
+### Perbaikan bug
+
+- **Tidak ada lagi crash controller saat menutup dialog.** Controller TextField dibuang setelah animasi keluar selesai, bukan saat frame penutupnya dibongkar.
+- **Layar mati dihapus.** Sembilan layar placeholder dan helper kategori lama tidak pernah terhubung ke mana pun dan kini hilang selamanya.
+
 ## v1.11.0
 
 Lekas kini bisa memeriksa rilis baru dengan sendirinya: Pengaturan menampilkan versi terpasang, bertanya ke GitHub saat diketuk, dan pemeriksaan senyap sekali sehari berbicara hanya saat APK baru tersedia.

@@ -61,23 +61,27 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Voice Quick Add** | Mikrofon di Quick Add dan di layarnya sendiri; angka yang diucapkan seperti "jam tujuh" menjadi deadline |
 | **Share intake** | Teks yang dibagikan dari WhatsApp atau aplikasi apa pun dipecah menjadi kandidat dan diurai sebelum disimpan, tidak ada yang tersimpan otomatis |
 
-### Tugas, Wadah dan Semester
+### Tugas, Kategori dan Semester
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Space** | Mata kuliah dan wadah lain dengan warna, kode, alias untuk parser, dan catatan untuk dosen, ruang, dan tautan |
-| **Semester** | Tab semester aktif: hero dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah, semester lain sekali ketuk; buat, ubah nama, aktifkan, dan hapus semester (space-nya ikut terhapus, tugasnya pindah ke Inbox) |
+| **Kategori** | Wadah bebas bernama apa pun (organisasi, kepanitiaan, komunitas); menyimpan warna, tugas, dan aksi kelolanya sendiri, plus baris tanpa kategori untuk tugas yang belum punya tempat |
+| **Mata kuliah** | Wadah terikat semester dengan kehadiran, jadwal kelas yang bisa diedit, daftar bawaan per mata kuliah, prediksi nilai, dan folder berkas sendiri |
+| **Semester** | Tab semester aktif: hero dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah, semester lain sekali ketuk; buat, ubah nama, aktifkan, dan hapus semester (mata kuliahnya ikut terhapus, tugasnya pindah ke Inbox) |
 | **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
 | **Filter dan pengelompokan tugas** | Kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat atau terjauh, terbaru dibuat, prioritas tertinggi) dalam satu sheet filter; opsi pengelompokan per kategori dengan jumlah per grup |
+| **Berkas per mata kuliah** | Modul, catatan, soal, dan arsip di pohon folder sungguhan pada penyimpanan HP; setiap mata kuliah punya subfolder sendiri, terlihat oleh file manager apa pun |
+| **Kehadiran per mata kuliah** | Tandai hadir, absen, izin, atau sakit per pertemuan; setiap catatan lama bisa diubah atau dihapus |
+| **Daftar bawaan per mata kuliah** | Bisa diedit, diurutkan ulang, dan dicentang per item |
 | **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagian tersendiri, prasyarat yang selesai mengirim satu pemberitahuan lembut "siap dimulai", dan penyimpanan yang akan membentuk putaran ditolak |
 | **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam sebuah space |
-| **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah, dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
+| **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah (baris Tanpa Kategori di tab Kategori), dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
 
 ### Hari Ini dan Fokus
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Layar Hari Ini** | Skor urgensi dengan bagian terlambat, hari ini, menunggu, dan suatu hari nanti, plus snackbar undo |
+| **Layar Hari Ini** | Skor urgensi dengan bagian terlambat, hari ini, menunggu, dan suatu hari nanti, plus snackbar undo; setiap kartu membawa nama kategori atau mata kuliahnya |
 | **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk menyelesaikan, geser kiri untuk menunda |
 | **Mode fokus** | Maksimal tiga tugas per hari, timer fokus 25/5, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
 
@@ -85,7 +89,8 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Kalender** | Tampilan bulan dan minggu, jadwal kuliah, presensi dengan batas lulus kampus (5.19) |
+| **Kalender** | Grid bulan dengan penanda kelas dan tugas; ketuk hari mana pun untuk melihat agendanya di bawah: kelas dengan jam dan ruang, tugas yang jatuh tempo, satu ketukan ke daftar lengkap atau ke detail tugas |
+| **Jadwal kelas** | Jadwal terkelompok per hari dengan entri yang bisa diedit, ruang, dan jenis (kuliah atau praktikum), terhubung dengan penanda kalender |
 | **Statistik semester** | Statistik per mata kuliah dan rekap semester di balik drawer |
 
 ### Pengingat
@@ -289,7 +294,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (492 tes) |
+| `flutter test` | Seluruh suite harus lulus (507 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

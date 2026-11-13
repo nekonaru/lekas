@@ -61,23 +61,27 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Voice Quick Add** | Microphone in Quick Add and on its own screen; spoken numbers such as "jam tujuh" become a deadline |
 | **Share intake** | Text shared from WhatsApp or any app is split into candidates and parsed before saving, nothing is stored automatically |
 
-### Tasks, Spaces and Semesters
+### Tasks, Categories and Semesters
 
 | Feature | Description |
 |---------|-------------|
-| **Spaces** | Courses and other containers with color, code, aliases for the parser, and notes for lecturer, room and link |
+| **Categories** | Free-form containers you name anything (organization, committee, community); they keep color, tasks and their own manage actions, and an uncategorized row holds tasks without one |
+| **Courses** | Spaces bound to a semester with attendance, an editable class schedule, a per course bring list, grade prediction and their own folder for files |
 | **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
 | **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |
+| **Files per course** | Modules, notes, papers and archives under a real folder tree stored directly in phone storage; each course gets its own subfolder, visible to any file manager |
+| **Attendance per course** | Mark present, absent, excused or sick per meeting; every past record can be edited or deleted |
+| **Bring list per course** | Editable, reorderable and checkable per course |
 | **Task dependencies** | Prerequisites per task; blocked tasks wait in their own section, a finished prerequisite sends one soft "ready to start" notice, and a save that would close a loop is refused |
 | **Personal target and grade prediction** | A target date before the deadline, plus grade prediction inside a space |
-| **Inbox and trash** | Quick capture without a course, and a trash that keeps deleted tasks restorable |
+| **Inbox and trash** | Quick capture without a course (the Uncategorized row on the Categories tab), and a trash that keeps deleted tasks restorable |
 
 ### Today and Focus
 
 | Feature | Description |
 |---------|-------------|
-| **Today screen** | Urgency score with overdue, today, waiting and someday sections, plus an undo snackbar |
+| **Today screen** | Urgency score with overdue, today, waiting and someday sections, plus an undo snackbar; every card shows its category or course |
 | **Smart actions** | Long press for multi select and bulk actions, swipe right to finish, swipe left to postpone |
 | **Focus mode** | At most three tasks a day, a 25/5 focus timer, and what did not fit carries over (5.24) |
 
@@ -85,7 +89,8 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 
 | Feature | Description |
 |---------|-------------|
-| **Calendar** | Month and week views, class schedule, attendance with the campus passing grade (5.19) |
+| **Calendar** | Month view with class and task markers; tap any day to see its agenda below: classes with times and rooms, tasks due, one tap to the full list or a task |
+| **Class schedule** | Weekday grouped schedule with editable entries, rooms and kinds (lecture or lab), synced to the calendar markers |
 | **Semester statistics** | Per-course statistics and a semester recap behind the drawer |
 
 ### Reminders
@@ -289,7 +294,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (492 tests) |
+| `flutter test` | Must pass the full suite (507 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
