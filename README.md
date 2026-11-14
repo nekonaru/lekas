@@ -114,6 +114,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Backup and restore** | JSON export and import, everything stored locally with Drift (SQLite) |
 | **Import and merge** | Merge a backup into the current database without losing what is already there |
 | **Update check** | Settings shows the installed version; tap to check the latest GitHub release. A quiet once-a-day check runs on launch (disableable in Settings) and only speaks up when a newer version exists |
+| **Support Lekas** | Sponsor links under Settings: GitHub Sponsors, Saweria, SociaBuzz and BagiBagi, all https, all opening via the platform channel |
 
 ### Appearance and Language
 

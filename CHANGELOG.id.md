@@ -2,6 +2,25 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.13.0
+
+Lekas kini membuka dengan brand reveal, fitur kelola kategori dan mata kuliah diperdalam, dan ada bagian sponsor di Pengaturan, dengan drawer dan menu yang lebih tenang.
+
+### Fitur baru
+
+- **Brand reveal saat membuka.** Aplikasi kini membuka dengan logo Lekas, wordmark, dan tagline yang memudar di atas gradien brand, lalu larut ke dalam aplikasi.
+- **Sponsor dan tentang di Pengaturan.** Bagian dukungan dengan GitHub Sponsors, Saweria, SociaBuzz, dan BagiBagi, plus dialog Tentang dan tautan kode sumber, semuanya terbuka lewat channel platform (https saja).
+- **Kelola kategori dan mata kuliah lebih dalam.** Formulir ruang kini mengedit nama, warna, kode, SKS, dan target nilai; baris mata kuliah di tab Semester menawarkan ubah, arsip, dan hapus langsung di tempat; Kategori dan Mata Kuliah menampilkan jumlah tugas belum selesai per baris secara langsung.
+
+### Peningkatan
+
+- **Drawer lebih tenang.** Menu mengelompokkan tugas, data, dan sistem dalam seksi berlabel dengan ikon beraksen tipis, header brand dengan chip versi langsung, dan lencana trash yang menghitung apa yang masih bisa dipulihkan.
+- **Empty state lebih halus.** Layar kosong pudar dan membesar dengan cahaya lembut, bukan muncul tiba-tiba.
+
+### Perbaikan bug
+
+- **Intro tidak lagi menelan ketukan.** Splash menghilang setelah reveal-nya, sehingga onboarding dan gerbang kunci di bawahnya menerima ketukan pertama seperti seharusnya.
+
 ## v1.12.0
 
 Lekas mengganti tab Inbox dengan tab Kategori, membuat kalender menjadi agenda yang berfungsi nyata, menyimpan berkas mata kuliah di penyimpanan HP, serta mengelola kehadiran dan daftar bawaan per mata kuliah.

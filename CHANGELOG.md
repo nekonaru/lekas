@@ -2,6 +2,25 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.13.0
+
+Lekas opens with a brand reveal, packs deeper category and course management, and brings a sponsor section to Settings, all with a calmer drawer and menus.
+
+### New features
+
+- **Intro reveal.** The app now opens with the Lekas mark, wordmark and tagline fading in over a brand gradient, then dissolves into the app.
+- **Sponsor and about in Settings.** A support section with GitHub Sponsors, Saweria, SociaBuzz and BagiBagi, plus an About dialog and the source link, all opening via the platform channel (https only).
+- **Deeper course and category management.** The space form now edits name, color, code, SKS and target grade; the Semester screen's course rows offer edit, archive and delete inline; Kategori and Courses show live open-task counts per row.
+
+### Improvements
+
+- **Calmer drawer.** The menu groups tasks, data and system under labeled sections with tinted icons, a brand header with the live version chip, and a trash badge that counts what can still come back.
+- **Smoother empty states.** Empty screens fade and scale in with a soft glow instead of popping in.
+
+### Bug fixes
+
+- **Intro no longer swallows taps.** The splash removes itself after its reveal, so onboarding and the lock gate beneath it receive the first taps as expected.
+
 ## v1.12.0
 
 Lekas swaps the Inbox tab for a Categories tab, makes the calendar a working agenda, stores course files on your phone, and manages attendance and the bring list per course.

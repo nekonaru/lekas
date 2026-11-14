@@ -114,6 +114,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Cadangkan dan pulihkan** | Ekspor dan impor JSON, semuanya disimpan lokal dengan Drift (SQLite) |
 | **Impor dan gabung** | Gabungkan cadangan ke database saat ini tanpa kehilangan yang sudah ada |
 | **Periksa pembaruan** | Settings menampilkan versi terpasang; ketuk untuk memeriksa rilis terbaru di GitHub. Pemeriksaan senyap sekali sehari berjalan saat membuka aplikasi (bisa dimatikan di Pengaturan) dan hanya berbicara saat ada versi baru |
+| **Dukung Lekas** | Tautan sponsor di Pengaturan: GitHub Sponsors, Saweria, SociaBuzz, dan BagiBagi, semua https, semuanya terbuka lewat channel platform |
 
 ### Tampilan dan Bahasa
 
