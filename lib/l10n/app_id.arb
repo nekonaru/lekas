@@ -663,5 +663,16 @@
   "filesSurviveDeletion": "Berkas tertinggal di penyimpanan HP dan tidak terhapus saat mata kuliah dihapus.",
   "unableToCreateFolder": "Folder tidak bisa dibuat",
   "permissionLostFolder": "Akses ke folder yang dipilih hilang; pilih ulang",
-  "filesOpFailed": "Itu tidak berhasil"
+  "filesOpFailed": "Itu tidak berhasil",
+  "colorLabel": "Warna",
+  "targetGradeFieldLabel": "Target nilai",
+  "splashTagline": "Tugas, beres.",
+  "sponsorTitle": "Dukung Lekas",
+  "sponsorCaption": "Lekas gratis selamanya. Kalau Lekas membantu kamu, traktir kopi untuk mendukung pengembangannya.",
+  "aboutTitle": "Tentang",
+  "aboutLekas": "Tentang Lekas",
+  "aboutBody": "Lekas adalah aplikasi pelacak tugas gratis dan open source untuk mahasiswa. Bekerja offline, data tersimpan di ponselmu, tanpa iklan, tanpa telemetri, dan tanpa fitur berbayar.",
+  "licenseTitle": "Lisensi",
+  "sourceCodeTitle": "Kode sumber",
+  "viewOnGithub": "Lihat di GitHub"
 }

@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/empty_state.dart';
 import '../../core/components/selection_bottom_bar.dart';
 import '../../core/components/undo_snackbar.dart';
-import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import '../inbox/inbox_screen.dart';
 import 'space_detail_screen.dart';
 import 'space_form_dialog.dart';
-
 /// What the list shows: every space (the old manage view), the free,
 /// semester-less categories (the Kategori tab), or the courses of the
 /// active and past semesters (pushed from the Semester tab).
@@ -47,6 +44,22 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
   void initState() {
     super.initState();
   }
+
+  /// The subtitle line of a row: the course code when set, the open task
+  /// count of the space, or both.
+  String _subtitleOf(Space space) {
+    final l10n = AppLocalizations.of(context)!;
+    final code = space.code?.trim();
+    final count = _openCounts[space.id] ?? 0;
+    if (code != null && code.isNotEmpty) {
+      return '$code · ${l10n.openTasksCount(count)}';
+    }
+    return l10n.openTasksCount(count);
+  }
+
+  /// Open task counts per space, computed from the tasks stream once per
+  /// emission; the rows render from the table, never from a spinner.
+  final Map<String, int> _openCounts = {};
 
   bool _inScope(Space space) {
     switch (widget.view) {
@@ -152,68 +165,6 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
     if (mounted) setState(() {});
   }
 
-  /// The create dialog for the tab: a free-form name for a category or a
-  /// course. Colors are derived from the name so the same name always
-  /// gets the same avatar.
-  Future<void> _create() async {
-    final l10n = AppLocalizations.of(context)!;
-    final controller = TextEditingController();
-    final created = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(_addLabel(l10n)),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-            labelText: l10n.categoryNameLabel,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (controller.text.trim().isEmpty) return;
-              Navigator.pop(dialogContext, true);
-            },
-            child: Text(l10n.save),
-          ),
-        ],
-      ),
-    );
-    final name = controller.text.trim();
-    // Let the exit animation of the dialog finish before disposing the
-    // controller; dropping it right after pop crashes the closing frames.
-    Future<void>.delayed(
-      const Duration(milliseconds: 400),
-      controller.dispose,
-    );
-    if (created != true || name.isEmpty) return;
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final color = AppTheme.containerColors[name.hashCode.abs() %
-        AppTheme.containerColors.length];
-    // A course lands in the active semester; a category belongs to none.
-    await ref.read(spaceRepositoryProvider).insertSpace(
-          Space(
-            id: const Uuid().v4(),
-            name: name,
-            color: color.toARGB32(),
-            kind: _isFree ? 'category' : 'course',
-            archived: false,
-            sortOrder: 0,
-            createdAt: now,
-            updatedAt: now,
-            semesterId: null,
-          ),
-        );
-    if (mounted) setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -230,7 +181,18 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
       // The stream keeps the rows in drag order from the table, so a
       // reorder writes the order and the list follows; it also means a
       // rename or archive anywhere else shows up at once.
-      body: Column(
+      body: StreamBuilder<List<Task>>(
+        stream: ref.watch(taskRepositoryProvider).watchTasks(
+          includeInbox: true,
+        ),
+        builder: (context, tasksSnapshot) {
+          _openCounts.clear();
+          for (final task in tasksSnapshot.data ?? const <Task>[]) {
+            final sid = task.spaceId;
+            if (sid == null || task.status == 'done') continue;
+            _openCounts[sid] = (_openCounts[sid] ?? 0) + 1;
+          }
+          return Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
@@ -300,6 +262,8 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
             ),
           ),
         ],
+          );
+        },
       ),
       bottomNavigationBar: selecting
           ? SelectionBottomBar(
@@ -318,11 +282,12 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           ? null
           : FloatingActionButton.extended(
               onPressed: () async {
-                if (_isFree || widget.view == SpaceView.courses) {
-                  await _create();
-                } else {
-                  await showSpaceFormDialog(context, ref);
-                }
+                await showSpaceFormDialog(
+                  context,
+                  ref,
+                  existing: null,
+                  kind: _isFree ? 'category' : 'course',
+                );
                 if (mounted) setState(() {});
               },
               icon: const Icon(Icons.add),
@@ -358,7 +323,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
               ),
             ),
             title: Text(space.name),
-            subtitle: Text(space.code ?? ''),
+            subtitle: Text(_subtitleOf(space)),
             trailing: const Icon(Icons.drag_handle),
           );
         },
@@ -385,7 +350,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
                   ),
                 ),
           title: Text(space.name),
-          subtitle: Text(space.code ?? ''),
+          subtitle: Text(_subtitleOf(space)),
           trailing: selecting
               ? null
               : IconButton(
@@ -425,7 +390,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
             ),
           ),
           title: Text(space.name),
-          subtitle: Text(space.code ?? ''),
+          subtitle: Text(_subtitleOf(space)),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -470,11 +435,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
               title: Text(l10n.editSpaceTitle),
               onTap: () async {
                 Navigator.pop(sheetContext);
-                if (widget.view != SpaceView.all) {
-                  await _rename(space);
-                } else {
-                  await showSpaceFormDialog(context, ref, existing: space);
-                }
+                await showSpaceFormDialog(context, ref, existing: space);
                 if (mounted) setState(() {});
               },
             ),
@@ -518,48 +479,6 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
     );
   }
 
-  /// Rename dialog for the category and course flows (no code field).
-  Future<void> _rename(Space space) async {
-    final l10n = AppLocalizations.of(context)!;
-    final controller = TextEditingController(text: space.name);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.editSpaceTitle),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-            labelText: l10n.categoryNameLabel,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(l10n.save),
-          ),
-        ],
-      ),
-    );
-    final name = controller.text.trim();
-    Future<void>.delayed(
-      const Duration(milliseconds: 400),
-      controller.dispose,
-    );
-    if (confirmed != true || name.isEmpty || name == space.name) return;
-    await ref.read(spaceRepositoryProvider).updateSpace(
-          space.copyWith(
-            name: name,
-            updatedAt: DateTime.now().millisecondsSinceEpoch,
-          ),
-        );
-  }
 }
 
 /// The uncategorized row of the Kategori tab: the tasks that fell out of

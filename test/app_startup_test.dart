@@ -67,7 +67,8 @@ void main() {
     );
     // Let the post frame callbacks and the first async gap run.
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    // The intro reveal runs past the first frames; settle on its end.
+    await tester.pump(const Duration(milliseconds: 1600));
 
     // The MaterialApp is up: a crash before the first frame would have thrown
     // out of pumpWidget already. We only require the tree to have a MaterialApp.
@@ -91,7 +92,8 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    // The intro reveal runs past the first frames; settle on its end.
+    await tester.pump(const Duration(milliseconds: 1600));
 
     // A fresh install is not onboarded yet, so the shell lands on onboarding
     // instead of force closing.

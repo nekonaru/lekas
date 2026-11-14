@@ -290,6 +290,77 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await ref.read(reminderServiceProvider).syncAll();
   }
 
+  /// The about dialog: what the app is, in one breath, and the license.
+  Future<void> _showAbout() async {
+    final l10n = AppLocalizations.of(context)!;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Lekas'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.aboutBody),
+              const SizedBox(height: 14),
+              Text(
+                'v$appVersion · MIT License',
+                style: Theme.of(dialogContext).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(dialogContext).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.closeLabel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              openUpdateUrl('https://github.com/nekonaru/lekas');
+            },
+            child: Text(l10n.viewOnGithub),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showLicense() async {
+    final l10n = AppLocalizations.of(context)!;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.licenseTitle),
+        content: SingleChildScrollView(
+          child: const Text(
+            'MIT License\n'
+            'Copyright (c) 2026 nekonaru\n\n'
+            'Permission is hereby granted, free of charge, to any person '
+            'obtaining a copy of this software and associated documentation '
+            'files (the "Software"), to deal in the Software without '
+            'restriction, including without limitation the rights to use, '
+            'copy, modify, merge, publish, distribute, sublicense, and/or '
+            'sell copies of the Software, and to permit persons to whom the '
+            'Software is furnished to do so, subject to the following '
+            'conditions: the Software is provided as is, without warranty '
+            'of any kind.',
+          ),
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.closeLabel),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Flips the once a day background update check; deliberately not wired
   /// into [_setFlag], because it has nothing to do with reminder syncing.
   Future<void> _setAutoUpdateCheck(bool value) async {
@@ -506,6 +577,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.demoModeTitle),
             onTap: () => _push(const ModeDemoScreen()),
           ),
+          _settingsSection(l10n.sponsorTitle),
+          _sponsorRow(
+            icon: Icons.favorite,
+            color: const Color(0xFFEA4AAA),
+            title: 'GitHub Sponsors',
+            subtitle: 'github.com/sponsors/nekonaru',
+            onTap: () => openUpdateUrl('https://github.com/sponsors/nekonaru'),
+          ),
+          _sponsorRow(
+            icon: Icons.local_cafe_rounded,
+            color: const Color(0xFFFFA726),
+            title: 'Saweria',
+            subtitle: 'saweria.co/nekonaruu',
+            onTap: () => openUpdateUrl('https://saweria.co/nekonaruu'),
+          ),
+          _sponsorRow(
+            icon: Icons.volunteer_activism,
+            color: const Color(0xFFF472B6),
+            title: 'SociaBuzz',
+            subtitle: 'sociabuzz.com/nekonaru/donate',
+            onTap: () => openUpdateUrl('https://sociabuzz.com/nekonaru/donate'),
+          ),
+          _sponsorRow(
+            icon: Icons.card_giftcard,
+            color: const Color(0xFF10B981),
+            title: 'BagiBagi',
+            subtitle: 'bagibagi.co/Nekonaru',
+            onTap: () => openUpdateUrl('https://bagibagi.co/Nekonaru'),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+            child: Text(
+              l10n.sponsorCaption,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          _settingsSection(l10n.aboutTitle),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l10n.aboutLekas),
+            onTap: _showAbout,
+          ),
+          ListTile(
+            leading: const Icon(Icons.code),
+            title: Text(l10n.sourceCodeTitle),
+            subtitle: const Text('github.com/nekonaru/lekas'),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => openUpdateUrl('https://github.com/nekonaru/lekas'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: Text(l10n.licenseTitle),
+            subtitle: const Text('MIT'),
+            onTap: _showLicense,
+          ),
           const Divider(),
           SwitchListTile(
             title: Text(l10n.autoUpdateCheckTitle),
@@ -695,4 +823,58 @@ class _AccentPickerDialogState extends State<_AccentPickerDialog> {
       ),
     );
   }
+}
+
+/// The small caps section label used above the supporting groups,
+/// in the accent color, matching the drawer style.
+Widget _settingsSection(String label, [Color? accent]) {
+  final effective = accent;
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
+    child: Builder(
+      builder: (context) {
+        final color = effective ?? Theme.of(context).colorScheme.primary;
+        return Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.3,
+            color: color,
+          ),
+        );
+      },
+    ),
+  );
+}
+
+/// One sponsor row: a colored glyph, the platform name, and the link.
+Widget _sponsorRow({
+  required IconData icon,
+  required Color color,
+  required String title,
+  required String subtitle,
+  required VoidCallback onTap,
+}) {
+  return ListTile(
+    leading: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(icon, size: 22, color: color),
+    ),
+    title: Text(
+      title,
+      style: const TextStyle(fontWeight: FontWeight.w700),
+    ),
+    subtitle: Text(
+      subtitle,
+      style: const TextStyle(fontSize: 12),
+    ),
+    trailing: const Icon(Icons.chevron_right),
+    onTap: onTap,
+  );
 }

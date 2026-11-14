@@ -663,5 +663,16 @@
   "filesSurviveDeletion": "Files stay in storage and survive course deletion",
   "unableToCreateFolder": "The folder could not be created",
   "permissionLostFolder": "Access to the picked folder is lost; pick it again",
-  "filesOpFailed": "That did not work"
+  "filesOpFailed": "That did not work",
+  "colorLabel": "Color",
+  "targetGradeFieldLabel": "Target grade",
+  "splashTagline": "Task done.",
+  "sponsorTitle": "Support Lekas",
+  "sponsorCaption": "Lekas is free forever. If it helps you, buying a coffee keeps the project going.",
+  "aboutTitle": "About",
+  "aboutLekas": "About Lekas",
+  "aboutBody": "Lekas is a free and open source task tracker for students. It works offline, keeps your data on your phone, shows no ads, runs no telemetry, and has no paid features.",
+  "licenseTitle": "License",
+  "sourceCodeTitle": "Source code",
+  "viewOnGithub": "View on GitHub"
 }

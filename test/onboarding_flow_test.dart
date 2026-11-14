@@ -65,7 +65,8 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    // The intro reveal runs past the first frames; taps must wait for it.
+    await tester.pump(const Duration(milliseconds: 1600));
     return container;
   }
 

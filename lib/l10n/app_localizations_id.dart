@@ -1969,4 +1969,39 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get filesOpFailed => 'Itu tidak berhasil';
+
+  @override
+  String get colorLabel => 'Warna';
+
+  @override
+  String get targetGradeFieldLabel => 'Target nilai';
+
+  @override
+  String get splashTagline => 'Tugas, beres.';
+
+  @override
+  String get sponsorTitle => 'Dukung Lekas';
+
+  @override
+  String get sponsorCaption =>
+      'Lekas gratis selamanya. Kalau Lekas membantu kamu, traktir kopi untuk mendukung pengembangannya.';
+
+  @override
+  String get aboutTitle => 'Tentang';
+
+  @override
+  String get aboutLekas => 'Tentang Lekas';
+
+  @override
+  String get aboutBody =>
+      'Lekas adalah aplikasi pelacak tugas gratis dan open source untuk mahasiswa. Bekerja offline, data tersimpan di ponselmu, tanpa iklan, tanpa telemetri, dan tanpa fitur berbayar.';
+
+  @override
+  String get licenseTitle => 'Lisensi';
+
+  @override
+  String get sourceCodeTitle => 'Kode sumber';
+
+  @override
+  String get viewOnGithub => 'Lihat di GitHub';
 }

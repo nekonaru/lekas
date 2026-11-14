@@ -10,6 +10,7 @@ import 'data/providers.dart';
 import 'features/home/home_shell.dart';
 import 'features/home/home_widget_sync.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/onboarding/intro_splash.dart';
 import 'features/quick_add/quick_add_sheet.dart';
 import 'features/share_intake/share_intake_screen.dart';
 import 'features/tasks/fokus_hari_ini_screen.dart';
@@ -56,6 +57,10 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
   /// True while the pin gate covers the app. Starts locked so an enabled
   /// lock challenges on launch, then every foreground return locks again.
   bool _locked = true;
+
+  /// False until the intro cover finishes its one second reveal, once per
+  /// process launch.
+  bool _introDone = false;
 
   StreamSubscription<List<SharedMediaFile>>? _shareSubscription;
   StreamSubscription<Uri?>? _widgetSubscription;
@@ -295,6 +300,10 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
               if (lockEnabled && _locked)
                 UnlockScreen(
                   onUnlock: () => setState(() => _locked = false),
+                ),
+              if (!_introDone)
+                IntroSplash(
+                  onDone: () => setState(() => _introDone = true),
                 ),
             ],
           ),

@@ -3631,6 +3631,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Itu tidak berhasil'**
   String get filesOpFailed;
+
+  /// No description provided for @colorLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna'**
+  String get colorLabel;
+
+  /// No description provided for @targetGradeFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target nilai'**
+  String get targetGradeFieldLabel;
+
+  /// No description provided for @splashTagline.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas, beres.'**
+  String get splashTagline;
+
+  /// No description provided for @sponsorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Dukung Lekas'**
+  String get sponsorTitle;
+
+  /// No description provided for @sponsorCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Lekas gratis selamanya. Kalau Lekas membantu kamu, traktir kopi untuk mendukung pengembangannya.'**
+  String get sponsorCaption;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutLekas.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang Lekas'**
+  String get aboutLekas;
+
+  /// No description provided for @aboutBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lekas adalah aplikasi pelacak tugas gratis dan open source untuk mahasiswa. Bekerja offline, data tersimpan di ponselmu, tanpa iklan, tanpa telemetri, dan tanpa fitur berbayar.'**
+  String get aboutBody;
+
+  /// No description provided for @licenseTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi'**
+  String get licenseTitle;
+
+  /// No description provided for @sourceCodeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode sumber'**
+  String get sourceCodeTitle;
+
+  /// No description provided for @viewOnGithub.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat di GitHub'**
+  String get viewOnGithub;
 }
 
 class _AppLocalizationsDelegate

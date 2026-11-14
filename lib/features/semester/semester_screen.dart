@@ -6,8 +6,10 @@ import '../../core/theme.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/components/undo_snackbar.dart';
 import '../spaces/space_detail_screen.dart';
 import '../spaces/spaces_screen.dart';
+import '../spaces/space_form_dialog.dart';
 
 /// The Semester tab: the active semester as a hero, the courses in it, and
 /// every other semester one tap away. Replaces the old categories tab as
@@ -85,6 +87,14 @@ class SemesterScreen extends ConsumerWidget {
                                   SpaceDetailScreen(spaceId: space.id),
                             ),
                           ),
+                          onEdit: () => showSpaceFormDialog(
+                            context,
+                            ref,
+                            existing: space,
+                          ),
+                          onArchive: () =>
+                              _archiveCourse(context, ref, space),
+                          onDelete: () => _deleteCourse(context, ref, space),
                         ),
                       if (spaces.where((s) => s.semesterId == active.id).isEmpty)
                         Padding(
@@ -390,15 +400,22 @@ class _CourseRow extends StatelessWidget {
     required this.space,
     required this.openTasks,
     required this.onTap,
+    required this.onEdit,
+    required this.onArchive,
+    required this.onDelete,
   });
 
   final Space space;
   final int openTasks;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onArchive;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final code = space.code?.trim();
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Color(space.color),
@@ -408,30 +425,40 @@ class _CourseRow extends StatelessWidget {
         ),
       ),
       title: Text(space.name),
-      subtitle: space.code == null || space.code!.isEmpty
-          ? null
-          : Text(space.code!),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (openTasks > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                l10n.openTasksCount(openTasks),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
+      subtitle: Text(
+        code != null && code.isNotEmpty
+            ? '$code · ${l10n.openTasksCount(openTasks)}'
+            : l10n.openTasksCount(openTasks),
+      ),
+      trailing: PopupMenuButton<String>(
+        icon: const Icon(Icons.more_vert),
+        tooltip: l10n.editLabel,
+        onSelected: (value) {
+          switch (value) {
+            case 'edit':
+              onEdit();
+            case 'archive':
+              onArchive();
+            case 'delete':
+              onDelete();
+          }
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 'edit',
+            child: Text(l10n.editSpaceTitle),
+          ),
+          PopupMenuItem(
+            value: 'archive',
+            child: Text(l10n.archiveLabel),
+          ),
+          PopupMenuItem(
+            value: 'delete',
+            child: Text(
+              l10n.deleteSpaceTitle,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right),
+          ),
         ],
       ),
       onTap: onTap,
@@ -667,5 +694,65 @@ Future<void> _deleteSemester(
   if (!context.mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(l10n.semesterDeleted)),
+  );
+}
+
+/// Archives one course with an undo, mirroring the spaces list.
+Future<void> _archiveCourse(
+  BuildContext context,
+  WidgetRef ref,
+  Space space,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  await ref.read(spaceRepositoryProvider).archiveSpace(space.id);
+  if (!context.mounted) return;
+  UndoSnackbar.show(
+    context,
+    l10n.spacesArchivedUndo(1),
+    () async {
+      await ref.read(spaceRepositoryProvider).updateSpace(
+            space.copyWith(
+              archived: false,
+              updatedAt: DateTime.now().millisecondsSinceEpoch,
+            ),
+          );
+    },
+  );
+}
+
+/// Deletes one course with a confirm dialog: children go with it, its
+/// tasks move to the inbox, and the semester list refreshes live.
+Future<void> _deleteCourse(
+  BuildContext context,
+  WidgetRef ref,
+  Space space,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(l10n.deleteSpaceTitle),
+      content: Text(l10n.deleteSpaceBody),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, false),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(dialogContext).colorScheme.error,
+            foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+          ),
+          onPressed: () => Navigator.pop(dialogContext, true),
+          child: Text(l10n.deleteLabel),
+        ),
+      ],
+    ),
+  );
+  if (confirmed != true) return;
+  await ref.read(spaceRepositoryProvider).deleteSpaceCascade(space.id);
+  if (!context.mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(l10n.deleted)),
   );
 }

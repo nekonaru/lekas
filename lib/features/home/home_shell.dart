@@ -22,6 +22,7 @@ import '../settings/settings_screen.dart';
 import '../spaces/spaces_screen.dart';
 import '../today/today_screen.dart';
 import '../../core/theme.dart';
+import '../../core/constants.dart';
 import '../../core/components/lekas_logo.dart';
 import '../../core/version_checker.dart';
 import '../settings/update_dialog.dart';
@@ -188,110 +189,83 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           child: Text(labels[_i], key: ValueKey(labels[_i])),
         ),
       ),
+      // A flat, low elevation drawer: the brand band up top, the sections
+      // grouped with icons below, so the menu reads as one calm surface.
       drawer: NavigationDrawer(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         children: [
-          // The brand band: the indigo to violet gradient behind the logo,
-          // so the drawer opens with the same mark as the launcher.
-          Container(
-            decoration: BoxDecoration(gradient: AppTheme.brandGradient),
-            child: SafeArea(
-              top: true,
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                child: Row(
-                  children: [
-                    const LekasLogo(size: 44),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Lekas',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          _drawerHeader(context),
           // Tasks first: the tools that end at a task being done.
-          _drawerSection(l10n.drawerSectionTasks),
-          ListTile(
-            leading: const Icon(Icons.add_circle),
-            title: Text(l10n.quickAddMenuLabel),
-            onTap: _openQuickAdd,
+          _drawerSection(l10n.drawerSectionTasks, Icons.checklist),
+          _drawerTile(Icons.add_circle_outline, l10n.quickAddMenuLabel, _openQuickAdd),
+          _drawerTile(
+            Icons.mic_none,
+            l10n.voiceQuickAddTitle,
+            () => _push(const QuickAddSuaraScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.mic_none),
-            title: Text(l10n.voiceQuickAddTitle),
-            onTap: () => _push(const QuickAddSuaraScreen()),
+          _drawerTile(
+            Icons.snooze,
+            l10n.smartSnoozeLabel,
+            _openSmartSnooze,
           ),
-          ListTile(
-            leading: const Icon(Icons.snooze),
-            title: Text(l10n.smartSnoozeLabel),
-            onTap: _openSmartSnooze,
+          _drawerTile(
+            Icons.search,
+            l10n.searchFilterTitle,
+            () => _push(const SearchFilterScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.search),
-            title: Text(l10n.searchFilterTitle),
-            onTap: () => _push(const SearchFilterScreen()),
+          _drawerTile(
+            Icons.bookmark_border,
+            l10n.savedViewsTitle,
+            () => _push(const SavedFilterScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.bookmark_border),
-            title: Text(l10n.savedViewsTitle),
-            onTap: () => _push(const SavedFilterScreen()),
+          _drawerTile(
+            Icons.description_outlined,
+            l10n.taskTemplatesTitle,
+            () => _push(const TaskTemplateScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: Text(l10n.taskTemplatesTitle),
-            onTap: () => _push(const TaskTemplateScreen()),
+          _drawerTile(
+            Icons.access_time,
+            l10n.morningNightSummaryShort,
+            () => _push(const MorningNightSummaryScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.access_time),
-            title: Text(l10n.morningNightSummaryShort),
-            onTap: () => _push(const MorningNightSummaryScreen()),
+          _drawerTile(
+            Icons.warning_amber_outlined,
+            l10n.overdueTasksMenuLabel,
+            () => _push(const OverdueReminderScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.warning),
-            title: Text(l10n.overdueTasksMenuLabel),
-            onTap: () => _push(const OverdueReminderScreen()),
+          _drawerTile(
+            Icons.bar_chart,
+            l10n.semesterStatsTitle,
+            () => _push(const StatistikRekapScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.bar_chart),
-            title: Text(l10n.semesterStatsTitle),
-            onTap: () => _push(const StatistikRekapScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.link),
-            title: Text(l10n.globalQuickLinksTitle),
-            onTap: () => _push(const TautanCepatScreen()),
+          _drawerTile(
+            Icons.link,
+            l10n.globalQuickLinksTitle,
+            () => _push(const TautanCepatScreen()),
           ),
           // Data tools: backups and the reminder checker answer the same
           // job at different times.
-          _drawerSection(l10n.drawerSectionData),
-          ListTile(
-            leading: const Icon(Icons.file_download),
-            title: Text(l10n.exportBackupShort),
-            onTap: () => _push(const BackupScreen()),
+          _drawerSection(l10n.drawerSectionData, Icons.storage_outlined),
+          _drawerTile(
+            Icons.file_download_outlined,
+            l10n.exportBackupShort,
+            () => _push(const BackupScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.file_upload),
-            title: Text(l10n.importBackupShort),
-            onTap: () => _push(const BackupScreen()),
+          _drawerTile(
+            Icons.file_upload_outlined,
+            l10n.importBackupShort,
+            () => _push(const BackupScreen()),
           ),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: Text(l10n.checkReminder),
-            onTap: () => _push(const DiagnosticScreen()),
+          _drawerTile(
+            Icons.notifications_active_outlined,
+            l10n.checkReminder,
+            () => _push(const DiagnosticScreen()),
           ),
           // Housekeeping last: the trash, where deletes can still come back.
-          _drawerSection(l10n.drawerSectionSystem),
-          ListTile(
-            leading: const Icon(Icons.delete_outline),
-            title: Text(l10n.trashTitle),
-            onTap: () => _push(const TrashScreen()),
-          ),
+          _drawerSection(l10n.drawerSectionSystem, Icons.tune),
+          _TrashTile(onTap: () => _push(const TrashScreen())),
+          const SizedBox(height: 8),
+          _drawerFooter(context),
         ],
       ),
       // A short fade and slide between tabs: the swap reads as one motion
@@ -316,19 +290,154 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     );
   }
 
-  /// One labeled group header of the drawer, in small caps and the accent
-  /// color, so the entries group visually the way they group in the menus.
-  Widget _drawerSection(String label) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-          color: Theme.of(context).colorScheme.primary,
+  /// The brand band: the indigo to violet gradient behind the logo,
+  /// so the drawer opens with the same mark as the launcher, plus the
+  /// tagline and the running version.
+  Widget _drawerHeader(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Container(
+      decoration: BoxDecoration(gradient: AppTheme.brandGradient),
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+          child: Row(
+            children: [
+              const LekasLogo(size: 48),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Lekas',
+                      style: text.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      AppLocalizations.of(context)!.splashTagline,
+                      style: text.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Text(
+                  'v$appVersion',
+                  style: text.labelSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  /// One row of the drawer: a soft tinted glyph, the label, and an optional
+  /// badge (used for the trash count). The whole row closes the drawer
+  /// before running its action.
+  Widget _drawerTile(
+    IconData icon,
+    String label,
+    VoidCallback onTap, {
+    String? badge,
+  }) {
+    final colors = Theme.of(context).colorScheme;
+    return ListTile(
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: colors.primary.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, size: 20, color: colors.primary),
+      ),
+      title: Text(label),
+      trailing: badge == null
+          ? null
+          : Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: colors.primaryContainer,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                badge,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: colors.onPrimaryContainer,
+                    ),
+              ),
+            ),
+      onTap: () {
+        _closeDrawer();
+        onTap();
+      },
+    );
+  }
+
+  /// The small caps section header of the drawer, in the accent color with
+  /// a leading glyph, so the menu groups visually the way it works.
+  Widget _drawerSection(String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 15, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 8),
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.3,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A quiet footer under the sections: the running version and the one
+  /// line promise of the app.
+  Widget _drawerFooter(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+      child: Row(
+        children: [
+          Icon(Icons.favorite, size: 13, color: Colors.pinkAccent.shade200),
+          const SizedBox(width: 6),
+          Text(
+            'Lekas v$appVersion',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: colors.onSurfaceVariant.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
       ),
     );
   }
@@ -367,5 +476,52 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       default:
         return Icons.today;
     }
+  }
+}
+
+/// The trash row with a live count badge instead of a guess.
+class _TrashTile extends ConsumerWidget {
+  const _TrashTile({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+    return StreamBuilder<List<Task>>(
+      stream: ref.watch(taskRepositoryProvider).watchTrash(),
+      builder: (context, snapshot) {
+        final count = snapshot.data?.length ?? 0;
+        return ListTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: colors.primary.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.delete_outline, size: 20, color: colors.primary),
+          ),
+          title: Text(AppLocalizations.of(context)!.trashTitle),
+          trailing: count == 0
+              ? null
+              : Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: colors.primaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '$count',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: colors.onPrimaryContainer,
+                        ),
+                  ),
+                ),
+          onTap: onTap,
+        );
+      },
+    );
   }
 }

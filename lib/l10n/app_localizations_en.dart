@@ -1968,4 +1968,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filesOpFailed => 'That did not work';
+
+  @override
+  String get colorLabel => 'Color';
+
+  @override
+  String get targetGradeFieldLabel => 'Target grade';
+
+  @override
+  String get splashTagline => 'Task done.';
+
+  @override
+  String get sponsorTitle => 'Support Lekas';
+
+  @override
+  String get sponsorCaption =>
+      'Lekas is free forever. If it helps you, buying a coffee keeps the project going.';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String get aboutLekas => 'About Lekas';
+
+  @override
+  String get aboutBody =>
+      'Lekas is a free and open source task tracker for students. It works offline, keeps your data on your phone, shows no ads, runs no telemetry, and has no paid features.';
+
+  @override
+  String get licenseTitle => 'License';
+
+  @override
+  String get sourceCodeTitle => 'Source code';
+
+  @override
+  String get viewOnGithub => 'View on GitHub';
 }
