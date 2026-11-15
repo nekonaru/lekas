@@ -2,6 +2,28 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.14.0
+
+Lekas ships working versions of its recurring tasks, saved search views and quick links, honest exports and a faster list rebuild, plus a round of audit fixes.
+
+### New features
+
+- **Recurring tasks that repeat.** Simple recurring tasks (daily, weekly, monthly) now create the next occurrence automatically when you check one off in Today; each new occurrence keeps the same rhythm.
+- **Saved search views that actually work.** Search & Filter now has a bookmark action to save the current query, category, type, tag, status and sort; the Saved Views screen lists them and reopens the exact filtered search.
+- **Quick links you manage.** The drawer's quick links entry now shows your own links (add with the + button, open in the browser, delete) instead of three hardcoded fake campus hosts.
+
+### Improvements
+
+- **Faster lists.** Spaces, semesters, class slots, space items and quick links now return one watch stream per query instead of a new one per rebuild, so visible screens stop resubscribing on every tap.
+- **Today stays actionable.** Completed tasks leave Today entirely; they live in the task list and the completed log, not next to the open workload.
+- **Morning and night summary, now useful.** The screen lists today's and tomorrow's tasks and overdue work with one tap check-off and a tap into each task's detail page.
+
+### Bug fixes
+
+- **Five screens crashed or froze on dialog close.** Missing mounted checks in the file import, share capture, class schedule time picker, task form date/time pickers and meeting notes are all guarded now.
+- **Exports tell the truth.** The "Export Image and PDF" menu is now "Share Reports" (text, via the share sheet) and every subtitle names what it actually produces.
+- **Dead menus removed or made real.** The "Automatic Backup", "Icon Shortcuts" and "Advanced Widgets" tiles that did nothing are gone or folded into real Tools and Shortcuts sections in Settings; unreferenced OCR, multi-line quick add and encrypted backup screens are deleted.
+
 ## v1.13.0
 
 Lekas opens with a brand reveal, packs deeper category and course management, and brings a sponsor section to Settings, all with a calmer drawer and menus.

@@ -76,6 +76,9 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagian tersendiri, prasyarat yang selesai mengirim satu pemberitahuan lembut "siap dimulai", dan penyimpanan yang akan membentuk putaran ditolak |
 | **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam sebuah space |
 | **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah (baris Tanpa Kategori di tab Kategori), dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
+| **Tugas berulang** | Berulang harian, mingguan, atau bulanan; mencentang selesai di Hari Ini membuat tugas berikutnya dengan ritme yang sama |
+| **Tampilan pencarian tersimpan** | Simpan query, kategori, jenis, status, dan urutan sebagai tampilan dan buka kembali dengan satu ketukan dari Tampilan Tersimpan |
+| **Tautan cepat** | Tautan buatanmu di drawer ke situs yang biasa kamu buka (portal, e-learning, perpustakaan), tersimpan dan terbuka lewat channel platform |
 
 ### Hari Ini dan Fokus
 
@@ -303,7 +306,7 @@ Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single
 
 ## Keamanan
 
-Lekas menyimpan data kamu secara lokal: tugas, wadah, pengaturan, dan lampiran berada dalam database SQLite melalui Drift, dan file cadangan yang kamu ekspor berupa JSON polos atau terenkripsi AES-GCM dengan kata sandi milikmu. Satu-satunya panggilan jaringan yang dilakukan aplikasi adalah pemeriksaan pembaruan opsional ke API publik GitHub, saat kamu ketuk atau sekali sehari saat membuka aplikasi (bisa dimatikan di Pengaturan), yang tidak mengirim apa pun selain permintaannya. Aplikasi tidak membawa SDK analitik, iklan, atau pelaporan crash, dan hanya meminta izin notifikasi, alarm tepat, getaran, mikrofon, dan speech. Kunci aplikasi opsional menyimpan hash SHA-256 ber-salt dari PIN kamu, bukan PIN-nya sendiri.
+Lekas menyimpan data kamu secara lokal: tugas, wadah, pengaturan, dan lampiran berada dalam database SQLite melalui Drift, dan file cadangan yang kamu ekspor berupa JSON polos. Satu-satunya panggilan jaringan yang dilakukan aplikasi adalah pemeriksaan pembaruan opsional ke API publik GitHub, saat kamu ketuk atau sekali sehari saat membuka aplikasi (bisa dimatikan di Pengaturan), yang tidak mengirim apa pun selain permintaannya. Aplikasi tidak membawa SDK analitik, iklan, atau pelaporan crash, dan hanya meminta izin notifikasi, alarm tepat, getaran, mikrofon, dan speech. Kunci aplikasi opsional menyimpan hash SHA-256 ber-salt dari PIN kamu, bukan PIN-nya sendiri.
 
 > [!NOTE]
 > Menemukan masalah keamanan? Laporkan lewat rute privat di [`SECURITY.md`](SECURITY.md) supaya bisa diperbaiki sebelum dipublikasikan.

@@ -76,6 +76,9 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Task dependencies** | Prerequisites per task; blocked tasks wait in their own section, a finished prerequisite sends one soft "ready to start" notice, and a save that would close a loop is refused |
 | **Personal target and grade prediction** | A target date before the deadline, plus grade prediction inside a space |
 | **Inbox and trash** | Quick capture without a course (the Uncategorized row on the Categories tab), and a trash that keeps deleted tasks restorable |
+| **Recurring tasks** | Daily, weekly or monthly repeats; completing one in Today creates the next with the same rhythm |
+| **Saved search views** | Save the current query, category, type, status and sort as a view and reopen it in one tap from Saved Views |
+| **Quick links** | Your own drawer links to the sites you open every day (portal, e-learning, library), stored and opened through the platform channel |
 
 ### Today and Focus
 
@@ -303,7 +306,7 @@ Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_s
 
 ## Security
 
-Lekas stores your data locally: tasks, spaces, settings and attachments live in a SQLite database through Drift, and the backup file you export is either plain JSON or AES-GCM encrypted with your password. The only network call the app makes is the optional update check against the public GitHub API, on your tap or once a day on launch (disableable in Settings), which sends nothing but the request itself. The app ships no analytics, ads or crash reporting SDKs, and only requests notification, exact alarm, vibration, microphone and speech permission. An optional app lock keeps a salted SHA-256 hash of your PIN instead of the PIN itself.
+Lekas stores your data locally: tasks, spaces, settings and attachments live in a SQLite database through Drift, and the backup file you export is plain JSON. The only network call the app makes is the optional update check against the public GitHub API, on your tap or once a day on launch (disableable in Settings), which sends nothing but the request itself. The app ships no analytics, ads or crash reporting SDKs, and only requests notification, exact alarm, vibration, microphone and speech permission. An optional app lock keeps a salted SHA-256 hash of your PIN instead of the PIN itself.
 
 > [!NOTE]
 > Found a security issue? Report it through the private route in [`SECURITY.md`](SECURITY.md) so it can be fixed before it is published.

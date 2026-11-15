@@ -2,6 +2,28 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.14.0
+
+Lekas menghadirkan versi yang benar-benar berfungsi untuk tugas berulang, tampilan pencarian tersimpan, dan tautan cepat, plus ekspor yang jujur dan pembaruan list yang lebih ringan, ditambah perbaikan audit.
+
+### Fitur baru
+
+- **Tugas berulang yang berulang.** Tugas berulang sederhana (harian, mingguan, bulanan) kini membuat tugas berikutnya secara otomatis saat kamu mencentang yang sekarang di Hari Ini; setiap tugas baru memakai ritme yang sama.
+- **Tampilan pencarian tersimpan yang berfungsi.** Pencarian kini punya tombol bookmark untuk menyimpan query, kategori, jenis, tag, status, dan urutan saat ini; halaman Tampilan Tersimpan menampilkan daftar dan membuka kembali filter yang persis sama.
+- **Tautan cepat yang bisa kamu kelola.** Entri tautan cepat di drawer kini menampilkan tautan buatanmu (tambah dengan tombol +, buka di browser, hapus) alih-alih tiga host kampus palsu bawaan.
+
+### Peningkatan
+
+- **List lebih ringan.** Spaces, semester, jadwal kelas, item ruang, dan tautan cepat kini mengembalikan satu watch stream per query alih-alih yang baru di setiap rebuild, sehingga layar berhenti berlangganan ulang di setiap ketukan.
+- **Hari Ini tetap fokus ke tugas yang belum selesai.** Tugas yang sudah selesai hilang dari Hari Ini; mereka tetap ada di daftar tugas dan riwayat selesai.
+- **Ringkasan pagi dan malam, kini berguna.** Layar ini menampilkan tugas hari ini, besok, dan yang terlambat dengan centang satu ketukan dan ketukan masuk ke detail tugas.
+
+### Perbaikan bug
+
+- **Lima layar berisiko crash atau freeze saat dialog ditutup.** Pengecekan mounted di impor file, share capture, time picker jadwal kelas, date/time picker form tugas, dan catatan pertemuan semuanya sudah dijaga.
+- **Ekspor kini jujur.** Menu "Export Image and PDF" kini "Share Reports" (teks lewat share sheet) dan setiap subtitle menjelaskan apa yang sebenarnya dihasilkan.
+- **Menu mati dihapus atau dibuat berfungsi.** Tile "Automatic Backup", "Icon Shortcuts", dan "Advanced Widgets" yang tidak melakukan apa-apa dihapus atau dilebur menjadi seksi Alat dan Pintasan yang nyata di Pengaturan; layar OCR, multi-baris quick add, dan cadangan terenkripsi yang tak pernah dipakai juga dihapus.
+
 ## v1.13.0
 
 Lekas kini membuka dengan brand reveal, fitur kelola kategori dan mata kuliah diperdalam, dan ada bagian sponsor di Pengaturan, dengan drawer dan menu yang lebih tenang.
