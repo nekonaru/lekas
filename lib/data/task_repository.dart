@@ -105,6 +105,8 @@ class TaskRepository {
     );
   }
 
+  /// Marks a task done. If the task carries a repeat kind, the next
+  /// occurrence is created automatically; nothing else happens to it.
   Future<void> markDone(String id, {int? completedAt}) async {
     final existing = await getTask(id);
     await db.update(db.tasks).replace(existing.copyWith(
@@ -112,6 +114,11 @@ class TaskRepository {
       completedAt: Value(completedAt ?? DateTime.now().millisecondsSinceEpoch),
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     ));
+    // Recurring task: schedule the next occurrence.
+    if (existing.repeatKind != null && existing.status != 'done') {
+      final next = _nextOccurrence(existing);
+      if (next != null) await insertTask(next);
+    }
     // Only a first completion opens doors: marking a finished task again
     // would repeat the notice for everyone waiting on it (design 5.27).
     if (existing.status == 'done') return;
@@ -120,6 +127,36 @@ class TaskRepository {
     }
   }
 
+  /// The next occurrence of a recurring [task] (design: simple recurring
+  /// tasks). Returns null when the kind is unknown.
+  Task? _nextOccurrence(Task task) {
+    final baseMs = task.deadline ?? task.createdAt;
+    final from = DateTime.fromMillisecondsSinceEpoch(baseMs);
+    final every = task.repeatEvery ?? 1;
+    final DateTime next;
+    switch (task.repeatKind) {
+      case 'daily':
+        next = from.add(Duration(days: every));
+      case 'weekly':
+        next = from.add(Duration(days: 7 * every));
+      case 'monthly':
+        next = DateTime(from.year, from.month + every, from.day, from.hour, from.minute);
+      default:
+        return null;
+    }
+    return task.copyWith(
+      id: const Uuid().v4(),
+      status: 'todo',
+      pinned: false,
+      focusDate: const Value(null),
+      completedAt: const Value(null),
+      repeatKind: Value(task.repeatKind),
+      repeatEvery: Value(task.repeatEvery),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      deadline: task.deadline != null ? Value(next.millisecondsSinceEpoch) : const Value.absent(),
+    );
+  }
   /// Puts a finished task back on the list: the undo snackbars and the
   /// focus picker both need it (design section 5.24).
   Future<void> reopenTask(String id) async {

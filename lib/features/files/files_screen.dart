@@ -407,7 +407,7 @@ class _FilesScreenState extends ConsumerState<FilesScreen> {
         withData: false,
       );
       if (result == null) {
-        setState(() => _busy = false);
+        if (mounted) setState(() => _busy = false);
         return;
       }
       var imported = 0;

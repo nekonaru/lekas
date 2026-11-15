@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
@@ -17,7 +19,23 @@ import 'task_detail_screen.dart';
 const Duration kSearchDebounce = Duration(milliseconds: 250);
 
 class SearchFilterScreen extends ConsumerStatefulWidget {
-  const SearchFilterScreen({super.key});
+  const SearchFilterScreen({
+    super.key,
+    this.initialSpaceId,
+    this.initialTypeFilter,
+    this.initialTagFilter,
+    this.initialStatus,
+    this.initialSort,
+    this.initialQuery,
+  });
+
+  /// Pre-filled filter state, used when opening a saved view.
+  final String? initialSpaceId;
+  final String? initialTypeFilter;
+  final String? initialTagFilter;
+  final TaskStatusFilter? initialStatus;
+  final TaskSort? initialSort;
+  final String? initialQuery;
 
   @override
   ConsumerState<SearchFilterScreen> createState() => _SearchFilterScreenState();
@@ -30,6 +48,33 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
   String? _tagFilter;
   TaskStatusFilter _statusFilter = TaskStatusFilter.all;
   TaskSort _sort = TaskSort.deadlineAsc;
+
+  @override
+  void initState() {
+    super.initState();
+    _spaceFilter = widget.initialSpaceId;
+    _typeFilter = widget.initialTypeFilter;
+    _tagFilter = widget.initialTagFilter;
+    _statusFilter = widget.initialStatus ?? TaskStatusFilter.all;
+    _sort = widget.initialSort ?? TaskSort.deadlineAsc;
+    _query = widget.initialQuery ?? '';
+    if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
+      _searchController.text = widget.initialQuery!;
+    }
+  }
+
+  /// The current search + filter combo, used by the save-view action and
+  /// round-trips through the saved views list.
+  Map<String, dynamic> currentView() => {
+        'spaceId': _spaceFilter,
+        'type': _typeFilter,
+        'tag': _tagFilter,
+        'status': _statusFilter.name,
+        'sort': _sort.name,
+        'query': _query,
+      };
+
+  String encodeView() => jsonEncode(currentView());
 
   /// Long press selection, like every other list (design section 5.5).
   final Set<String> _selection = {};
@@ -271,6 +316,57 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
     );
   }
 
+  /// Saves the current query + filter combo as a named view.
+  Future<void> _saveView(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.saveViewTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(labelText: l10n.viewNameLabel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              final text = controller.text.trim();
+              if (text.isEmpty) return;
+              Navigator.pop(dialogContext, text);
+            },
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty || !mounted) return;
+    await ref.read(savedFilterRepositoryProvider).insertSavedFilter(
+          SavedFilter(
+            id: const Uuid().v4(),
+            name: name,
+            queryJson: encodeView(),
+            sortOrder: 0,
+            updatedAt: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+    if (!mounted) return;
+    _snackSaved();
+  }
+
+  void _snackSaved() {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.viewSaved)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -284,6 +380,12 @@ class _SearchFilterScreenState extends ConsumerState<SearchFilterScreen> {
               : l10n.searchFilterTitle,
         ),
         actions: [
+          if (!selecting)
+            IconButton(
+              icon: const Icon(Icons.bookmark_border),
+              tooltip: l10n.saveViewTitle,
+              onPressed: () => _saveView(context),
+            ),
           if (selecting)
             BulkSelectionBar(
               count: _selection.length,

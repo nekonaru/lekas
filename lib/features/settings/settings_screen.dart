@@ -8,7 +8,6 @@ import '../../reminders/reminder_service.dart';
 import 'backup_screen.dart';
 import 'diagnostic_screen.dart';
 import '../tasks/app_lock_screen.dart';
-import '../tasks/backup_auto_screen.dart';
 import '../tasks/duplicate_detection_screen.dart';
 import '../tasks/export_gambar_pdf_screen.dart';
 import '../semester/semester_screen.dart';
@@ -18,7 +17,9 @@ import 'update_dialog.dart';
 import '../tasks/mode_demo_screen.dart';
 import '../tasks/pintasan_ikon_screen.dart';
 import '../tasks/tugas_berulang_screen.dart';
-import '../tasks/widget_lanjutan_screen.dart';
+import '../tasks/tasks_screen.dart';
+import '../tasks/exam_screen.dart';
+import '../tasks/fokus_hari_ini_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -361,6 +362,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  /// The exam countdown widget tracks the course with the next deadline,
+  /// so this tile opens the exam list of the course due next.
+  Future<void> _openExamCountdown() async {
+    final l10n = AppLocalizations.of(context)!;
+    final tasks = await ref.read(taskRepositoryProvider).getTasks(
+          includeInbox: false,
+        );
+    if (!mounted) return;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final upcoming = tasks
+        .where((t) =>
+            t.spaceId != null &&
+            t.deadline != null &&
+            t.deadline! > now)
+        .toList()
+      ..sort((a, b) => a.deadline!.compareTo(b.deadline!));
+    if (upcoming.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.noExamsYet)),
+      );
+      return;
+    }
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => ExamScreen(spaceId: upcoming.first.spaceId!),
+      ),
+    );
+  }
+
   /// Flips the once a day background update check; deliberately not wired
   /// into [_setFlag], because it has nothing to do with reminder syncing.
   Future<void> _setAutoUpdateCheck(bool value) async {
@@ -543,11 +574,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onTap: () => _push(const DuplicateDetectionScreen()),
           ),
           ListTile(
-            leading: const Icon(Icons.backup_outlined),
-            title: Text(l10n.autoBackupTitle),
-            onTap: () => _push(const BackupAutoScreen()),
-          ),
-          ListTile(
             leading: const Icon(Icons.merge_type),
             title: Text(l10n.mergeImportTitle),
             onTap: () => _push(const ImportMergeScreen()),
@@ -557,18 +583,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.exportImagePdfTitle),
             onTap: () => _push(const ExportGambarPDFScreen()),
           ),
+          _settingsSection(l10n.shortcutsTitle),
+          ListTile(
+            leading: const Icon(Icons.list_alt),
+            title: Text(l10n.taskListTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _push(const TasksScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.timer_outlined),
+            title: Text(l10n.widgetExamCountdown),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _openExamCountdown,
+          ),
+          ListTile(
+            leading: const Icon(Icons.star_outline),
+            title: Text(l10n.widgetTodayFocus),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _push(const FokusHariIniScreen()),
+          ),
+          _settingsSection(l10n.toolsTitle),
           ListTile(
             leading: const Icon(Icons.school_outlined),
             title: Text(l10n.semesterTitle),
             onTap: () => _push(const SemesterScreen()),
           ),
           ListTile(
-            leading: const Icon(Icons.widgets_outlined),
-            title: Text(l10n.advancedWidgetsTitle),
-            onTap: () => _push(const WidgetLanjutanScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.shortcut),
+            leading: const Icon(Icons.notifications_outlined),
             title: Text(l10n.iconShortcutsTitle),
             onTap: () => _push(const PintasanIkonScreen()),
           ),

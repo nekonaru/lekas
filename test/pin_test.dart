@@ -10,14 +10,8 @@ void main() {
     });
 
     test('the pinned group has its own title and icon', () {
-      final section = TaskSection(
-        section: TodaySection.pinned,
-        tasks: const [],
-        now: DateTime(2026, 10, 26),
-        locale: 'en',
-      );
-      expect(section.title(AppLocalizationsEn()), 'Pinned');
-      expect(section.icon, Icons.push_pin);
+      expect(sectionTitle(TodaySection.pinned, AppLocalizationsEn()), 'Pinned');
+      expect(sectionIcon(TodaySection.pinned), Icons.push_pin);
     });
   });
 }

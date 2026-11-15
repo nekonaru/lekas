@@ -5,12 +5,24 @@ class SpaceRepository {
   final AppDatabase db;
   SpaceRepository(this.db);
 
+  /// Query streams handed out so far, keyed by their argument. Drift reuses
+  /// the stream behind a query, but every `watch()` call wraps it in a new
+  /// object; returning the same instance keeps a single subscription alive
+  /// for screens that rebuild (design section 6).
+  final Map<String, Stream<List<Space>>> _watchCache = {};
+
   Stream<List<Space>> watchSpaces({bool includeArchived = false}) {
-    return (db.select(db.spaces)
-          ..where((t) =>
-              includeArchived ? const Constant(true) : t.archived.equals(false))
-          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder), (t) => OrderingTerm.asc(t.name)]))
-        .watch();
+    return _watchCache.putIfAbsent(
+      'spaces:$includeArchived',
+      () => (db.select(db.spaces)
+            ..where((t) =>
+                includeArchived ? const Constant(true) : t.archived.equals(false))
+            ..orderBy([
+              (t) => OrderingTerm.asc(t.sortOrder),
+              (t) => OrderingTerm.asc(t.name),
+            ]))
+          .watch(),
+    );
   }
 
   Future<List<Space>> getSpaces({bool includeArchived = false}) async {

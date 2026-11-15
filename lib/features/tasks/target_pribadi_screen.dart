@@ -54,6 +54,7 @@ class _TargetPribadiScreenState extends ConsumerState<TargetPribadiScreen> {
                         : DateTime.now().add(const Duration(days: 365)),
                   );
                   if (date != null) {
+                    if (!mounted) return;
                     setState(() => _targetAt = date);
                   }
                 },

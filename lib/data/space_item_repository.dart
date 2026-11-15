@@ -5,11 +5,17 @@ class SpaceItemRepository {
   final AppDatabase db;
   SpaceItemRepository(this.db);
 
+  final Map<String, Stream<List<SpaceItem>>> _watchCache = {};
+
   Stream<List<SpaceItem>> watchSpaceItems(String spaceId) {
-    return (db.select(db.spaceItems)
-          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-        .watch();
+    return _watchCache.putIfAbsent(
+      'items:$spaceId',
+      () => (db.select(db.spaceItems)
+            ..where(
+                (t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
+            ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+          .watch(),
+    );
   }
 
   Future<List<SpaceItem>> getSpaceItems(String spaceId) async {

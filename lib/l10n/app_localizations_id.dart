@@ -435,7 +435,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get schoolModeThemeSubtitle => 'Ubah terminologi ke SMA';
 
   @override
-  String get iconShortcutsTitle => 'Pintasan Ikon dan Quick Settings';
+  String get iconShortcutsTitle => 'Pengaturan Notifikasi';
+
+  @override
+  String get notificationChannelsTitle => 'Pengaturan Notifikasi';
+
+  @override
+  String get notificationChannelsHint =>
+      'Lekas meminta Android menangani notifikasi. Android yang menentukan: kamu bisa membungkam, memblokir, atau mencopot kanal apa pun dari layar ini.';
 
   @override
   String get appIconShortcut => 'Pintasan Ikon Aplikasi';
@@ -465,6 +472,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get quickLinkSiakad => 'SIAKAD';
 
   @override
+  String get addQuickLink => 'Tambah tautan cepat';
+
+  @override
+  String get linkTitleLabel => 'Nama';
+
+  @override
+  String get deleteQuickLink => 'Hapus tautan?';
+
+  @override
+  String get emptyQuickLinks =>
+      'Belum ada tautan cepat. Ketuk tombol tambah untuk situs yang sering kamu buka.';
+
+  @override
   String get quickLinkELearning => 'E-Learning Kampus';
 
   @override
@@ -472,6 +492,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get simpleRecurringTasksTitle => 'Tugas Berulang Sederhana';
+
+  @override
+  String get recurringTasksExplainer =>
+      'Pilih ritme dan namanya. Setiap kali Anda mencentang tugas ini selesai di Hari Ini, tugas berikutnya dibuat otomatis.';
 
   @override
   String get repeatDaily => 'Harian';
@@ -514,34 +538,40 @@ class AppLocalizationsId extends AppLocalizations {
   String get weeklyTrend => 'Tren Per Minggu';
 
   @override
-  String get exportImagePdfTitle => 'Ekspor Gambar dan PDF';
+  String get exportImagePdfTitle => 'Bagikan Laporan';
 
   @override
   String get exportWeekSchedule => 'Ekspor Jadwal Minggu';
 
   @override
-  String get exportWeekScheduleSubtitle => 'Gambar jadwal minggu ini';
+  String get exportWeekScheduleSubtitle =>
+      'Bagikan jadwal minggu ini sebagai teks';
 
   @override
   String get exportTaskList => 'Ekspor Daftar Tugas';
 
   @override
-  String get exportTaskListSubtitle => 'Gambar daftar tugas minggu ini';
+  String get exportTaskListSubtitle => 'Bagikan daftar tugas sebagai teks';
 
   @override
   String get exportGradeRecap => 'Ekspor Rekap Nilai';
 
   @override
-  String get exportGradeRecapSubtitle => 'PDF rekap nilai per matkul';
+  String get exportGradeRecapSubtitle =>
+      'Bagikan bobot nilai per mata kuliah sebagai teks';
 
   @override
   String get exportDeadlineHistory => 'Ekspor Riwayat Deadline';
 
   @override
-  String get exportDeadlineHistorySubtitle => 'PDF bukti perubahan deadline';
+  String get exportDeadlineHistorySubtitle =>
+      'Bagikan riwayat perubahan deadline sebagai teks';
 
   @override
-  String get advancedWidgetsTitle => 'Widget Lanjutan';
+  String get shortcutsTitle => 'Pintasan';
+
+  @override
+  String get toolsTitle => 'Alat';
 
   @override
   String get widgetTaskListSubtitle => '3-6 baris dengan kotak centang';
@@ -753,6 +783,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get overdueTasksLabel => 'Tugas terlambat';
+
+  @override
+  String get doneTodayLabel => 'Selesai hari ini';
 
   @override
   String get summaryScheduleNote =>
@@ -1113,6 +1146,19 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get attachmentFileMissing => 'File tidak ada di perangkat ini.';
+
+  @override
+  String get viewSaved => 'Tampilan disimpan';
+
+  @override
+  String get deleteSavedView => 'Hapus tampilan?';
+
+  @override
+  String get emptySavedViews =>
+      'Belum ada tampilan tersimpan. Pakai ikon bookmark di Pencarian untuk menyimpannya.';
+
+  @override
+  String get tapToOpenView => 'Ketuk untuk membuka';
 
   @override
   String get openLabel => 'Buka';

@@ -146,6 +146,7 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
                       lastDate: now.add(const Duration(days: 365)),
                     );
                     if (date == null) return;
+                    if (!mounted) return;
                     setState(() {
                       _deadline = _withPickedDate(_deadline, date);
                     });
@@ -165,6 +166,7 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
                           : TimeOfDay(hour: now.hour, minute: now.minute),
                     );
                     if (time == null) return;
+                    if (!mounted) return;
                     setState(() {
                       final base = _deadline ?? now;
                       _deadline = DateTime(

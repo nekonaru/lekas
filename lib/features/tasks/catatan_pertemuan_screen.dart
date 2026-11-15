@@ -88,6 +88,7 @@ class _CatatanPertemuanScreenState extends ConsumerState<CatatanPertemuanScreen>
                       createdAt: DateTime.now().millisecondsSinceEpoch,
                       updatedAt: DateTime.now().millisecondsSinceEpoch,
                     ));
+                    if (!mounted) return;
                     _titleController.clear();
                     _bodyController.clear();
                     if (mounted) setState(() {});

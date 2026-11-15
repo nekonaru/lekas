@@ -5,9 +5,14 @@ class QuickLinkRepository {
   final AppDatabase db;
   QuickLinkRepository(this.db);
 
+  final Map<String, Stream<List<QuickLink>>> _watchCache = {};
+
   Stream<List<QuickLink>> watchQuickLinks() {
-    return (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
-        .watch();
+    return _watchCache.putIfAbsent(
+      'quicklinks',
+      () => (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
+          .watch(),
+    );
   }
 
   Future<List<QuickLink>> getQuickLinks() async {

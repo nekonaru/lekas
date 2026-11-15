@@ -435,7 +435,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schoolModeThemeSubtitle => 'Switch the wording to high school';
 
   @override
-  String get iconShortcutsTitle => 'Icon Shortcuts and Quick Settings';
+  String get iconShortcutsTitle => 'Notification Settings';
+
+  @override
+  String get notificationChannelsTitle => 'Notification Settings';
+
+  @override
+  String get notificationChannelsHint =>
+      'Lekas asks Android to handle notifications. Android owns the final say: you can mute, block or uninstall any channel from this screen.';
 
   @override
   String get appIconShortcut => 'App Icon Shortcut';
@@ -466,6 +473,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickLinkSiakad => 'SIAKAD';
 
   @override
+  String get addQuickLink => 'Add quick link';
+
+  @override
+  String get linkTitleLabel => 'Name';
+
+  @override
+  String get deleteQuickLink => 'Delete link?';
+
+  @override
+  String get emptyQuickLinks =>
+      'No quick links yet. Tap the plus button to add the sites you open every day.';
+
+  @override
   String get quickLinkELearning => 'Campus E-Learning';
 
   @override
@@ -473,6 +493,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get simpleRecurringTasksTitle => 'Simple Recurring Tasks';
+
+  @override
+  String get recurringTasksExplainer =>
+      'Pick a rhythm and a name. Every time you check the task off in Today, the next one is created automatically.';
 
   @override
   String get repeatDaily => 'Daily';
@@ -514,34 +538,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weeklyTrend => 'Weekly Trend';
 
   @override
-  String get exportImagePdfTitle => 'Export Image and PDF';
+  String get exportImagePdfTitle => 'Share Reports';
 
   @override
   String get exportWeekSchedule => 'Export Week Schedule';
 
   @override
-  String get exportWeekScheduleSubtitle => 'Image of this week\'s schedule';
+  String get exportWeekScheduleSubtitle =>
+      'Share this week\'s schedule as text';
 
   @override
   String get exportTaskList => 'Export Task List';
 
   @override
-  String get exportTaskListSubtitle => 'Image of this week\'s task list';
+  String get exportTaskListSubtitle => 'Share the task list as text';
 
   @override
   String get exportGradeRecap => 'Export Grade Recap';
 
   @override
-  String get exportGradeRecapSubtitle => 'PDF grade recap per course';
+  String get exportGradeRecapSubtitle =>
+      'Share grade weights per course as text';
 
   @override
   String get exportDeadlineHistory => 'Export Deadline History';
 
   @override
-  String get exportDeadlineHistorySubtitle => 'PDF proof of deadline changes';
+  String get exportDeadlineHistorySubtitle =>
+      'Share deadline change history as text';
 
   @override
-  String get advancedWidgetsTitle => 'Advanced Widgets';
+  String get shortcutsTitle => 'Shortcuts';
+
+  @override
+  String get toolsTitle => 'Tools';
 
   @override
   String get widgetTaskListSubtitle => '3-6 rows with checkboxes';
@@ -752,6 +782,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overdueTasksLabel => 'Overdue tasks';
+
+  @override
+  String get doneTodayLabel => 'Done today';
 
   @override
   String get summaryScheduleNote =>
@@ -1112,6 +1145,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attachmentFileMissing => 'The file is no longer on this device.';
+
+  @override
+  String get viewSaved => 'View saved';
+
+  @override
+  String get deleteSavedView => 'Delete view?';
+
+  @override
+  String get emptySavedViews =>
+      'No saved views yet. Use the bookmark icon on Search & Filter to save one.';
+
+  @override
+  String get tapToOpenView => 'Tap to open';
 
   @override
   String get openLabel => 'Open';

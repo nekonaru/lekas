@@ -15,7 +15,6 @@ import 'package:lekas/features/settings/settings_screen.dart';
 import 'package:lekas/features/spaces/space_detail_screen.dart';
 import 'package:lekas/features/spaces/spaces_screen.dart';
 import 'package:lekas/features/tasks/attachment_screen.dart';
-import 'package:lekas/features/tasks/backup_auto_screen.dart';
 import 'package:lekas/features/tasks/duplicate_detection_screen.dart';
 import 'package:lekas/features/tasks/dependensi_tugas_screen.dart';
 import 'package:lekas/features/tasks/export_gambar_pdf_screen.dart';
@@ -29,10 +28,10 @@ import 'package:lekas/features/tasks/statistik_rekap_screen.dart';
 import 'package:lekas/features/tasks/subtask_screen.dart';
 import 'package:lekas/features/tasks/tautan_cepat_screen.dart';
 import 'package:lekas/features/tasks/target_pribadi_screen.dart';
+import 'package:lekas/features/tasks/tasks_screen.dart';
 import 'package:lekas/features/tasks/task_detail_screen.dart';
 import 'package:lekas/features/tasks/trash_screen.dart';
 import 'package:lekas/features/tasks/tugas_berulang_screen.dart';
-import 'package:lekas/features/tasks/widget_lanjutan_screen.dart';
 import 'package:lekas/l10n/app_localizations.dart';
 
 /// The finished feature screens sat behind no menu at all, so their logic was
@@ -201,12 +200,11 @@ void main() {
     final settingsTools = <String, Type>{
       'Simple Recurring Tasks': TugasBerulangScreen,
       'Duplicate Detection': DuplicateDetectionScreen,
-      'Automatic Backup': BackupAutoScreen,
       'Import and Merge': ImportMergeScreen,
-      'Export Image and PDF': ExportGambarPDFScreen,
+      'Share Reports': ExportGambarPDFScreen,
+      'Task List': TasksScreen,
       'Semester': SemesterScreen,
-      'Advanced Widgets': WidgetLanjutanScreen,
-      'Icon Shortcuts and Quick Settings': PintasanIkonScreen,
+      'Notification Settings': PintasanIkonScreen,
       'Demo Mode': ModeDemoScreen,
     };
     final settingsScrollable = find

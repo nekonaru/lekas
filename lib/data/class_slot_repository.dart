@@ -5,6 +5,8 @@ class ClassSlotRepository {
   final AppDatabase db;
   ClassSlotRepository(this.db);
 
+  final Map<String, Stream<List<ClassSlot>>> _watchCache = {};
+
   Stream<List<ClassSlot>> watchClassSlots(String spaceId) {
     return (db.select(db.classSlots)
           ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
@@ -23,11 +25,14 @@ class ClassSlotRepository {
     return (db.select(db.classSlots)..where((t) => t.deletedAt.isNull())).get();
   }
 
-  /// Every slot across spaces as a stream, so the calendar can light up
-  /// class days live instead of loading them once per visit.
+  /// Every slot across spaces as one watch stream, so the calendar lights
+  /// up class days live instead of replacing the query per visit.
   Stream<List<ClassSlot>> watchAllClassSlots() {
-    return (db.select(db.classSlots)..where((t) => t.deletedAt.isNull()))
-        .watch();
+    return _watchCache.putIfAbsent(
+      'class-slots',
+      () => (db.select(db.classSlots)..where((t) => t.deletedAt.isNull()))
+          .watch(),
+    );
   }
 
   Future<void> insertClassSlot(ClassSlot slot) async {

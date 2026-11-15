@@ -475,6 +475,7 @@ class _SlotFormDialogState extends State<_SlotFormDialog> {
       initialTime: start ? _start : _end,
     );
     if (picked == null) return;
+    if (!mounted) return;
     setState(() {
       if (start) {
         _start = picked;

@@ -905,8 +905,20 @@ abstract class AppLocalizations {
   /// No description provided for @iconShortcutsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Pintasan Ikon dan Quick Settings'**
+  /// **'Pengaturan Notifikasi'**
   String get iconShortcutsTitle;
+
+  /// No description provided for @notificationChannelsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan Notifikasi'**
+  String get notificationChannelsTitle;
+
+  /// No description provided for @notificationChannelsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Lekas meminta Android menangani notifikasi. Android yang menentukan: kamu bisa membungkam, memblokir, atau mencopot kanal apa pun dari layar ini.'**
+  String get notificationChannelsHint;
 
   /// No description provided for @appIconShortcut.
   ///
@@ -956,6 +968,30 @@ abstract class AppLocalizations {
   /// **'SIAKAD'**
   String get quickLinkSiakad;
 
+  /// No description provided for @addQuickLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah tautan cepat'**
+  String get addQuickLink;
+
+  /// No description provided for @linkTitleLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get linkTitleLabel;
+
+  /// No description provided for @deleteQuickLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tautan?'**
+  String get deleteQuickLink;
+
+  /// No description provided for @emptyQuickLinks.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan cepat. Ketuk tombol tambah untuk situs yang sering kamu buka.'**
+  String get emptyQuickLinks;
+
   /// No description provided for @quickLinkELearning.
   ///
   /// In id, this message translates to:
@@ -973,6 +1009,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tugas Berulang Sederhana'**
   String get simpleRecurringTasksTitle;
+
+  /// No description provided for @recurringTasksExplainer.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih ritme dan namanya. Setiap kali Anda mencentang tugas ini selesai di Hari Ini, tugas berikutnya dibuat otomatis.'**
+  String get recurringTasksExplainer;
 
   /// No description provided for @repeatDaily.
   ///
@@ -1055,7 +1097,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportImagePdfTitle.
   ///
   /// In id, this message translates to:
-  /// **'Ekspor Gambar dan PDF'**
+  /// **'Bagikan Laporan'**
   String get exportImagePdfTitle;
 
   /// No description provided for @exportWeekSchedule.
@@ -1067,7 +1109,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportWeekScheduleSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Gambar jadwal minggu ini'**
+  /// **'Bagikan jadwal minggu ini sebagai teks'**
   String get exportWeekScheduleSubtitle;
 
   /// No description provided for @exportTaskList.
@@ -1079,7 +1121,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportTaskListSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Gambar daftar tugas minggu ini'**
+  /// **'Bagikan daftar tugas sebagai teks'**
   String get exportTaskListSubtitle;
 
   /// No description provided for @exportGradeRecap.
@@ -1091,7 +1133,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportGradeRecapSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'PDF rekap nilai per matkul'**
+  /// **'Bagikan bobot nilai per mata kuliah sebagai teks'**
   String get exportGradeRecapSubtitle;
 
   /// No description provided for @exportDeadlineHistory.
@@ -1103,14 +1145,20 @@ abstract class AppLocalizations {
   /// No description provided for @exportDeadlineHistorySubtitle.
   ///
   /// In id, this message translates to:
-  /// **'PDF bukti perubahan deadline'**
+  /// **'Bagikan riwayat perubahan deadline sebagai teks'**
   String get exportDeadlineHistorySubtitle;
 
-  /// No description provided for @advancedWidgetsTitle.
+  /// No description provided for @shortcutsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Widget Lanjutan'**
-  String get advancedWidgetsTitle;
+  /// **'Pintasan'**
+  String get shortcutsTitle;
+
+  /// No description provided for @toolsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Alat'**
+  String get toolsTitle;
 
   /// No description provided for @widgetTaskListSubtitle.
   ///
@@ -1483,6 +1531,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tugas terlambat'**
   String get overdueTasksLabel;
+
+  /// No description provided for @doneTodayLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai hari ini'**
+  String get doneTodayLabel;
 
   /// No description provided for @summaryScheduleNote.
   ///
@@ -2143,6 +2197,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'File tidak ada di perangkat ini.'**
   String get attachmentFileMissing;
+
+  /// No description provided for @viewSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilan disimpan'**
+  String get viewSaved;
+
+  /// No description provided for @deleteSavedView.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tampilan?'**
+  String get deleteSavedView;
+
+  /// No description provided for @emptySavedViews.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tampilan tersimpan. Pakai ikon bookmark di Pencarian untuk menyimpannya.'**
+  String get emptySavedViews;
+
+  /// No description provided for @tapToOpenView.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk membuka'**
+  String get tapToOpenView;
 
   /// No description provided for @openLabel.
   ///

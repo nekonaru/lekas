@@ -111,28 +111,4 @@ UrgencyReason urgencyReason({
 }
 
 /// The screen section where a task should appear, based on status and conditions.
-enum TaskSection { today, overdue, doing, upcoming, thisWeek, waiting, someday, inbox }
 
-TaskSection classifySection({
-  required DateTime now,
-  DateTime? deadline,
-  DateTime? targetAt,
-  required String status,
-  bool isOverdue = false,
-  bool isWaiting = false,
-  bool isPinned = false,
-}) {
-  if (status == 'doing') return TaskSection.doing;
-  if (isPinned) return TaskSection.today; // pinned tasks show at the top
-  if (isOverdue) return TaskSection.overdue;
-  if (deadline == null && targetAt == null) return TaskSection.someday;
-  if (isWaiting) return TaskSection.waiting;
-
-  final reference = targetAt ?? deadline;
-  if (reference == null) return TaskSection.someday;
-
-  final daysLeft = reference.difference(now).inDays;
-  if (daysLeft <= 1) return TaskSection.today;
-  if (daysLeft <= 7) return TaskSection.thisWeek;
-  return TaskSection.upcoming;
-}

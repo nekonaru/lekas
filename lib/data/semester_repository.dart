@@ -29,13 +29,19 @@ class SemesterRepository {
   final AppDatabase db;
   SemesterRepository(this.db);
 
+  final Map<String, Stream<List<Semester>>> _watchCache = {};
+
+  // One stream instance per query, so StreamBuilders subscribing on every
+  // rebuild do not re-trigger drift's watch emission each frame.
   Stream<List<Semester>> watchSemesters() {
-    return (db.select(db.semesters)
-          ..orderBy([
-            (s) => OrderingTerm.desc(s.isActive),
-            (s) => OrderingTerm.desc(s.createdAt),
-          ]))
-        .watch();
+    return _watchCache.putIfAbsent('semesters', () {
+      return (db.select(db.semesters)
+            ..orderBy([
+              (s) => OrderingTerm.desc(s.isActive),
+              (s) => OrderingTerm.desc(s.createdAt),
+            ]))
+          .watch();
+    });
   }
 
   Future<List<Semester>> getSemesters() {

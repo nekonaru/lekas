@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/date_util.dart';
 import '../../domain/focus.dart';
-import '../../domain/urgency.dart' hide TaskSection;
+import '../../domain/urgency.dart';
 import '../../core/components/task_section.dart';
 import '../../core/components/bulk_action_bar.dart';
 import '../../core/components/bulk_actions.dart';
@@ -420,6 +420,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           final Map<TodaySection, List<Task>> sections = {};
           final scoresById = <String, double>{};
           for (final task in allTasks) {
+            // A finished task leaves Today entirely; it lives in the task
+            // list and the completed log, not in the open workload.
+            if (task.status == 'done') continue;
             // Design section 5.24: today's focus gets its own group, 5.9
             // pins come next, and everything else follows the score.
             final section = isFocusOnDay(task.focusDate, now)

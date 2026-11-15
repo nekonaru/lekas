@@ -51,7 +51,7 @@ class _TugasBerulangScreenState extends ConsumerState<TugasBerulangScreen> {
           status: 'todo',
           isGroup: false,
           pinned: false,
-          inbox: true,
+          inbox: false,
           repeatKind: repeatKind,
           repeatEvery: 1,
           createdAt: now,
@@ -71,6 +71,17 @@ class _TugasBerulangScreenState extends ConsumerState<TugasBerulangScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Card(
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                l10n.recurringTasksExplainer,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
           ListTile(
             title: Text(l10n.repeatDaily),
             subtitle: Text(l10n.repeatDailySubtitle),

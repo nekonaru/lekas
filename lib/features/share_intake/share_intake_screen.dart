@@ -164,6 +164,7 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         ? const TimeOfDay(hour: 23, minute: 59)
         : TimeOfDay.fromDateTime(current);
     final picked = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    if (!mounted) return;
     setState(() => _candidates[index].deadline = picked);
   }
 

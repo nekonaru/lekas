@@ -199,12 +199,13 @@ void main() {
     expect(sections(), [TodaySection.waiting, TodaySection.someday]);
     expect(find.text('Blocked task'), findsOneWidget);
 
-    // Finishing the prerequisite frees the task into its date section.
+    // Finishing the prerequisite frees the task into its date section and
+    // the finished prerequisite itself leaves Today.
     await tasks.markDone('prereq-1');
     await tester.pumpAndSettle();
 
     expect(find.text('Waiting'), findsNothing);
-    expect(sections(), [TodaySection.today, TodaySection.someday]);
+    expect(sections(), [TodaySection.today]);
     expect(find.text('Blocked task'), findsOneWidget);
 
     await unmountTree(tester);
