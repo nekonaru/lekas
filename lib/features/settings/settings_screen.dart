@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
+import '../../core/components/lekas_logo.dart';
 import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -131,16 +132,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _pickThemeMode() async {
+    final l10n = AppLocalizations.of(context)!;
+    String label(ThemeMode mode) => switch (mode) {
+          ThemeMode.system => l10n.themeModeSystem,
+          ThemeMode.light => l10n.light,
+          ThemeMode.dark => l10n.dark,
+        };
     final current = _themeMode ?? ThemeMode.system;
     final selected = await showDialog<ThemeMode>(
       context: context,
       builder: (dialogContext) => SimpleDialog(
-        title: Text(AppLocalizations.of(context)!.darkMode),
+        title: Text(l10n.darkMode),
         children: [
           for (final mode in const [ThemeMode.system, ThemeMode.light, ThemeMode.dark])
             SimpleDialogOption(
               onPressed: () => Navigator.pop(dialogContext, mode),
-              child: Text(mode.name),
+              child: Text(label(mode)),
             ),
         ],
       ),
@@ -438,217 +445,355 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final l10n = AppLocalizations.of(context)!;
     final language = _language ?? 'id';
     final themeMode = _themeMode ?? ThemeMode.system;
+    final colors = Theme.of(context).colorScheme;
 
-    // No app bar here: the shell owns the tab title and the drawer, so the
-    // settings list starts at the top of the body like every other tab.
+    // No app bar here: the shell owns the tab title and the drawer, so
+    // the settings list starts at the top of the body like other tabs.
     return Scaffold(
       body: ListView(
         children: [
-          ListTile(
-            title: Text(l10n.language),
-            subtitle: Text(language == 'id' ? l10n.indonesian : l10n.english),
-            onTap: _pickLanguage,
-          ),
-          ListTile(
-            title: Text(l10n.levelLabel),
-            subtitle: Text(
-                _level == 'school' ? l10n.school : l10n.college),
-            onTap: _pickLevel,
-          ),
-          ListTile(
-            title: Text(l10n.darkMode),
-            subtitle: Text(themeMode.name),
-            onTap: _pickThemeMode,
-          ),
-          ListTile(
-            title: Text(l10n.accentColor),
-            subtitle: Text(
-              _accent == null
-                  ? l10n.colorDefault
-                  : '#${_accent!.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
-            ),
-            leading: Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: _accent ?? AppTheme.accentColor,
-                shape: BoxShape.circle,
+          // The brand band echoes the drawer header.
+          Container(
+            decoration: BoxDecoration(gradient: AppTheme.brandGradient),
+            child: SafeArea(
+              top: true,
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+                child: Row(
+                  children: [
+                    const LekasLogo(size: 46),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Lekas',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.3,
+                                ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            l10n.splashTagline,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.85),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        'v$appVersion',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            onTap: _pickAccent,
           ),
-          ListTile(
-            title: Text(l10n.fontSize),
-            subtitle: Text(
-              _fontScale == 0.85
+
+          // --- Appearance ---
+          _settingsSection(l10n.sectionAppearance, Icons.palette_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.language,
+              Color(0xFF3B82F6),
+              l10n.language,
+              subtitle: language == 'id' ? l10n.indonesian : l10n.english,
+              onTap: _pickLanguage,
+            ),
+            _tintedTile(
+              Icons.school_outlined,
+              Color(0xFF10B981),
+              l10n.levelLabel,
+              subtitle: _level == 'school' ? l10n.school : l10n.college,
+              onTap: _pickLevel,
+            ),
+            _tintedTile(
+              Icons.dark_mode_outlined,
+              Color(0xFF8B5CF6),
+              l10n.darkMode,
+              subtitle: themeMode == ThemeMode.system
+                  ? l10n.themeModeSystem
+                  : themeMode == ThemeMode.dark
+                      ? l10n.dark
+                      : l10n.light,
+              onTap: _pickThemeMode,
+            ),
+            _tintedTile(
+              Icons.color_lens_outlined,
+              Color(0xFFEC4899),
+              l10n.accentColor,
+              subtitle: _accent == null
+                  ? l10n.colorDefault
+                  : '#${_accent!.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
+              trailing: _accent == null
+                  ? null
+                  : Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: _accent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+              onTap: _pickAccent,
+            ),
+            _tintedTile(
+              Icons.text_fields,
+              Color(0xFF06B6D4),
+              l10n.fontSize,
+              subtitle: _fontScale == 0.85
                   ? l10n.fontSmall
                   : _fontScale == 1.15
                       ? l10n.fontLarge
                       : _fontScale == 1.3
                           ? l10n.fontXlarge
                           : l10n.fontNormal,
+              onTap: _pickFontScale,
             ),
-            onTap: _pickFontScale,
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.reminderIntensity),
-            subtitle: Text(_intensityLabel(l10n, _intensity)),
-            onTap: _pickIntensity,
-          ),
-          ListTile(
-            title: Text(l10n.notificationBudget),
-            subtitle: Text(l10n.budgetPerDay(_budget)),
-            onTap: _pickBudget,
-          ),
-          SwitchListTile(
-            title: Text(l10n.overdueTaskReminderTitle),
-            subtitle: Text(l10n.overdueReminderToggle),
-            value: _overdueDigest,
-            onChanged: (value) => _setFlag(
-              'overdue_digest_enabled',
-              value,
-              (next) => _overdueDigest = next,
+          ]),
+
+          // --- Reminders ---
+          _settingsSection(l10n.sectionReminders, Icons.notifications_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.notifications_active_outlined,
+              Color(0xFFF97316),
+              l10n.reminderIntensity,
+              subtitle: _intensityLabel(l10n, _intensity),
+              onTap: _pickIntensity,
             ),
-          ),
-          SwitchListTile(
-            title: Text(l10n.morningSummaryNotificationTitle),
-            subtitle: Text(l10n.summaryMorningToggle),
-            value: _morningSummary,
-            onChanged: (value) => _setFlag(
-              'summary_morning_enabled',
-              value,
-              (next) => _morningSummary = next,
+            _tintedTile(
+              Icons.price_check_outlined,
+              Color(0xFFEF4444),
+              l10n.notificationBudget,
+              subtitle: l10n.budgetPerDay(_budget),
+              onTap: _pickBudget,
             ),
-          ),
-          SwitchListTile(
-            title: Text(l10n.eveningSummaryTitle),
-            subtitle: Text(l10n.summaryEveningToggle),
-            value: _eveningSummary,
-            onChanged: (value) => _setFlag(
-              'summary_evening_enabled',
-              value,
-              (next) => _eveningSummary = next,
+            _toggleTile(
+              Icons.alarm,
+              Color(0xFFEF4444),
+              l10n.overdueTaskReminderTitle,
+              l10n.overdueReminderToggle,
+              _overdueDigest,
+              (value) => _setFlag(
+                'overdue_digest_enabled',
+                value,
+                (next) => _overdueDigest = next,
+              ),
             ),
-          ),
-          SwitchListTile(
-            title: Text(l10n.weeklySummaryTitle),
-            subtitle: Text(l10n.summaryWeeklyToggle),
-            value: _weeklySummary,
-            onChanged: (value) => _setFlag(
-              'summary_weekly_enabled',
-              value,
-              (next) => _weeklySummary = next,
+            _toggleTile(
+              Icons.wb_sunny_outlined,
+              Color(0xFFF59E0B),
+              l10n.morningSummaryNotificationTitle,
+              l10n.summaryMorningToggle,
+              _morningSummary,
+              (value) => _setFlag(
+                'summary_morning_enabled',
+                value,
+                (next) => _morningSummary = next,
+              ),
             ),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.exportBackup),
-            trailing: const Icon(Icons.file_download),
-            onTap: () => _push(const BackupScreen()),
-          ),
-          ListTile(
-            title: Text(l10n.importBackup),
-            trailing: const Icon(Icons.file_upload),
-            onTap: () => _push(const BackupScreen()),
-          ),
-          ListTile(
-            title: Text(l10n.checkReminder),
-            trailing: const Icon(Icons.notifications),
-            onTap: () => _push(const DiagnosticScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock),
-            title: Text(l10n.appLockTitle),
-            onTap: () => _push(const AppLockScreen()),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.repeat),
-            title: Text(l10n.simpleRecurringTasksTitle),
-            onTap: () => _push(const TugasBerulangScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.copy_all_outlined),
-            title: Text(l10n.duplicateDetectionTitle),
-            onTap: () => _push(const DuplicateDetectionScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.merge_type),
-            title: Text(l10n.mergeImportTitle),
-            onTap: () => _push(const ImportMergeScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.picture_as_pdf_outlined),
-            title: Text(l10n.exportImagePdfTitle),
-            onTap: () => _push(const ExportGambarPDFScreen()),
-          ),
-          _settingsSection(l10n.shortcutsTitle),
-          ListTile(
-            leading: const Icon(Icons.list_alt),
-            title: Text(l10n.taskListTitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _push(const TasksScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.timer_outlined),
-            title: Text(l10n.widgetExamCountdown),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: _openExamCountdown,
-          ),
-          ListTile(
-            leading: const Icon(Icons.star_outline),
-            title: Text(l10n.widgetTodayFocus),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _push(const FokusHariIniScreen()),
-          ),
-          _settingsSection(l10n.toolsTitle),
-          ListTile(
-            leading: const Icon(Icons.school_outlined),
-            title: Text(l10n.semesterTitle),
-            onTap: () => _push(const SemesterScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: Text(l10n.iconShortcutsTitle),
-            onTap: () => _push(const PintasanIkonScreen()),
-          ),
-          ListTile(
-            leading: const Icon(Icons.play_circle_outline),
-            title: Text(l10n.demoModeTitle),
-            onTap: () => _push(const ModeDemoScreen()),
-          ),
-          _settingsSection(l10n.sponsorTitle),
-          _sponsorRow(
-            icon: Icons.favorite,
-            color: const Color(0xFFEA4AAA),
-            title: 'GitHub Sponsors',
-            subtitle: 'github.com/sponsors/nekonaru',
-            onTap: () => openUpdateUrl('https://github.com/sponsors/nekonaru'),
-          ),
-          _sponsorRow(
-            icon: Icons.local_cafe_rounded,
-            color: const Color(0xFFFFA726),
-            title: 'Saweria',
-            subtitle: 'saweria.co/nekonaruu',
-            onTap: () => openUpdateUrl('https://saweria.co/nekonaruu'),
-          ),
-          _sponsorRow(
-            icon: Icons.volunteer_activism,
-            color: const Color(0xFFF472B6),
-            title: 'SociaBuzz',
-            subtitle: 'sociabuzz.com/nekonaru/donate',
-            onTap: () => openUpdateUrl('https://sociabuzz.com/nekonaru/donate'),
-          ),
-          _sponsorRow(
-            icon: Icons.card_giftcard,
-            color: const Color(0xFF10B981),
-            title: 'BagiBagi',
-            subtitle: 'bagibagi.co/Nekonaru',
-            onTap: () => openUpdateUrl('https://bagibagi.co/Nekonaru'),
-          ),
+            _toggleTile(
+              Icons.nights_stay_outlined,
+              Color(0xFF6366F1),
+              l10n.eveningSummaryTitle,
+              l10n.summaryEveningToggle,
+              _eveningSummary,
+              (value) => _setFlag(
+                'summary_evening_enabled',
+                value,
+                (next) => _eveningSummary = next,
+              ),
+            ),
+            _toggleTile(
+              Icons.calendar_month_outlined,
+              Color(0xFF10B981),
+              l10n.weeklySummaryTitle,
+              l10n.summaryWeeklyToggle,
+              _weeklySummary,
+              (value) => _setFlag(
+                'summary_weekly_enabled',
+                value,
+                (next) => _weeklySummary = next,
+              ),
+            ),
+          ]),
+
+          // --- Backup ---
+          _settingsSection(l10n.sectionBackup, Icons.backup_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.file_download_outlined,
+              Color(0xFF6366F1),
+              l10n.exportBackup,
+              trailing: _chevron,
+              onTap: () => _push(const BackupScreen()),
+            ),
+            _tintedTile(
+              Icons.file_upload_outlined,
+              Color(0xFF8B5CF6),
+              l10n.importBackup,
+              trailing: _chevron,
+              onTap: () => _push(const BackupScreen()),
+            ),
+            _tintedTile(
+              Icons.notifications_active_outlined,
+              Color(0xFF06B6D4),
+              l10n.checkReminder,
+              trailing: _chevron,
+              onTap: () => _push(const DiagnosticScreen()),
+            ),
+            _tintedTile(
+              Icons.lock_outline,
+              Color(0xFF6366F1),
+              l10n.appLockTitle,
+              trailing: _chevron,
+              onTap: () => _push(const AppLockScreen()),
+            ),
+          ]),
+
+          // --- Tools ---
+          _settingsSection(l10n.toolsTitle, Icons.settings_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.repeat,
+              Color(0xFF10B981),
+              l10n.simpleRecurringTasksTitle,
+              trailing: _chevron,
+              onTap: () => _push(const TugasBerulangScreen()),
+            ),
+            _tintedTile(
+              Icons.copy_all_outlined,
+              Color(0xFFF59E0B),
+              l10n.duplicateDetectionTitle,
+              trailing: _chevron,
+              onTap: () => _push(const DuplicateDetectionScreen()),
+            ),
+            _tintedTile(
+              Icons.merge_type,
+              Color(0xFF06B6D4),
+              l10n.mergeImportTitle,
+              trailing: _chevron,
+              onTap: () => _push(const ImportMergeScreen()),
+            ),
+            _tintedTile(
+              Icons.share_outlined,
+              Color(0xFFEC4899),
+              l10n.exportImagePdfTitle,
+              trailing: _chevron,
+              onTap: () => _push(const ExportGambarPDFScreen()),
+            ),
+          ]),
+
+          // --- Shortcuts ---
+          _settingsSection(l10n.shortcutsTitle, Icons.bolt_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.list_alt,
+              Color(0xFF6366F1),
+              l10n.taskListTitle,
+              trailing: _chevron,
+              onTap: () => _push(const TasksScreen()),
+            ),
+            _tintedTile(
+              Icons.timer_outlined,
+              Color(0xFFEF4444),
+              l10n.widgetExamCountdown,
+              trailing: _chevron,
+              onTap: _openExamCountdown,
+            ),
+            _tintedTile(
+              Icons.star_outline,
+              Color(0xFFF59E0B),
+              l10n.widgetTodayFocus,
+              trailing: _chevron,
+              onTap: () => _push(const FokusHariIniScreen()),
+            ),
+          ]),
+
+          // --- School and demo ---
+          _settingsSection(l10n.sectionSchool, Icons.school_outlined),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.calendar_month_outlined,
+              Color(0xFF10B981),
+              l10n.semesterTitle,
+              trailing: _chevron,
+              onTap: () => _push(const SemesterScreen()),
+            ),
+            _tintedTile(
+              Icons.notifications_outlined,
+              Color(0xFF8B5CF6),
+              l10n.iconShortcutsTitle,
+              trailing: _chevron,
+              onTap: () => _push(const PintasanIkonScreen()),
+            ),
+            _tintedTile(
+              Icons.play_circle_outline,
+              Color(0xFFEC4899),
+              l10n.demoModeTitle,
+              trailing: _chevron,
+              onTap: () => _push(const ModeDemoScreen()),
+            ),
+          ]),
+
+          // --- Sponsor ---
+          _settingsSection(l10n.sponsorTitle, Icons.favorite_border),
+          _groupCard(colors, [
+            _sponsorRow(
+              icon: Icons.favorite,
+              color: const Color(0xFFEA4AAA),
+              title: 'GitHub Sponsors',
+              subtitle: 'github.com/sponsors/nekonaru',
+              onTap: () =>
+                  openUpdateUrl('https://github.com/sponsors/nekonaru'),
+            ),
+            _sponsorRow(
+              icon: Icons.local_cafe_rounded,
+              color: const Color(0xFFFFA726),
+              title: 'Saweria',
+              subtitle: 'saweria.co/nekonaruu',
+              onTap: () => openUpdateUrl('https://saweria.co/nekonaruu'),
+            ),
+            _sponsorRow(
+              icon: Icons.volunteer_activism,
+              color: const Color(0xFFF472B6),
+              title: 'SociaBuzz',
+              subtitle: 'sociabuzz.com/nekonaru/donate',
+              onTap: () =>
+                  openUpdateUrl('https://sociabuzz.com/nekonaru/donate'),
+            ),
+            _sponsorRow(
+              icon: Icons.card_giftcard,
+              color: const Color(0xFF10B981),
+              title: 'BagiBagi',
+              subtitle: 'bagibagi.co/Nekonaru',
+              onTap: () => openUpdateUrl('https://bagibagi.co/Nekonaru'),
+            ),
+          ]),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
             child: Text(
               l10n.sponsorCaption,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -656,47 +801,186 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
             ),
           ),
-          _settingsSection(l10n.aboutTitle),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: Text(l10n.aboutLekas),
-            onTap: _showAbout,
-          ),
-          ListTile(
-            leading: const Icon(Icons.code),
-            title: Text(l10n.sourceCodeTitle),
-            subtitle: const Text('github.com/nekonaru/lekas'),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => openUpdateUrl('https://github.com/nekonaru/lekas'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: Text(l10n.licenseTitle),
-            subtitle: const Text('MIT'),
-            onTap: _showLicense,
-          ),
-          const Divider(),
-          SwitchListTile(
-            title: Text(l10n.autoUpdateCheckTitle),
-            subtitle: Text(l10n.autoUpdateCheckSubtitle),
-            value: _autoUpdateCheck,
-            onChanged: _setAutoUpdateCheck,
-          ),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: Text(l10n.appVersionLabel),
-            subtitle: Text('$appVersion · ${l10n.tapToCheckUpdates}'),
-            trailing: _checkingUpdate
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2.2),
-                  )
-                : const Icon(Icons.system_update_alt),
-            onTap: _checkingUpdate ? null : _checkUpdate,
+
+          // --- About ---
+          _settingsSection(l10n.aboutTitle, Icons.info_outline),
+          _groupCard(colors, [
+            _tintedTile(
+              Icons.info_outline,
+              Color(0xFF64748B),
+              l10n.aboutLekas,
+              trailing: _chevron,
+              onTap: _showAbout,
+            ),
+            _tintedTile(
+              Icons.code,
+              Color(0xFF1F2937),
+              l10n.sourceCodeTitle,
+              subtitle: 'github.com/nekonaru/lekas',
+              trailing: const Icon(Icons.open_in_new, size: 18),
+              onTap: () => openUpdateUrl('https://github.com/nekonaru/lekas'),
+            ),
+            _tintedTile(
+              Icons.description_outlined,
+              Color(0xFF06B6D4),
+              l10n.licenseTitle,
+              subtitle: 'MIT',
+              onTap: _showLicense,
+            ),
+            _toggleTile(
+              Icons.system_update_alt,
+              Color(0xFF6366F1),
+              l10n.autoUpdateCheckTitle,
+              l10n.autoUpdateCheckSubtitle,
+              _autoUpdateCheck,
+              (value) => _setAutoUpdateCheck(value),
+            ),
+            _tintedTile(
+              Icons.verified_outlined,
+              Color(0xFF10B981),
+              l10n.appVersionLabel,
+              subtitle: 'v$appVersion · ${l10n.tapToCheckUpdates}',
+              trailing: _checkingUpdate
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2.2),
+                    )
+                  : const Icon(Icons.system_update_alt),
+              onTap: _checkingUpdate ? null : _checkUpdate,
+            ),
+          ]),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  static const _chevron = Icon(Icons.chevron_right);
+
+  /// One section header: a small caps label with a tinted glyph to match
+  /// the drawer, so the settings reads as the same family of menus.
+  Widget _settingsSection(String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 15, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 8),
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.3,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  /// One tinted rounded tile: a colored glyph in a soft square, the label
+  /// and optional subtitle, an optional trailing control.
+  Widget _tintedTile(
+    IconData icon,
+    Color tint,
+    String title, {
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: tint.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Icon(icon, size: 20, color: tint),
+      ),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: trailing,
+      onTap: onTap,
+    );
+  }
+
+  /// One switch row with a tinted glyph, the same shape as the tinted
+  /// tiles, so toggles sit inside the card as peers of taps.
+  Widget _toggleTile(
+    IconData icon,
+    Color tint,
+    String title,
+    String subtitle,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return ListTile(
+      leading: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: tint.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Icon(icon, size: 20, color: tint),
+      ),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: Switch(value: value, onChanged: onChanged),
+    );
+  }
+
+  /// One rounded card that groups the rows below a section header.
+  /// Paints with Material, not a DecoratedBox, so the ListTiles inside
+  /// can paint their background and ink splashes.
+  Widget _groupCard(ColorScheme colors, List<Widget> children) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
+      child: Material(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            for (final child in children) child,
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The sponsor rows: colored circle + platform name + link.
+  Widget _sponsorRow({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, size: 22, color: color),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12),
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }
@@ -864,58 +1148,4 @@ class _AccentPickerDialogState extends State<_AccentPickerDialog> {
       ),
     );
   }
-}
-
-/// The small caps section label used above the supporting groups,
-/// in the accent color, matching the drawer style.
-Widget _settingsSection(String label, [Color? accent]) {
-  final effective = accent;
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
-    child: Builder(
-      builder: (context) {
-        final color = effective ?? Theme.of(context).colorScheme.primary;
-        return Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: 11.5,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.3,
-            color: color,
-          ),
-        );
-      },
-    ),
-  );
-}
-
-/// One sponsor row: a colored glyph, the platform name, and the link.
-Widget _sponsorRow({
-  required IconData icon,
-  required Color color,
-  required String title,
-  required String subtitle,
-  required VoidCallback onTap,
-}) {
-  return ListTile(
-    leading: Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(icon, size: 22, color: color),
-    ),
-    title: Text(
-      title,
-      style: const TextStyle(fontWeight: FontWeight.w700),
-    ),
-    subtitle: Text(
-      subtitle,
-      style: const TextStyle(fontSize: 12),
-    ),
-    trailing: const Icon(Icons.chevron_right),
-    onTap: onTap,
-  );
 }

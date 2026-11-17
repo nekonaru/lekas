@@ -378,7 +378,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trySampleData => 'Try with Sample Data';
 
   @override
-  String get trySampleDataSubtitle => '3 courses, 8 tasks, sample schedule';
+  String get trySampleDataSubtitle => 'Creates one demo course with 3 tasks';
+
+  @override
+  String get schoolSampleDataSubtitle =>
+      'Creates one demo subject with 3 tasks';
+
+  @override
+  String get schoolSampleSubjectName => 'Mathematics (Demo)';
+
+  @override
+  String get schoolDemoTask1 => 'Practice exercises, chapter 3';
+
+  @override
+  String get schoolDemoTask2 => 'Essay about the water cycle';
+
+  @override
+  String get schoolDemoTask3 => 'Science presentation slides';
 
   @override
   String get deleteSampleData => 'Delete Sample Data';
@@ -1684,6 +1700,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String subjectCount(int count) {
+    return '$count subjects';
+  }
+
+  @override
   String openTasksCount(int count) {
     return '$count open';
   }
@@ -2049,4 +2070,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewOnGithub => 'View on GitHub';
+
+  @override
+  String get sectionAppearance => 'Appearance';
+
+  @override
+  String get sectionReminders => 'Reminders';
+
+  @override
+  String get sectionBackup => 'Backup';
+
+  @override
+  String get sectionSchool => 'School';
+
+  @override
+  String get themeModeSystem => 'Match system';
+
+  @override
+  String get dark => 'Dark';
+
+  @override
+  String get light => 'Light';
+
+  @override
+  String get subjectsTitle => 'Subjects';
+
+  @override
+  String get addSubject => 'New Subject';
+
+  @override
+  String get manageSubjectsLabel => 'Manage Subjects';
+
+  @override
+  String get subjectListTitle => 'Subjects This Semester';
+
+  @override
+  String get classYearLabel => 'Class year';
+
+  @override
+  String classYearValue(String value) {
+    return 'Class: $value';
+  }
 }

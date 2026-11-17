@@ -378,7 +378,24 @@ class AppLocalizationsId extends AppLocalizations {
   String get trySampleData => 'Coba dengan Data Contoh';
 
   @override
-  String get trySampleDataSubtitle => '3 matkul, 8 tugas, jadwal contoh';
+  String get trySampleDataSubtitle =>
+      'Membuat satu mata kuliah contoh dengan 3 tugas';
+
+  @override
+  String get schoolSampleDataSubtitle =>
+      'Membuat satu mata pelajaran contoh dengan 3 tugas';
+
+  @override
+  String get schoolSampleSubjectName => 'Matematika (Contoh)';
+
+  @override
+  String get schoolDemoTask1 => 'Latihan soal bab 3';
+
+  @override
+  String get schoolDemoTask2 => 'Esai tentang siklus air';
+
+  @override
+  String get schoolDemoTask3 => 'Slide presentasi sains';
 
   @override
   String get deleteSampleData => 'Hapus Data Contoh';
@@ -1684,6 +1701,11 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String subjectCount(int count) {
+    return '$count mata pelajaran';
+  }
+
+  @override
   String openTasksCount(int count) {
     return '$count tugas';
   }
@@ -2050,4 +2072,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get viewOnGithub => 'Lihat di GitHub';
+
+  @override
+  String get sectionAppearance => 'Tampilan';
+
+  @override
+  String get sectionReminders => 'Pengingat';
+
+  @override
+  String get sectionBackup => 'Cadangan';
+
+  @override
+  String get sectionSchool => 'Sekolah';
+
+  @override
+  String get themeModeSystem => 'Ikuti sistem';
+
+  @override
+  String get dark => 'Gelap';
+
+  @override
+  String get light => 'Terang';
+
+  @override
+  String get subjectsTitle => 'Mata Pelajaran';
+
+  @override
+  String get addSubject => 'Mata Pelajaran Baru';
+
+  @override
+  String get manageSubjectsLabel => 'Kelola Mata Pelajaran';
+
+  @override
+  String get subjectListTitle => 'Mata Pelajaran Semester Ini';
+
+  @override
+  String get classYearLabel => 'Kelas';
+
+  @override
+  String classYearValue(String value) {
+    return 'Kelas: $value';
+  }
 }

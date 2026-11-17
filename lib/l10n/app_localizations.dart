@@ -791,8 +791,38 @@ abstract class AppLocalizations {
   /// No description provided for @trySampleDataSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'3 matkul, 8 tugas, jadwal contoh'**
+  /// **'Membuat satu mata kuliah contoh dengan 3 tugas'**
   String get trySampleDataSubtitle;
+
+  /// No description provided for @schoolSampleDataSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Membuat satu mata pelajaran contoh dengan 3 tugas'**
+  String get schoolSampleDataSubtitle;
+
+  /// No description provided for @schoolSampleSubjectName.
+  ///
+  /// In id, this message translates to:
+  /// **'Matematika (Contoh)'**
+  String get schoolSampleSubjectName;
+
+  /// No description provided for @schoolDemoTask1.
+  ///
+  /// In id, this message translates to:
+  /// **'Latihan soal bab 3'**
+  String get schoolDemoTask1;
+
+  /// No description provided for @schoolDemoTask2.
+  ///
+  /// In id, this message translates to:
+  /// **'Esai tentang siklus air'**
+  String get schoolDemoTask2;
+
+  /// No description provided for @schoolDemoTask3.
+  ///
+  /// In id, this message translates to:
+  /// **'Slide presentasi sains'**
+  String get schoolDemoTask3;
 
   /// No description provided for @deleteSampleData.
   ///
@@ -3098,6 +3128,12 @@ abstract class AppLocalizations {
   /// **'{count} mata kuliah'**
   String courseCount(int count);
 
+  /// No description provided for @subjectCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} mata pelajaran'**
+  String subjectCount(int count);
+
   /// No description provided for @openTasksCount.
   ///
   /// In id, this message translates to:
@@ -3775,6 +3811,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat di GitHub'**
   String get viewOnGithub;
+
+  /// No description provided for @sectionAppearance.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilan'**
+  String get sectionAppearance;
+
+  /// No description provided for @sectionReminders.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get sectionReminders;
+
+  /// No description provided for @sectionBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan'**
+  String get sectionBackup;
+
+  /// No description provided for @sectionSchool.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekolah'**
+  String get sectionSchool;
+
+  /// No description provided for @themeModeSystem.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikuti sistem'**
+  String get themeModeSystem;
+
+  /// No description provided for @dark.
+  ///
+  /// In id, this message translates to:
+  /// **'Gelap'**
+  String get dark;
+
+  /// No description provided for @light.
+  ///
+  /// In id, this message translates to:
+  /// **'Terang'**
+  String get light;
+
+  /// No description provided for @subjectsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Pelajaran'**
+  String get subjectsTitle;
+
+  /// No description provided for @addSubject.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Pelajaran Baru'**
+  String get addSubject;
+
+  /// No description provided for @manageSubjectsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola Mata Pelajaran'**
+  String get manageSubjectsLabel;
+
+  /// No description provided for @subjectListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Pelajaran Semester Ini'**
+  String get subjectListTitle;
+
+  /// No description provided for @classYearLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas'**
+  String get classYearLabel;
+
+  /// No description provided for @classYearValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas: {value}'**
+  String classYearValue(String value);
 }
 
 class _AppLocalizationsDelegate
