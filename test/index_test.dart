@@ -42,6 +42,7 @@ void main() {
       'idx_focus_sessions_task',
       'idx_reminders_fire',
       'idx_reminders_task',
+      'idx_scores_space',
       'idx_space_items_space',
       'idx_spaces_deleted',
       'idx_subtasks_task',
@@ -55,16 +56,16 @@ void main() {
     ]);
   });
 
-  test('the schema version is 6', () {
-    expect(db.schemaVersion, 6);
+  test('the schema version is 7', () {
+    expect(db.schemaVersion, 7);
   });
 
-  test('the database declares twenty secondary indexes', () {
+  test('the database declares twenty one secondary indexes', () {
     final names = db.allSchemaEntities
         .map((entity) => entity.entityName)
         .where((name) => name.startsWith('idx_'))
         .toList();
-    expect(names, hasLength(20));
+    expect(names, hasLength(21));
   });
 
   /// Every probe below must hit an index and must not degrade into a full
@@ -239,6 +240,15 @@ void main() {
         'ORDER BY due_at',
       ),
       contains('idx_flash_cards_due'),
+    );
+  });
+
+  test('the grade book list reaches the space index', () async {
+    expect(
+      await plan(
+        "SELECT * FROM scores WHERE space_id = 'sp1' ORDER BY taken_at DESC",
+      ),
+      contains('idx_scores_space'),
     );
   });
 }

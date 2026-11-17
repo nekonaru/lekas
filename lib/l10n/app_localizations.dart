@@ -824,6 +824,24 @@ abstract class AppLocalizations {
   /// **'Slide presentasi sains'**
   String get schoolDemoTask3;
 
+  /// No description provided for @schoolDemoScore1Label.
+  ///
+  /// In id, this message translates to:
+  /// **'Harian 1'**
+  String get schoolDemoScore1Label;
+
+  /// No description provided for @schoolDemoScore2Label.
+  ///
+  /// In id, this message translates to:
+  /// **'Harian 2'**
+  String get schoolDemoScore2Label;
+
+  /// No description provided for @schoolDemoScore3Label.
+  ///
+  /// In id, this message translates to:
+  /// **'UTS'**
+  String get schoolDemoScore3Label;
+
   /// No description provided for @deleteSampleData.
   ///
   /// In id, this message translates to:
@@ -4141,6 +4159,132 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} kartu'**
   String deckCardCount(int count);
+
+  /// No description provided for @gradeBookTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buku Nilai'**
+  String get gradeBookTitle;
+
+  /// No description provided for @raportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rapor'**
+  String get raportTitle;
+
+  /// No description provided for @averageLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata'**
+  String get averageLabel;
+
+  /// No description provided for @kkmLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'KKM'**
+  String get kkmLabel;
+
+  /// No description provided for @kkmPassed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tuntas'**
+  String get kkmPassed;
+
+  /// No description provided for @kkmFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Di bawah KKM'**
+  String get kkmFailed;
+
+  /// No description provided for @addScore.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai Baru'**
+  String get addScore;
+
+  /// No description provided for @scoreLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Label (misal: Harian 1, UTS)'**
+  String get scoreLabel;
+
+  /// No description provided for @scoreValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai (0-100)'**
+  String get scoreValue;
+
+  /// No description provided for @scoreNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get scoreNote;
+
+  /// No description provided for @takenAtLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal'**
+  String get takenAtLabel;
+
+  /// No description provided for @kkmEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur KKM'**
+  String get kkmEditTitle;
+
+  /// No description provided for @kkmInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'KKM harus 0-100.'**
+  String get kkmInvalid;
+
+  /// No description provided for @valueInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai harus 0-100.'**
+  String get valueInvalid;
+
+  /// No description provided for @deleteScoreTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus nilai ini?'**
+  String get deleteScoreTitle;
+
+  /// No description provided for @deleteScoreBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilainya ikut terhapus dari buku nilai. Tidak bisa dibatalkan.'**
+  String get deleteScoreBody;
+
+  /// No description provided for @noScoresYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nilai. Tambah lewat tombol +.'**
+  String get noScoresYet;
+
+  /// No description provided for @raportShare.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan rapor'**
+  String get raportShare;
+
+  /// No description provided for @raportAverage.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata semester'**
+  String get raportAverage;
+
+  /// No description provided for @raportSubjectEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada mata pelajaran di semester aktif.'**
+  String get raportSubjectEmpty;
+
+  /// No description provided for @scoresCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} nilai'**
+  String scoresCount(int count);
 }
 
 class _AppLocalizationsDelegate

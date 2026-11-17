@@ -5,6 +5,7 @@ import '../../data/providers.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import '../tasks/attendance_screen.dart';
+import '../study/buku_nilai_screen.dart';
 import '../tasks/catatan_pertemuan_screen.dart';
 import '../tasks/daftar_bawaan_screen.dart';
 import '../files/files_screen.dart';
@@ -138,6 +139,16 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                   onTap: () => _push(PrediksiNilaiScreen(spaceId: space.id)),
                 ),
               ],
+              // The grade book is a school feature; college keeps the GPA
+              // tooling above untouched.
+              if (isCourse && space.level == 'school')
+                ListTile(
+                  title: Text(l10n.gradeBookTitle),
+                  leading: const Icon(Icons.grading_outlined),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _push(BukuNilaiScreen(
+                      spaceId: space.id, spaceName: space.name)),
+                ),
               ListTile(
                 title: Text(l10n.meetingNotesTitle),
                 leading: const Icon(Icons.note),

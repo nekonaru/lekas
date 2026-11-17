@@ -397,6 +397,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schoolDemoTask3 => 'Science presentation slides';
 
   @override
+  String get schoolDemoScore1Label => 'Daily 1';
+
+  @override
+  String get schoolDemoScore2Label => 'Daily 2';
+
+  @override
+  String get schoolDemoScore3Label => 'Midterm';
+
+  @override
   String get deleteSampleData => 'Delete Sample Data';
 
   @override
@@ -2248,5 +2257,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String deckCardCount(int count) {
     return '$count cards';
+  }
+
+  @override
+  String get gradeBookTitle => 'Grade Book';
+
+  @override
+  String get raportTitle => 'Report Card';
+
+  @override
+  String get averageLabel => 'Average';
+
+  @override
+  String get kkmLabel => 'KKM';
+
+  @override
+  String get kkmPassed => 'Passed';
+
+  @override
+  String get kkmFailed => 'Below KKM';
+
+  @override
+  String get addScore => 'New Score';
+
+  @override
+  String get scoreLabel => 'Label (e.g. Daily 1, Midterm)';
+
+  @override
+  String get scoreValue => 'Score (0-100)';
+
+  @override
+  String get scoreNote => 'Note (optional)';
+
+  @override
+  String get takenAtLabel => 'Date';
+
+  @override
+  String get kkmEditTitle => 'Set KKM';
+
+  @override
+  String get kkmInvalid => 'KKM must be 0-100.';
+
+  @override
+  String get valueInvalid => 'Score must be 0-100.';
+
+  @override
+  String get deleteScoreTitle => 'Delete this score?';
+
+  @override
+  String get deleteScoreBody =>
+      'The score is removed from the grade book. This cannot be undone.';
+
+  @override
+  String get noScoresYet => 'No scores yet. Add one with the plus button.';
+
+  @override
+  String get raportShare => 'Share report card';
+
+  @override
+  String get raportAverage => 'Semester average';
+
+  @override
+  String get raportSubjectEmpty => 'No subjects in the active semester yet.';
+
+  @override
+  String scoresCount(int count) {
+    return '$count scores';
   }
 }

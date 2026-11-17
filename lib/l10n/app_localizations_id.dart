@@ -398,6 +398,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get schoolDemoTask3 => 'Slide presentasi sains';
 
   @override
+  String get schoolDemoScore1Label => 'Harian 1';
+
+  @override
+  String get schoolDemoScore2Label => 'Harian 2';
+
+  @override
+  String get schoolDemoScore3Label => 'UTS';
+
+  @override
   String get deleteSampleData => 'Hapus Data Contoh';
 
   @override
@@ -2249,5 +2258,72 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String deckCardCount(int count) {
     return '$count kartu';
+  }
+
+  @override
+  String get gradeBookTitle => 'Buku Nilai';
+
+  @override
+  String get raportTitle => 'Rapor';
+
+  @override
+  String get averageLabel => 'Rata-rata';
+
+  @override
+  String get kkmLabel => 'KKM';
+
+  @override
+  String get kkmPassed => 'Tuntas';
+
+  @override
+  String get kkmFailed => 'Di bawah KKM';
+
+  @override
+  String get addScore => 'Nilai Baru';
+
+  @override
+  String get scoreLabel => 'Label (misal: Harian 1, UTS)';
+
+  @override
+  String get scoreValue => 'Nilai (0-100)';
+
+  @override
+  String get scoreNote => 'Catatan (opsional)';
+
+  @override
+  String get takenAtLabel => 'Tanggal';
+
+  @override
+  String get kkmEditTitle => 'Atur KKM';
+
+  @override
+  String get kkmInvalid => 'KKM harus 0-100.';
+
+  @override
+  String get valueInvalid => 'Nilai harus 0-100.';
+
+  @override
+  String get deleteScoreTitle => 'Hapus nilai ini?';
+
+  @override
+  String get deleteScoreBody =>
+      'Nilainya ikut terhapus dari buku nilai. Tidak bisa dibatalkan.';
+
+  @override
+  String get noScoresYet => 'Belum ada nilai. Tambah lewat tombol +.';
+
+  @override
+  String get raportShare => 'Bagikan rapor';
+
+  @override
+  String get raportAverage => 'Rata-rata semester';
+
+  @override
+  String get raportSubjectEmpty =>
+      'Belum ada mata pelajaran di semester aktif.';
+
+  @override
+  String scoresCount(int count) {
+    return '$count nilai';
   }
 }

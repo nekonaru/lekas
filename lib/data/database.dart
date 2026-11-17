@@ -396,6 +396,24 @@ class FlashCards extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// One recorded grade (SMA grade book, schema 7). Each row is one score
+/// event: Ulangan Harian, UTS, UAS and friends. Per-label averages and
+/// component weights are applied at read time, nothing is pre-baked.
+@TableIndex(name: 'idx_scores_space', columns: {#spaceId})
+class Scores extends Table {
+  TextColumn get id => text()();
+  TextColumn get spaceId => text().references(Spaces, #id)();
+  TextColumn get label => text()();
+  IntColumn get value => integer()();
+  TextColumn get note => text().nullable()();
+  IntColumn get takenAt => integer()();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Semesters,
   Spaces,
@@ -423,12 +441,13 @@ class FlashCards extends Table {
   SavedFilters,
   Attendance,
   FlashCards,
+  Scores,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -565,6 +584,11 @@ class AppDatabase extends _$AppDatabase {
             // Study flashcards with their own SM-2 counters (schema 6).
             await m.createTable(flashCards);
             await m.createIndex(idxFlashCardsDue);
+          }
+          if (from < 7) {
+            // The SMA grade book: one row per score event (schema 7).
+            await m.createTable(scores);
+            await m.createIndex(idxScoresSpace);
           }
         },
       );

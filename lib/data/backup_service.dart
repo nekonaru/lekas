@@ -94,6 +94,7 @@ class BackupService {
     data['saved_filters'] = (await db.select(db.savedFilters).get()).map((e) => e.toJson()).toList();
     data['attendance'] = (await db.select(db.attendance).get()).map((e) => e.toJson()).toList();
     data['flash_cards'] = (await db.select(db.flashCards).get()).map((e) => e.toJson()).toList();
+    data['scores'] = (await db.select(db.scores).get()).map((e) => e.toJson()).toList();
 
     // Compact encoding: a backup is machine data, and indentation roughly
     // doubles the size of a large database.
@@ -179,6 +180,7 @@ class BackupService {
     final filters = _decode<SavedFilter>(data, 'saved_filters', SavedFilter.fromJson);
     final attendance = _decode<AttendanceData>(data, 'attendance', AttendanceData.fromJson);
     final flashCards = _decode<FlashCard>(data, 'flash_cards', FlashCard.fromJson);
+    final scores = _decode<Score>(data, 'scores', Score.fromJson);
 
     final stats = <String, int>{};
     void count(String key, List<dynamic> rows) {
@@ -211,6 +213,7 @@ class BackupService {
     count('saved_filters', filters);
     count('attendance', attendance);
     count('flash_cards', flashCards);
+    count('scores', scores);
 
     Future<void> putAll<D>(List<D> rows, Future<void> Function(D) write) async {
       for (final row in rows) {
@@ -221,6 +224,7 @@ class BackupService {
     await db.transaction(() async {
       if (mode == 'replace') {
         // Children first: delete everything this app owns.
+        await db.delete(db.scores).go();
         await db.delete(db.flashCards).go();
         await db.delete(db.savedFilters).go();
         await db.delete(db.attendance).go();
@@ -253,6 +257,7 @@ class BackupService {
       await putAll(semesters, (row) => db.into(db.semesters).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaces, (row) => db.into(db.spaces).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(flashCards, (row) => db.into(db.flashCards).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(scores, (row) => db.into(db.scores).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(aliases, (row) => db.into(db.spaceAliases).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaceMeta, (row) => db.into(db.spaceMeta).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(tasks, (row) => db.into(db.tasks).insert(row, mode: InsertMode.insertOrReplace));

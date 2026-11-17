@@ -42,6 +42,23 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
     final titles = isSchool
         ? [l10n.schoolDemoTask1, l10n.schoolDemoTask2, l10n.schoolDemoTask3]
         : [l10n.typeLabReport, l10n.typePaper, l10n.typePresentation];
+    if (isSchool) {
+      // The school demo also seeds grades, so the grade book and the
+      // report card have something to show on first launch.
+      final scoreRepo = ref.read(scoreRepositoryProvider);
+      final samples = <(String, int)>[
+        (l10n.schoolDemoScore1Label, 82),
+        (l10n.schoolDemoScore2Label, 90),
+        (l10n.schoolDemoScore3Label, 78),
+      ];
+      for (final (label, value) in samples) {
+        await scoreRepo.addScore(
+          spaceId: spaceId,
+          label: label,
+          value: value,
+        );
+      }
+    }
     for (var i = 0; i < titles.length; i++) {
       final due = DateTime(now.year, now.month, now.day + i + 1, 17);
       await taskRepo.insertTask(
@@ -95,7 +112,10 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
       await taskRepo.softDeleteTask(task.id);
     }
     final spaces = await spaceRepo.getSpaces(includeArchived: true);
+    final scoreRepo = ref.read(scoreRepositoryProvider);
     for (final space in spaces.where((s) => s.kind == 'demo')) {
+      // Scores reference the space, so they go first.
+      await scoreRepo.deleteScoresOf(space.id);
       await spaceRepo.deleteSpace(space.id);
     }
     if (!mounted) return;

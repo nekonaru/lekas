@@ -20,6 +20,7 @@ import 'attachment_repository.dart';
 import 'task_event_repository.dart';
 import 'focus_session_repository.dart';
 import 'flashcard_repository.dart';
+import 'score_repository.dart';
 import 'task_template_repository.dart';
 import 'class_exception_repository.dart';
 import 'space_item_repository.dart';
@@ -137,6 +138,10 @@ final focusSessionRepositoryProvider = Provider<FocusSessionRepository>((ref) {
 
 final flashcardRepositoryProvider = Provider<FlashcardRepository>((ref) {
   return FlashcardRepository(ref.read(appDatabaseProvider));
+});
+
+final scoreRepositoryProvider = Provider<ScoreRepository>((ref) {
+  return ScoreRepository(ref.read(appDatabaseProvider));
 });
 
 final taskTemplateRepositoryProvider = Provider<TaskTemplateRepository>((ref) {
