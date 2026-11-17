@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.16.0
+
+Lekas becomes a study companion too, with spaced-repetition flashcards and focus sessions you can actually measure.
+
+### New features
+
+- **Study flashcards.** A new Flashcards entry in the drawer's Study section shows a general deck plus one deck per subject, with every card on its own SM-2 schedule: tap to flip, grade Again, Hard or Easy, and the card comes back right when you should review it.
+- **A real focus timer.** The focus mode on Today now runs a 15, 25 or 45 minute timer that records every session (the table existed, but nothing wrote to it).
+- **Study Stats.** A new screen shows focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, and your flashcard totals.
+
+### Improvements
+
+- **Backups cover flashcards.** Export and import now carry the study cards, so switching phones keeps your review progress.
+- **Schema 6.** The database gains the flashcards table with an index on the due date; upgrading from any older release happens automatically.
+
 ## v1.15.0
 
 Lekas gets a rebuilt Settings screen and a deeper SMA mode in this update.

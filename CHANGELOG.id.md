@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.16.0
+
+Lekas kini juga jadi teman belajar, dengan kartu flash pengulangan berjeda dan sesi fokus yang benar-benar terukur.
+
+### Fitur baru
+
+- **Kartu belajar.** Entri Kartu Belajar baru di bagian Belajar pada drawer menampilkan deck umum plus satu deck per mata pelajaran, setiap kartu mengikuti jadwal SM-2-nya sendiri: ketuk untuk membalik, beri nilai Lupa, Sulit, atau Mudah, dan kartu kembali persis saat kamu harus mengulasnya.
+- **Timer fokus yang nyata.** Mode fokus di Hari Ini kini menjalankan timer 15, 25, atau 45 menit yang mencatat setiap sesi (tabelnya sudah ada, tapi belum pernah ditulis).
+- **Statistik Belajar.** Layar baru menampilkan menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, dan total kartumu.
+
+### Peningkatan
+
+- **Cadangan mencakup kartu belajar.** Ekspor dan impor kini membawa kartu belajarmu, jadi pindah HP tidak menghilangkan progres ulasanmu.
+- **Skema 6.** Database kini punya tabel kartu belajar dengan indeks pada tanggal jatuh tempo; peningkatan dari rilis lama berjalan otomatis.
+
 ## v1.15.0
 
 Lekas hadir dengan Pengaturan yang dibangun ulang dan mode SMA yang lebih dalam pada rilis ini.

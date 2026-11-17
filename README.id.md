@@ -89,6 +89,14 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk menyelesaikan, geser kiri untuk menunda |
 | **Mode fokus** | Maksimal tiga tugas per hari, timer fokus 25/5, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
 
+### Belajar
+
+| Fitur | Deskripsi |
+|-------|-----------|
+| **Kartu Belajar** | Deck umum plus satu deck per mata pelajaran dengan pengulangan berjeda (SM-2); ketuk untuk membalik, nilai Lupa, Sulit, atau Mudah, jumlah jatuh tempo terlihat per deck |
+| **Timer fokus** | Timer 15, 25, atau 45 menit di dalam mode Fokus yang mencatat setiap sesi |
+| **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, dan total kartu |
+
 ### Kalender dan Kelas
 
 | Fitur | Deskripsi |
@@ -300,7 +308,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (507 tes) |
+| `flutter test` | Seluruh suite harus lulus (526 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
