@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.15.0
+
+Lekas hadir dengan Pengaturan yang dibangun ulang dan mode SMA yang lebih dalam pada rilis ini.
+
+### Fitur baru
+
+- **Pengaturan yang dibangun ulang.** Pengaturan kini terbuka dengan header brand (mark, tagline, dan chip versi) dan setiap bagian hidup dalam kartu sendiri dengan ikon berwarna: Tampilan, Pengingat, Cadangan, Alat, Pintasan, Sekolah, Sponsor, dan Tentang.
+- **Mode SMA yang lebih dalam.** Mata pelajaran kini punya Kelas (10, 11, atau 12) yang dipilih langsung di form ruang, tampil di halaman mata pelajaran, dan semua label berubah menjadi istilah sekolah (Kelola Mata Pelajaran, Mata Pelajaran Semester Ini) saat jenjang diatur ke SMA.
+- **Data contoh untuk SMA.** Data contoh membuat mata pelajaran Matematika dengan tugas gaya sekolah untuk akun SMA.
+
+### Peningkatan
+
+- **Pemilih tema terlokalisasi.** Dialog tema menampilkan Ikuti sistem, Gelap, atau Terang sesuai bahasa aplikasi, bukan nama enum mentah.
+- **Tautan sponsor dalam satu kartu.** Baris sponsor kini berada dalam satu kartu dengan gaya yang sama seperti bagian lain, mudah dipindai.
+
 ## v1.14.0
 
 Lekas menghadirkan versi yang benar-benar berfungsi untuk tugas berulang, tampilan pencarian tersimpan, dan tautan cepat, plus ekspor yang jujur dan pembaruan list yang lebih ringan, ditambah perbaikan audit.

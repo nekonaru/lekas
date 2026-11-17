@@ -67,6 +67,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Kategori** | Wadah bebas bernama apa pun (organisasi, kepanitiaan, komunitas); menyimpan warna, tugas, dan aksi kelolanya sendiri, plus baris tanpa kategori untuk tugas yang belum punya tempat |
 | **Mata kuliah** | Wadah terikat semester dengan kehadiran, jadwal kelas yang bisa diedit, daftar bawaan per mata kuliah, prediksi nilai, dan folder berkas sendiri |
+| **Mode SMA** | Alih jenjang ke SMA mengubah mata kuliah menjadi mata pelajaran dengan Kelas (10, 11, atau 12) yang dipilih di form ruang, tampil di halaman mata pelajaran, dan memakai istilah sekolah di semua tempat (Kelola Mata Pelajaran, Mata Pelajaran Semester Ini); contoh data berisi Matematika |
 | **Semester** | Tab semester aktif: hero dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah, semester lain sekali ketuk; buat, ubah nama, aktifkan, dan hapus semester (mata kuliahnya ikut terhapus, tugasnya pindah ke Inbox) |
 | **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
 | **Filter dan pengelompokan tugas** | Kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat atau terjauh, terbaru dibuat, prioritas tertinggi) dalam satu sheet filter; opsi pengelompokan per kategori dengan jumlah per grup |
@@ -124,6 +125,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | Fitur | Deskripsi |
 |-------|-----------|
 | **Antarmuka Indonesia dan Inggris** | Indonesia secara default; ganti ke English di Pengaturan |
+| **Pengaturan terkelompok** | Pengaturan terbuka dengan header brand (mark, tagline, chip versi) dan kartu membulat dengan ikon berwarna: Tampilan, Pengingat, Cadangan, Alat, Pintasan, Sekolah, Sponsor, dan Tentang |
 | **Tema** | Terang, gelap, atau ikuti sistem |
 
 ---

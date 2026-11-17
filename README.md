@@ -67,6 +67,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Categories** | Free-form containers you name anything (organization, committee, community); they keep color, tasks and their own manage actions, and an uncategorized row holds tasks without one |
 | **Courses** | Spaces bound to a semester with attendance, an editable class schedule, a per course bring list, grade prediction and their own folder for files |
+| **School (SMA) mode** | Level switch to School turns courses into subjects with a Kelas (10, 11 or 12) picked in the space form, shown on the subject page, and speaks subject wording everywhere (Manage Subjects, Subjects This Semester); demo data seeds a Matematika sample |
 | **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
 | **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |
@@ -124,6 +125,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | Feature | Description |
 |---------|-------------|
 | **English and Indonesian UI** | Indonesian by default; switch to English in Settings |
+| **Grouped Settings** | Settings opens with a brand header (mark, tagline, version chip) and grouped rounded cards with tinted icons: Appearance, Reminders, Backup, Tools, Shortcuts, School, Sponsors and About |
 | **Themes** | Light, dark, or follow system |
 
 ---

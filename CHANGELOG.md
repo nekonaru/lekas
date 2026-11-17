@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.15.0
+
+Lekas gets a rebuilt Settings screen and a deeper SMA mode in this update.
+
+### New features
+
+- **Rebuilt Settings screen.** Settings opens with a brand header (the mark, the tagline and a version chip) and every section lives in its own rounded card with tinted icons: Appearance, Reminders, Backup, Tools, Shortcuts, School, Sponsors and About.
+- **Deeper SMA mode.** School subjects now carry a Kelas (10, 11 or 12) picked right in the space form, shown on the subject page, and every course label flips to subject wording (Manage Subjects, Subjects This Semester) when the app is set to SMA.
+- **School-aware sample data.** The demo data creates a Matematika subject with school-flavored tasks for SMA accounts.
+
+### Improvements
+
+- **Localized theme picker.** The theme dialog shows Match system, Dark or Light in the app language instead of the raw enum names.
+- **Sponsor links in one card.** The sponsor rows sit inside the same card style as every other section, scannable at a glance.
+
 ## v1.14.0
 
 Lekas ships working versions of its recurring tasks, saved search views and quick links, honest exports and a faster list rebuild, plus a round of audit fixes.
