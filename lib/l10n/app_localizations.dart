@@ -4285,6 +4285,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} nilai'**
   String scoresCount(int count);
+
+  /// No description provided for @calendarIcsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalender (.ics)'**
+  String get calendarIcsTitle;
+
+  /// No description provided for @icsExportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor ke .ics'**
+  String get icsExportTitle;
+
+  /// No description provided for @icsExportBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan semua kelas dan tenggat sebagai file kalender yang bisa dibaca aplikasi kalender mana pun.'**
+  String get icsExportBody;
+
+  /// No description provided for @icsImportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor dari .ics'**
+  String get icsImportTitle;
+
+  /// No description provided for @icsImportBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah setiap kejadian di file .ics menjadi tugas di inbox.'**
+  String get icsImportBody;
+
+  /// No description provided for @icsImportConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kejadian akan masuk inbox sebagai tugas. Lanjutkan?'**
+  String icsImportConfirm(int count);
+
+  /// No description provided for @icsImported.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas diimpor.'**
+  String icsImported(int count);
+
+  /// No description provided for @icsImportInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas itu bukan file kalender (.ics), atau tidak berisi kejadian.'**
+  String get icsImportInvalid;
+
+  /// No description provided for @icsImportTooLarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya 500 kejadian pertama yang diimpor.'**
+  String get icsImportTooLarge;
+
+  /// No description provided for @icsImportSourceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kejadian yang diimpor masuk ke inbox.'**
+  String get icsImportSourceHint;
+
+  /// No description provided for @icsExportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas kalender gagal dibuat.'**
+  String get icsExportFailed;
 }
 
 class _AppLocalizationsDelegate

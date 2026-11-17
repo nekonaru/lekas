@@ -17,6 +17,7 @@ import '../tasks/task_template_screen.dart';
 import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
+import '../ics/ics_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/statistik_belajar_screen.dart';
 import '../semester/semester_screen.dart';
@@ -247,10 +248,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
           // Study: the learning loop between tasks.
           _drawerSection(l10n.drawerSectionStudy, Icons.auto_stories_outlined),
-          _drawerTile(
-            Icons.style_outlined,
-            l10n.flashcardsTitle,
-            () => _push(const FlashcardsScreen()),
+          _FlashcardsTile(
+            onTap: () => _push(const FlashcardsScreen()),
           ),
           _drawerTile(
             Icons.insights_outlined,
@@ -274,6 +273,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.notifications_active_outlined,
             l10n.checkReminder,
             () => _push(const DiagnosticScreen()),
+          ),
+          _drawerTile(
+            Icons.event_note_outlined,
+            l10n.calendarIcsTitle,
+            () => _push(const IcsScreen()),
           ),
           // Housekeeping last: the trash, where deletes can still come back.
           _drawerSection(l10n.drawerSectionSystem, Icons.tune),
@@ -490,6 +494,53 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       default:
         return Icons.today;
     }
+  }
+}
+
+/// The Flashcards row with a live badge counting the cards due today.
+class _FlashcardsTile extends ConsumerWidget {
+  const _FlashcardsTile({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+    return StreamBuilder<int>(
+      stream: ref.watch(flashcardRepositoryProvider).watchDueCount(),
+      builder: (context, snapshot) {
+        final due = snapshot.data ?? 0;
+        return ListTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: colors.primary.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.style_outlined, size: 20, color: colors.primary),
+          ),
+          title: Text(AppLocalizations.of(context)!.flashcardsTitle),
+          trailing: due == 0
+              ? null
+              : Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: colors.primaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '$due',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: colors.onPrimaryContainer,
+                        ),
+                  ),
+                ),
+          onTap: onTap,
+        );
+      },
+    );
   }
 }
 

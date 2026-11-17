@@ -2326,4 +2326,44 @@ class AppLocalizationsId extends AppLocalizations {
   String scoresCount(int count) {
     return '$count nilai';
   }
+
+  @override
+  String get calendarIcsTitle => 'Kalender (.ics)';
+
+  @override
+  String get icsExportTitle => 'Ekspor ke .ics';
+
+  @override
+  String get icsExportBody =>
+      'Bagikan semua kelas dan tenggat sebagai file kalender yang bisa dibaca aplikasi kalender mana pun.';
+
+  @override
+  String get icsImportTitle => 'Impor dari .ics';
+
+  @override
+  String get icsImportBody =>
+      'Ubah setiap kejadian di file .ics menjadi tugas di inbox.';
+
+  @override
+  String icsImportConfirm(int count) {
+    return '$count kejadian akan masuk inbox sebagai tugas. Lanjutkan?';
+  }
+
+  @override
+  String icsImported(int count) {
+    return '$count tugas diimpor.';
+  }
+
+  @override
+  String get icsImportInvalid =>
+      'Berkas itu bukan file kalender (.ics), atau tidak berisi kejadian.';
+
+  @override
+  String get icsImportTooLarge => 'Hanya 500 kejadian pertama yang diimpor.';
+
+  @override
+  String get icsImportSourceHint => 'Kejadian yang diimpor masuk ke inbox.';
+
+  @override
+  String get icsExportFailed => 'Berkas kalender gagal dibuat.';
 }

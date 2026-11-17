@@ -779,5 +779,18 @@
   "raportAverage": "Semester average",
   "raportSubjectEmpty": "No subjects in the active semester yet.",
   "scoresCount": "{count} scores",
-  "@scoresCount": { "placeholders": { "count": { "type": "int" } } }
+  "@scoresCount": { "placeholders": { "count": { "type": "int" } } },
+  "calendarIcsTitle": "Calendar (.ics)",
+  "icsExportTitle": "Export to .ics",
+  "icsExportBody": "Share every class and deadline as a calendar file any calendar app can read.",
+  "icsImportTitle": "Import from .ics",
+  "icsImportBody": "Turn every event in a .ics file into an inbox task.",
+  "icsImportConfirm": "{count} events will become inbox tasks. Continue?",
+  "@icsImportConfirm": { "placeholders": { "count": { "type": "int" } } },
+  "icsImported": "{count} tasks imported.",
+  "@icsImported": { "placeholders": { "count": { "type": "int" } } },
+  "icsImportInvalid": "That file is not a calendar (.ics) file, or it holds no events.",
+  "icsImportTooLarge": "Only the first 500 events were imported.",
+  "icsImportSourceHint": "Imported events land in the inbox.",
+  "icsExportFailed": "The calendar file could not be built."
 }

@@ -2324,4 +2324,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String scoresCount(int count) {
     return '$count scores';
   }
+
+  @override
+  String get calendarIcsTitle => 'Calendar (.ics)';
+
+  @override
+  String get icsExportTitle => 'Export to .ics';
+
+  @override
+  String get icsExportBody =>
+      'Share every class and deadline as a calendar file any calendar app can read.';
+
+  @override
+  String get icsImportTitle => 'Import from .ics';
+
+  @override
+  String get icsImportBody =>
+      'Turn every event in a .ics file into an inbox task.';
+
+  @override
+  String icsImportConfirm(int count) {
+    return '$count events will become inbox tasks. Continue?';
+  }
+
+  @override
+  String icsImported(int count) {
+    return '$count tasks imported.';
+  }
+
+  @override
+  String get icsImportInvalid =>
+      'That file is not a calendar (.ics) file, or it holds no events.';
+
+  @override
+  String get icsImportTooLarge => 'Only the first 500 events were imported.';
+
+  @override
+  String get icsImportSourceHint => 'Imported events land in the inbox.';
+
+  @override
+  String get icsExportFailed => 'The calendar file could not be built.';
 }

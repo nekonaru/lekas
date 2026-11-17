@@ -779,5 +779,18 @@
   "raportAverage": "Rata-rata semester",
   "raportSubjectEmpty": "Belum ada mata pelajaran di semester aktif.",
   "scoresCount": "{count} nilai",
-  "@scoresCount": { "placeholders": { "count": { "type": "int" } } }
+  "@scoresCount": { "placeholders": { "count": { "type": "int" } } },
+  "calendarIcsTitle": "Kalender (.ics)",
+  "icsExportTitle": "Ekspor ke .ics",
+  "icsExportBody": "Bagikan semua kelas dan tenggat sebagai file kalender yang bisa dibaca aplikasi kalender mana pun.",
+  "icsImportTitle": "Impor dari .ics",
+  "icsImportBody": "Ubah setiap kejadian di file .ics menjadi tugas di inbox.",
+  "icsImportConfirm": "{count} kejadian akan masuk inbox sebagai tugas. Lanjutkan?",
+  "@icsImportConfirm": { "placeholders": { "count": { "type": "int" } } },
+  "icsImported": "{count} tugas diimpor.",
+  "@icsImported": { "placeholders": { "count": { "type": "int" } } },
+  "icsImportInvalid": "Berkas itu bukan file kalender (.ics), atau tidak berisi kejadian.",
+  "icsImportTooLarge": "Hanya 500 kejadian pertama yang diimpor.",
+  "icsImportSourceHint": "Kejadian yang diimpor masuk ke inbox.",
+  "icsExportFailed": "Berkas kalender gagal dibuat."
 }
