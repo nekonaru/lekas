@@ -11408,6 +11408,711 @@ class AttendanceCompanion extends UpdateCompanion<AttendanceData> {
   }
 }
 
+class $FlashCardsTable extends FlashCards
+    with TableInfo<$FlashCardsTable, FlashCard> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FlashCardsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _spaceIdMeta = const VerificationMeta(
+    'spaceId',
+  );
+  @override
+  late final GeneratedColumn<String> spaceId = GeneratedColumn<String>(
+    'space_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES spaces (id)',
+    ),
+  );
+  static const VerificationMeta _frontMeta = const VerificationMeta('front');
+  @override
+  late final GeneratedColumn<String> front = GeneratedColumn<String>(
+    'front',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _backMeta = const VerificationMeta('back');
+  @override
+  late final GeneratedColumn<String> back = GeneratedColumn<String>(
+    'back',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dueAtMeta = const VerificationMeta('dueAt');
+  @override
+  late final GeneratedColumn<int> dueAt = GeneratedColumn<int>(
+    'due_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _intervalDaysMeta = const VerificationMeta(
+    'intervalDays',
+  );
+  @override
+  late final GeneratedColumn<int> intervalDays = GeneratedColumn<int>(
+    'interval_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _easeFactorMeta = const VerificationMeta(
+    'easeFactor',
+  );
+  @override
+  late final GeneratedColumn<double> easeFactor = GeneratedColumn<double>(
+    'ease_factor',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(2.5),
+  );
+  static const VerificationMeta _repetitionsMeta = const VerificationMeta(
+    'repetitions',
+  );
+  @override
+  late final GeneratedColumn<int> repetitions = GeneratedColumn<int>(
+    'repetitions',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lapsesMeta = const VerificationMeta('lapses');
+  @override
+  late final GeneratedColumn<int> lapses = GeneratedColumn<int>(
+    'lapses',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    spaceId,
+    front,
+    back,
+    dueAt,
+    intervalDays,
+    easeFactor,
+    repetitions,
+    lapses,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'flash_cards';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FlashCard> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('space_id')) {
+      context.handle(
+        _spaceIdMeta,
+        spaceId.isAcceptableOrUnknown(data['space_id']!, _spaceIdMeta),
+      );
+    }
+    if (data.containsKey('front')) {
+      context.handle(
+        _frontMeta,
+        front.isAcceptableOrUnknown(data['front']!, _frontMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_frontMeta);
+    }
+    if (data.containsKey('back')) {
+      context.handle(
+        _backMeta,
+        back.isAcceptableOrUnknown(data['back']!, _backMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_backMeta);
+    }
+    if (data.containsKey('due_at')) {
+      context.handle(
+        _dueAtMeta,
+        dueAt.isAcceptableOrUnknown(data['due_at']!, _dueAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dueAtMeta);
+    }
+    if (data.containsKey('interval_days')) {
+      context.handle(
+        _intervalDaysMeta,
+        intervalDays.isAcceptableOrUnknown(
+          data['interval_days']!,
+          _intervalDaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ease_factor')) {
+      context.handle(
+        _easeFactorMeta,
+        easeFactor.isAcceptableOrUnknown(data['ease_factor']!, _easeFactorMeta),
+      );
+    }
+    if (data.containsKey('repetitions')) {
+      context.handle(
+        _repetitionsMeta,
+        repetitions.isAcceptableOrUnknown(
+          data['repetitions']!,
+          _repetitionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lapses')) {
+      context.handle(
+        _lapsesMeta,
+        lapses.isAcceptableOrUnknown(data['lapses']!, _lapsesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FlashCard map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FlashCard(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      spaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}space_id'],
+      ),
+      front: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}front'],
+      )!,
+      back: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}back'],
+      )!,
+      dueAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_at'],
+      )!,
+      intervalDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}interval_days'],
+      )!,
+      easeFactor: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}ease_factor'],
+      )!,
+      repetitions: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}repetitions'],
+      )!,
+      lapses: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lapses'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $FlashCardsTable createAlias(String alias) {
+    return $FlashCardsTable(attachedDatabase, alias);
+  }
+}
+
+class FlashCard extends DataClass implements Insertable<FlashCard> {
+  final String id;
+  final String? spaceId;
+  final String front;
+  final String back;
+  final int dueAt;
+  final int intervalDays;
+  final double easeFactor;
+  final int repetitions;
+  final int lapses;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  const FlashCard({
+    required this.id,
+    this.spaceId,
+    required this.front,
+    required this.back,
+    required this.dueAt,
+    required this.intervalDays,
+    required this.easeFactor,
+    required this.repetitions,
+    required this.lapses,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || spaceId != null) {
+      map['space_id'] = Variable<String>(spaceId);
+    }
+    map['front'] = Variable<String>(front);
+    map['back'] = Variable<String>(back);
+    map['due_at'] = Variable<int>(dueAt);
+    map['interval_days'] = Variable<int>(intervalDays);
+    map['ease_factor'] = Variable<double>(easeFactor);
+    map['repetitions'] = Variable<int>(repetitions);
+    map['lapses'] = Variable<int>(lapses);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    return map;
+  }
+
+  FlashCardsCompanion toCompanion(bool nullToAbsent) {
+    return FlashCardsCompanion(
+      id: Value(id),
+      spaceId: spaceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(spaceId),
+      front: Value(front),
+      back: Value(back),
+      dueAt: Value(dueAt),
+      intervalDays: Value(intervalDays),
+      easeFactor: Value(easeFactor),
+      repetitions: Value(repetitions),
+      lapses: Value(lapses),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory FlashCard.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FlashCard(
+      id: serializer.fromJson<String>(json['id']),
+      spaceId: serializer.fromJson<String?>(json['spaceId']),
+      front: serializer.fromJson<String>(json['front']),
+      back: serializer.fromJson<String>(json['back']),
+      dueAt: serializer.fromJson<int>(json['dueAt']),
+      intervalDays: serializer.fromJson<int>(json['intervalDays']),
+      easeFactor: serializer.fromJson<double>(json['easeFactor']),
+      repetitions: serializer.fromJson<int>(json['repetitions']),
+      lapses: serializer.fromJson<int>(json['lapses']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'spaceId': serializer.toJson<String?>(spaceId),
+      'front': serializer.toJson<String>(front),
+      'back': serializer.toJson<String>(back),
+      'dueAt': serializer.toJson<int>(dueAt),
+      'intervalDays': serializer.toJson<int>(intervalDays),
+      'easeFactor': serializer.toJson<double>(easeFactor),
+      'repetitions': serializer.toJson<int>(repetitions),
+      'lapses': serializer.toJson<int>(lapses),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+    };
+  }
+
+  FlashCard copyWith({
+    String? id,
+    Value<String?> spaceId = const Value.absent(),
+    String? front,
+    String? back,
+    int? dueAt,
+    int? intervalDays,
+    double? easeFactor,
+    int? repetitions,
+    int? lapses,
+    int? createdAt,
+    int? updatedAt,
+    Value<int?> deletedAt = const Value.absent(),
+  }) => FlashCard(
+    id: id ?? this.id,
+    spaceId: spaceId.present ? spaceId.value : this.spaceId,
+    front: front ?? this.front,
+    back: back ?? this.back,
+    dueAt: dueAt ?? this.dueAt,
+    intervalDays: intervalDays ?? this.intervalDays,
+    easeFactor: easeFactor ?? this.easeFactor,
+    repetitions: repetitions ?? this.repetitions,
+    lapses: lapses ?? this.lapses,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  FlashCard copyWithCompanion(FlashCardsCompanion data) {
+    return FlashCard(
+      id: data.id.present ? data.id.value : this.id,
+      spaceId: data.spaceId.present ? data.spaceId.value : this.spaceId,
+      front: data.front.present ? data.front.value : this.front,
+      back: data.back.present ? data.back.value : this.back,
+      dueAt: data.dueAt.present ? data.dueAt.value : this.dueAt,
+      intervalDays: data.intervalDays.present
+          ? data.intervalDays.value
+          : this.intervalDays,
+      easeFactor: data.easeFactor.present
+          ? data.easeFactor.value
+          : this.easeFactor,
+      repetitions: data.repetitions.present
+          ? data.repetitions.value
+          : this.repetitions,
+      lapses: data.lapses.present ? data.lapses.value : this.lapses,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FlashCard(')
+          ..write('id: $id, ')
+          ..write('spaceId: $spaceId, ')
+          ..write('front: $front, ')
+          ..write('back: $back, ')
+          ..write('dueAt: $dueAt, ')
+          ..write('intervalDays: $intervalDays, ')
+          ..write('easeFactor: $easeFactor, ')
+          ..write('repetitions: $repetitions, ')
+          ..write('lapses: $lapses, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    spaceId,
+    front,
+    back,
+    dueAt,
+    intervalDays,
+    easeFactor,
+    repetitions,
+    lapses,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FlashCard &&
+          other.id == this.id &&
+          other.spaceId == this.spaceId &&
+          other.front == this.front &&
+          other.back == this.back &&
+          other.dueAt == this.dueAt &&
+          other.intervalDays == this.intervalDays &&
+          other.easeFactor == this.easeFactor &&
+          other.repetitions == this.repetitions &&
+          other.lapses == this.lapses &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
+  final Value<String> id;
+  final Value<String?> spaceId;
+  final Value<String> front;
+  final Value<String> back;
+  final Value<int> dueAt;
+  final Value<int> intervalDays;
+  final Value<double> easeFactor;
+  final Value<int> repetitions;
+  final Value<int> lapses;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<int> rowid;
+  const FlashCardsCompanion({
+    this.id = const Value.absent(),
+    this.spaceId = const Value.absent(),
+    this.front = const Value.absent(),
+    this.back = const Value.absent(),
+    this.dueAt = const Value.absent(),
+    this.intervalDays = const Value.absent(),
+    this.easeFactor = const Value.absent(),
+    this.repetitions = const Value.absent(),
+    this.lapses = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FlashCardsCompanion.insert({
+    required String id,
+    this.spaceId = const Value.absent(),
+    required String front,
+    required String back,
+    required int dueAt,
+    this.intervalDays = const Value.absent(),
+    this.easeFactor = const Value.absent(),
+    this.repetitions = const Value.absent(),
+    this.lapses = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       front = Value(front),
+       back = Value(back),
+       dueAt = Value(dueAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<FlashCard> custom({
+    Expression<String>? id,
+    Expression<String>? spaceId,
+    Expression<String>? front,
+    Expression<String>? back,
+    Expression<int>? dueAt,
+    Expression<int>? intervalDays,
+    Expression<double>? easeFactor,
+    Expression<int>? repetitions,
+    Expression<int>? lapses,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (spaceId != null) 'space_id': spaceId,
+      if (front != null) 'front': front,
+      if (back != null) 'back': back,
+      if (dueAt != null) 'due_at': dueAt,
+      if (intervalDays != null) 'interval_days': intervalDays,
+      if (easeFactor != null) 'ease_factor': easeFactor,
+      if (repetitions != null) 'repetitions': repetitions,
+      if (lapses != null) 'lapses': lapses,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FlashCardsCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? spaceId,
+    Value<String>? front,
+    Value<String>? back,
+    Value<int>? dueAt,
+    Value<int>? intervalDays,
+    Value<double>? easeFactor,
+    Value<int>? repetitions,
+    Value<int>? lapses,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return FlashCardsCompanion(
+      id: id ?? this.id,
+      spaceId: spaceId ?? this.spaceId,
+      front: front ?? this.front,
+      back: back ?? this.back,
+      dueAt: dueAt ?? this.dueAt,
+      intervalDays: intervalDays ?? this.intervalDays,
+      easeFactor: easeFactor ?? this.easeFactor,
+      repetitions: repetitions ?? this.repetitions,
+      lapses: lapses ?? this.lapses,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (spaceId.present) {
+      map['space_id'] = Variable<String>(spaceId.value);
+    }
+    if (front.present) {
+      map['front'] = Variable<String>(front.value);
+    }
+    if (back.present) {
+      map['back'] = Variable<String>(back.value);
+    }
+    if (dueAt.present) {
+      map['due_at'] = Variable<int>(dueAt.value);
+    }
+    if (intervalDays.present) {
+      map['interval_days'] = Variable<int>(intervalDays.value);
+    }
+    if (easeFactor.present) {
+      map['ease_factor'] = Variable<double>(easeFactor.value);
+    }
+    if (repetitions.present) {
+      map['repetitions'] = Variable<int>(repetitions.value);
+    }
+    if (lapses.present) {
+      map['lapses'] = Variable<int>(lapses.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FlashCardsCompanion(')
+          ..write('id: $id, ')
+          ..write('spaceId: $spaceId, ')
+          ..write('front: $front, ')
+          ..write('back: $back, ')
+          ..write('dueAt: $dueAt, ')
+          ..write('intervalDays: $intervalDays, ')
+          ..write('easeFactor: $easeFactor, ')
+          ..write('repetitions: $repetitions, ')
+          ..write('lapses: $lapses, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11440,6 +12145,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $SavedFiltersTable savedFilters = $SavedFiltersTable(this);
   late final $AttendanceTable attendance = $AttendanceTable(this);
+  late final $FlashCardsTable flashCards = $FlashCardsTable(this);
   late final Index idxSpacesDeleted = Index(
     'idx_spaces_deleted',
     'CREATE INDEX idx_spaces_deleted ON spaces (deleted_at)',
@@ -11516,6 +12222,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_attendance_space_date',
     'CREATE INDEX idx_attendance_space_date ON attendance (space_id, date)',
   );
+  late final Index idxFlashCardsDue = Index(
+    'idx_flash_cards_due',
+    'CREATE INDEX idx_flash_cards_due ON flash_cards (due_at)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11546,6 +12256,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gradeComponents,
     savedFilters,
     attendance,
+    flashCards,
     idxSpacesDeleted,
     idxTasksDeadline,
     idxTasksStatus,
@@ -11565,6 +12276,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxSpaceItemsSpace,
     idxClassNotesSpace,
     idxAttendanceSpaceDate,
+    idxFlashCardsDue,
   ];
 }
 
@@ -12079,6 +12791,24 @@ final class $$SpacesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$FlashCardsTable, List<FlashCard>>
+  _flashCardsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.flashCards,
+    aliasName: 'spaces__id__flash_cards__space_id',
+  );
+
+  $$FlashCardsTableProcessedTableManager get flashCardsRefs {
+    final manager = $$FlashCardsTableTableManager(
+      $_db,
+      $_db.flashCards,
+    ).filter((f) => f.spaceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_flashCardsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$SpacesTableFilterComposer
@@ -12399,6 +13129,31 @@ class $$SpacesTableFilterComposer
           }) => $$AttendanceTableFilterComposer(
             $db: $db,
             $table: $db.attendance,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> flashCardsRefs(
+    Expression<bool> Function($$FlashCardsTableFilterComposer f) f,
+  ) {
+    final $$FlashCardsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.flashCards,
+      getReferencedColumn: (t) => t.spaceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlashCardsTableFilterComposer(
+            $db: $db,
+            $table: $db.flashCards,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -12837,6 +13592,31 @@ class $$SpacesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> flashCardsRefs<T extends Object>(
+    Expression<T> Function($$FlashCardsTableAnnotationComposer a) f,
+  ) {
+    final $$FlashCardsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.flashCards,
+      getReferencedColumn: (t) => t.spaceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlashCardsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.flashCards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$SpacesTableTableManager
@@ -12862,6 +13642,7 @@ class $$SpacesTableTableManager
             bool classNotesRefs,
             bool gradeComponentsRefs,
             bool attendanceRefs,
+            bool flashCardsRefs,
           })
         > {
   $$SpacesTableTableManager(_$AppDatabase db, $SpacesTable table)
@@ -12986,6 +13767,7 @@ class $$SpacesTableTableManager
                 classNotesRefs = false,
                 gradeComponentsRefs = false,
                 attendanceRefs = false,
+                flashCardsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -12998,6 +13780,7 @@ class $$SpacesTableTableManager
                     if (classNotesRefs) db.classNotes,
                     if (gradeComponentsRefs) db.gradeComponents,
                     if (attendanceRefs) db.attendance,
+                    if (flashCardsRefs) db.flashCards,
                   ],
                   addJoins:
                       <
@@ -13187,6 +13970,26 @@ class $$SpacesTableTableManager
                           referencedColumn: 'space_id',
                           typedResults: items,
                         ),
+                      if (flashCardsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Space,
+                          $SpacesTable,
+                          FlashCard,
+                          $FlashCardsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SpacesTableReferences
+                              ._flashCardsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SpacesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).flashCardsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'space_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -13217,6 +14020,7 @@ typedef $$SpacesTableProcessedTableManager =
         bool classNotesRefs,
         bool gradeComponentsRefs,
         bool attendanceRefs,
+        bool flashCardsRefs,
       })
     >;
 typedef $$SpaceAliasesTableCreateCompanionBuilder =
@@ -21661,6 +22465,458 @@ typedef $$AttendanceTableProcessedTableManager =
       AttendanceData,
       PrefetchHooks Function({bool spaceId, bool slotId})
     >;
+typedef $$FlashCardsTableCreateCompanionBuilder = FlashCardsCompanion Function({
+  required String id,
+  Value<String?> spaceId,
+  required String front,
+  required String back,
+  required int dueAt,
+  Value<int> intervalDays,
+  Value<double> easeFactor,
+  Value<int> repetitions,
+  Value<int> lapses,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+typedef $$FlashCardsTableUpdateCompanionBuilder = FlashCardsCompanion Function({
+  Value<String> id,
+  Value<String?> spaceId,
+  Value<String> front,
+  Value<String> back,
+  Value<int> dueAt,
+  Value<int> intervalDays,
+  Value<double> easeFactor,
+  Value<int> repetitions,
+  Value<int> lapses,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+
+final class $$FlashCardsTableReferences
+    extends BaseReferences<_$AppDatabase, $FlashCardsTable, FlashCard> {
+  $$FlashCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SpacesTable _spaceIdTable(_$AppDatabase db) =>
+      db.spaces.createAlias('flash_cards__space_id__spaces__id');
+
+  $$SpacesTableProcessedTableManager? get spaceId {
+    final $_column = $_itemColumn<String>('space_id');
+    if ($_column == null) return null;
+    final manager = $$SpacesTableTableManager(
+      $_db,
+      $_db.spaces,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_spaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FlashCardsTableFilterComposer
+    extends Composer<_$AppDatabase, $FlashCardsTable> {
+  $$FlashCardsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get front => $composableBuilder(
+    column: $table.front,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get back => $composableBuilder(
+    column: $table.back,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueAt => $composableBuilder(
+    column: $table.dueAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get intervalDays => $composableBuilder(
+    column: $table.intervalDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get easeFactor => $composableBuilder(
+    column: $table.easeFactor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lapses => $composableBuilder(
+    column: $table.lapses,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SpacesTableFilterComposer get spaceId {
+    final $$SpacesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableFilterComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlashCardsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FlashCardsTable> {
+  $$FlashCardsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get front => $composableBuilder(
+    column: $table.front,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get back => $composableBuilder(
+    column: $table.back,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dueAt => $composableBuilder(
+    column: $table.dueAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get intervalDays => $composableBuilder(
+    column: $table.intervalDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get easeFactor => $composableBuilder(
+    column: $table.easeFactor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lapses => $composableBuilder(
+    column: $table.lapses,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SpacesTableOrderingComposer get spaceId {
+    final $$SpacesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableOrderingComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlashCardsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FlashCardsTable> {
+  $$FlashCardsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get front =>
+      $composableBuilder(column: $table.front, builder: (column) => column);
+
+  GeneratedColumn<String> get back =>
+      $composableBuilder(column: $table.back, builder: (column) => column);
+
+  GeneratedColumn<int> get dueAt =>
+      $composableBuilder(column: $table.dueAt, builder: (column) => column);
+
+  GeneratedColumn<int> get intervalDays => $composableBuilder(
+    column: $table.intervalDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get easeFactor => $composableBuilder(
+    column: $table.easeFactor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lapses =>
+      $composableBuilder(column: $table.lapses, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$SpacesTableAnnotationComposer get spaceId {
+    final $$SpacesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.spaceId,
+      referencedTable: $db.spaces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SpacesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.spaces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlashCardsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FlashCardsTable,
+          FlashCard,
+          $$FlashCardsTableFilterComposer,
+          $$FlashCardsTableOrderingComposer,
+          $$FlashCardsTableAnnotationComposer,
+          $$FlashCardsTableCreateCompanionBuilder,
+          $$FlashCardsTableUpdateCompanionBuilder,
+          (FlashCard, $$FlashCardsTableReferences),
+          FlashCard,
+          PrefetchHooks Function({bool spaceId})
+        > {
+  $$FlashCardsTableTableManager(_$AppDatabase db, $FlashCardsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FlashCardsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FlashCardsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FlashCardsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> spaceId = const Value.absent(),
+                Value<String> front = const Value.absent(),
+                Value<String> back = const Value.absent(),
+                Value<int> dueAt = const Value.absent(),
+                Value<int> intervalDays = const Value.absent(),
+                Value<double> easeFactor = const Value.absent(),
+                Value<int> repetitions = const Value.absent(),
+                Value<int> lapses = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FlashCardsCompanion(
+                id: id,
+                spaceId: spaceId,
+                front: front,
+                back: back,
+                dueAt: dueAt,
+                intervalDays: intervalDays,
+                easeFactor: easeFactor,
+                repetitions: repetitions,
+                lapses: lapses,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> spaceId = const Value.absent(),
+                required String front,
+                required String back,
+                required int dueAt,
+                Value<int> intervalDays = const Value.absent(),
+                Value<double> easeFactor = const Value.absent(),
+                Value<int> repetitions = const Value.absent(),
+                Value<int> lapses = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FlashCardsCompanion.insert(
+                id: id,
+                spaceId: spaceId,
+                front: front,
+                back: back,
+                dueAt: dueAt,
+                intervalDays: intervalDays,
+                easeFactor: easeFactor,
+                repetitions: repetitions,
+                lapses: lapses,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FlashCardsTable, FlashCard>(table),
+                  $$FlashCardsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({spaceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (spaceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.spaceId,
+                        referencedTable: $$FlashCardsTableReferences
+                            ._spaceIdTable(db),
+                        referencedColumn: $$FlashCardsTableReferences
+                            ._spaceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FlashCardsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FlashCardsTable,
+      FlashCard,
+      $$FlashCardsTableFilterComposer,
+      $$FlashCardsTableOrderingComposer,
+      $$FlashCardsTableAnnotationComposer,
+      $$FlashCardsTableCreateCompanionBuilder,
+      $$FlashCardsTableUpdateCompanionBuilder,
+      (FlashCard, $$FlashCardsTableReferences),
+      FlashCard,
+      PrefetchHooks Function({bool spaceId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -21714,4 +22970,6 @@ class $AppDatabaseManager {
       $$SavedFiltersTableTableManager(_db, _db.savedFilters);
   $$AttendanceTableTableManager get attendance =>
       $$AttendanceTableTableManager(_db, _db.attendance);
+  $$FlashCardsTableTableManager get flashCards =>
+      $$FlashCardsTableTableManager(_db, _db.flashCards);
 }

@@ -5,20 +5,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lekas/data/database.dart';
 
 /// v1.0.0 shipped `schemaVersion 2`, which created every table but none of
-/// the secondary indexes. The audit bumped the schema to 3 and added nineteen
-/// `CREATE INDEX` calls inside `onUpgrade`. Schema 4 then added the spaces
-/// drag order column, and schema 5 added semesters with a backfill that
-/// turns existing periods into semesters. A user who installs this APK on
-/// top of v1.0.0 runs all of those upgrades for the first time on a real
-/// file, so they must not throw or leave the schema half built.
+/// the secondary indexes. The audit bumped the schema to 3 and added the
+/// secondary indexes inside `onUpgrade`. Schema 4 then added the spaces
+/// drag order column, schema 5 added semesters with a backfill that turns
+/// existing periods into semesters, and schema 6 added the flashcards table
+/// with its due index. A user who installs this APK on top of v1.0.0 runs
+/// all of those upgrades for the first time on a real file, so they must
+/// not throw or leave the schema half built.
 ///
-/// The tables of schema 2 and 3 are close to byte identical: the only
-/// difference is the indexes. So the fixture below rebuilds schema 2 by
-/// opening a fresh database (which creates the latest schema), dropping the
-/// `idx_` indexes, dropping the schema 4 and 5 columns and the semesters
-/// table, and stamping `user_version = 2`. Reopening it with the shipped
-/// [AppDatabase] then runs the genuine `from < 3`, `from < 4` and
-/// `from < 5` branches.
+/// The fixture below rebuilds schema 2 by opening a fresh database (which
+/// creates the latest schema), dropping the `idx_` indexes, dropping the
+/// schema 4, 5 and 6 pieces, and stamping `user_version = 2`. Reopening it
+/// with the shipped [AppDatabase] then runs the genuine `from < 3`,
+/// `from < 4`, `from < 5` and `from < 6` branches.
 void main() {
   late File file;
 
@@ -33,14 +32,15 @@ void main() {
     if (file.existsSync()) await file.delete();
   });
 
-  /// The names of the nineteen schema 3 indexes, alphabetical.
-  const schema3Indexes = [
+  /// The names of the twenty schema indexes, alphabetical.
+  const schemaIndexes = [
     'idx_attachments_task',
     'idx_attendance_space_date',
     'idx_class_exceptions_date',
     'idx_class_exceptions_slot',
     'idx_class_notes_space',
     'idx_class_slots_space',
+    'idx_flash_cards_due',
     'idx_focus_sessions_task',
     'idx_reminders_fire',
     'idx_reminders_task',
@@ -67,14 +67,14 @@ void main() {
   }
 
   /// Creates the schema 2 database v1.0.0 would have left behind: every
-  /// table present, no `idx_` indexes, no schema 4 or 5 columns, no
-  /// semesters table, `user_version` stamped to 2.
+  /// table present, no `idx_` indexes, no schema 4, 5 or 6 pieces,
+  /// `user_version` stamped to 2.
   Future<void> createSchema2File() async {
     final seed = AppDatabase(NativeDatabase(file));
-    // onCreate writes every table plus the schema 3 indexes and the default
+    // onCreate writes every table plus the indexes and the default
     // semester. Verify the indexes are there so the drop below is meaningful.
-    expect(await idxNames(seed), schema3Indexes);
-    for (final name in schema3Indexes) {
+    expect(await idxNames(seed), schemaIndexes);
+    for (final name in schemaIndexes) {
       await seed.customStatement('DROP INDEX IF EXISTS "$name"');
     }
     expect(await idxNames(seed), isEmpty);
@@ -94,32 +94,36 @@ void main() {
           'ALTER TABLE spaces DROP COLUMN semester_id');
     }
     await seed.customStatement('DROP TABLE IF EXISTS semesters');
+    // Schema 6 is a whole table: the legacy fixture never had it.
+    await seed.customStatement('DROP TABLE IF EXISTS flash_cards');
     await seed.customStatement('PRAGMA user_version = 2');
     await seed.close();
   }
 
-  test('upgrading a v1.0.0 schema 2 database to schema 5 succeeds', () async {
+  test('upgrading a v1.0.0 schema 2 database to schema 6 succeeds', () async {
     await createSchema2File();
 
-    // Reopen with the shipped database: onUpgrade(from: 2, to: 5) runs.
+    // Reopen with the shipped database: onUpgrade(from: 2, to: 6) runs.
     final db = AppDatabase(NativeDatabase(file));
     // A read forces the migration to complete before we assert.
     final tasks = await db.select(db.tasks).get();
     expect(tasks, isEmpty);
 
-    // The version is now 5.
+    // The version is now 6.
     final version = await db.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 5);
+    expect(version.read<int>('user_version'), 6);
 
-    // Every schema 3 index was recreated by the upgrade.
-    expect(await idxNames(db), schema3Indexes);
-    // And the schema 4 and 5 columns exist again.
+    // Every schema index was recreated by the upgrade, including schema 6.
+    expect(await idxNames(db), schemaIndexes);
+    // And the schema 4, 5 and 6 pieces exist again.
     final cols = await db
         .customSelect("PRAGMA table_info('spaces')")
         .get();
     final names = cols.map((r) => r.read<String>('name')).toList();
     expect(names, contains('sort_order'));
     expect(names, contains('semester_id'));
+    final cards = await db.select(db.flashCards).get();
+    expect(cards, isEmpty);
     // An empty old database still gets the default semester, active.
     final semesters = await db.select(db.semesters).get();
     expect(semesters, hasLength(1));
@@ -131,7 +135,7 @@ void main() {
   test('the upgrade preserves data written by the older version', () async {
     // Build schema 2 and insert a row the way v1.0.0 would have stored it.
     final seed = AppDatabase(NativeDatabase(file));
-    for (final name in schema3Indexes) {
+    for (final name in schemaIndexes) {
       await seed.customStatement('DROP INDEX IF EXISTS "$name"');
     }
     // No sort_order or semester_id either: the legacy table predates both.
@@ -145,6 +149,7 @@ void main() {
           'ALTER TABLE spaces DROP COLUMN semester_id');
     }
     await seed.customStatement('DROP TABLE IF EXISTS semesters');
+    await seed.customStatement('DROP TABLE IF EXISTS flash_cards');
     await seed.into(seed.spaces).insert(
           SpacesCompanion.insert(
             id: 'space-1',
@@ -167,25 +172,26 @@ void main() {
     expect(semesters, hasLength(1));
     expect(semesters.single.isActive, isTrue);
     expect(spaces.single.semesterId, semesters.single.id);
-    expect(await idxNames(db), schema3Indexes);
+    expect(await idxNames(db), schemaIndexes);
     await db.close();
   });
 
-  test('a second open at schema 5 does not re-run the upgrade', () async {
+  test('a second open at schema 6 does not re-run the upgrade', () async {
     await createSchema2File();
     final first = AppDatabase(NativeDatabase(file));
     await first.select(first.tasks).get();
-    expect(await idxNames(first), schema3Indexes);
+    expect(await idxNames(first), schemaIndexes);
     await first.close();
 
-    // Reopen at the same version 5: onUpgrade must not run again, so it must
+    // Reopen at the same version 6: onUpgrade must not run again, so it must
     // not try to recreate indexes or columns that already exist (which would
     // throw).
     final second = AppDatabase(NativeDatabase(file));
     final tasks = await second.select(second.tasks).get();
     expect(tasks, isEmpty);
-    final version = await second.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 5);
+    final version =
+        await second.customSelect('PRAGMA user_version').getSingle();
+    expect(version.read<int>('user_version'), 6);
     await second.close();
   });
 }

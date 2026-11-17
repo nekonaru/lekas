@@ -2113,4 +2113,141 @@ class AppLocalizationsId extends AppLocalizations {
   String classYearValue(String value) {
     return 'Kelas: $value';
   }
+
+  @override
+  String get flashcardsTitle => 'Kartu Belajar';
+
+  @override
+  String get generalDeckLabel => 'Deck Umum';
+
+  @override
+  String deckDueSummary(int due, int total) {
+    return '$due jatuh tempo dari $total kartu';
+  }
+
+  @override
+  String get addFlashcard => 'Kartu Baru';
+
+  @override
+  String get editFlashcard => 'Ubah Kartu';
+
+  @override
+  String get flashcardFront => 'Sisi depan';
+
+  @override
+  String get flashcardBack => 'Sisi belakang';
+
+  @override
+  String get flashcardSave => 'Simpan Kartu';
+
+  @override
+  String get deleteCardTitle => 'Hapus kartu ini?';
+
+  @override
+  String get deleteCardBody =>
+      'Kartu dan progres ulasannya ikut terhapus. Tidak bisa dibatalkan.';
+
+  @override
+  String get tapToFlip => 'Ketuk kartu untuk melihat jawaban';
+
+  @override
+  String get gradeForgot => 'Lupa';
+
+  @override
+  String get gradeHard => 'Sulit';
+
+  @override
+  String get gradeEasy => 'Mudah';
+
+  @override
+  String get reviewDoneTitle => 'Ulasan selesai';
+
+  @override
+  String reviewDoneBody(int count) {
+    return '$count kartu sudah diulas.';
+  }
+
+  @override
+  String reviewProgress(int current, int total) {
+    return '$current dari $total';
+  }
+
+  @override
+  String get studyStatsTitle => 'Statistik Belajar';
+
+  @override
+  String get focusToday => 'Fokus hari ini';
+
+  @override
+  String get focusThisWeek => 'Fokus 7 hari';
+
+  @override
+  String get minutesUnit => 'mnt';
+
+  @override
+  String get tasksDoneThisWeek => 'Tugas selesai 7 hari';
+
+  @override
+  String get completionStreakLabel => 'Hari beruntun ada tugas selesai';
+
+  @override
+  String get last14Days => 'Fokus 14 hari terakhir';
+
+  @override
+  String get noStudyData =>
+      'Belum ada sesi fokus. Mulai satu dari mode Fokus di tab Hari Ini.';
+
+  @override
+  String get focusTimerTitle => 'Sesi Fokus';
+
+  @override
+  String get startFocus => 'Mulai Fokus';
+
+  @override
+  String get pauseFocus => 'Jeda';
+
+  @override
+  String get resumeFocus => 'Lanjut';
+
+  @override
+  String get resetFocus => 'Ulangi';
+
+  @override
+  String get endFocusEarly => 'Selesai Lebih Awal';
+
+  @override
+  String get focusSessionSaved => 'Sesi fokus tercatat.';
+
+  @override
+  String get focusNeedsTask => 'Pilih satu tugas fokus dulu, baru mulai timer.';
+
+  @override
+  String get focusSessionTooShort => 'Sesi di bawah 30 detik tidak dicatat.';
+
+  @override
+  String get drawerSectionStudy => 'Belajar';
+
+  @override
+  String get reviewDeckAction => 'Tinjau Sekarang';
+
+  @override
+  String get emptyDeckTitle => 'Deck ini masih kosong';
+
+  @override
+  String get emptyDeckBody => 'Tambahkan kartu lewat tombol tambah di bawah.';
+
+  @override
+  String get emptyDecksTitle => 'Belum ada kartu';
+
+  @override
+  String get emptyDecksBody =>
+      'Buat kartu untuk mata pelajaranmu dan ulas dengan pengulangan berjeda.';
+
+  @override
+  String get reviewDeck => 'Tinjau deck';
+
+  @override
+  String deckCardCount(int count) {
+    return '$count kartu';
+  }
 }

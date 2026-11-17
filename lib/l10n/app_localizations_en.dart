@@ -2111,4 +2111,142 @@ class AppLocalizationsEn extends AppLocalizations {
   String classYearValue(String value) {
     return 'Class: $value';
   }
+
+  @override
+  String get flashcardsTitle => 'Flashcards';
+
+  @override
+  String get generalDeckLabel => 'General deck';
+
+  @override
+  String deckDueSummary(int due, int total) {
+    return '$due due of $total cards';
+  }
+
+  @override
+  String get addFlashcard => 'New Card';
+
+  @override
+  String get editFlashcard => 'Edit Card';
+
+  @override
+  String get flashcardFront => 'Front';
+
+  @override
+  String get flashcardBack => 'Back';
+
+  @override
+  String get flashcardSave => 'Save Card';
+
+  @override
+  String get deleteCardTitle => 'Delete this card?';
+
+  @override
+  String get deleteCardBody =>
+      'The card and its review progress are removed. This cannot be undone.';
+
+  @override
+  String get tapToFlip => 'Tap the card to see the answer';
+
+  @override
+  String get gradeForgot => 'Again';
+
+  @override
+  String get gradeHard => 'Hard';
+
+  @override
+  String get gradeEasy => 'Easy';
+
+  @override
+  String get reviewDoneTitle => 'Review done';
+
+  @override
+  String reviewDoneBody(int count) {
+    return '$count cards reviewed.';
+  }
+
+  @override
+  String reviewProgress(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get studyStatsTitle => 'Study Stats';
+
+  @override
+  String get focusToday => 'Focus today';
+
+  @override
+  String get focusThisWeek => 'Focus, 7 days';
+
+  @override
+  String get minutesUnit => 'min';
+
+  @override
+  String get tasksDoneThisWeek => 'Tasks done, 7 days';
+
+  @override
+  String get completionStreakLabel => 'Days in a row with a completed task';
+
+  @override
+  String get last14Days => 'Focus, last 14 days';
+
+  @override
+  String get noStudyData =>
+      'No focus sessions yet. Start one from the Focus mode on the Today tab.';
+
+  @override
+  String get focusTimerTitle => 'Focus Session';
+
+  @override
+  String get startFocus => 'Start Focus';
+
+  @override
+  String get pauseFocus => 'Pause';
+
+  @override
+  String get resumeFocus => 'Resume';
+
+  @override
+  String get resetFocus => 'Reset';
+
+  @override
+  String get endFocusEarly => 'End Early';
+
+  @override
+  String get focusSessionSaved => 'Focus session saved.';
+
+  @override
+  String get focusNeedsTask => 'Pick a focus task first, then start the timer.';
+
+  @override
+  String get focusSessionTooShort =>
+      'Sessions shorter than 30 seconds are not recorded.';
+
+  @override
+  String get drawerSectionStudy => 'Study';
+
+  @override
+  String get reviewDeckAction => 'Review Now';
+
+  @override
+  String get emptyDeckTitle => 'This deck is empty';
+
+  @override
+  String get emptyDeckBody => 'Add a card with the plus button below.';
+
+  @override
+  String get emptyDecksTitle => 'No flashcards yet';
+
+  @override
+  String get emptyDecksBody =>
+      'Create cards for your subjects and review them with spaced repetition.';
+
+  @override
+  String get reviewDeck => 'Review deck';
+
+  @override
+  String deckCardCount(int count) {
+    return '$count cards';
+  }
 }

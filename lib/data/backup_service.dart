@@ -93,6 +93,7 @@ class BackupService {
     data['grade_components'] = (await db.select(db.gradeComponents).get()).map((e) => e.toJson()).toList();
     data['saved_filters'] = (await db.select(db.savedFilters).get()).map((e) => e.toJson()).toList();
     data['attendance'] = (await db.select(db.attendance).get()).map((e) => e.toJson()).toList();
+    data['flash_cards'] = (await db.select(db.flashCards).get()).map((e) => e.toJson()).toList();
 
     // Compact encoding: a backup is machine data, and indentation roughly
     // doubles the size of a large database.
@@ -177,6 +178,7 @@ class BackupService {
     final grades = _decode<GradeComponent>(data, 'grade_components', GradeComponent.fromJson);
     final filters = _decode<SavedFilter>(data, 'saved_filters', SavedFilter.fromJson);
     final attendance = _decode<AttendanceData>(data, 'attendance', AttendanceData.fromJson);
+    final flashCards = _decode<FlashCard>(data, 'flash_cards', FlashCard.fromJson);
 
     final stats = <String, int>{};
     void count(String key, List<dynamic> rows) {
@@ -208,6 +210,7 @@ class BackupService {
     count('grade_components', grades);
     count('saved_filters', filters);
     count('attendance', attendance);
+    count('flash_cards', flashCards);
 
     Future<void> putAll<D>(List<D> rows, Future<void> Function(D) write) async {
       for (final row in rows) {
@@ -218,6 +221,7 @@ class BackupService {
     await db.transaction(() async {
       if (mode == 'replace') {
         // Children first: delete everything this app owns.
+        await db.delete(db.flashCards).go();
         await db.delete(db.savedFilters).go();
         await db.delete(db.attendance).go();
         await db.delete(db.gradeComponents).go();
@@ -248,6 +252,7 @@ class BackupService {
 
       await putAll(semesters, (row) => db.into(db.semesters).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaces, (row) => db.into(db.spaces).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(flashCards, (row) => db.into(db.flashCards).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(aliases, (row) => db.into(db.spaceAliases).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaceMeta, (row) => db.into(db.spaceMeta).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(tasks, (row) => db.into(db.tasks).insert(row, mode: InsertMode.insertOrReplace));

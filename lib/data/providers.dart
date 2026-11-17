@@ -19,6 +19,7 @@ import '../lock/lock_service.dart';
 import 'attachment_repository.dart';
 import 'task_event_repository.dart';
 import 'focus_session_repository.dart';
+import 'flashcard_repository.dart';
 import 'task_template_repository.dart';
 import 'class_exception_repository.dart';
 import 'space_item_repository.dart';
@@ -132,6 +133,10 @@ final taskEventRepositoryProvider = Provider<TaskEventRepository>((ref) {
 
 final focusSessionRepositoryProvider = Provider<FocusSessionRepository>((ref) {
   return FocusSessionRepository(ref.read(appDatabaseProvider));
+});
+
+final flashcardRepositoryProvider = Provider<FlashcardRepository>((ref) {
+  return FlashcardRepository(ref.read(appDatabaseProvider));
 });
 
 final taskTemplateRepositoryProvider = Provider<TaskTemplateRepository>((ref) {

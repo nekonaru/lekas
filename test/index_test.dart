@@ -30,7 +30,7 @@ void main() {
     return rows.map((row) => row.read<String>('detail')).join(' | ');
   }
 
-  test('a fresh database carries every schema 3 index', () async {
+  test('a fresh database carries every schema index', () async {
     expect(await indexNames(), [
       'idx_attachments_task',
       'idx_attendance_space_date',
@@ -38,6 +38,7 @@ void main() {
       'idx_class_exceptions_slot',
       'idx_class_notes_space',
       'idx_class_slots_space',
+      'idx_flash_cards_due',
       'idx_focus_sessions_task',
       'idx_reminders_fire',
       'idx_reminders_task',
@@ -54,16 +55,16 @@ void main() {
     ]);
   });
 
-  test('the schema version is 5', () {
-    expect(db.schemaVersion, 5);
+  test('the schema version is 6', () {
+    expect(db.schemaVersion, 6);
   });
 
-  test('the database declares nineteen secondary indexes', () {
+  test('the database declares twenty secondary indexes', () {
     final names = db.allSchemaEntities
         .map((entity) => entity.entityName)
         .where((name) => name.startsWith('idx_'))
         .toList();
-    expect(names, hasLength(19));
+    expect(names, hasLength(20));
   });
 
   /// Every probe below must hit an index and must not degrade into a full
@@ -227,6 +228,17 @@ void main() {
     await expectIndexed(
       "SELECT * FROM class_exceptions WHERE class_slot_id = 'c1' "
       'AND deleted_at IS NULL',
+    );
+  });
+
+  test('the flashcard due query reaches the due index instead of a scan',
+      () async {
+    expect(
+      await plan(
+        'SELECT * FROM flash_cards WHERE deleted_at IS NULL AND due_at <= 20261116 '
+        'ORDER BY due_at',
+      ),
+      contains('idx_flash_cards_due'),
     );
   });
 }

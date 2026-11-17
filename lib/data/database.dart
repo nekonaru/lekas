@@ -374,6 +374,28 @@ class Attendance extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// One study flashcard (v1.16). Scheduling counters follow SM-2: the card
+/// carries its own interval, ease factor and repetition count, so reviews
+/// need no separate log table. `spaceId` null means the general deck.
+@TableIndex(name: 'idx_flash_cards_due', columns: {#dueAt})
+class FlashCards extends Table {
+  TextColumn get id => text()();
+  TextColumn get spaceId => text().nullable().references(Spaces, #id)();
+  TextColumn get front => text()();
+  TextColumn get back => text()();
+  IntColumn get dueAt => integer()();
+  IntColumn get intervalDays => integer().withDefault(const Constant(0))();
+  RealColumn get easeFactor => real().withDefault(const Constant(2.5))();
+  IntColumn get repetitions => integer().withDefault(const Constant(0))();
+  IntColumn get lapses => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Semesters,
   Spaces,
@@ -400,12 +422,13 @@ class Attendance extends Table {
   GradeComponents,
   SavedFilters,
   Attendance,
+  FlashCards,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -537,6 +560,11 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(semesters);
             await m.addColumn(spaces, spaces.semesterId);
             await backfillSemesters(this);
+          }
+          if (from < 6) {
+            // Study flashcards with their own SM-2 counters (schema 6).
+            await m.createTable(flashCards);
+            await m.createIndex(idxFlashCardsDue);
           }
         },
       );

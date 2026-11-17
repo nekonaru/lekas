@@ -3889,6 +3889,258 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kelas: {value}'**
   String classYearValue(String value);
+
+  /// No description provided for @flashcardsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu Belajar'**
+  String get flashcardsTitle;
+
+  /// No description provided for @generalDeckLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Deck Umum'**
+  String get generalDeckLabel;
+
+  /// No description provided for @deckDueSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'{due} jatuh tempo dari {total} kartu'**
+  String deckDueSummary(int due, int total);
+
+  /// No description provided for @addFlashcard.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu Baru'**
+  String get addFlashcard;
+
+  /// No description provided for @editFlashcard.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah Kartu'**
+  String get editFlashcard;
+
+  /// No description provided for @flashcardFront.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisi depan'**
+  String get flashcardFront;
+
+  /// No description provided for @flashcardBack.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisi belakang'**
+  String get flashcardBack;
+
+  /// No description provided for @flashcardSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan Kartu'**
+  String get flashcardSave;
+
+  /// No description provided for @deleteCardTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kartu ini?'**
+  String get deleteCardTitle;
+
+  /// No description provided for @deleteCardBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu dan progres ulasannya ikut terhapus. Tidak bisa dibatalkan.'**
+  String get deleteCardBody;
+
+  /// No description provided for @tapToFlip.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk kartu untuk melihat jawaban'**
+  String get tapToFlip;
+
+  /// No description provided for @gradeForgot.
+  ///
+  /// In id, this message translates to:
+  /// **'Lupa'**
+  String get gradeForgot;
+
+  /// No description provided for @gradeHard.
+  ///
+  /// In id, this message translates to:
+  /// **'Sulit'**
+  String get gradeHard;
+
+  /// No description provided for @gradeEasy.
+  ///
+  /// In id, this message translates to:
+  /// **'Mudah'**
+  String get gradeEasy;
+
+  /// No description provided for @reviewDoneTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulasan selesai'**
+  String get reviewDoneTitle;
+
+  /// No description provided for @reviewDoneBody.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kartu sudah diulas.'**
+  String reviewDoneBody(int count);
+
+  /// No description provided for @reviewProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'{current} dari {total}'**
+  String reviewProgress(int current, int total);
+
+  /// No description provided for @studyStatsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Statistik Belajar'**
+  String get studyStatsTitle;
+
+  /// No description provided for @focusToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus hari ini'**
+  String get focusToday;
+
+  /// No description provided for @focusThisWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus 7 hari'**
+  String get focusThisWeek;
+
+  /// No description provided for @minutesUnit.
+  ///
+  /// In id, this message translates to:
+  /// **'mnt'**
+  String get minutesUnit;
+
+  /// No description provided for @tasksDoneThisWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas selesai 7 hari'**
+  String get tasksDoneThisWeek;
+
+  /// No description provided for @completionStreakLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari beruntun ada tugas selesai'**
+  String get completionStreakLabel;
+
+  /// No description provided for @last14Days.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus 14 hari terakhir'**
+  String get last14Days;
+
+  /// No description provided for @noStudyData.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada sesi fokus. Mulai satu dari mode Fokus di tab Hari Ini.'**
+  String get noStudyData;
+
+  /// No description provided for @focusTimerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi Fokus'**
+  String get focusTimerTitle;
+
+  /// No description provided for @startFocus.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai Fokus'**
+  String get startFocus;
+
+  /// No description provided for @pauseFocus.
+  ///
+  /// In id, this message translates to:
+  /// **'Jeda'**
+  String get pauseFocus;
+
+  /// No description provided for @resumeFocus.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get resumeFocus;
+
+  /// No description provided for @resetFocus.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi'**
+  String get resetFocus;
+
+  /// No description provided for @endFocusEarly.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai Lebih Awal'**
+  String get endFocusEarly;
+
+  /// No description provided for @focusSessionSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi fokus tercatat.'**
+  String get focusSessionSaved;
+
+  /// No description provided for @focusNeedsTask.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih satu tugas fokus dulu, baru mulai timer.'**
+  String get focusNeedsTask;
+
+  /// No description provided for @focusSessionTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi di bawah 30 detik tidak dicatat.'**
+  String get focusSessionTooShort;
+
+  /// No description provided for @drawerSectionStudy.
+  ///
+  /// In id, this message translates to:
+  /// **'Belajar'**
+  String get drawerSectionStudy;
+
+  /// No description provided for @reviewDeckAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau Sekarang'**
+  String get reviewDeckAction;
+
+  /// No description provided for @emptyDeckTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Deck ini masih kosong'**
+  String get emptyDeckTitle;
+
+  /// No description provided for @emptyDeckBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan kartu lewat tombol tambah di bawah.'**
+  String get emptyDeckBody;
+
+  /// No description provided for @emptyDecksTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kartu'**
+  String get emptyDecksTitle;
+
+  /// No description provided for @emptyDecksBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat kartu untuk mata pelajaranmu dan ulas dengan pengulangan berjeda.'**
+  String get emptyDecksBody;
+
+  /// No description provided for @reviewDeck.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau deck'**
+  String get reviewDeck;
+
+  /// No description provided for @deckCardCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kartu'**
+  String deckCardCount(int count);
 }
 
 class _AppLocalizationsDelegate
