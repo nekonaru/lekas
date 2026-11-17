@@ -107,6 +107,16 @@ class FlashcardRepository {
     return result;
   }
 
+  /// Live count of due cards for the drawer badge; the cutoff is read at
+  /// every emission so a long-lived drawer never goes stale.
+  Stream<int> watchDueCount() {
+    return (db.select(db.flashCards)..where((t) => t.deletedAt.isNull()))
+        .watch()
+        .map((rows) => rows
+            .where((card) => card.dueAt <= DateTime.now().millisecondsSinceEpoch)
+            .length);
+  }
+
   /// Cards due right now across every deck.
   Future<List<FlashCard>> dueCardsAny() {
     final now = DateTime.now().millisecondsSinceEpoch;
