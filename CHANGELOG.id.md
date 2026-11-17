@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.18.0
+
+Lekas kini bisa berbicara kalender: ekspor kelas dan tenggat ke file .ics yang bisa dibaca aplikasi kalender mana pun, dan impor kalender kembali menjadi tugas.
+
+### Fitur baru
+
+- **Ekspor Kalender (.ics).** Bagian Data di drawer mendapat layar Kalender (.ics): setiap tugas yang belum selesai menjadi event sehari penuh dan setiap kelas mingguan menjadi event berulang, dibagikan sebagai file yang bisa dibaca aplikasi kalender mana pun.
+- **Impor Kalender (.ics).** Layar yang sama mengimpor file .ics ke Lekas: setiap kejadian menjadi tugas di inbox, ditinjau dulu sebelum ditulis, dibatasi 500 kejadian per file.
+- **Lencana jatuh tempo.** Baris Kartu Belajar di drawer kini menampilkan lencana langsung dengan jumlah kartu yang jatuh tempo hari ini.
+
+### Peningkatan
+
+- **Pengimpor ketat.** File yang rusak ditolak dengan pesan jelas dan judul yang diimpor dibatasi panjangnya, jadi file jahat tidak bisa membanjiri inbox.
+
 ## v1.17.0
 
 Lekas kini punya cerita nilai lengkap untuk pelajar SMA, sementara mode Kuliah tetap persis seperti sebelumnya.

@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.18.0
+
+Lekas learns to speak calendar: export classes and deadlines to a .ics file any calendar app can read, and import a calendar back as tasks.
+
+### New features
+
+- **Calendar (.ics) export.** The drawer's Data section gains a Calendar (.ics) screen: every open task becomes an all-day event and every weekly class becomes a recurring event, shared as a file any calendar app can read.
+- **Calendar (.ics) import.** The same screen imports a .ics file into Lekas: every event becomes an inbox task, previewed before anything is written, capped at 500 events per file.
+- **Live due badge.** The Flashcards drawer row shows a live badge with the number of cards due today.
+
+### Improvements
+
+- **The importer is strict.** Malformed files are rejected with a clear message and imported titles are capped, so a hostile file cannot flood the inbox.
+
 ## v1.17.0
 
 Lekas grows a full grade story for SMA students while college mode stays exactly as it was.
