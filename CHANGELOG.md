@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.17.0
+
+Lekas grows a full grade story for SMA students while college mode stays exactly as it was.
+
+### New features
+
+- **Buku Nilai (SMA).** School subjects carry a grade book: add scores (label like Harian 1 or UTS, 0-100, date, note), see the live average with a green or red KKM verdict, and set the KKM you want, all from the subject page. Weights from the grade components apply when they exist. College mode is untouched.
+- **Report Card (Rapor).** School mode adds a Report Card entry on the Semester tab: every subject of the active semester with its average and KKM verdict, the semester average on the brand card, and one tap to share the whole report as text.
+- **Smarter school demo.** The school sample data now seeds three sample scores, so the grade book and the report card are populated on first launch.
+
+### Improvements
+
+- **Schema 7.** The database gains the scores table with a per subject index; upgrading from any older release happens automatically.
+- **Backups cover the grade book.** Export and import carry the scores too.
+
 ## v1.16.0
 
 Lekas becomes a study companion too, with spaced-repetition flashcards and focus sessions you can actually measure.

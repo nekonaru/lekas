@@ -67,7 +67,9 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Kategori** | Wadah bebas bernama apa pun (organisasi, kepanitiaan, komunitas); menyimpan warna, tugas, dan aksi kelolanya sendiri, plus baris tanpa kategori untuk tugas yang belum punya tempat |
 | **Mata kuliah** | Wadah terikat semester dengan kehadiran, jadwal kelas yang bisa diedit, daftar bawaan per mata kuliah, prediksi nilai, dan folder berkas sendiri |
-| **Mode SMA** | Alih jenjang ke SMA mengubah mata kuliah menjadi mata pelajaran dengan Kelas (10, 11, atau 12) yang dipilih di form ruang, tampil di halaman mata pelajaran, dan memakai istilah sekolah di semua tempat (Kelola Mata Pelajaran, Mata Pelajaran Semester Ini); contoh data berisi Matematika |
+| **Mode SMA** | Alih jenjang ke SMA mengubah mata kuliah menjadi mata pelajaran dengan Kelas (10, 11, atau 12) yang dipilih di form ruang, tampil di halaman mata pelajaran, dan memakai istilah sekolah di semua tempat (Kelola Mata Pelajaran, Mata Pelajaran Semester Ini); contoh data berisi Matematika dengan nilai |
+| **Buku Nilai (SMA)** | Log nilai per mata pelajaran dengan rata-rata langsung (memakai bobot komponen bila ada), verdict KKM hijau atau merah, dan pengaturan KKM yang bisa diubah |
+| **Rapor (SMA)** | Layar Rapor di tab Semester: semua mata pelajaran semester aktif dengan rata-ratanya dan verdict KKM, rata-rata semester di atas, dan satu ketuk untuk membagikan rapor sebagai teks |
 | **Semester** | Tab semester aktif: hero dengan jumlah mata kuliah, progres tugas, dan lencana terlambat, daftar mata kuliah, semester lain sekali ketuk; buat, ubah nama, aktifkan, dan hapus semester (mata kuliahnya ikut terhapus, tugasnya pindah ke Inbox) |
 | **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
 | **Filter dan pengelompokan tugas** | Kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat atau terjauh, terbaru dibuat, prioritas tertinggi) dalam satu sheet filter; opsi pengelompokan per kategori dengan jumlah per grup |
@@ -308,7 +310,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (526 tes) |
+| `flutter test` | Seluruh suite harus lulus (540 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

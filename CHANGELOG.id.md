@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.17.0
+
+Lekas kini punya cerita nilai lengkap untuk pelajar SMA, sementara mode Kuliah tetap persis seperti sebelumnya.
+
+### Fitur baru
+
+- **Buku Nilai (SMA).** Mata pelajaran kini punya buku nilai: tambah nilai (label seperti Harian 1 atau UTS, 0-100, tanggal, catatan), lihat rata-rata langsung dengan verdict KKM hijau atau merah, dan atur KKM sesuka hati, langsung dari halaman mata pelajaran. Bobot dari komponen penilaian dipakai bila ada. Mode Kuliah tidak tersentuh.
+- **Rapor (SMA).** Mode SMA menambahkan entri Rapor di tab Semester: semua mata pelajaran semester aktif dengan rata-ratanya dan verdict KKM, rata-rata semester di kartu brand, dan satu ketuk untuk membagikan rapor sebagai teks.
+- **Contoh data sekolah lebih pintar.** Data contoh sekolah kini menyertakan tiga nilai contoh, jadi buku nilai dan rapor sudah terisi sejak pemakaian pertama.
+
+### Peningkatan
+
+- **Skema 7.** Database kini punya tabel scores dengan indeks per mata pelajaran; peningkatan dari rilis lama berjalan otomatis.
+- **Cadangan mencakup buku nilai.** Ekspor dan impor kini membawa nilai-nilai juga.
+
 ## v1.16.0
 
 Lekas kini juga jadi teman belajar, dengan kartu flash pengulangan berjeda dan sesi fokus yang benar-benar terukur.

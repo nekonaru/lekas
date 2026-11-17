@@ -67,7 +67,9 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Categories** | Free-form containers you name anything (organization, committee, community); they keep color, tasks and their own manage actions, and an uncategorized row holds tasks without one |
 | **Courses** | Spaces bound to a semester with attendance, an editable class schedule, a per course bring list, grade prediction and their own folder for files |
-| **School (SMA) mode** | Level switch to School turns courses into subjects with a Kelas (10, 11 or 12) picked in the space form, shown on the subject page, and speaks subject wording everywhere (Manage Subjects, Subjects This Semester); demo data seeds a Matematika sample |
+| **School (SMA) mode** | Level switch to School turns courses into subjects with a Kelas (10, 11 or 12) picked in the space form, shows it on the subject page, speaks subject wording everywhere (Manage Subjects, Subjects This Semester); demo data seeds a Matematika sample with scores |
+| **Grade Book (SMA)** | Per-subject score log with live average (uses component weights when present), a green or red KKM verdict, and an editable KKM setting |
+| **Report Card (SMA)** | Rapor screen on the Semester tab: every subject of the active semester with its average and KKM verdict, the semester average up top, and one tap to share the report as text |
 | **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
 | **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |
@@ -308,7 +310,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (526 tests) |
+| `flutter test` | Must pass the full suite (540 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
