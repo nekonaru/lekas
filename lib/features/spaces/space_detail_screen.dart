@@ -33,13 +33,28 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
     final l10n = AppLocalizations.of(context)!;
     final repo = ref.watch(spaceRepositoryProvider);
 
-    return FutureBuilder<Space>(
-      future: repo.getSpace(widget.spaceId),
+    // The class year lives in meta; fetch it alongside the space row.
+    // A missing row should show the not-found state, not crash the tab.
+    Future<List<Object?>> fetch() async {
+      Space? space;
+      try {
+        space = await repo.getSpace(widget.spaceId);
+      } on StateError {
+        space = null;
+      }
+      final classYear =
+          space == null ? null : await repo.getMeta(widget.spaceId, 'class_year');
+      return [space, classYear];
+    }
+
+    return FutureBuilder<List<Object?>>(
+      future: fetch(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        final space = snapshot.data;
+        final space = snapshot.data?[0] as Space?;
+        final classYear = snapshot.data?[1] as String?;
         if (space == null) {
           return Scaffold(
             appBar: AppBar(title: Text(l10n.spacesTitle)),
@@ -71,6 +86,8 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                             space.level == 'school'
                                 ? l10n.school
                                 : l10n.college)),
+                      if (classYear != null)
+                        Text(l10n.classYearValue(classYear)),
                       if (space.period != null)
                         Text(l10n.spacePeriodValue(space.period!)),
                       if (space.sks != null)

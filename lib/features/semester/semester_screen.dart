@@ -24,6 +24,7 @@ class SemesterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final level = ref.watch(levelProvider).valueOrNull ?? 'college';
     final semesterRepo = ref.watch(semesterRepositoryProvider);
     final spaceRepo = ref.watch(spaceRepositoryProvider);
     final taskRepo = ref.watch(taskRepositoryProvider);
@@ -61,6 +62,7 @@ class SemesterScreen extends ConsumerWidget {
                         child: _ActiveSemesterHero(
                           semester: active,
                           stats: stats[active.id] ?? const _Stats(),
+                          level: level,
                           onRename: () =>
                               _renameSemester(context, ref, active),
                           onDelete: () =>
@@ -74,7 +76,11 @@ class SemesterScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      _SectionHeader(label: l10n.courseListTitle),
+                      _SectionHeader(
+                        label: level == 'school'
+                            ? l10n.subjectListTitle
+                            : l10n.courseListTitle,
+                      ),
                       for (final space
                           in spaces.where((s) => s.semesterId == active.id))
                         _CourseRow(
@@ -119,6 +125,7 @@ class SemesterScreen extends ConsumerWidget {
                         _OtherSemesterRow(
                           semester: other,
                           stats: stats[other.id] ?? const _Stats(),
+                          level: level,
                           onActivate: () => ref
                               .read(semesterRepositoryProvider)
                               .setActive(other.id),
@@ -226,6 +233,7 @@ class _ActiveSemesterHero extends StatelessWidget {
     required this.onRename,
     required this.onDelete,
     required this.onManage,
+    required this.level,
   });
 
   final Semester semester;
@@ -233,6 +241,7 @@ class _ActiveSemesterHero extends StatelessWidget {
   final VoidCallback onRename;
   final VoidCallback onDelete;
   final VoidCallback onManage;
+  final String level;
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +299,9 @@ class _ActiveSemesterHero extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Text(
-              l10n.courseCount(stats.courses),
+              level == 'school'
+                  ? l10n.subjectCount(stats.courses)
+                  : l10n.courseCount(stats.courses),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.85),
                 fontSize: 13,
@@ -359,7 +370,9 @@ class _ActiveSemesterHero extends StatelessWidget {
                 onPressed: onManage,
                 icon: const Icon(Icons.manage_search, size: 20),
                 label: Text(
-                  l10n.manageCoursesLabel,
+                  level == 'school'
+                      ? l10n.manageSubjectsLabel
+                      : l10n.manageCoursesLabel,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
@@ -474,12 +487,14 @@ class _OtherSemesterRow extends StatelessWidget {
     required this.stats,
     required this.onActivate,
     required this.onDelete,
+    required this.level,
   });
 
   final Semester semester;
   final _Stats stats;
   final VoidCallback onActivate;
   final VoidCallback onDelete;
+  final String level;
 
   @override
   Widget build(BuildContext context) {
@@ -488,7 +503,7 @@ class _OtherSemesterRow extends StatelessWidget {
       leading: const Icon(Icons.school_outlined),
       title: Text(semester.name),
       subtitle: Text(
-        '${l10n.courseCount(stats.courses)} · '
+        '${level == 'school' ? l10n.subjectCount(stats.courses) : l10n.courseCount(stats.courses)} · '
         '${l10n.tasksDoneOf(stats.doneTasks, stats.totalTasks)}',
       ),
       trailing: Row(

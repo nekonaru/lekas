@@ -18,10 +18,16 @@ Future<void> showSpaceFormDialog(
   String kind = 'course',
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final isCollege = existing?.level == null
-      ? true
-      : existing!.level == 'college';
+  final level = existing?.level ?? await ref.read(levelProvider.future);
+  final isSchool = level == 'school';
+  final isCollege = level == 'college';
   final isCategory = (existing?.kind ?? kind) == 'category';
+  final repo = ref.read(spaceRepositoryProvider);
+  // School spaces carry a class year in meta, not in the table, so no
+  // schema change is needed for SMA mode.
+  final classYearInitial = !isCategory && isSchool && existing != null
+      ? await repo.getMeta(existing.id, 'class_year')
+      : null;
   final nameController =
       TextEditingController(text: existing?.name ?? '');
   final codeController =
@@ -32,7 +38,9 @@ Future<void> showSpaceFormDialog(
       TextEditingController(text: existing?.targetGrade ?? '');
   var color =
       existing?.color ?? AppTheme.containerColors.first.toARGB32();
+  var classYear = classYearInitial;
 
+  if (!context.mounted) return;
   await showDialog<void>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
@@ -109,6 +117,35 @@ Future<void> showSpaceFormDialog(
                     ),
                 ],
               ),
+              if (isSchool && !isCategory) ...[
+                const SizedBox(height: 16),
+                Text(
+                  l10n.classYearLabel.toUpperCase(),
+                  style: Theme.of(dialogContext)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                        color:
+                            Theme.of(dialogContext).colorScheme.primary,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final year in const ['10', '11', '12'])
+                      ChoiceChip(
+                        label: Text(year),
+                        selected: classYear == year,
+                        onSelected: (selected) => setDialogState(
+                          () => classYear = selected ? year : null,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
               if (isCollege && !isCategory) ...[
                 const SizedBox(height: 16),
                 Text(
@@ -162,7 +199,6 @@ Future<void> showSpaceFormDialog(
             onPressed: () async {
               final name = nameController.text.trim();
               if (name.isEmpty) return;
-              final repo = ref.read(spaceRepositoryProvider);
               final code = codeController.text.trim().isEmpty
                   ? null
                   : codeController.text.trim();
@@ -175,10 +211,10 @@ Future<void> showSpaceFormDialog(
                       : targetController.text.trim();
               final now = DateTime.now().millisecondsSinceEpoch;
               if (existing == null) {
-                final level = await ref.read(levelProvider.future);
+                final newId = const Uuid().v4();
                 await repo.insertSpace(
                   Space(
-                    id: const Uuid().v4(),
+                    id: newId,
                     name: name,
                     code: code,
                     color: color,
@@ -192,6 +228,9 @@ Future<void> showSpaceFormDialog(
                     updatedAt: now,
                   ),
                 );
+                if (isSchool && !isCategory) {
+                  await repo.setMeta(newId, 'class_year', classYear);
+                }
               } else {
                 await repo.updateSpace(
                   existing.copyWith(
@@ -203,6 +242,9 @@ Future<void> showSpaceFormDialog(
                     updatedAt: now,
                   ),
                 );
+                if (isSchool && !isCategory) {
+                  await repo.setMeta(existing.id, 'class_year', classYear);
+                }
               }
               if (dialogContext.mounted) Navigator.pop(dialogContext);
             },

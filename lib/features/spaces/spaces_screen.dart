@@ -84,9 +84,11 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
 
   bool get _isFree => widget.view == SpaceView.free;
 
-  String _addLabel(AppLocalizations l10n) {
+  String _addLabel(AppLocalizations l10n, {required bool school}) {
     if (_isFree) return l10n.addCategory;
-    return widget.view == SpaceView.courses ? l10n.addCourse : l10n.addSpace;
+    return widget.view == SpaceView.courses
+        ? (school ? l10n.addSubject : l10n.addCourse)
+        : l10n.addSpace;
   }
 
   String _emptyMessage(AppLocalizations l10n) {
@@ -169,15 +171,21 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final repo = ref.watch(spaceRepositoryProvider);
+    final school =
+        ref.watch(levelProvider).valueOrNull == 'school';
     final selecting = _selection.isNotEmpty;
 
-    final addLabel = _addLabel(l10n);
+    final addLabel = _addLabel(l10n, school: school);
     final emptyMessage = _emptyMessage(l10n);
 
     return Scaffold(
       appBar: widget.embedded
           ? null
-          : AppBar(title: Text(_isFree ? l10n.kategoriTitle : widget.view == SpaceView.courses ? l10n.mataKuliahTitle : l10n.spacesTitle)),
+          : AppBar(title: Text(_isFree
+              ? l10n.kategoriTitle
+              : widget.view == SpaceView.courses
+                  ? (school ? l10n.subjectsTitle : l10n.mataKuliahTitle)
+                  : l10n.spacesTitle)),
       // The stream keeps the rows in drag order from the table, so a
       // reorder writes the order and the list follows; it also means a
       // rename or archive anywhere else shows up at once.

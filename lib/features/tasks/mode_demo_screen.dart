@@ -20,6 +20,8 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
 
   Future<void> _createSampleData() async {
     final l10n = AppLocalizations.of(context)!;
+    final isSchool =
+        ref.read(levelProvider).valueOrNull == 'school';
     final spaceRepo = ref.read(spaceRepositoryProvider);
     final taskRepo = ref.read(taskRepositoryProvider);
     final now = DateTime.now();
@@ -27,8 +29,9 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
     await spaceRepo.insertSpace(
       Space(
         id: spaceId,
-        name: l10n.trySampleData,
+        name: isSchool ? l10n.schoolSampleSubjectName : l10n.trySampleData,
         color: AppTheme.containerColors[1].toARGB32(),
+        level: isSchool ? 'school' : 'college',
         kind: 'demo',
         archived: false,
         sortOrder: 0,
@@ -36,7 +39,9 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
         updatedAt: now.millisecondsSinceEpoch,
       ),
     );
-    final titles = [l10n.typeLabReport, l10n.typePaper, l10n.typePresentation];
+    final titles = isSchool
+        ? [l10n.schoolDemoTask1, l10n.schoolDemoTask2, l10n.schoolDemoTask3]
+        : [l10n.typeLabReport, l10n.typePaper, l10n.typePresentation];
     for (var i = 0; i < titles.length; i++) {
       final due = DateTime(now.year, now.month, now.day + i + 1, 17);
       await taskRepo.insertTask(
@@ -108,7 +113,11 @@ class _ModeDemoScreenState extends ConsumerState<ModeDemoScreen> {
         children: [
           ListTile(
             title: Text(l10n.trySampleData),
-            subtitle: Text(l10n.trySampleDataSubtitle),
+            subtitle: Text(
+              ref.watch(levelProvider).valueOrNull == 'school'
+                  ? l10n.schoolSampleDataSubtitle
+                  : l10n.trySampleDataSubtitle,
+            ),
             trailing: const Icon(Icons.description),
             onTap: _createSampleData,
           ),
