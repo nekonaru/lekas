@@ -10,6 +10,7 @@ import '../../core/components/undo_snackbar.dart';
 import '../spaces/space_detail_screen.dart';
 import '../spaces/spaces_screen.dart';
 import '../spaces/space_form_dialog.dart';
+import '../study/raport_screen.dart';
 
 /// The Semester tab: the active semester as a hero, the courses in it, and
 /// every other semester one tap away. Replaces the old categories tab as
@@ -74,6 +75,14 @@ class SemesterScreen extends ConsumerWidget {
                                   const SpacesScreen(view: SpaceView.courses),
                             ),
                           ),
+                          onRaport: level == 'school'
+                              ? () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (_) => const RaportScreen(),
+                                    ),
+                                  )
+                              : null,
                         ),
                       ),
                       _SectionHeader(
@@ -234,6 +243,7 @@ class _ActiveSemesterHero extends StatelessWidget {
     required this.onDelete,
     required this.onManage,
     required this.level,
+    this.onRaport,
   });
 
   final Semester semester;
@@ -242,6 +252,7 @@ class _ActiveSemesterHero extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onManage;
   final String level;
+  final VoidCallback? onRaport;
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +389,27 @@ class _ActiveSemesterHero extends StatelessWidget {
               ),
             ),
           ),
+          if (onRaport != null) ...[
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  side: BorderSide(
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
+                ),
+                onPressed: onRaport,
+                icon: const Icon(Icons.assignment_outlined, size: 20),
+                label: Text(
+                  l10n.raportTitle,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
