@@ -17,6 +17,8 @@ import '../tasks/task_template_screen.dart';
 import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
+import '../study/flashcards_screen.dart';
+import '../study/statistik_belajar_screen.dart';
 import '../semester/semester_screen.dart';
 import '../settings/settings_screen.dart';
 import '../spaces/spaces_screen.dart';
@@ -242,6 +244,18 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.link,
             l10n.globalQuickLinksTitle,
             () => _push(const TautanCepatScreen()),
+          ),
+          // Study: the learning loop between tasks.
+          _drawerSection(l10n.drawerSectionStudy, Icons.auto_stories_outlined),
+          _drawerTile(
+            Icons.style_outlined,
+            l10n.flashcardsTitle,
+            () => _push(const FlashcardsScreen()),
+          ),
+          _drawerTile(
+            Icons.insights_outlined,
+            l10n.studyStatsTitle,
+            () => _push(const StatistikBelajarScreen()),
           ),
           // Data tools: backups and the reminder checker answer the same
           // job at different times.

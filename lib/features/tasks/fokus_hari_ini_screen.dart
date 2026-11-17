@@ -4,6 +4,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/focus.dart';
 import '../../l10n/app_localizations.dart';
+import '../study/focus_timer_card.dart';
 
 /// Picks up to three focus tasks for today and checks them off
 /// (design section 5.24). The list follows the database, so a pick from
@@ -124,6 +125,8 @@ class _FokusHariIniScreenState extends ConsumerState<FokusHariIniScreen> {
 
           // The small celebration of design section 5.24, no badge or score.
           final doneFlags = [for (final task in focus) task.status == 'done'];
+          final activeFocus =
+              focus.where((task) => task.status != 'done').firstOrNull;
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -156,6 +159,7 @@ class _FokusHariIniScreenState extends ConsumerState<FokusHariIniScreen> {
                     }
                   },
                 ),
+              FocusTimerCard(focusTaskId: activeFocus?.id),
             ],
           );
         },
