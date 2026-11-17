@@ -43,4 +43,19 @@ void main() {
     final back = await repo.getSpaces();
     expect(back.map((space) => space.level), everyElement('college'));
   });
+
+  test('class year lives in meta: set, overwrite and clear', () async {
+    final repo = await seeded();
+    expect(await repo.getMeta('a', 'class_year'), isNull);
+
+    await repo.setMeta('a', 'class_year', '10');
+    expect(await repo.getMeta('a', 'class_year'), '10');
+
+    await repo.setMeta('a', 'class_year', '12');
+    expect(await repo.getMeta('a', 'class_year'), '12');
+
+    // Clearing writes a null value; readers still see "not set".
+    await repo.setMeta('a', 'class_year', null);
+    expect(await repo.getMeta('a', 'class_year'), isNull);
+  });
 }
