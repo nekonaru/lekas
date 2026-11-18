@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/providers.dart';
+import '../../domain/habits.dart';
 import '../../domain/study_stats.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -48,6 +49,15 @@ class _StatistikBelajarScreenState
     final doneThisWeek = completed
         .where((millis) => millis >= weekStart.millisecondsSinceEpoch)
         .length;
+    final heatStart = today.subtract(const Duration(days: 83));
+    final completedByDay = <String, int>{};
+    for (final millis in completed) {
+      final day = DateTime.fromMillisecondsSinceEpoch(millis);
+      final local = DateTime(day.year, day.month, day.day);
+      if (local.isBefore(heatStart)) continue;
+      final key = dayKeyOf(local);
+      completedByDay[key] = (completedByDay[key] ?? 0) + 1;
+    }
     return _StatsData(
       buckets: focusMinutesByDay(sessions, endDay: today, days: 14),
       todayMinutes: focusMinutesInWindow(sessions, endDay: today, days: 1),
@@ -56,6 +66,7 @@ class _StatistikBelajarScreenState
       streak: completionStreak(completed, today: today),
       totalCards: cards.total,
       dueCards: cards.due,
+      completedByDay: completedByDay,
     );
   }
 
@@ -143,6 +154,19 @@ class _StatistikBelajarScreenState
                             ),
                       )
                     : null,
+              ),
+              const SizedBox(height: 18),
+              Text(
+                l10n.heatmapTitle,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.4,
+                    ),
+              ),
+              const SizedBox(height: 10),
+              _Heatmap(
+                completedByDay: data.completedByDay,
+                endDay: DateTime.now(),
               ),
               const SizedBox(height: 18),
               Text(
@@ -240,6 +264,7 @@ class _StatsData {
     required this.streak,
     required this.totalCards,
     required this.dueCards,
+    required this.completedByDay,
   });
 
   final List<int> buckets;
@@ -249,6 +274,7 @@ class _StatsData {
   final int streak;
   final int totalCards;
   final int dueCards;
+  final Map<String, int> completedByDay;
 }
 
 class _StatCard extends StatelessWidget {
@@ -309,6 +335,99 @@ class _StatCard extends StatelessWidget {
                   color: colors.onSurfaceVariant,
                   height: 1.25,
                 ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// GitHub-style 12-week grid of days with completed tasks. Each cell is a
+/// local calendar day; four shades of the brand color mark the intensity.
+class _Heatmap extends StatelessWidget {
+  const _Heatmap({required this.completedByDay, required this.endDay});
+
+  final Map<String, int> completedByDay;
+  final DateTime endDay;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
+    final last = DateTime(endDay.year, endDay.month, endDay.day);
+    // Align to the Monday of the starting week so rows stay weekday rows.
+    var start = last.subtract(const Duration(days: 83));
+    start = start.subtract(Duration(days: start.weekday - 1));
+
+    Color cellColor(int count) {
+      if (count <= 0) return colors.surfaceContainerHighest;
+      if (count == 1) return colors.primaryContainer;
+      if (count <= 3) return colors.primary.withValues(alpha: 0.55);
+      return colors.primary;
+    }
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              children: [
+                for (var week = 0; week < 12; week++)
+                  Column(
+                    children: [
+                      for (var day = 0; day < 7; day++)
+                        Container(
+                          width: 15,
+                          height: 15,
+                          margin: const EdgeInsets.all(1.5),
+                          decoration: BoxDecoration(
+                            color: cellColor(completedByDay[dayKeyOf(
+                                  start.add(Duration(days: week * 7 + day)),
+                                )] ??
+                                0),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                l10n.heatmapLess,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+              ),
+              const SizedBox(width: 6),
+              for (final level in const [0, 1, 2, 4])
+                Container(
+                  width: 13,
+                  height: 13,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: cellColor(level),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              const SizedBox(width: 6),
+              Text(
+                l10n.heatmapMore,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+              ),
+            ],
           ),
         ],
       ),
