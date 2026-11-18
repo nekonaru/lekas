@@ -18,6 +18,7 @@ import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../ics/ics_screen.dart';
+import '../csv/csv_screen.dart';
 import '../kebiasaan/kebiasaan_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/statistik_belajar_screen.dart';
@@ -284,6 +285,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.event_note_outlined,
             l10n.calendarIcsTitle,
             () => _push(const IcsScreen()),
+          ),
+          _drawerTile(
+            Icons.table_chart_outlined,
+            l10n.csvTitle,
+            () => _push(const CsvScreen()),
           ),
           // Housekeeping last: the trash, where deletes can still come back.
           _drawerSection(l10n.drawerSectionSystem, Icons.tune),

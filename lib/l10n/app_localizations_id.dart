@@ -2414,4 +2414,41 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get focusPerSubject => 'Fokus per mata pelajaran';
+
+  @override
+  String get csvTitle => 'Spreadsheet (.csv)';
+
+  @override
+  String get csvExportTitle => 'Ekspor tugas ke CSV';
+
+  @override
+  String get csvExportBody =>
+      'Semua tugas sebagai spreadsheet: judul, deadline, prioritas, status, ruang, bobot, dan tag.';
+
+  @override
+  String get csvImportTitle => 'Impor tugas dari CSV';
+
+  @override
+  String get csvImportBody =>
+      'Impor berkas CSV dengan kolom title; tag dipisah titik koma.';
+
+  @override
+  String csvImportConfirm(int count, int skipped) {
+    return '$count tugas akan dibuat ($skipped baris dilewati). Lanjutkan?';
+  }
+
+  @override
+  String csvImported(int count) {
+    return '$count tugas diimpor.';
+  }
+
+  @override
+  String get csvImportInvalid =>
+      'Berkas itu bukan CSV, atau tidak punya kolom title.';
+
+  @override
+  String get csvImportTooLarge => 'Hanya 1000 baris pertama yang diimpor.';
+
+  @override
+  String get csvExportFailed => 'Berkas CSV gagal dibuat.';
 }

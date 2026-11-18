@@ -808,5 +808,17 @@
   "heatmapLess": "Less",
   "heatmapMore": "More",
   "exportCsv": "Share CSV",
-  "focusPerSubject": "Focus per subject"
+  "focusPerSubject": "Focus per subject",
+  "csvTitle": "Spreadsheet (.csv)",
+  "csvExportTitle": "Export tasks to CSV",
+  "csvExportBody": "Every task as a spreadsheet: title, deadline, priority, status, space, weight and tags.",
+  "csvImportTitle": "Import tasks from CSV",
+  "csvImportBody": "Import a CSV file with a title column; tags are split by semicolons.",
+  "csvImportConfirm": "{count} tasks will be created ({skipped} rows skipped). Continue?",
+  "@csvImportConfirm": { "placeholders": { "count": { "type": "int" }, "skipped": { "type": "int" } } },
+  "csvImported": "{count} tasks imported.",
+  "@csvImported": { "placeholders": { "count": { "type": "int" } } },
+  "csvImportInvalid": "That file is not a CSV file, or it has no title column.",
+  "csvImportTooLarge": "Only the first 1000 rows were imported.",
+  "csvExportFailed": "The CSV file could not be built."
 }

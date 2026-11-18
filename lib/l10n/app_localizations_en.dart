@@ -2412,4 +2412,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focusPerSubject => 'Focus per subject';
+
+  @override
+  String get csvTitle => 'Spreadsheet (.csv)';
+
+  @override
+  String get csvExportTitle => 'Export tasks to CSV';
+
+  @override
+  String get csvExportBody =>
+      'Every task as a spreadsheet: title, deadline, priority, status, space, weight and tags.';
+
+  @override
+  String get csvImportTitle => 'Import tasks from CSV';
+
+  @override
+  String get csvImportBody =>
+      'Import a CSV file with a title column; tags are split by semicolons.';
+
+  @override
+  String csvImportConfirm(int count, int skipped) {
+    return '$count tasks will be created ($skipped rows skipped). Continue?';
+  }
+
+  @override
+  String csvImported(int count) {
+    return '$count tasks imported.';
+  }
+
+  @override
+  String get csvImportInvalid =>
+      'That file is not a CSV file, or it has no title column.';
+
+  @override
+  String get csvImportTooLarge => 'Only the first 1000 rows were imported.';
+
+  @override
+  String get csvExportFailed => 'The CSV file could not be built.';
 }

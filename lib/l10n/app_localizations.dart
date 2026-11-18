@@ -4435,6 +4435,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Fokus per mata pelajaran'**
   String get focusPerSubject;
+
+  /// No description provided for @csvTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Spreadsheet (.csv)'**
+  String get csvTitle;
+
+  /// No description provided for @csvExportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor tugas ke CSV'**
+  String get csvExportTitle;
+
+  /// No description provided for @csvExportBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua tugas sebagai spreadsheet: judul, deadline, prioritas, status, ruang, bobot, dan tag.'**
+  String get csvExportBody;
+
+  /// No description provided for @csvImportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor tugas dari CSV'**
+  String get csvImportTitle;
+
+  /// No description provided for @csvImportBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor berkas CSV dengan kolom title; tag dipisah titik koma.'**
+  String get csvImportBody;
+
+  /// No description provided for @csvImportConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas akan dibuat ({skipped} baris dilewati). Lanjutkan?'**
+  String csvImportConfirm(int count, int skipped);
+
+  /// No description provided for @csvImported.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas diimpor.'**
+  String csvImported(int count);
+
+  /// No description provided for @csvImportInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas itu bukan CSV, atau tidak punya kolom title.'**
+  String get csvImportInvalid;
+
+  /// No description provided for @csvImportTooLarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya 1000 baris pertama yang diimpor.'**
+  String get csvImportTooLarge;
+
+  /// No description provided for @csvExportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas CSV gagal dibuat.'**
+  String get csvExportFailed;
 }
 
 class _AppLocalizationsDelegate
