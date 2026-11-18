@@ -224,12 +224,11 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
                     habit: habit,
                     checked: data.checks[habit.id] ?? const <String>{},
                     weekKeys: weekKeys,
-                    onToggle: () async {
+                    onToggle: (dayKey) async {
                       HapticFeedback.selectionClick();
-                      final todayKey = dayKeyOf(DateTime.now());
                       await ref
                           .read(habitRepositoryProvider)
-                          .toggleCheck(habit.id, todayKey);
+                          .toggleCheck(habit.id, dayKey);
                       _reload();
                     },
                     onDelete: () => _deleteHabit(habit),
@@ -299,7 +298,7 @@ class _HabitCard extends StatelessWidget {
   final Habit habit;
   final Set<String> checked;
   final List<String> weekKeys;
-  final VoidCallback onToggle;
+  final ValueChanged<String> onToggle;
   final VoidCallback onDelete;
 
   @override
@@ -375,7 +374,7 @@ class _HabitCard extends StatelessWidget {
                     checked: checked.contains(weekKeys[i]),
                     color: _hexColor(habit.color),
                     isToday: weekKeys[i] == dayKeyOf(DateTime.now()),
-                    onTap: onToggle,
+                    onTap: () => onToggle(weekKeys[i]),
                   ),
                 const Spacer(),
                 Text(
