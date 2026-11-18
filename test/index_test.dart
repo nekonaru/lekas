@@ -40,6 +40,8 @@ void main() {
       'idx_class_slots_space',
       'idx_flash_cards_due',
       'idx_focus_sessions_task',
+      'idx_habit_checks_habit_date',
+      'idx_habits_deleted',
       'idx_reminders_fire',
       'idx_reminders_task',
       'idx_scores_space',
@@ -56,16 +58,16 @@ void main() {
     ]);
   });
 
-  test('the schema version is 7', () {
-    expect(db.schemaVersion, 7);
+  test('the schema version is 8', () {
+    expect(db.schemaVersion, 8);
   });
 
-  test('the database declares twenty one secondary indexes', () {
+  test('the database declares twenty three secondary indexes', () {
     final names = db.allSchemaEntities
         .map((entity) => entity.entityName)
         .where((name) => name.startsWith('idx_'))
         .toList();
-    expect(names, hasLength(21));
+    expect(names, hasLength(23));
   });
 
   /// Every probe below must hit an index and must not degrade into a full
@@ -249,6 +251,16 @@ void main() {
         "SELECT * FROM scores WHERE space_id = 'sp1' ORDER BY taken_at DESC",
       ),
       contains('idx_scores_space'),
+    );
+  });
+
+  test('the habit calendar reaches the habit and date index', () async {
+    expect(
+      await plan(
+        "SELECT * FROM habit_checks WHERE habit_id = 'h1' "
+        "AND date >= '2026-11-01' AND date <= '2026-11-30'",
+      ),
+      contains('idx_habit_checks_habit_date'),
     );
   });
 }

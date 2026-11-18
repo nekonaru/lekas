@@ -792,5 +792,20 @@
   "icsImportInvalid": "That file is not a calendar (.ics) file, or it holds no events.",
   "icsImportTooLarge": "Only the first 500 events were imported.",
   "icsImportSourceHint": "Imported events land in the inbox.",
-  "icsExportFailed": "The calendar file could not be built."
+  "icsExportFailed": "The calendar file could not be built.",
+  "kebiasaanTitle": "Habits",
+  "habitAdd": "New Habit",
+  "habitName": "Habit name",
+  "habitDeleteTitle": "Delete habit?",
+  "habitDeleteBody": "The habit and its check-ins are removed. This cannot be undone.",
+  "noHabitsYet": "No habits yet. Start one small promise to yourself.",
+  "habitStreakLabel": "day streak",
+  "habitThisWeek": "{checked}/{total} this week",
+  "@habitThisWeek": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "habitWeekSummary": "This week: {checked} of {total} check-ins",
+  "@habitWeekSummary": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "heatmapTitle": "90 days of completing tasks",
+  "heatmapLess": "Less",
+  "heatmapMore": "More",
+  "exportCsv": "Share CSV"
 }

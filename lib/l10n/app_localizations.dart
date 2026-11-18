@@ -4351,6 +4351,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Berkas kalender gagal dibuat.'**
   String get icsExportFailed;
+
+  /// No description provided for @kebiasaanTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan'**
+  String get kebiasaanTitle;
+
+  /// No description provided for @habitAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan Baru'**
+  String get habitAdd;
+
+  /// No description provided for @habitName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kebiasaan'**
+  String get habitName;
+
+  /// No description provided for @habitDeleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kebiasaan?'**
+  String get habitDeleteTitle;
+
+  /// No description provided for @habitDeleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan dan centangannya ikut terhapus. Tidak bisa dibatalkan.'**
+  String get habitDeleteBody;
+
+  /// No description provided for @noHabitsYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kebiasaan. Mulai satu janji kecil untuk dirimu.'**
+  String get noHabitsYet;
+
+  /// No description provided for @habitStreakLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'hari beruntun'**
+  String get habitStreakLabel;
+
+  /// No description provided for @habitThisWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'{checked}/{total} minggu ini'**
+  String habitThisWeek(int checked, int total);
+
+  /// No description provided for @habitWeekSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini: {checked} dari {total} centangan'**
+  String habitWeekSummary(int checked, int total);
+
+  /// No description provided for @heatmapTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'90 hari menyelesaikan tugas'**
+  String get heatmapTitle;
+
+  /// No description provided for @heatmapLess.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedikit'**
+  String get heatmapLess;
+
+  /// No description provided for @heatmapMore.
+  ///
+  /// In id, this message translates to:
+  /// **'Banyak'**
+  String get heatmapMore;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan CSV'**
+  String get exportCsv;
 }
 
 class _AppLocalizationsDelegate

@@ -2366,4 +2366,49 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get icsExportFailed => 'Berkas kalender gagal dibuat.';
+
+  @override
+  String get kebiasaanTitle => 'Kebiasaan';
+
+  @override
+  String get habitAdd => 'Kebiasaan Baru';
+
+  @override
+  String get habitName => 'Nama kebiasaan';
+
+  @override
+  String get habitDeleteTitle => 'Hapus kebiasaan?';
+
+  @override
+  String get habitDeleteBody =>
+      'Kebiasaan dan centangannya ikut terhapus. Tidak bisa dibatalkan.';
+
+  @override
+  String get noHabitsYet =>
+      'Belum ada kebiasaan. Mulai satu janji kecil untuk dirimu.';
+
+  @override
+  String get habitStreakLabel => 'hari beruntun';
+
+  @override
+  String habitThisWeek(int checked, int total) {
+    return '$checked/$total minggu ini';
+  }
+
+  @override
+  String habitWeekSummary(int checked, int total) {
+    return 'Minggu ini: $checked dari $total centangan';
+  }
+
+  @override
+  String get heatmapTitle => '90 hari menyelesaikan tugas';
+
+  @override
+  String get heatmapLess => 'Sedikit';
+
+  @override
+  String get heatmapMore => 'Banyak';
+
+  @override
+  String get exportCsv => 'Bagikan CSV';
 }

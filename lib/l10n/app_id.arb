@@ -792,5 +792,20 @@
   "icsImportInvalid": "Berkas itu bukan file kalender (.ics), atau tidak berisi kejadian.",
   "icsImportTooLarge": "Hanya 500 kejadian pertama yang diimpor.",
   "icsImportSourceHint": "Kejadian yang diimpor masuk ke inbox.",
-  "icsExportFailed": "Berkas kalender gagal dibuat."
+  "icsExportFailed": "Berkas kalender gagal dibuat.",
+  "kebiasaanTitle": "Kebiasaan",
+  "habitAdd": "Kebiasaan Baru",
+  "habitName": "Nama kebiasaan",
+  "habitDeleteTitle": "Hapus kebiasaan?",
+  "habitDeleteBody": "Kebiasaan dan centangannya ikut terhapus. Tidak bisa dibatalkan.",
+  "noHabitsYet": "Belum ada kebiasaan. Mulai satu janji kecil untuk dirimu.",
+  "habitStreakLabel": "hari beruntun",
+  "habitThisWeek": "{checked}/{total} minggu ini",
+  "@habitThisWeek": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "habitWeekSummary": "Minggu ini: {checked} dari {total} centangan",
+  "@habitWeekSummary": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "heatmapTitle": "90 hari menyelesaikan tugas",
+  "heatmapLess": "Sedikit",
+  "heatmapMore": "Banyak",
+  "exportCsv": "Bagikan CSV"
 }

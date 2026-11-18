@@ -414,6 +414,35 @@ class Scores extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// One habit to check off every day (schema 8). Kept deliberately small:
+/// a name and a color, plus the checks stored in [HabitChecks].
+@TableIndex(name: 'idx_habits_deleted', columns: {#deletedAt})
+class Habits extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get color => text().withDefault(const Constant('#6366F1'))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// One completed check of a habit on one local calendar day (schema 8).
+@TableIndex(name: 'idx_habit_checks_habit_date', columns: {#habitId, #date})
+class HabitChecks extends Table {
+  TextColumn get id => text()();
+  TextColumn get habitId => text().references(Habits, #id)();
+
+  /// Local calendar day as `YYYY-MM-DD` (design section 10).
+  TextColumn get date => text()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Semesters,
   Spaces,
@@ -442,12 +471,14 @@ class Scores extends Table {
   Attendance,
   FlashCards,
   Scores,
+  Habits,
+  HabitChecks,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -589,6 +620,13 @@ class AppDatabase extends _$AppDatabase {
             // The SMA grade book: one row per score event (schema 7).
             await m.createTable(scores);
             await m.createIndex(idxScoresSpace);
+          }
+          if (from < 8) {
+            // Habit tracker: habits and their daily check-offs (schema 8).
+            await m.createTable(habits);
+            await m.createIndex(idxHabitsDeleted);
+            await m.createTable(habitChecks);
+            await m.createIndex(idxHabitChecksHabitDate);
           }
         },
       );

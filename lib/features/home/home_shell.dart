@@ -18,6 +18,7 @@ import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../ics/ics_screen.dart';
+import '../kebiasaan/kebiasaan_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/statistik_belajar_screen.dart';
 import '../semester/semester_screen.dart';
@@ -250,6 +251,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           _drawerSection(l10n.drawerSectionStudy, Icons.auto_stories_outlined),
           _FlashcardsTile(
             onTap: () => _push(const FlashcardsScreen()),
+          ),
+          _drawerTile(
+            Icons.local_fire_department_outlined,
+            l10n.kebiasaanTitle,
+            () => _push(const KebiasaanScreen()),
           ),
           _drawerTile(
             Icons.insights_outlined,

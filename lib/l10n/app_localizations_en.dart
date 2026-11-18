@@ -2364,4 +2364,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get icsExportFailed => 'The calendar file could not be built.';
+
+  @override
+  String get kebiasaanTitle => 'Habits';
+
+  @override
+  String get habitAdd => 'New Habit';
+
+  @override
+  String get habitName => 'Habit name';
+
+  @override
+  String get habitDeleteTitle => 'Delete habit?';
+
+  @override
+  String get habitDeleteBody =>
+      'The habit and its check-ins are removed. This cannot be undone.';
+
+  @override
+  String get noHabitsYet =>
+      'No habits yet. Start one small promise to yourself.';
+
+  @override
+  String get habitStreakLabel => 'day streak';
+
+  @override
+  String habitThisWeek(int checked, int total) {
+    return '$checked/$total this week';
+  }
+
+  @override
+  String habitWeekSummary(int checked, int total) {
+    return 'This week: $checked of $total check-ins';
+  }
+
+  @override
+  String get heatmapTitle => '90 days of completing tasks';
+
+  @override
+  String get heatmapLess => 'Less';
+
+  @override
+  String get heatmapMore => 'More';
+
+  @override
+  String get exportCsv => 'Share CSV';
 }

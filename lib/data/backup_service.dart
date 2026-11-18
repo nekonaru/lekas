@@ -95,6 +95,8 @@ class BackupService {
     data['attendance'] = (await db.select(db.attendance).get()).map((e) => e.toJson()).toList();
     data['flash_cards'] = (await db.select(db.flashCards).get()).map((e) => e.toJson()).toList();
     data['scores'] = (await db.select(db.scores).get()).map((e) => e.toJson()).toList();
+    data['habits'] = (await db.select(db.habits).get()).map((e) => e.toJson()).toList();
+    data['habit_checks'] = (await db.select(db.habitChecks).get()).map((e) => e.toJson()).toList();
 
     // Compact encoding: a backup is machine data, and indentation roughly
     // doubles the size of a large database.
@@ -181,6 +183,8 @@ class BackupService {
     final attendance = _decode<AttendanceData>(data, 'attendance', AttendanceData.fromJson);
     final flashCards = _decode<FlashCard>(data, 'flash_cards', FlashCard.fromJson);
     final scores = _decode<Score>(data, 'scores', Score.fromJson);
+    final habits = _decode<Habit>(data, 'habits', Habit.fromJson);
+    final habitChecks = _decode<HabitCheck>(data, 'habit_checks', HabitCheck.fromJson);
 
     final stats = <String, int>{};
     void count(String key, List<dynamic> rows) {
@@ -214,6 +218,8 @@ class BackupService {
     count('attendance', attendance);
     count('flash_cards', flashCards);
     count('scores', scores);
+    count('habits', habits);
+    count('habit_checks', habitChecks);
 
     Future<void> putAll<D>(List<D> rows, Future<void> Function(D) write) async {
       for (final row in rows) {
@@ -224,6 +230,8 @@ class BackupService {
     await db.transaction(() async {
       if (mode == 'replace') {
         // Children first: delete everything this app owns.
+        await db.delete(db.habitChecks).go();
+        await db.delete(db.habits).go();
         await db.delete(db.scores).go();
         await db.delete(db.flashCards).go();
         await db.delete(db.savedFilters).go();
@@ -258,6 +266,8 @@ class BackupService {
       await putAll(spaces, (row) => db.into(db.spaces).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(flashCards, (row) => db.into(db.flashCards).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(scores, (row) => db.into(db.scores).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(habits, (row) => db.into(db.habits).insert(row, mode: InsertMode.insertOrReplace));
+      await putAll(habitChecks, (row) => db.into(db.habitChecks).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(aliases, (row) => db.into(db.spaceAliases).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(spaceMeta, (row) => db.into(db.spaceMeta).insert(row, mode: InsertMode.insertOrReplace));
       await putAll(tasks, (row) => db.into(db.tasks).insert(row, mode: InsertMode.insertOrReplace));
