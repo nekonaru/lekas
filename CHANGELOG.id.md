@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.19.0
+
+Lekas kini membantu kamu menepati janji kecil juga: pelacak kebiasaan dengan streak, peta aktivitas 90 hari, dan ekspor CSV untuk nilai.
+
+### Fitur baru
+
+- **Pelacak kebiasaan (Kebiasaan).** Centang kebiasaan harian dengan grid 7 hari dan penghitung streak yang memaafkan hari ini yang belum dicentang; entri ada di bagian Belajar pada drawer, dan total mingguan menunjukkan berapa centangan yang berhasil kamu penuhi.
+- **Peta aktivitas 90 hari.** Statistik Belajar kini menampilkan grid ala GitHub untuk setiap hari kamu menyelesaikan tugas, dengan legenda dari sedikit ke banyak.
+- **Ekspor CSV untuk nilai.** Buku nilai membagikan log nilai mata pelajaran sebagai file CSV (dengan BOM dan pengutipan yang benar), siap dibuka di spreadsheet.
+
+### Peningkatan
+
+- **Skema 8.** Kebiasaan dan centangan kebiasaan bergabung ke database dengan indeksnya sendiri; peningkatan dari rilis lama berjalan otomatis, dan cadangan ikut mengekspor serta mengimpor keduanya.
+
 ## v1.18.0
 
 Lekas kini bisa berbicara kalender: ekspor kelas dan tenggat ke file .ics yang bisa dibaca aplikasi kalender mana pun, dan impor kalender kembali menjadi tugas.

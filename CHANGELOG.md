@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.19.0
+
+Lekas helps you keep the small promises too: a habit tracker with streaks, a 90-day activity map, and CSV export for your grades.
+
+### New features
+
+- **Habit tracker (Kebiasaan).** Check-off habits with a 7-day grid and a streak counter that forgives a today without a check yet; the drawer's Study section carries the entry, and the weekly total shows how many of the promised check-ins you kept.
+- **90-day activity heatmap.** Study Stats now shows a GitHub-style grid of every day a task was completed, with a less-to-more legend.
+- **CSV export for grades.** The grade book shares a subject's score log as a CSV file (BOM and quoting included), ready for spreadsheets.
+
+### Improvements
+
+- **Schema 8.** Habits and habit check-offs join the database with their own index; upgrading from any older release happens automatically, and backups export and import both tables.
+
 ## v1.18.0
 
 Lekas learns to speak calendar: export classes and deadlines to a .ics file any calendar app can read, and import a calendar back as tasks.

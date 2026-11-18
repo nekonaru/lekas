@@ -90,6 +90,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Today screen** | Urgency score with overdue, today, waiting and someday sections, plus an undo snackbar; every card shows its category or course |
 | **Smart actions** | Long press for multi select and bulk actions, swipe right to finish, swipe left to postpone |
 | **Focus mode** | At most three tasks a day, a 25/5 focus timer, and what did not fit carries over (5.24) |
+| **Habit tracker** | Kebiasaan: check-off habits with a 7-day grid, a streak counter and the weekly total in the drawer's Study section |
 
 ### Study
 
@@ -97,7 +98,8 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Flashcards** | A general deck plus one deck per subject with spaced repetition (SM-2); tap to flip, grade Again, Hard or Easy, due counts visible per deck |
 | **Focus timer** | A 15, 25 or 45 minute timer inside Focus mode that records every session |
-| **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart and flashcard totals |
+| **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap and flashcard totals |
+| **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
 
 ### Calendar and Classes
 
@@ -312,7 +314,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (549 tests) |
+| `flutter test` | Must pass the full suite (560 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
