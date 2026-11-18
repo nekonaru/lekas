@@ -1174,6 +1174,57 @@ void main() {
           DateTime(2026, 10, 20, 17, 0));
     });
   });
+
+  group('next-period phrases', () {
+    test('akhir bulan lands on the last day of this month', () {
+      final result = parse('kumpul berkas akhir bulan');
+      expect(result.deadline, DateTime(2026, 10, 31, 23, 59));
+      expect(result.needsConfirmation, isFalse);
+    });
+
+    test('akhir bulan depan lands on the last day of next month', () {
+      final result = parse('pinjam buku akhir bulan depan');
+      expect(result.deadline, DateTime(2026, 11, 30, 23, 59));
+      expect(result.needsConfirmation, isFalse);
+    });
+
+    test('bulan depan is the same day next month and asks', () {
+      final result = parse('kumpul tugas bulan depan');
+      expect(result.deadline, DateTime(2026, 11, 20, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+    });
+
+    test('bulan depan clamps to the last day of a short month', () {
+      final result =
+          parse('kumpul tugas bulan depan', at: DateTime(2026, 1, 31, 8, 0));
+      expect(result.deadline, DateTime(2026, 2, 28, 23, 59));
+    });
+
+    test('tahun depan clamps a leap day to Feb 28', () {
+      final result =
+          parse('kumpul tugas tahun depan', at: DateTime(2028, 2, 29, 8, 0));
+      expect(result.deadline, DateTime(2029, 2, 28, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+    });
+
+    test('next month in English asks and keeps the day', () {
+      final result = parse('submit essay next month', locale: 'en');
+      expect(result.deadline, DateTime(2026, 11, 20, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+    });
+
+    test('end of month and end of next month in English', () {
+      expect(parse('submit end of month', locale: 'en').deadline,
+          DateTime(2026, 10, 31, 23, 59));
+      expect(parse('submit end of next month', locale: 'en').deadline,
+          DateTime(2026, 11, 30, 23, 59));
+    });
+
+    test('next year in English keeps the day', () {
+      final result = parse('renew passport next year', locale: 'en');
+      expect(result.deadline, DateTime(2027, 10, 20, 23, 59));
+    });
+  });
 }
 
 const spaces = <Map<String, String>>[

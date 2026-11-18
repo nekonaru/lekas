@@ -236,6 +236,45 @@ class TimeExtractor {
       working = _removeWord(working, 'next week');
     }
 
+    // "akhir bulan depan" / "end of next month": the last day of next month.
+    if (result == null &&
+        (RegExp(r'\bakhir\s+bulan\s+depan\b').hasMatch(working) ||
+            RegExp(r'\bend\s+of\s+next\s+month\b').hasMatch(working))) {
+      result = DateTime(now.year, now.month + 2, 0);
+      working = _remove(working, 'akhir bulan depan');
+      working = _removeWord(working, 'end of next month');
+    }
+
+    // "akhir bulan" / "end of month": the last day of the current month.
+    if (result == null &&
+        (RegExp(r'\bakhir\s+bulan\b').hasMatch(working) ||
+            RegExp(r'\bend\s+of\s+month\b').hasMatch(working))) {
+      result = DateTime(now.year, now.month + 1, 0);
+      working = _remove(working, 'akhir bulan');
+      working = _removeWord(working, 'end of month');
+    }
+
+    // "bulan depan" / "next month": the same day-of-month next month,
+    // clamped to the last day when it does not exist (e.g. the 31st).
+    if (result == null &&
+        (RegExp(r'\bbulan\s+depan\b').hasMatch(working) ||
+            RegExp(r'\bnext\s+month\b').hasMatch(working))) {
+      result = _sameDayInMonthHint(now, 1);
+      needsConfirmation = true;
+      working = _remove(working, 'bulan depan');
+      working = _removeWord(working, 'next month');
+    }
+
+    // "tahun depan" / "next year": the same date next year.
+    if (result == null &&
+        (RegExp(r'\btahun\s+depan\b').hasMatch(working) ||
+            RegExp(r'\bnext\s+year\b').hasMatch(working))) {
+      result = _sameDayInMonthHint(now, 12);
+      needsConfirmation = true;
+      working = _remove(working, 'tahun depan');
+      working = _removeWord(working, 'next year');
+    }
+
     // Weekday names from both languages. "jumat"/"friday" on a Friday means
     // next Friday (design 6.1).
     if (result == null) {
@@ -497,6 +536,15 @@ class TimeExtractor {
   }
 
   static int _clampHour(int hour) => hour >= 24 ? 0 : hour;
+
+  /// The same day-of-month [monthsAhead] months from [now], clamped to the
+  /// last day of that month (e.g. January 31 + 1 month is February 28/29).
+  static DateTime _sameDayInMonthHint(DateTime now, int monthsAhead) {
+    final target = DateTime(now.year, now.month + monthsAhead, 1);
+    final lastDay = DateTime(target.year, target.month + 1, 0).day;
+    final day = now.day < lastDay ? now.day : lastDay;
+    return DateTime(target.year, target.month, day);
+  }
 
   static bool _hasWord(String text, String word) =>
       RegExp('\\b${RegExp.escape(word)}\\b').hasMatch(text);
