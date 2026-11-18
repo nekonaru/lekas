@@ -2,6 +2,19 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.21.0
+
+Tugas kini bisa bolak-balik ke spreadsheet, tepat di samping jembatan kalender.
+
+### Fitur baru
+
+- **Ekspor Spreadsheet (.csv).** Bagian Data di drawer mendapat layar Spreadsheet: setiap tugas diekspor sebagai baris dengan judul, tipe, deadline, prioritas, status, ruang, bobot, dan tag, siap dibuka di aplikasi spreadsheet mana pun.
+- **Impor Spreadsheet (.csv).** Layar yang sama mengimpor CSV dengan kolom title: tag yang dipisah titik koma dibuat saat impor, baris tanpa judul dilewati, dan impor dibatasi 1000 baris dengan pratinjau sebelum apa pun ditulis.
+
+### Peningkatan
+
+- **Round trip CSV ketat.** Pengutipan, kutip ganda, BOM, dan koma di dalam sel semuanya ditangani, dan CRLF atau LF sama-sama terbaca.
+
 ## v1.20.0
 
 Lekas mengerti beberapa cara lagi untuk bilang kapan, dan menunjukkan ke mana waktu belajarmu pergi.

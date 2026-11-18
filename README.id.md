@@ -130,6 +130,8 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Ekspor kalender (.ics)** | Setiap tugas yang belum selesai menjadi event sehari penuh dan setiap kelas mingguan menjadi event berulang; filenya bisa dibuka di Google Calendar, Apple Calendar, Outlook, atau aplikasi apa pun yang membaca .ics |
 | **Impor kalender (.ics)** | File .ics berubah menjadi tugas di inbox, ditinjau dulu sebelum diimpor, dibatasi 500 kejadian |
+| **Ekspor spreadsheet (.csv)** | Setiap tugas sebagai baris spreadsheet dengan judul, deadline, prioritas, status, ruang, bobot, dan tag |
+| **Impor spreadsheet (.csv)** | Impor CSV dengan kolom title; tag yang dipisah titik koma dibuat saat impor, dibatasi 1000 baris |
 | **Cadangkan dan pulihkan** | Ekspor dan impor JSON, semuanya disimpan lokal dengan Drift (SQLite) |
 | **Impor dan gabung** | Gabungkan cadangan ke database saat ini tanpa kehilangan yang sudah ada |
 | **Periksa pembaruan** | Settings menampilkan versi terpasang; ketuk untuk memeriksa rilis terbaru di GitHub. Pemeriksaan senyap sekali sehari berjalan saat membuka aplikasi (bisa dimatikan di Pengaturan) dan hanya berbicara saat ada versi baru |
@@ -315,7 +317,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (568 tes) |
+| `flutter test` | Seluruh suite harus lulus (576 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

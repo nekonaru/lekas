@@ -2,6 +2,19 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.21.0
+
+Tasks now travel to and from spreadsheets, right next to the calendar bridge.
+
+### New features
+
+- **Spreadsheet (.csv) export.** The drawer's Data section gains a Spreadsheet screen: every task exports as a row with title, type, deadline, priority, status, space, weight and tags, ready for any spreadsheet app.
+- **Spreadsheet (.csv) import.** The same screen imports a CSV with a title column: tags split by semicolons are created on the fly, rows without a title are skipped, and the import is capped at 1000 rows with a preview before anything is written.
+
+### Improvements
+
+- **The CSV round trip is strict.** Quoting, doubled quotes, a BOM and commas inside cells all behave, and CRLF or LF both parse.
+
 ## v1.20.0
 
 Lekas understands a few more ways to say when, and shows where your study time goes.

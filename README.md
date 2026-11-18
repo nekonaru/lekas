@@ -130,6 +130,8 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Calendar export (.ics)** | Every open task becomes an all-day event and every weekly class becomes a recurring event; the file loads into Google Calendar, Apple Calendar, Outlook or any app that reads .ics |
 | **Calendar import (.ics)** | A .ics file turns into inbox tasks, previewed before importing, capped at 500 events |
+| **Spreadsheet export (.csv)** | Every task as a spreadsheet row with title, deadline, priority, status, space, weight and tags |
+| **Spreadsheet import (.csv)** | Import a CSV with a title column; tags split by semicolons are created on the fly, capped at 1000 rows |
 | **Backup and restore** | JSON export and import, everything stored locally with Drift (SQLite) |
 | **Import and merge** | Merge a backup into the current database without losing what is already there |
 | **Update check** | Settings shows the installed version; tap to check the latest GitHub release. A quiet once-a-day check runs on launch (disableable in Settings) and only speaks up when a newer version exists |
@@ -315,7 +317,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (568 tests) |
+| `flutter test` | Must pass the full suite (576 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
