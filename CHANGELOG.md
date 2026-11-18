@@ -2,6 +2,19 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.20.0
+
+Lekas understands a few more ways to say when, and shows where your study time goes.
+
+### New features
+
+- **Parser learns next-period phrases.** "bulan depan" and "next month" land on the same day next month (clamped on short months), "akhir bulan" and "end of month" land on the last day of this month, "akhir bulan depan" and "end of next month" land on the last day of next month, and "tahun depan" and "next year" land on the same date next year (Feb 29 becomes Feb 28). The relative phrases ask for confirmation.
+- **Focus per subject.** Study Stats now lists the top five subjects by focus minutes from the last 14 days, with a bar proportional to the leader.
+
+### Bug fixes
+
+- **Habits tap the right day.** Tapping any circle in the 7-day grid used to toggle today; it now toggles the day under the finger, so missed days can be checked in later.
+
 ## v1.19.0
 
 Lekas helps you keep the small promises too: a habit tracker with streaks, a 90-day activity map, and CSV export for your grades.

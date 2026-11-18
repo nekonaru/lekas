@@ -59,6 +59,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Quick Add** | Satu kolom, teks bahasa Indonesia atau Inggris, chip langsung untuk setiap nilai yang ditebak parser (desain 6.1 dan 7.15) |
 | **Voice Quick Add** | Mikrofon di Quick Add dan di layarnya sendiri; angka yang diucapkan seperti "jam tujuh" menjadi deadline |
+| **Frasa tanggal alami** | Mengerti bulan depan, akhir bulan, tahun depan beserta versi Inggrisnya, dengan penyesuaian untuk bulan pendek dan tahun kabisat |
 | **Share intake** | Teks yang dibagikan dari WhatsApp atau aplikasi apa pun dipecah menjadi kandidat dan diurai sebelum disimpan, tidak ada yang tersimpan otomatis |
 
 ### Tugas, Kategori dan Semester
@@ -98,7 +99,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Kartu Belajar** | Deck umum plus satu deck per mata pelajaran dengan pengulangan berjeda (SM-2); ketuk untuk membalik, nilai Lupa, Sulit, atau Mudah, jumlah jatuh tempo terlihat per deck |
 | **Timer fokus** | Timer 15, 25, atau 45 menit di dalam mode Fokus yang mencatat setiap sesi |
-| **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, peta aktivitas 90 hari, dan total kartu |
+| **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, peta aktivitas 90 hari, fokus per mata pelajaran, dan total kartu |
 | **Ekspor CSV nilai** | Bagikan log nilai mata pelajaran sebagai file CSV untuk spreadsheet |
 
 ### Kalender dan Kelas
@@ -314,7 +315,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (560 tes) |
+| `flutter test` | Seluruh suite harus lulus (568 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

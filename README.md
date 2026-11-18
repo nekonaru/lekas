@@ -59,6 +59,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Quick Add** | One field, Indonesian or English text, live chips for every value the parser guessed (design 6.1 and 7.15) |
 | **Voice Quick Add** | Microphone in Quick Add and on its own screen; spoken numbers such as "jam tujuh" become a deadline |
+| **Natural date phrases** | Understands bulan depan, akhir bulan, tahun depan and their English twins, with clamping at month and leap-year boundaries |
 | **Share intake** | Text shared from WhatsApp or any app is split into candidates and parsed before saving, nothing is stored automatically |
 
 ### Tasks, Categories and Semesters
@@ -98,7 +99,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Flashcards** | A general deck plus one deck per subject with spaced repetition (SM-2); tap to flip, grade Again, Hard or Easy, due counts visible per deck |
 | **Focus timer** | A 15, 25 or 45 minute timer inside Focus mode that records every session |
-| **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap and flashcard totals |
+| **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap, focus per subject and flashcard totals |
 | **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
 
 ### Calendar and Classes
@@ -314,7 +315,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (560 tests) |
+| `flutter test` | Must pass the full suite (568 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

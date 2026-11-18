@@ -2,6 +2,19 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.20.0
+
+Lekas mengerti beberapa cara lagi untuk bilang kapan, dan menunjukkan ke mana waktu belajarmu pergi.
+
+### Fitur baru
+
+- **Parser mengerti frasa periode berikutnya.** "bulan depan" dan "next month" mendarat di tanggal yang sama bulan depan (menyesuaikan bulan pendek), "akhir bulan" dan "end of month" mendarat di tanggal terakhir bulan ini, "akhir bulan depan" dan "end of next month" di tanggal terakhir bulan depan, dan "tahun depan" dan "next year" di tanggal yang sama tahun depan (29 Februari menjadi 28 Februari). Frasa relatifnya meminta konfirmasi.
+- **Fokus per mata pelajaran.** Statistik Belajar kini menampilkan lima mata pelajaran teratas berdasarkan menit fokus 14 hari terakhir, dengan batang proporsional terhadap yang tertinggi.
+
+### Perbaikan bug
+
+- **Mengetuk kebiasaan yang benar.** Mengetuk lingkaran mana pun di grid 7 hari dulu meng-toggle hari ini; sekarang mengetuk hari di bawah jari, jadi hari yang terlewat bisa dicentang belakangan.
+
 ## v1.19.0
 
 Lekas kini membantu kamu menepati janji kecil juga: pelacak kebiasaan dengan streak, peta aktivitas 90 hari, dan ekspor CSV untuk nilai.
