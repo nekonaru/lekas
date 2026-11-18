@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/grades.dart';
+import '../../domain/habits.dart';
 import '../../l10n/app_localizations.dart';
 
 /// The school grade book (SMA only, reached from the subject page). One
@@ -101,6 +107,36 @@ class _BukuNilaiScreenState extends ConsumerState<BukuNilaiScreen> {
     if (mounted) _reloadConfig();
   }
 
+  Future<void> _exportCsv() async {
+    final l10n = AppLocalizations.of(context)!;
+    // Score events for this subject, newest first is fine for a ledger.
+    final scores = await ref.read(scoreRepositoryProvider).getScores(widget.spaceId);
+    final buffer = StringBuffer('\uFEFF')
+      ..writeln('label,value,date,note');
+    for (final score in scores) {
+      final date = dayKeyOf(DateTime.fromMillisecondsSinceEpoch(score.takenAt));
+      buffer.writeln([
+        _csvCell(score.label),
+        '${score.value}',
+        date,
+        _csvCell(score.note ?? ''),
+      ].join(','));
+    }
+    final safeName = widget.spaceName.replaceAll(RegExp(r'[^a-zA-Z0-9_-]+'), '_');
+    final file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$safeName-nilai.csv');
+    await file.writeAsString(buffer.toString(), encoding: utf8);
+    await Share.shareXFiles([XFile(file.path)], subject: l10n.exportCsv);
+  }
+
+  /// One CSV cell; double quotes are escaped by doubling them.
+  String _csvCell(String value) {
+    final needsQuotes =
+        value.contains(',') || value.contains('"') || value.contains('\n');
+    final escaped = value.replaceAll('"', '""');
+    return needsQuotes ? '"$escaped"' : escaped;
+  }
+
   Future<void> _addScore() async {
     final added = await showDialog<bool>(
       context: context,
@@ -143,7 +179,16 @@ class _BukuNilaiScreenState extends ConsumerState<BukuNilaiScreen> {
     final dateFormat = DateFormat('d MMM yyyy', locale);
 
     return Scaffold(
-      appBar: AppBar(title: Text('${l10n.gradeBookTitle} · ${widget.spaceName}')),
+      appBar: AppBar(
+        title: Text('${l10n.gradeBookTitle} · ${widget.spaceName}'),
+        actions: [
+          IconButton(
+            tooltip: l10n.exportCsv,
+            icon: const Icon(Icons.share_outlined),
+            onPressed: _exportCsv,
+          ),
+        ],
+      ),
       body: FutureBuilder<_GradeConfig>(
         future: _config,
         builder: (context, configSnapshot) {
