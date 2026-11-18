@@ -2409,4 +2409,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportCsv => 'Share CSV';
+
+  @override
+  String get focusPerSubject => 'Focus per subject';
 }

@@ -4429,6 +4429,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Bagikan CSV'**
   String get exportCsv;
+
+  /// No description provided for @focusPerSubject.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus per mata pelajaran'**
+  String get focusPerSubject;
 }
 
 class _AppLocalizationsDelegate

@@ -807,5 +807,6 @@
   "heatmapTitle": "90 days of completing tasks",
   "heatmapLess": "Less",
   "heatmapMore": "More",
-  "exportCsv": "Share CSV"
+  "exportCsv": "Share CSV",
+  "focusPerSubject": "Focus per subject"
 }

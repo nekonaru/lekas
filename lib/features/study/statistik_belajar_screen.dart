@@ -58,6 +58,29 @@ class _StatistikBelajarScreenState
       final key = dayKeyOf(local);
       completedByDay[key] = (completedByDay[key] ?? 0) + 1;
     }
+
+    // Focus minutes grouped by subject: task -> space -> name.
+    final spaces = await ref.read(spaceRepositoryProvider).getSpaces();
+    final spaceName = {for (final space in spaces) space.id: space.name};
+    final taskSpace = {
+      for (final task in tasks)
+        if (task.spaceId != null) task.id: task.spaceId!,
+    };
+    final minutesBySpace = <String, int>{};
+    for (final session in sessions) {
+      final spaceId = taskSpace[session.taskId];
+      if (spaceId == null) continue;
+      minutesBySpace[spaceId] =
+          (minutesBySpace[spaceId] ?? 0) + (session.durationSec / 60).floor();
+    }
+    final subjectMinutes = minutesBySpace.entries
+        .map((entry) => _SubjectMinutes(
+              name: spaceName[entry.key] ?? '?',
+              minutes: entry.value,
+            ))
+        .toList()
+      ..sort((a, b) => b.minutes.compareTo(a.minutes));
+
     return _StatsData(
       buckets: focusMinutesByDay(sessions, endDay: today, days: 14),
       todayMinutes: focusMinutesInWindow(sessions, endDay: today, days: 1),
@@ -67,6 +90,7 @@ class _StatistikBelajarScreenState
       totalCards: cards.total,
       dueCards: cards.due,
       completedByDay: completedByDay,
+      subjectMinutes: subjectMinutes.take(5).toList(),
     );
   }
 
@@ -100,6 +124,11 @@ class _StatistikBelajarScreenState
           }
           final peak = data.buckets.fold<int>(0, (a, b) => a > b ? a : b);
           final maxBar = peak == 0 ? 1 : peak;
+          final maxSubjectMinutes = data.subjectMinutes.fold<int>(
+            0,
+            (a, b) => a > b.minutes ? a : b.minutes,
+          );
+          final safeMaxSubject = maxSubjectMinutes == 0 ? 1 : maxSubjectMinutes;
 
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
@@ -241,6 +270,54 @@ class _StatistikBelajarScreenState
                   ],
                 ),
               ),
+              if (data.subjectMinutes.isNotEmpty) ...[
+                const SizedBox(height: 18),
+                Text(
+                  l10n.focusPerSubject,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.4,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                for (final subject in data.subjectMinutes)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 92,
+                          child: Text(
+                            subject.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: subject.minutes / safeMaxSubject,
+                              minHeight: 8,
+                              backgroundColor: colors.surfaceContainerLow,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${subject.minutes}',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ],
           );
         },
@@ -265,6 +342,7 @@ class _StatsData {
     required this.totalCards,
     required this.dueCards,
     required this.completedByDay,
+    required this.subjectMinutes,
   });
 
   final List<int> buckets;
@@ -275,6 +353,14 @@ class _StatsData {
   final int totalCards;
   final int dueCards;
   final Map<String, int> completedByDay;
+  final List<_SubjectMinutes> subjectMinutes;
+}
+
+class _SubjectMinutes {
+  const _SubjectMinutes({required this.name, required this.minutes});
+
+  final String name;
+  final int minutes;
 }
 
 class _StatCard extends StatelessWidget {

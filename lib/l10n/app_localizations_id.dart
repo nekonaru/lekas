@@ -2411,4 +2411,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportCsv => 'Bagikan CSV';
+
+  @override
+  String get focusPerSubject => 'Fokus per mata pelajaran';
 }

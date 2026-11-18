@@ -807,5 +807,6 @@
   "heatmapTitle": "90 hari menyelesaikan tugas",
   "heatmapLess": "Sedikit",
   "heatmapMore": "Banyak",
-  "exportCsv": "Bagikan CSV"
+  "exportCsv": "Bagikan CSV",
+  "focusPerSubject": "Fokus per mata pelajaran"
 }
