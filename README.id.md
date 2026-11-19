@@ -92,6 +92,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk menyelesaikan, geser kiri untuk menunda |
 | **Mode fokus** | Maksimal tiga tugas per hari, timer fokus 25/5, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
 | **Pelacak kebiasaan** | Kebiasaan: centang kebiasaan harian dengan grid 7 hari, penghitung streak, dan total mingguan di bagian Belajar pada drawer |
+| **Kartu belajar di Hari Ini** | Banner yang bisa ditutup muncul di Hari Ini saat kartu jatuh tempo |
 
 ### Belajar
 
@@ -101,6 +102,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Timer fokus** | Timer 15, 25, atau 45 menit di dalam mode Fokus yang mencatat setiap sesi |
 | **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, peta aktivitas 90 hari, fokus per mata pelajaran, dan total kartu |
 | **Ekspor CSV nilai** | Bagikan log nilai mata pelajaran sebagai file CSV untuk spreadsheet |
+| **Skor perbandingan mingguan** | Statistik Belajar membandingkan minggu ini dengan minggu lalu lewat delta berwarna untuk menit fokus dan tugas selesai |
 
 ### Kalender dan Kelas
 

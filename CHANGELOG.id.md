@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.22.0
+
+Aplikasi terasa lebih tenang dan konsisten, dan belajar menyelinap ke alur harian.
+
+### Fitur baru
+
+- **Kartu belajar di Hari Ini.** Banner yang bisa ditutup muncul di Hari Ini saat kartu jatuh tempo, membuka dek dengan satu ketukan.
+- **Skor perbandingan mingguan.** Statistik Belajar membandingkan minggu ini dengan minggu lalu lewat delta berwarna untuk menit fokus dan tugas selesai.
+
+### Peningkatan
+
+- **Satu empty state, di mana-mana.** Semua layar kini memakai komponen empty state beranimasi yang sama.
+- **Perbaikan kecil a11y.** Tombol-ikon di layar-layar baru mendapat tooltip.
+
 ## v1.21.0
 
 Tugas kini bisa bolak-balik ke spreadsheet, tepat di samping jembatan kalender.

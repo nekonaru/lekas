@@ -92,6 +92,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Smart actions** | Long press for multi select and bulk actions, swipe right to finish, swipe left to postpone |
 | **Focus mode** | At most three tasks a day, a 25/5 focus timer, and what did not fit carries over (5.24) |
 | **Habit tracker** | Kebiasaan: check-off habits with a 7-day grid, a streak counter and the weekly total in the drawer's Study section |
+| **Flashcards on Today** | A dismissible banner on Today opens the deck whenever cards are due |
 
 ### Study
 
@@ -101,6 +102,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Focus timer** | A 15, 25 or 45 minute timer inside Focus mode that records every session |
 | **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap, focus per subject and flashcard totals |
 | **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
+| **Week-over-week scorecard** | Study Stats compares this week with last week with colored deltas for focus minutes and tasks completed |
 
 ### Calendar and Classes
 

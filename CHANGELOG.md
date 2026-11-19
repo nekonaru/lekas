@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.22.0
+
+The app gets calmer and more consistent, and studying slips into the daily flow.
+
+### New features
+
+- **Flashcards on Today.** A dismissible banner on Today opens the deck whenever cards are due.
+- **Week-over-week scorecard.** Study Stats compares this week against last week with colored deltas for focus minutes and tasks completed.
+
+### Improvements
+
+- **One empty state, everywhere.** Every screen now uses the shared animated empty state, so all empty screens read the same.
+- **Small a11y wins.** Icon-only buttons across the newer screens gained tooltips.
+
 ## v1.21.0
 
 Tasks now travel to and from spreadsheets, right next to the calendar bridge.
