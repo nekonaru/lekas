@@ -372,6 +372,7 @@ class _BukuNilaiScreenState extends ConsumerState<BukuNilaiScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   trailing: IconButton(
+                                    tooltip: l10n.deleteLabel,
                                     icon: const Icon(Icons.delete_outline,
                                         size: 20),
                                     onPressed: () => _deleteScore(score),

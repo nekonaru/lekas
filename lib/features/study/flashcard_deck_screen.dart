@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../core/components/empty_state.dart';
 import '../../l10n/app_localizations.dart';
 import 'flashcard_review_screen.dart';
 
@@ -122,35 +123,9 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
             final due = cards.where((card) => card.dueAt <= now).length;
 
             if (cards.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.style_outlined,
-                        size: 56,
-                        color: colors.primary.withValues(alpha: 0.5),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.emptyDeckTitle,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.emptyDeckBody,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colors.onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
+              return EmptyState(
+                message: l10n.emptyDeckBody,
+                icon: Icons.style_outlined,
               );
             }
 
@@ -215,10 +190,12 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
                                   ),
                                 ),
                               IconButton(
+                                tooltip: l10n.editFlashcard,
                                 icon: const Icon(Icons.edit_outlined, size: 20),
                                 onPressed: () => _editCard(card),
                               ),
                               IconButton(
+                                tooltip: l10n.deleteLabel,
                                 icon: const Icon(Icons.delete_outline, size: 20),
                                 onPressed: () => _confirmDelete(card),
                               ),

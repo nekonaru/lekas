@@ -2368,6 +2368,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get icsExportFailed => 'Berkas kalender gagal dibuat.';
 
   @override
+  String dueCardsBanner(int count) {
+    return '$count kartu jatuh tempo. Tinjau sekarang?';
+  }
+
+  @override
   String get kebiasaanTitle => 'Kebiasaan';
 
   @override
@@ -2414,6 +2419,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get focusPerSubject => 'Fokus per mata pelajaran';
+
+  @override
+  String get thisWeekVsLastWeek => 'Minggu ini vs minggu lalu';
 
   @override
   String get csvTitle => 'Spreadsheet (.csv)';

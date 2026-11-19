@@ -4352,6 +4352,12 @@ abstract class AppLocalizations {
   /// **'Berkas kalender gagal dibuat.'**
   String get icsExportFailed;
 
+  /// No description provided for @dueCardsBanner.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kartu jatuh tempo. Tinjau sekarang?'**
+  String dueCardsBanner(int count);
+
   /// No description provided for @kebiasaanTitle.
   ///
   /// In id, this message translates to:
@@ -4435,6 +4441,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Fokus per mata pelajaran'**
   String get focusPerSubject;
+
+  /// No description provided for @thisWeekVsLastWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini vs minggu lalu'**
+  String get thisWeekVsLastWeek;
 
   /// No description provided for @csvTitle.
   ///

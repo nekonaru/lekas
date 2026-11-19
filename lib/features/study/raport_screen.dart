@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/components/empty_state.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -103,7 +104,6 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -128,17 +128,9 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
           }
           final data = snapshot.data;
           if (data == null || data.rows.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.raportSubjectEmpty,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
-                ),
-              ),
+            return EmptyState(
+              message: l10n.raportSubjectEmpty,
+              icon: Icons.assignment_outlined,
             );
           }
           final progress = data.average == null

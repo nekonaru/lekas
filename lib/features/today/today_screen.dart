@@ -22,6 +22,7 @@ import '../tasks/task_detail_screen.dart';
 import '../tasks/task_form_sheet.dart';
 import '../tasks/search_filter_screen.dart';
 import '../inbox/inbox_screen.dart';
+import '../study/flashcards_screen.dart';
 
 /// One row of the Today list, so the body can be a lazy ListView.builder:
 /// the warning card, a section title, or a single task.
@@ -49,6 +50,10 @@ class _TaskEntry extends _Entry {
   final double score;
 }
 
+class _StudyEntry extends _Entry {
+  const _StudyEntry();
+}
+
 class TodayScreen extends ConsumerStatefulWidget {
   const TodayScreen({super.key});
 
@@ -74,6 +79,13 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   /// Key of the warning the user closed this session. At most one card
   /// is ever shown (design section 4.4).
   String? _dismissedWarning;
+
+  /// At most one nudge per session about flashcards waiting for review.
+  bool _dismissedStudy = false;
+
+  /// Due flashcard count, loaded once on entry and refreshed after the
+  /// review screen pops.
+  int _dueCards = 0;
 
   void _toggleSelection(String id) {
     HapticFeedback.selectionClick();
@@ -104,6 +116,15 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   void initState() {
     super.initState();
     _loadWarnings();
+    _loadDueCards();
+  }
+
+  /// Loads how many flashcards wait for a review; the banner hides itself
+  /// when the count is zero.
+  Future<void> _loadDueCards() async {
+    final cards = await ref.read(flashcardRepositoryProvider).dueCardsAny();
+    if (!mounted) return;
+    setState(() => _dueCards = cards.length);
   }
 
   @override
@@ -216,6 +237,41 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
   List<Task> _picked(List<Task> tasks) =>
       tasks.where((task) => _selection.contains(task.id)).toList();
+
+  /// The one-tap bridge into the flashcards: shown only while cards are
+  /// due, dismissible for the rest of the session.
+  Widget _studyBanner(AppLocalizations l10n) {
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      color: colors.primaryContainer.withValues(alpha: 0.7),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: ListTile(
+        leading: Icon(Icons.style_outlined, color: colors.onPrimaryContainer),
+        title: Text(
+          l10n.dueCardsBanner(_dueCards),
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: colors.onPrimaryContainer,
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.close, color: colors.onPrimaryContainer),
+          tooltip: l10n.closeLabel,
+          onPressed: () => setState(() => _dismissedStudy = true),
+        ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => const FlashcardsScreen(),
+            ),
+          );
+          await _loadDueCards();
+        },
+      ),
+    );
+  }
 
   /// Swipe right: finish one task and offer undo (design section 5.5).
   Future<void> _completeOne(Task task) async {
@@ -456,12 +512,16 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
           if (allTasks.isEmpty) {
             final warning = _warningCard(l10n, allTasks, now);
+            final study = _dueCards > 0 && !_dismissedStudy;
             if (warning == null) {
-              return const _EmptyToday();
+              return study
+                  ? ListView(children: [_studyBanner(l10n)])
+                  : const _EmptyToday();
             }
             return ListView(
               children: [
                 warning,
+                if (study) _studyBanner(l10n),
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Center(child: Text(l10n.emptyToday)),
@@ -478,6 +538,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           // of building every one of them on each rebuild.
           final entries = <_Entry>[
             if (warning != null) _WarningEntry(warning),
+            if (_dueCards > 0 && !_dismissedStudy) const _StudyEntry(),
             for (final section in const [
               TodaySection.pinned,
               TodaySection.focus,
@@ -516,6 +577,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                   _WarningEntry(:final warning) => KeyedSubtree(
                     key: const ValueKey('today-warning'),
                     child: warning,
+                  ),
+                  _StudyEntry() => KeyedSubtree(
+                    key: const ValueKey('today-study'),
+                    child: _studyBanner(l10n),
                   ),
                   _TitleEntry(:final section, :final count) =>
                     TaskSectionHeader(

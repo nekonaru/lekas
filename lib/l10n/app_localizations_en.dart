@@ -2366,6 +2366,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get icsExportFailed => 'The calendar file could not be built.';
 
   @override
+  String dueCardsBanner(int count) {
+    return '$count flashcards due. Review them now?';
+  }
+
+  @override
   String get kebiasaanTitle => 'Habits';
 
   @override
@@ -2412,6 +2417,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focusPerSubject => 'Focus per subject';
+
+  @override
+  String get thisWeekVsLastWeek => 'This week vs last week';
 
   @override
   String get csvTitle => 'Spreadsheet (.csv)';

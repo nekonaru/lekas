@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/flashcard_repository.dart';
+import '../../core/components/empty_state.dart';
 import '../../l10n/app_localizations.dart';
 import 'flashcard_deck_screen.dart';
 
@@ -127,42 +128,23 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> {
               ];
 
               if (decks.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.style_outlined,
-                          size: 56,
-                          color: colors.primary.withValues(alpha: 0.5),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.emptyDecksTitle,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          l10n.emptyDecksBody,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: colors.onSurfaceVariant,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-                        FilledButton.icon(
-                          onPressed: () => _addCard(spaces),
-                          icon: const Icon(Icons.add),
-                          label: Text(l10n.addFlashcard),
-                        ),
-                      ],
+                return Column(
+                  children: [
+                    Expanded(
+                      child: EmptyState(
+                        message: l10n.emptyDecksBody,
+                        icon: Icons.style_outlined,
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 88),
+                      child: FilledButton.icon(
+                        onPressed: () => _addCard(spaces),
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.addFlashcard),
+                      ),
+                    ),
+                  ],
                 );
               }
 

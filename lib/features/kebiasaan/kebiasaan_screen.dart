@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/components/empty_state.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/habits.dart';
@@ -176,34 +177,23 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
           if (data != null) _lastData = data;
           final today = DateTime.now();
           if (data == null || data.habits.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.local_fire_department_outlined,
-                      size: 56,
-                      color: colors.primary.withValues(alpha: 0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.noHabitsYet,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: colors.onSurfaceVariant,
-                          ),
-                    ),
-                    const SizedBox(height: 20),
-                    FilledButton.icon(
-                      onPressed: _addHabit,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.habitAdd),
-                    ),
-                  ],
+            return Column(
+              children: [
+                Expanded(
+                  child: EmptyState(
+                    message: l10n.noHabitsYet,
+                    icon: Icons.local_fire_department_outlined,
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 88),
+                  child: FilledButton.icon(
+                    onPressed: _addHabit,
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.habitAdd),
+                  ),
+                ),
+              ],
             );
           }
 
@@ -356,6 +346,7 @@ class _HabitCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
+                  tooltip: l10n.deleteLabel,
                   icon: const Icon(Icons.delete_outline, size: 20),
                   onPressed: onDelete,
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:intl/intl.dart';
 
+import '../../core/components/empty_state.dart';
 import '../../data/providers.dart';
 import '../../domain/habits.dart';
 import '../../domain/study_stats.dart';
@@ -49,6 +50,18 @@ class _StatistikBelajarScreenState
     final doneThisWeek = completed
         .where((millis) => millis >= weekStart.millisecondsSinceEpoch)
         .length;
+    final prevWeekStart = today.subtract(const Duration(days: 13));
+    final donePrevWeek = completed
+        .where((millis) =>
+            millis >= prevWeekStart.millisecondsSinceEpoch &&
+            millis < weekStart.millisecondsSinceEpoch)
+        .length;
+    final buckets14 =
+        focusMinutesByDay(sessions, endDay: today, days: 14);
+    final weekMinutes =
+        buckets14.sublist(7).fold<int>(0, (sum, minutes) => sum + minutes);
+    final prevWeekMinutes =
+        buckets14.sublist(0, 7).fold<int>(0, (sum, minutes) => sum + minutes);
     final heatStart = today.subtract(const Duration(days: 83));
     final completedByDay = <String, int>{};
     for (final millis in completed) {
@@ -82,15 +95,17 @@ class _StatistikBelajarScreenState
       ..sort((a, b) => b.minutes.compareTo(a.minutes));
 
     return _StatsData(
-      buckets: focusMinutesByDay(sessions, endDay: today, days: 14),
+      buckets: buckets14,
       todayMinutes: focusMinutesInWindow(sessions, endDay: today, days: 1),
-      weekMinutes: focusMinutesInWindow(sessions, endDay: today, days: 7),
+      weekMinutes: weekMinutes,
       doneThisWeek: doneThisWeek,
       streak: completionStreak(completed, today: today),
       totalCards: cards.total,
       dueCards: cards.due,
       completedByDay: completedByDay,
       subjectMinutes: subjectMinutes.take(5).toList(),
+      prevWeekMinutes: prevWeekMinutes,
+      donePrevWeek: donePrevWeek,
     );
   }
 
@@ -108,18 +123,13 @@ class _StatistikBelajarScreenState
             return const Center(child: CircularProgressIndicator());
           }
           final data = snapshot.data;
-          if (data == null || (data.todayMinutes + data.weekMinutes + data.doneThisWeek == 0 && data.totalCards == 0)) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.noStudyData,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
-                ),
-              ),
+          if (data == null ||
+              (data.todayMinutes + data.weekMinutes + data.doneThisWeek == 0 &&
+                  data.totalCards == 0 &&
+                  data.streak == 0)) {
+            return EmptyState(
+              message: l10n.noStudyData,
+              icon: Icons.insights_outlined,
             );
           }
           final peak = data.buckets.fold<int>(0, (a, b) => a > b ? a : b);
@@ -183,6 +193,45 @@ class _StatistikBelajarScreenState
                             ),
                       )
                     : null,
+              ),
+              const SizedBox(height: 10),
+              // The week-over-week scorecard: one card, two honest deltas.
+              Material(
+                color: colors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(18),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                      child: Text(
+                        l10n.thisWeekVsLastWeek.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: colors.primary,
+                        ),
+                      ),
+                    ),
+                    _DeltaRow(
+                      icon: Icons.timer_outlined,
+                      label: l10n.focusThisWeek,
+                      value: data.weekMinutes,
+                      unit: l10n.minutesUnit,
+                      delta: data.weekMinutes - data.prevWeekMinutes,
+                    ),
+                    _DeltaRow(
+                      icon: Icons.task_alt,
+                      label: l10n.tasksDoneThisWeek,
+                      value: data.doneThisWeek,
+                      unit: '',
+                      delta: data.doneThisWeek - data.donePrevWeek,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
               ),
               const SizedBox(height: 18),
               Text(
@@ -343,6 +392,8 @@ class _StatsData {
     required this.dueCards,
     required this.completedByDay,
     required this.subjectMinutes,
+    required this.prevWeekMinutes,
+    required this.donePrevWeek,
   });
 
   final List<int> buckets;
@@ -354,6 +405,8 @@ class _StatsData {
   final int dueCards;
   final Map<String, int> completedByDay;
   final List<_SubjectMinutes> subjectMinutes;
+  final int prevWeekMinutes;
+  final int donePrevWeek;
 }
 
 class _SubjectMinutes {
@@ -421,6 +474,67 @@ class _StatCard extends StatelessWidget {
                   color: colors.onSurfaceVariant,
                   height: 1.25,
                 ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One line of the week-over-week scorecard: a metric, its value, and a
+/// small colored delta chip (green up, red down, grey flat).
+class _DeltaRow extends StatelessWidget {
+  const _DeltaRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.delta,
+  });
+
+  final IconData icon;
+  final String label;
+  final int value;
+  final String unit;
+  final int delta;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final (chipColor, chipText) = delta > 0
+        ? (const Color(0xFF10B981), '+$delta')
+        : delta < 0
+            ? (const Color(0xFFEF4444), '$delta')
+            : (colors.onSurfaceVariant, '±0');
+    return ListTile(
+      dense: true,
+      visualDensity: VisualDensity.compact,
+      leading: Icon(icon, size: 18, color: colors.primary),
+      title: Text(label),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            unit.isEmpty ? '$value' : '$value $unit',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: chipColor.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              chipText,
+              style: TextStyle(
+                color: chipColor,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
