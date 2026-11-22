@@ -2,6 +2,24 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.23.0
+
+Audit mendalam merapikan alur tugas berulang, pengingat, dan navigasi, sementara pelacak kebiasaan mendapat riwayat 90 hari.
+
+### Fitur baru
+
+- **Grid riwayat kebiasaan.** Layar Kebiasaan menampilkan heatmap 90 hari untuk centangan harian, memakai komponen dan bahasa visual yang sama dengan Statistik Belajar.
+
+### Perbaikan bug
+
+- **Tugas berulang selesai sekali.** `markDone` kini atomik, jadi ketukan cepat tidak menduplikasi kemunculan berikutnya; pengulangan bulanan 31 Januari kini jatuh di 28 Februari, bukan Maret.
+- **Pengingat tidak berbunyi untuk tugas selesai.** Snooze di masa depan gugur saat tugas selesai atau dihapus, penghapusan permanen membatalkan alarm, dan pengingat setelah kelas yang masuk jam diam ditunda sampai 06:05.
+- **Tidak ada peringatan basi.** Hari Ini menghitung inbox dari aliran tugas langsung, menyegarkan izin notifikasi saat aplikasi dibuka kembali, dan tile drawer menutup drawer tepat sekali.
+
+### Peningkatan
+
+- **Heatmap aktivitas dipakai bersama.** Statistik Belajar dan pelacak kebiasaan memakai satu komponen, dan minggu pertama yang disejajarkan tidak kehilangan hari terawalnya.
+
 ## v1.22.0
 
 Aplikasi terasa lebih tenang dan konsisten, dan belajar menyelinap ke alur harian.

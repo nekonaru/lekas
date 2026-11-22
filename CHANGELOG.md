@@ -2,6 +2,24 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.23.0
+
+A deep audit tightens the recurring, reminder and navigation flows, and the habit tracker gets a 90-day history.
+
+### New features
+
+- **Habit history grid.** The Kebiasaan screen shows a 90-day heatmap of daily check-ins, using the same component and visual language as Study Stats.
+
+### Bug fixes
+
+- **Recurring tasks complete once.** An atomic `markDone` stops rapid taps from duplicating the next occurrence, and a monthly repeat on Jan 31 now lands on Feb 28 instead of rolling into March.
+- **Reminders no longer ring for finished tasks.** Future snoozes retire when a task is finished or deleted, permanently deleting a task cancels its alarms, and a class hold landing inside quiet hours waits until 06:05 instead of ringing in class or past 22:00.
+- **No stale warnings.** Today derives its inbox count from the live task stream, refreshes notification permission on resume, and drawer tiles close the drawer exactly once.
+
+### Improvements
+
+- **The activity heatmap is shared.** Study Stats and the habit tracker use one component, and the aligned first week no longer loses its earliest days.
+
 ## v1.22.0
 
 The app gets calmer and more consistent, and studying slips into the daily flow.
