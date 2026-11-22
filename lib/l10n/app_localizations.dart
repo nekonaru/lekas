@@ -4448,6 +4448,12 @@ abstract class AppLocalizations {
   /// **'Minggu ini vs minggu lalu'**
   String get thisWeekVsLastWeek;
 
+  /// No description provided for @habitHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Centangan kebiasaan, 90 hari terakhir'**
+  String get habitHistoryTitle;
+
   /// No description provided for @csvTitle.
   ///
   /// In id, this message translates to:

@@ -2422,6 +2422,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thisWeekVsLastWeek => 'This week vs last week';
 
   @override
+  String get habitHistoryTitle => 'Habit check-ins, last 90 days';
+
+  @override
   String get csvTitle => 'Spreadsheet (.csv)';
 
   @override

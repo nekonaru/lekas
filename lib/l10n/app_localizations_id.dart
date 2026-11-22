@@ -2424,6 +2424,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get thisWeekVsLastWeek => 'Minggu ini vs minggu lalu';
 
   @override
+  String get habitHistoryTitle => 'Centangan kebiasaan, 90 hari terakhir';
+
+  @override
   String get csvTitle => 'Spreadsheet (.csv)';
 
   @override

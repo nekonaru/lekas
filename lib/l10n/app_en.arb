@@ -812,6 +812,7 @@
   "exportCsv": "Share CSV",
   "focusPerSubject": "Focus per subject",
   "thisWeekVsLastWeek": "This week vs last week",
+  "habitHistoryTitle": "Habit check-ins, last 90 days",
   "csvTitle": "Spreadsheet (.csv)",
   "csvExportTitle": "Export tasks to CSV",
   "csvExportBody": "Every task as a spreadsheet: title, deadline, priority, status, space, weight and tags.",

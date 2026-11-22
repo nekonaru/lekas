@@ -812,6 +812,7 @@
   "exportCsv": "Bagikan CSV",
   "focusPerSubject": "Fokus per mata pelajaran",
   "thisWeekVsLastWeek": "Minggu ini vs minggu lalu",
+  "habitHistoryTitle": "Centangan kebiasaan, 90 hari terakhir",
   "csvTitle": "Spreadsheet (.csv)",
   "csvExportTitle": "Ekspor tugas ke CSV",
   "csvExportBody": "Semua tugas sebagai spreadsheet: judul, deadline, prioritas, status, ruang, bobot, dan tag.",

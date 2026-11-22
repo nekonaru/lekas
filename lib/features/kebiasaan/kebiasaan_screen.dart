@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/components/activity_heatmap.dart';
 import '../../core/components/empty_state.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -125,10 +126,11 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
         ),
       ),
     );
+    final habitName = controller.text.trim();
     controller.dispose();
     if (created != true || !mounted) return;
     await ref.read(habitRepositoryProvider).createHabit(
-          name: controller.text.trim(),
+          name: habitName,
           color: color,
         );
     if (mounted) _reload();
@@ -225,6 +227,14 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
                   ),
                 ),
               const SizedBox(height: 6),
+              ActivityHeatmap(
+                counts: data.checkCounts(),
+                endDay: DateTime.now(),
+                title: l10n.habitHistoryTitle,
+                lessLabel: l10n.heatmapLess,
+                moreLabel: l10n.heatmapMore,
+              ),
+              const SizedBox(height: 18),
               // The weekly promise in one line.
               Material(
                 color: colors.surfaceContainerLow,
@@ -269,6 +279,17 @@ class _HabitData {
 
   final List<Habit> habits;
   final Map<String, Set<String>> checks;
+
+  /// How many habits were checked on each day, across every habit.
+  Map<String, int> checkCounts() {
+    final counts = <String, int>{};
+    for (final days in checks.values) {
+      for (final day in days) {
+        counts[day] = (counts[day] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }
 }
 
 Color _hexColor(String hex) {
