@@ -32,6 +32,14 @@ void main() {
   }
 
   testWidgets('tapping a day opens only that day’s tasks', (tester) async {
+    // The grid is lazy: make the viewport tall enough that every day cell
+    // is mounted, regardless of the day of month the test runs on.
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final repo = TaskRepository(db);
@@ -67,7 +75,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    await tester.tap(find.text('${today10.day}').first);
+    final todayKey = ValueKey(
+      'day-${DateTime(today10.year, today10.month, today10.day).toIso8601String()}',
+    );
+    await tester.ensureVisible(find.byKey(todayKey));
+    await tester.tap(find.byKey(todayKey));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 

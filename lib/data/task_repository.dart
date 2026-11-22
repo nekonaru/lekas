@@ -1,6 +1,7 @@
 import 'dart:async' show StreamController;
 
 import 'package:drift/drift.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uuid/uuid.dart';
 import 'database.dart';
 import 'task_dep_repository.dart';
@@ -108,23 +109,28 @@ class TaskRepository {
   /// Marks a task done. If the task carries a repeat kind, the next
   /// occurrence is created automatically; nothing else happens to it.
   Future<void> markDone(String id, {int? completedAt}) async {
-    final existing = await getTask(id);
-    await db.update(db.tasks).replace(existing.copyWith(
-      status: 'done',
-      completedAt: Value(completedAt ?? DateTime.now().millisecondsSinceEpoch),
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
-    // Recurring task: schedule the next occurrence.
-    if (existing.repeatKind != null && existing.status != 'done') {
-      final next = _nextOccurrence(existing);
-      if (next != null) await insertTask(next);
-    }
-    // Only a first completion opens doors: marking a finished task again
-    // would repeat the notice for everyone waiting on it (design 5.27).
-    if (existing.status == 'done') return;
-    for (final freed in await TaskDepRepository(db).unblockedBy(id)) {
-      if (!_unblockedController.isClosed) _unblockedController.add(freed);
-    }
+    // Read, update and the recurring insert must be one atomic write. Two
+    // rapid taps on the same task would otherwise both create the next
+    // occurrence of a recurring series.
+    await db.transaction(() async {
+      final existing = await getTask(id);
+      await db.update(db.tasks).replace(existing.copyWith(
+        status: 'done',
+        completedAt: Value(completedAt ?? DateTime.now().millisecondsSinceEpoch),
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      ));
+      // Recurring task: schedule the next occurrence.
+      if (existing.repeatKind != null && existing.status != 'done') {
+        final next = _nextOccurrence(existing);
+        if (next != null) await insertTask(next);
+      }
+      // Only a first completion opens doors: marking a finished task again
+      // would repeat the notice for everyone waiting on it (design 5.27).
+      if (existing.status == 'done') return;
+      for (final freed in await TaskDepRepository(db).unblockedBy(id)) {
+        if (!_unblockedController.isClosed) _unblockedController.add(freed);
+      }
+    });
   }
 
   /// The next occurrence of a recurring [task] (design: simple recurring
@@ -140,7 +146,18 @@ class TaskRepository {
       case 'weekly':
         next = from.add(Duration(days: 7 * every));
       case 'monthly':
-        next = DateTime(from.year, from.month + every, from.day, from.hour, from.minute);
+        // Dart rolls over when a day does not exist in the target month
+        // (Jan 31 + 1 month would be Mar 3), so clamp to the month's last day.
+        final target =
+            DateTime(from.year, from.month + every, 1, from.hour, from.minute);
+        final lastDay = DateTime(target.year, target.month + 1, 0).day;
+        next = DateTime(
+          target.year,
+          target.month,
+          from.day < lastDay ? from.day : lastDay,
+          from.hour,
+          from.minute,
+        );
       default:
         return null;
     }
@@ -306,6 +323,13 @@ class TaskRepository {
   /// here or it is left behind as an orphan that still joins against a task
   /// that no longer exists.
   Future<void> deletePermanently(String id) async {
+    // The row deletion hides the reminders from the reconciler, so cancel
+    // their plugin alarms here before the rows disappear.
+    final alarmIds = (await (db.select(db.reminders)
+          ..where((t) => t.taskId.equals(id)))
+        .get())
+        .map((row) => row.notifId)
+        .toList();
     await db.transaction(() async {
       await (db.delete(db.subtasks)..where((t) => t.taskId.equals(id))).go();
       await (db.delete(db.taskTags)..where((t) => t.taskId.equals(id))).go();
@@ -326,6 +350,15 @@ class TaskRepository {
       );
       await (db.delete(db.tasks)..where((t) => t.id.equals(id))).go();
     });
+    // Widget tests and desktop have no notification plugin; a cancellation
+    // failure there is harmless because there is no alarm to ring.
+    for (final notifId in alarmIds) {
+      try {
+        await FlutterLocalNotificationsPlugin().cancel(notifId);
+      } catch (_) {
+        // No plugin channel: nothing to cancel.
+      }
+    }
   }
 
   Future<int> countInbox() async {

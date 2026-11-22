@@ -146,6 +146,18 @@ Future<int> carryOverFocus(AppDatabase db, DateTime today) async {
 }
 
 /// Whether a moment falls inside the 22:00 to 06:00 quiet window.
+/// After a class hold, a reminder that lands inside the quiet window must
+/// not be pushed back to 21:55 (which can be during the class). It waits
+/// until just after quiet hours end, unless that would pass the deadline.
+/// Returns [held] unchanged when it is already outside quiet hours.
+DateTime moveOutOfQuietAfterClass(DateTime held, DateTime deadline) {
+  if (!isInQuietHours(held)) return held;
+  final morning = held.hour >= kQuietStartHour
+      ? DateTime(held.year, held.month, held.day + 1, kQuietEndHour, 5)
+      : DateTime(held.year, held.month, held.day, kQuietEndHour, 5);
+  return morning.isBefore(deadline) ? morning : held;
+}
+
 bool isInQuietHours(DateTime moment) =>
     moment.hour >= kQuietStartHour || moment.hour < kQuietEndHour;
 
@@ -725,6 +737,7 @@ class ReminderService {
     final l10n = await _l10n();
     final existing = await reminderRepository.getReminders();
     final existingByKey = <String, Reminder>{for (final row in existing) row.id: row};
+    final taskById = {for (final task in tasks) task.id: task};
     var nextId = await _nextNotifId(settings);
 
     // The rows are reconciled in a single transaction and the plugin calls
@@ -733,8 +746,15 @@ class ReminderService {
     final dropRows = <String>[];
     final dropNotifIds = <int>[];
     for (final row in existing) {
-      final isFreshSnooze =
-          row.kind == kKindSnooze && row.fireAt > nowMs && !desired.containsKey(row.id);
+      // A snooze stays alive only while its task is still open. Finishing
+      // or permanently deleting the task must retire the future alarm too.
+      final snoozeOwner = row.taskId == null ? null : taskById[row.taskId];
+      final snoozeOwnerOpen = row.taskId == null ||
+          (snoozeOwner != null && snoozeOwner.status != 'done');
+      final isFreshSnooze = row.kind == kKindSnooze &&
+          row.fireAt > nowMs &&
+          snoozeOwnerOpen &&
+          !desired.containsKey(row.id);
       // The attendance prompt is planned on its own, after the summaries.
       if (row.kind == kKindAttend) continue;
       if (desired.containsKey(row.id) || isFreshSnooze) continue;
@@ -1306,10 +1326,9 @@ class ReminderService {
       windows: windows,
     );
     if (held == fireAt) return fireAt;
-    // A class running into the quiet window keeps the alert out of the class,
-    // even when the quiet rule would move it earlier in the evening.
-    final quiet = moveOutOfQuietHours(held, deadline);
-    return quiet.isAfter(held) ? quiet : held;
+    // A class running into the quiet window holds the alert until just
+    // after quiet hours end, never back to 21:55 during the class.
+    return moveOutOfQuietAfterClass(held, deadline);
   }
 
   /// The ladder for this task under the chosen intensity (design 5.21).

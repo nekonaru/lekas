@@ -61,8 +61,8 @@ class TodayScreen extends ConsumerStatefulWidget {
   ConsumerState<TodayScreen> createState() => _TodayScreenState();
 }
 
-class _TodayScreenState extends ConsumerState<TodayScreen> {
-  int? _inboxCount;
+class _TodayScreenState extends ConsumerState<TodayScreen>
+    with WidgetsBindingObserver {
   bool? _notificationsOn;
 
   /// The FAB slides away while the list scrolls down and comes back on the
@@ -115,8 +115,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadWarnings();
     _loadDueCards();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _loadWarnings();
   }
 
   /// Loads how many flashcards wait for a review; the banner hides itself
@@ -129,19 +135,17 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _fabVisible.dispose();
     super.dispose();
   }
 
+  /// The inbox count comes from the live task stream instead of a cached
+  /// value, so quick adds on another screen cannot leave it stale.
   Future<void> _loadWarnings() async {
-    final repository = ref.read(taskRepositoryProvider);
-    final inbox = await repository.countInbox();
     final on = await ref.read(reminderServiceProvider).notificationsEnabled();
     if (!mounted) return;
-    setState(() {
-      _inboxCount = inbox;
-      _notificationsOn = on;
-    });
+    setState(() => _notificationsOn = on);
   }
 
   Future<void> _openNotificationSettings() async {
@@ -151,6 +155,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     } catch (_) {
       // The channel only exists on Android.
     }
+    await _loadWarnings();
   }
 
   /// The one warning card of this screen, or null when there is nothing to
@@ -166,7 +171,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       );
     }
 
-    final inbox = _inboxCount ?? 0;
+    final inbox = tasks
+        .where((task) => task.inbox && task.status != 'done')
+        .length;
     if (inbox >= 5 && _dismissedWarning != 'inbox') {
       return _buildWarning(
         key: 'inbox',

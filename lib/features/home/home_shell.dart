@@ -420,10 +420,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     ),
               ),
             ),
-      onTap: () {
-        _closeDrawer();
-        onTap();
-      },
+      onTap: onTap,
     );
   }
 
