@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.26.0
+
+Statistik Belajar kini membiarkanmu memasang target mingguan yang benar-benar ingin kamu jaga.
+
+### Fitur baru
+
+- **Target mingguan yang bisa diubah.** Layar menampilkan progres menuju target jumlah tugas selesai dan target menit fokus, keduanya diukur dari data yang sudah ada. Ketuk Ubah untuk mengganti angkanya; nol mematikan target.
+
 ## v1.25.0
 
 Pelacak kebiasaan kini bisa mengingatkanmu sekali sehari sesuai jadwalmu sendiri.

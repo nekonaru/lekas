@@ -2,6 +2,14 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.26.0
+
+Study Stats now lets you set the weekly promises you actually want to keep.
+
+### New features
+
+- **Editable weekly goals.** The screen shows progress toward a task-completion target and a focus-minute target, both measured from data you already have. Tap Edit to change either number; zero turns a goal off.
+
 ## v1.25.0
 
 The habit tracker can now remind you once a day, on your own schedule.

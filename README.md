@@ -103,6 +103,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap, focus per subject and flashcard totals |
 | **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
 | **Week-over-week scorecard** | Study Stats compares this week with last week with colored deltas for focus minutes and tasks completed |
+| **Weekly study goals** | Editable targets for tasks completed and focus minutes, with progress bars measured from your own data |
 
 ### Calendar and Classes
 
@@ -319,7 +320,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (586 tests) |
+| `flutter test` | Must pass the full suite (587 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
