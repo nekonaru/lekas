@@ -1,9 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../core/components/empty_state.dart';
+import '../../domain/csv.dart';
 import '../../l10n/app_localizations.dart';
 import 'flashcard_review_screen.dart';
 
@@ -88,6 +95,132 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
     if (saved && mounted) setState(_reload);
   }
 
+  /// Share this deck as a two-column CSV (front, back) so a subject's
+  /// cards can be moved or shared as a plain file.
+  Future<void> _exportCsv() async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final cards = await ref.read(flashcardRepositoryProvider).cardsOf(widget.spaceId);
+    final buffer = StringBuffer('\uFEFF');
+    buffer.write(csvRow(const ['front', 'back']));
+    for (final card in cards) {
+      buffer.write(csvRow([card.front, card.back]));
+    }
+    try {
+      final file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/lekas-kartu.csv',
+      );
+      await file.writeAsString(buffer.toString(), encoding: utf8);
+      await Share.shareXFiles([XFile(file.path)], subject: l10n.flashcardsTitle);
+    } catch (_) {
+      if (mounted) {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.csvExportFailed)));
+      }
+    }
+  }
+
+  /// Add cards from a CSV with front and back columns to this deck.
+  Future<void> _importCsv() async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['csv', 'txt'],
+      withData: true,
+    );
+    final bytes = result?.files.singleOrNull?.bytes;
+    if (bytes == null) return;
+
+    final String content;
+    try {
+      content = utf8.decode(bytes);
+    } catch (_) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.flashcardsImportInvalid)),
+      );
+      return;
+    }
+    final rows = parseCsv(content);
+    if (rows.length < 2) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.flashcardsImportInvalid)),
+      );
+      return;
+    }
+    final header = rows.first
+        .map((cell) => cell.trim().toLowerCase().replaceAll(' ', '_'))
+        .toList();
+    final frontCol = header.indexOf('front');
+    final backCol = header.indexOf('back');
+    if (frontCol < 0 || backCol < 0) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.flashcardsImportInvalid)),
+      );
+      return;
+    }
+    final pairs = <(String, String)>[];
+    for (final row in rows.skip(1)) {
+      final front = frontCol < row.length ? row[frontCol].trim() : '';
+      final back = backCol < row.length ? row[backCol].trim() : '';
+      if (front.isEmpty || back.isEmpty) continue;
+      pairs.add((front.length > 500 ? front.substring(0, 500) : front,
+          back.length > 500 ? back.substring(0, 500) : back));
+    }
+    if (pairs.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.flashcardsImported(0))),
+      );
+      return;
+    }
+    final limited = pairs.take(500).toList();
+    final capped = pairs.length > limited.length;
+
+    if (!mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.flashcardsImport),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.flashcardsImportConfirm(limited.length)),
+            if (capped) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.flashcardsImportCap,
+                style: TextStyle(
+                  color: Theme.of(dialogContext).colorScheme.error,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.importFileLabel),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final repo = ref.read(flashcardRepositoryProvider);
+    for (final (front, back) in limited) {
+      await repo.addCard(front: front, back: back, spaceId: widget.spaceId);
+    }
+    if (!mounted) return;
+    setState(_reload);
+    messenger.showSnackBar(
+      SnackBar(content: Text(l10n.flashcardsImported(limited.length))),
+    );
+  }
+
   Future<void> _review() async {
     final title = await _title;
     if (!mounted) return;
@@ -111,7 +244,21 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
     return FutureBuilder<String>(
       future: _title,
       builder: (context, titleSnapshot) => Scaffold(
-        appBar: AppBar(title: Text(titleSnapshot.data ?? l10n.flashcardsTitle)),
+        appBar: AppBar(
+          title: Text(titleSnapshot.data ?? l10n.flashcardsTitle),
+          actions: [
+            IconButton(
+              tooltip: l10n.flashcardsExport,
+              icon: const Icon(Icons.ios_share_outlined),
+              onPressed: _exportCsv,
+            ),
+            IconButton(
+              tooltip: l10n.flashcardsImport,
+              icon: const Icon(Icons.file_download_outlined),
+              onPressed: _importCsv,
+            ),
+          ],
+        ),
         body: FutureBuilder<List<FlashCard>>(
           future: _cards,
           builder: (context, snapshot) {
