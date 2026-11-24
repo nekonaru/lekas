@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.25.0
+
+Pelacak kebiasaan kini bisa mengingatkanmu sekali sehari sesuai jadwalmu sendiri.
+
+### Fitur baru
+
+- **Pengingat centang kebiasaan harian.** Tombol sakelar dan jam di layar Kebiasaan memasang satu pengingat harian berulang pada kanalnya sendiri. Jam disimpan di pengaturan, mematikan sakelar membatalkan alarm, dan izin notifikasi hanya diminta saat pengingat dinyalakan.
+
 ## v1.24.0
 
 Audit mendalam kedua mengeraskan parser, penyimpanan, dan penyegaran widget; dek kartu belajar kini bisa dibawa sebagai file CSV.

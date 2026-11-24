@@ -2,6 +2,14 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.25.0
+
+The habit tracker can now remind you once a day, on your own schedule.
+
+### New features
+
+- **Daily habit check-in reminder.** A switch and a time button on the Kebiasaan screen book one repeating daily notification on its own channel. The time is saved in settings, disabling the switch cancels the alarm, and notification permission is requested only when the reminder is turned on.
+
 ## v1.24.0
 
 A second deep audit hardens parsing, saving and widget refresh, and flashcard decks now travel as CSV files.
