@@ -98,7 +98,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 
 | Feature | Description |
 |---------|-------------|
-| **Flashcards** | A general deck plus one deck per subject with spaced repetition (SM-2); tap to flip, grade Again, Hard or Easy, due counts visible per deck |
+| **Flashcards** | A general deck plus one deck per subject with spaced repetition (SM-2); tap to flip, grade Again, Hard or Easy, due counts visible per deck, and per-deck CSV share and import |
 | **Focus timer** | A 15, 25 or 45 minute timer inside Focus mode that records every session |
 | **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap, focus per subject and flashcard totals |
 | **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
@@ -319,7 +319,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (582 tests) |
+| `flutter test` | Must pass the full suite (585 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

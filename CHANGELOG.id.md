@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.24.0
+
+Audit mendalam kedua mengeraskan parser, penyimpanan, dan penyegaran widget; dek kartu belajar kini bisa dibawa sebagai file CSV.
+
+### Fitur baru
+
+- **Dek kartu belajar sebagai CSV.** Setiap dek bisa membagikan pasangan depan/belakangnya sebagai file CSV atau mengimpor kartu dari file tersebut, dengan pratinjau dan batas 500 kartu.
+
+### Perbaikan bug
+
+- **Tanggal mustahil jujur.** "31 februari" dan "tanggal 31" kini dibatasi ke hari terakhir bulan dan meminta konfirmasi, bukan bergulir ke bulan berikutnya; kode ruang pendek tidak lagi memakan huruf kata biasa, dan konflik prioritas tidak tergantung urutan kata.
+- **Gagal simpan bisa diulang.** Quick Add dan Share Intake kini melaporkan kegagalan dan tetap bisa dipakai; baris yang sudah tersimpan dicentang ulang supaya percobaan kedua tidak menduplikasi.
+- **Data selalu segar.** Detail tugas memuat ulang setelah diedit, widget rumah menggambar ulang setelah kelas, ruang, semester, atau bahasa berubah, onboarding tidak bisa memasukkan ruang pertama dua kali, dan lampiran disalin ke penyimpanan aplikasi sebelum ditautkan.
+
 ## v1.23.0
 
 Audit mendalam merapikan alur tugas berulang, pengingat, dan navigasi, sementara pelacak kebiasaan mendapat riwayat 90 hari.

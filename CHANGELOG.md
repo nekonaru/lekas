@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.24.0
+
+A second deep audit hardens parsing, saving and widget refresh, and flashcard decks now travel as CSV files.
+
+### New features
+
+- **Flashcard decks as CSV.** Each deck can share its front/back pairs as a CSV file or import cards from one, with a preview and a 500 card cap.
+
+### Bug fixes
+
+- **Impossible dates are honest.** "31 februari" and "tanggal 31" clamp to the last day of the month and ask for confirmation instead of rolling into the next month; short space codes no longer eat letters of ordinary words, and priority conflicts no longer depend on word order.
+- **Failed saves are recoverable.** Quick Add and Share Intake now report a failed write and stay usable; share rows already written are unchecked so a retry cannot duplicate them.
+- **Fresh data everywhere.** Task Detail reloads after an edit, home widgets redraw after class, space, semester or language changes, onboarding cannot double-insert its first space, and attachments are copied into app-owned storage before being linked.
+
 ## v1.23.0
 
 A deep audit tightens the recurring, reminder and navigation flows, and the habit tracker gets a 90-day history.
