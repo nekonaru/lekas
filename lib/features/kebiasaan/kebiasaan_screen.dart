@@ -9,6 +9,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/habits.dart';
 import '../../l10n/app_localizations.dart';
+import '../../reminders/reminder_service.dart';
 
 /// Habit tracker: a list of habits with a 7-day check grid and a streak.
 /// Deliberately small: one tap checks today, one tap unchecks it, and the
@@ -34,10 +35,112 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
   late Future<_HabitData> _data;
   _HabitData? _lastData;
 
+  bool _reminderOn = false;
+  int _reminderHour = 20;
+  int _reminderMinute = 0;
+
   @override
   void initState() {
     super.initState();
     _data = _load();
+    _loadReminder();
+  }
+
+  Future<void> _loadReminder() async {
+    final settings = ref.read(settingsRepositoryProvider);
+    final on = await settings.get('habit_reminder_enabled') == '1';
+    final hour = int.tryParse(await settings.get('habit_reminder_hour') ?? '');
+    final minute =
+        int.tryParse(await settings.get('habit_reminder_minute') ?? '');
+    if (!mounted) return;
+    setState(() {
+      _reminderOn = on;
+      _reminderHour = (hour ?? 20).clamp(0, 23);
+      _reminderMinute = (minute ?? 0).clamp(0, 59);
+    });
+  }
+
+  Future<void> _applyReminder({bool? enabled, TimeOfDay? time}) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final on = enabled ?? _reminderOn;
+    final hour = time?.hour ?? _reminderHour;
+    final minute = time?.minute ?? _reminderMinute;
+    setState(() {
+      _reminderOn = on;
+      _reminderHour = hour;
+      _reminderMinute = minute;
+    });
+
+    final settings = ref.read(settingsRepositoryProvider);
+    await settings.set('habit_reminder_enabled', on ? '1' : '0');
+    await settings.set('habit_reminder_hour', '$hour');
+    await settings.set('habit_reminder_minute', '$minute');
+
+    try {
+      final service = ref.read(reminderServiceProvider);
+      if (on && await service.notificationsEnabled() == false) {
+        await service.requestNotificationPermission();
+      }
+      await service.syncHabitReminder(
+        enabled: on,
+        hour: hour,
+        minute: minute,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.habitReminderFailed)),
+      );
+    }
+  }
+
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: _reminderHour, minute: _reminderMinute),
+    );
+    if (picked == null || !mounted) return;
+    await _applyReminder(time: picked);
+  }
+
+  Widget _buildReminderCard(AppLocalizations l10n) {
+    final colors = Theme.of(context).colorScheme;
+    final time = '${_reminderHour.toString().padLeft(2, '0')}:'
+        '${_reminderMinute.toString().padLeft(2, '0')}';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Material(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          leading: Icon(Icons.alarm_outlined, color: colors.primary),
+          title: Text(
+            l10n.habitReminderTitle,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          subtitle: Text(
+            l10n.habitReminderBody,
+            style: const TextStyle(fontSize: 12),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_reminderOn)
+                TextButton(
+                  onPressed: _pickReminderTime,
+                  child: Text(time),
+                ),
+              Switch(
+                value: _reminderOn,
+                onChanged: (value) => _applyReminder(enabled: value),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _reload() => setState(() => _data = _load());
@@ -167,10 +270,14 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.kebiasaanTitle)),
-      body: FutureBuilder<_HabitData>(
-        future: _data,
-        initialData: _lastData,
-        builder: (context, snapshot) {
+      body: Column(
+        children: [
+          _buildReminderCard(l10n),
+          Expanded(
+            child: FutureBuilder<_HabitData>(
+              future: _data,
+              initialData: _lastData,
+              builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting &&
               !snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -263,7 +370,10 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
               ),
             ],
           );
-        },
+          },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addHabit,

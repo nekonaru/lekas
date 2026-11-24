@@ -833,5 +833,8 @@
   "@flashcardsImported": { "placeholders": { "count": { "type": "int" } } },
   "flashcardsImportInvalid": "Berkas itu bukan CSV dengan kolom front dan back.",
   "flashcardsImportCap": "Hanya 500 kartu pertama yang diimpor.",
-  "saveFailed": "Tugas gagal disimpan. Coba lagi."
+  "saveFailed": "Tugas gagal disimpan. Coba lagi.",
+  "habitReminderTitle": "Pengingat centang harian",
+  "habitReminderBody": "Jangan lupa centang kebiasaanmu hari ini.",
+  "habitReminderFailed": "Pengingat harian gagal dijadwalkan."
 }

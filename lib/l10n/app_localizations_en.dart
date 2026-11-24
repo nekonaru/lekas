@@ -2486,4 +2486,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveFailed => 'The task could not be saved. Try again.';
+
+  @override
+  String get habitReminderTitle => 'Daily check-in reminder';
+
+  @override
+  String get habitReminderBody => 'Remember to check off your habits today.';
+
+  @override
+  String get habitReminderFailed =>
+      'The daily reminder could not be scheduled.';
 }

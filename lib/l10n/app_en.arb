@@ -833,5 +833,8 @@
   "@flashcardsImported": { "placeholders": { "count": { "type": "int" } } },
   "flashcardsImportInvalid": "That file is not a CSV with front and back columns.",
   "flashcardsImportCap": "Only the first 500 cards were imported.",
-  "saveFailed": "The task could not be saved. Try again."
+  "saveFailed": "The task could not be saved. Try again.",
+  "habitReminderTitle": "Daily check-in reminder",
+  "habitReminderBody": "Remember to check off your habits today.",
+  "habitReminderFailed": "The daily reminder could not be scheduled."
 }

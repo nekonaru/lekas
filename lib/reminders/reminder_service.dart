@@ -18,6 +18,7 @@ import '../data/task_repository.dart';
 import '../domain/attendance.dart';
 import '../domain/bring_list.dart';
 import '../domain/focus.dart';
+import '../domain/habits.dart';
 import '../l10n/app_localizations.dart';
 import 'class_quiet.dart';
 
@@ -61,6 +62,9 @@ const String kChannelTest = 'test_channel';
 
 /// Channel of the soft "ready to start" notice of design section 5.27.
 const String kChannelUnblock = 'unblock_channel';
+
+/// The optional daily check-in nudge of the habit tracker.
+const String kChannelHabit = 'habit_channel';
 
 const String _timezoneChannel = 'lekas/timezone';
 
@@ -562,6 +566,12 @@ class ReminderService {
         kChannelUnblock,
         'Task ready',
         description: 'A prerequisite finished and a task can start',
+        importance: Importance.defaultImportance,
+      ),
+      AndroidNotificationChannel(
+        kChannelHabit,
+        'Habit check-in',
+        description: 'Daily reminder to check off habits',
         importance: Importance.defaultImportance,
       ),
     ];
@@ -1550,6 +1560,45 @@ class ReminderService {
     );
   }
 
+  /// One repeating daily check-in nudge for the habit tracker. Inexact on
+  /// purpose: this is a gentle reminder, not a deadline that needs an exact
+  /// alarm permission. [matchDateTimeComponents] keeps it daily after boot.
+  Future<void> syncHabitReminder({
+    required bool enabled,
+    required int hour,
+    required int minute,
+  }) async {
+    await init();
+    if (!enabled) {
+      await _plugin.cancel(kHabitReminderId);
+      return;
+    }
+    final l10n = await _l10n();
+    final when = nextDailyReminder(
+      DateTime.now(),
+      hour.clamp(0, 23),
+      minute.clamp(0, 59),
+    );
+    await _plugin.zonedSchedule(
+      kHabitReminderId,
+      l10n.habitReminderTitle,
+      l10n.habitReminderBody,
+      tz.TZDateTime.from(when, tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          kChannelHabit,
+          'Habit check-in',
+          channelDescription: 'Daily reminder to check off habits',
+          importance: Importance.defaultImportance,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
   Future<void> cancelTaskReminders(String taskId) async {
     final reminderRepository = _ref.read(reminderRepositoryProvider);
     final rows = await reminderRepository.getReminders();
@@ -1563,6 +1612,9 @@ class ReminderService {
   /// Cancels every scheduled notification this app owns.
   Future<void> cancelAll() => _plugin.cancelAll();
 }
+
+/// Notification id reserved for the daily habit check-in reminder.
+const int kHabitReminderId = 900001;
 
 /// Notification id reserved for the reminder check screen.
 const int kTestNotificationId = 999999;

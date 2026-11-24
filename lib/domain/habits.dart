@@ -31,6 +31,14 @@ List<String> lastNDayKeys(int count, {required DateTime end}) {
   ];
 }
 
+/// The next occurrence of a daily reminder at [hour]: [minute]. When that
+/// time has already passed today, the next day is returned so the plugin
+/// never gets a past instant.
+DateTime nextDailyReminder(DateTime now, int hour, int minute) {
+  final candidate = DateTime(now.year, now.month, now.day, hour, minute);
+  return candidate.isAfter(now) ? candidate : candidate.add(const Duration(days: 1));
+}
+
 /// Consecutive checked days ending today. A today without a check yet
 /// does not break the streak: the count walks back from yesterday.
 int habitStreak(Iterable<String> checkedDays, {required DateTime today}) {

@@ -4555,6 +4555,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tugas gagal disimpan. Coba lagi.'**
   String get saveFailed;
+
+  /// No description provided for @habitReminderTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat centang harian'**
+  String get habitReminderTitle;
+
+  /// No description provided for @habitReminderBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan lupa centang kebiasaanmu hari ini.'**
+  String get habitReminderBody;
+
+  /// No description provided for @habitReminderFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat harian gagal dijadwalkan.'**
+  String get habitReminderFailed;
 }
 
 class _AppLocalizationsDelegate

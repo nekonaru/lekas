@@ -52,4 +52,19 @@ void main() {
       3,
     );
   });
+
+  test('nextDailyReminder picks the next future occurrence', () {
+    expect(
+      nextDailyReminder(DateTime(2026, 11, 17, 8), 20, 0),
+      DateTime(2026, 11, 17, 20, 0),
+    );
+    expect(
+      nextDailyReminder(DateTime(2026, 11, 17, 21), 20, 0),
+      DateTime(2026, 11, 18, 20, 0),
+    );
+    expect(
+      nextDailyReminder(DateTime(2026, 11, 17, 20, 0), 20, 0),
+      DateTime(2026, 11, 18, 20, 0),
+    );
+  });
 }

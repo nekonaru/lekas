@@ -2488,4 +2488,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get saveFailed => 'Tugas gagal disimpan. Coba lagi.';
+
+  @override
+  String get habitReminderTitle => 'Pengingat centang harian';
+
+  @override
+  String get habitReminderBody => 'Jangan lupa centang kebiasaanmu hari ini.';
+
+  @override
+  String get habitReminderFailed => 'Pengingat harian gagal dijadwalkan.';
 }
