@@ -2,6 +2,14 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.27.0
+
+Finding anything in a growing Lekas database now takes one search box.
+
+### New features
+
+- **Search everything.** A new drawer entry searches tasks, flashcards, habits and subjects together with token matching, grouped results and one tap to the owning screen. Typing reads one in-memory snapshot, so the database is never queried per keystroke.
+
 ## v1.26.0
 
 Study Stats now lets you set the weekly promises you actually want to keep.

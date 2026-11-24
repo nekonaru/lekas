@@ -74,6 +74,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
 | **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |
+| **Global search** | One drawer entry searches tasks, flashcards, habits and subjects, with grouped results and one tap to the owning screen |
 | **Files per course** | Modules, notes, papers and archives under a real folder tree stored directly in phone storage; each course gets its own subfolder, visible to any file manager |
 | **Attendance per course** | Mark present, absent, excused or sick per meeting; every past record can be edited or deleted |
 | **Bring list per course** | Editable, reorderable and checkable per course |
@@ -320,7 +321,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (587 tests) |
+| `flutter test` | Must pass the full suite (590 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

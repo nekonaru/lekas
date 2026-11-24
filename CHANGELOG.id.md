@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.27.0
+
+Menemukan apa pun di database Lekas yang makin besar kini cukup satu kolom pencarian.
+
+### Fitur baru
+
+- **Cari semua data.** Entri baru di drawer mencari tugas, kartu belajar, kebiasaan, dan mata pelajaran sekaligus dengan pencarian per kata, hasil dikelompokkan, dan satu ketukan menuju layar yang bersangkutan. Mengetik membaca satu salinan data di memori, jadi database tidak pernah diquery tiap ketukan.
+
 ## v1.26.0
 
 Statistik Belajar kini membiarkanmu memasang target mingguan yang benar-benar ingin kamu jaga.
