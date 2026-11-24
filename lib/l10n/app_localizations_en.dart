@@ -2512,4 +2512,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get weeklyGoalHint =>
       'Set a target you can keep. Zero turns the goal off.';
+
+  @override
+  String get globalSearchTitle => 'Search everything';
+
+  @override
+  String get globalSearchHint => 'Tasks, flashcards, habits, subjects';
+
+  @override
+  String get globalSearchNoResults => 'Nothing matches that search.';
+
+  @override
+  String get globalSearchSectionTasks => 'Tasks';
+
+  @override
+  String get globalSearchSectionCards => 'Flashcards';
+
+  @override
+  String get globalSearchSectionHabits => 'Habits';
+
+  @override
+  String get globalSearchSectionSpaces => 'Subjects';
 }

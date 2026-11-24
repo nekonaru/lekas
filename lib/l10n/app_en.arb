@@ -841,5 +841,12 @@
   "weeklyTaskGoalLabel": "Tasks completed",
   "weeklyFocusGoalLabel": "Focus minutes",
   "editWeeklyGoals": "Edit weekly goals",
-  "weeklyGoalHint": "Set a target you can keep. Zero turns the goal off."
+  "weeklyGoalHint": "Set a target you can keep. Zero turns the goal off.",
+  "globalSearchTitle": "Search everything",
+  "globalSearchHint": "Tasks, flashcards, habits, subjects",
+  "globalSearchNoResults": "Nothing matches that search.",
+  "globalSearchSectionTasks": "Tasks",
+  "globalSearchSectionCards": "Flashcards",
+  "globalSearchSectionHabits": "Habits",
+  "globalSearchSectionSpaces": "Subjects"
 }

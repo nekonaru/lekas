@@ -841,5 +841,12 @@
   "weeklyTaskGoalLabel": "Tugas selesai",
   "weeklyFocusGoalLabel": "Menit fokus",
   "editWeeklyGoals": "Ubah target mingguan",
-  "weeklyGoalHint": "Pasang target yang bisa kamu jaga. Nol mematikan target."
+  "weeklyGoalHint": "Pasang target yang bisa kamu jaga. Nol mematikan target.",
+  "globalSearchTitle": "Cari semua data",
+  "globalSearchHint": "Tugas, kartu, kebiasaan, mata pelajaran",
+  "globalSearchNoResults": "Tidak ada yang cocok dengan pencarian ini.",
+  "globalSearchSectionTasks": "Tugas",
+  "globalSearchSectionCards": "Kartu Belajar",
+  "globalSearchSectionHabits": "Kebiasaan",
+  "globalSearchSectionSpaces": "Mata Pelajaran"
 }

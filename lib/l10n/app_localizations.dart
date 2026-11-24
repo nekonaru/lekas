@@ -4603,6 +4603,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pasang target yang bisa kamu jaga. Nol mematikan target.'**
   String get weeklyGoalHint;
+
+  /// No description provided for @globalSearchTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari semua data'**
+  String get globalSearchTitle;
+
+  /// No description provided for @globalSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas, kartu, kebiasaan, mata pelajaran'**
+  String get globalSearchHint;
+
+  /// No description provided for @globalSearchNoResults.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada yang cocok dengan pencarian ini.'**
+  String get globalSearchNoResults;
+
+  /// No description provided for @globalSearchSectionTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas'**
+  String get globalSearchSectionTasks;
+
+  /// No description provided for @globalSearchSectionCards.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu Belajar'**
+  String get globalSearchSectionCards;
+
+  /// No description provided for @globalSearchSectionHabits.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan'**
+  String get globalSearchSectionHabits;
+
+  /// No description provided for @globalSearchSectionSpaces.
+  ///
+  /// In id, this message translates to:
+  /// **'Mata Pelajaran'**
+  String get globalSearchSectionSpaces;
 }
 
 class _AppLocalizationsDelegate

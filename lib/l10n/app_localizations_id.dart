@@ -2513,4 +2513,26 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get weeklyGoalHint =>
       'Pasang target yang bisa kamu jaga. Nol mematikan target.';
+
+  @override
+  String get globalSearchTitle => 'Cari semua data';
+
+  @override
+  String get globalSearchHint => 'Tugas, kartu, kebiasaan, mata pelajaran';
+
+  @override
+  String get globalSearchNoResults =>
+      'Tidak ada yang cocok dengan pencarian ini.';
+
+  @override
+  String get globalSearchSectionTasks => 'Tugas';
+
+  @override
+  String get globalSearchSectionCards => 'Kartu Belajar';
+
+  @override
+  String get globalSearchSectionHabits => 'Kebiasaan';
+
+  @override
+  String get globalSearchSectionSpaces => 'Mata Pelajaran';
 }

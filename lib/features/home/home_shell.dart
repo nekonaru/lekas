@@ -19,6 +19,7 @@ import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../ics/ics_screen.dart';
 import '../csv/csv_screen.dart';
+import '../search/global_search_screen.dart';
 import '../kebiasaan/kebiasaan_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/statistik_belajar_screen.dart';
@@ -217,6 +218,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.search,
             l10n.searchFilterTitle,
             () => _push(const SearchFilterScreen()),
+          ),
+          _drawerTile(
+            Icons.travel_explore_outlined,
+            l10n.globalSearchTitle,
+            () => _push(const GlobalSearchScreen()),
           ),
           _drawerTile(
             Icons.bookmark_border,
