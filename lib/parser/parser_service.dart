@@ -278,8 +278,9 @@ class ParserService {
     };
   }
 
-  static String _remove(String text, String token) =>
-      text.replaceAll(RegExp(RegExp.escape(token), caseSensitive: false), ' ');
+  static String _remove(String text, String token) => text.replaceAll(
+      RegExp(r'\b' + RegExp.escape(token) + r'\b', caseSensitive: false),
+      ' ');
 
   static String _clean(String text) {
     var out = text.replaceAll(RegExp(r'\s+'), ' ').trim();

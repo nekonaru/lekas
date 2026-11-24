@@ -170,7 +170,16 @@ Future<void> widgetBackgroundCallback(Uri? data) async {
 final homeWidgetSyncProvider = Provider<void>((ref) {
   Timer? timer;
   ref.onDispose(() => timer?.cancel());
-  ref.watch(allTasksProvider).whenData((_) {
+  // Class/exam widgets read more than tasks: a timetable edit, a moved
+  // class, a renamed subject or a language switch must redraw them too.
+  ref.watch(allTasksProvider);
+  ref.watch(classSlotRepositoryProvider).watchAllClassSlots();
+  ref.watch(classExceptionRepositoryProvider).watchClassExceptions();
+  ref.watch(spaceRepositoryProvider).watchSpaces();
+  ref.watch(semesterRepositoryProvider).watchSemesters();
+  ref.watch(localeProvider);
+  final tasks = ref.watch(allTasksProvider);
+  tasks.whenData((_) {
     timer?.cancel();
     timer = Timer(const Duration(milliseconds: 400), () {
       unawaited(syncHomeWidgets(ref.read(appDatabaseProvider)).catchError(

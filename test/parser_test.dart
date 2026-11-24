@@ -1224,6 +1224,28 @@ void main() {
       final result = parse('renew passport next year', locale: 'en');
       expect(result.deadline, DateTime(2027, 10, 20, 23, 59));
     });
+
+    test('a nonexistent day clamps to the last day of the month', () {
+      final result = parse('kumpul 31 februari');
+      expect(result.deadline, DateTime(2027, 2, 28, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+    });
+
+    test('tanggal 31 in a short month clamps and asks', () {
+      final result =
+          parse('kumpul tanggal 31', at: DateTime(2026, 2, 10, 8, 0));
+      expect(result.deadline, DateTime(2026, 2, 28, 23, 59));
+      expect(result.needsConfirmation, isTrue);
+    });
+
+    test('a short space code does not eat letters of other words', () {
+      final shortParser = ParserService.forSpaces(const [
+        {'id': 's9', 'name': 'Kecerdasan', 'code': 'ai', 'aliases': ''},
+      ]);
+      final result = shortParser.parse('beli air besok', now: now);
+      expect(result.title, contains('air'));
+      expect(result.title, isNot(contains('r ')));
+    });
   });
 }
 

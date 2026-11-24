@@ -271,28 +271,27 @@ const int kMaxSubtasks = 50;
       : const ['relaxed', 'whenever', 'optional', 'low priority'];
 
   var work = text;
-  var priority = 1;
-  var conflict = false;
+  // Collect both signals first: the old code decided while looping, so
+  // "santai tapi penting" beat "penting tapi santai" by word order.
+  var foundHigh = false;
+  var foundLow = false;
 
   for (final word in high) {
     final pattern = RegExp('\\b${RegExp.escape(word)}\\b', caseSensitive: false);
     if (pattern.hasMatch(work)) {
       work = _cutAll(work, pattern);
-      if (priority == 1) priority = 2;
+      foundHigh = true;
     }
   }
   for (final word in low) {
     final pattern = RegExp('\\b${RegExp.escape(word)}\\b', caseSensitive: false);
     if (pattern.hasMatch(work)) {
       work = _cutAll(work, pattern);
-      if (priority == 1) {
-        priority = 0;
-      } else if (priority == 2) {
-        conflict = true;
-      }
+      foundLow = true;
     }
   }
-  if (conflict) priority = 1;
+  final conflict = foundHigh && foundLow;
+  final priority = conflict ? 1 : foundHigh ? 2 : foundLow ? 0 : 1;
   return (remainingText: _tidy(work), priority: priority, conflict: conflict);
 }
 

@@ -219,7 +219,12 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
     // first part of it anyway (design section 6.2 and 7.15).
     final storedMessage = _boundedMessage(widget.message);
     var saved = 0;
-    for (final candidate in _candidates) {
+    final savedIndexes = <int>[];
+    try {
+    for (var candidateIndex = 0;
+        candidateIndex < _candidates.length;
+        candidateIndex++) {
+      final candidate = _candidates[candidateIndex];
       if (!candidate.checked) continue;
       final title = (candidate.title ?? candidate.text).trim();
       if (title.isEmpty) continue;
@@ -262,6 +267,22 @@ class _ShareIntakeScreenState extends ConsumerState<ShareIntakeScreen> {
         nowMs: now,
       );
       saved++;
+      savedIndexes.add(candidateIndex);
+    }
+    } catch (_) {
+      // Rows already written are unchecked, so a retry does not duplicate
+      // them, and the sheet stays open for another attempt.
+      if (!mounted) return;
+      setState(() {
+        for (final index in savedIndexes) {
+          _candidates[index].checked = false;
+        }
+        _saving = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.saveFailed)),
+      );
+      return;
     }
     if (!mounted) return;
     Navigator.pop(context, saved);

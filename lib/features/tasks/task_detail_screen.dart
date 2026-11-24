@@ -301,12 +301,15 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   ListTile(
                     title: Text(l10n.editTask),
                     trailing: const Icon(Icons.edit),
-                    onTap: () {
-                      showModalBottomSheet(
+                    onTap: () async {
+                      await showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
                         builder: (_) => TaskFormSheet(task: task),
                       );
+                      // The sheet saves through its own repository; rebuild
+                      // so the detail header and badges show the new values.
+                      if (mounted) setState(() {});
                     },
                   ),
                   ListTile(

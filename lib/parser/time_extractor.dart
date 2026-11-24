@@ -335,9 +335,11 @@ class TimeExtractor {
       if (dayOfMonth != null) {
         final wanted =
             int.parse(dayOfMonth.group(1) ?? dayOfMonth.group(2)!);
-        var candidate = DateTime(now.year, now.month, wanted);
+        var candidate = _dayInMonth(now.year, now.month, wanted);
+        if (candidate.day != wanted) needsConfirmation = true;
         if (candidate.isBefore(DateTime(now.year, now.month, now.day))) {
-          candidate = DateTime(now.year, now.month + 1, wanted);
+          candidate = _dayInMonth(now.year, now.month + 1, wanted);
+          if (candidate.day != wanted) needsConfirmation = true;
         }
         result = candidate;
         working = _remove(working, dayOfMonth.group(0)!);
@@ -522,7 +524,8 @@ class TimeExtractor {
       if (entry.value < now.month || (entry.value == now.month && day < now.day)) {
         year += 1;
       }
-      return _DateGuess(DateTime(year, entry.value, day), guessed);
+      final resolved = _dayInMonth(year, entry.value, day);
+      return _DateGuess(resolved, guessed || resolved.day != day);
     }
     return null;
   }
@@ -536,6 +539,14 @@ class TimeExtractor {
   }
 
   static int _clampHour(int hour) => hour >= 24 ? 0 : hour;
+
+  /// The requested day of a month, clamped to that month's last day, so
+  /// "31 februari" resolves to Feb 28/29 instead of rolling into March.
+  static DateTime _dayInMonth(int year, int month, int wanted) {
+    final day = wanted.clamp(1, 31);
+    final lastDay = DateTime(year, month + 1, 0).day;
+    return DateTime(year, month, day < lastDay ? day : lastDay);
+  }
 
   /// The same day-of-month [monthsAhead] months from [now], clamped to the
   /// last day of that month (e.g. January 31 + 1 month is February 28/29).

@@ -824,5 +824,14 @@
   "@csvImported": { "placeholders": { "count": { "type": "int" } } },
   "csvImportInvalid": "That file is not a CSV file, or it has no title column.",
   "csvImportTooLarge": "Only the first 1000 rows were imported.",
-  "csvExportFailed": "The CSV file could not be built."
+  "csvExportFailed": "The CSV file could not be built.",
+  "flashcardsExport": "Share cards as CSV",
+  "flashcardsImport": "Import cards from CSV",
+  "flashcardsImportConfirm": "{count} cards will be added to this deck. Continue?",
+  "@flashcardsImportConfirm": { "placeholders": { "count": { "type": "int" } } },
+  "flashcardsImported": "{count} cards imported.",
+  "@flashcardsImported": { "placeholders": { "count": { "type": "int" } } },
+  "flashcardsImportInvalid": "That file is not a CSV with front and back columns.",
+  "flashcardsImportCap": "Only the first 500 cards were imported.",
+  "saveFailed": "The task could not be saved. Try again."
 }

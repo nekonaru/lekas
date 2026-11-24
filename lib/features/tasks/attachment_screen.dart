@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../../core/constants.dart';
 import '../../data/providers.dart';
@@ -92,11 +93,21 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
               );
               return;
             }
+            // Copy into app-owned storage so moving or deleting the picked
+            // file (or restoring a backup on another device) never leaves
+            // a dead path behind.
+            final id = DateTime.now().millisecondsSinceEpoch.toString();
+            final dir = Directory(
+                '${(await getApplicationDocumentsDirectory()).path}/lekas_attachments');
+            await dir.create(recursive: true);
+            final safeName = result.files.single.name
+                .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
+            final stored = await file.copy('${dir.path}/${id}_$safeName');
             await repo.insertAttachment(Attachment(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              id: id,
               taskId: widget.taskId,
               kind: 'file',
-              pathOrUrl: file.path,
+              pathOrUrl: stored.path,
               mime: result.files.single.extension,
               sizeBytes: size,
               createdAt: DateTime.now().millisecondsSinceEpoch,

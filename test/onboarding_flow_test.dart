@@ -139,6 +139,11 @@ void main() {
       await container.read(settingsRepositoryProvider).getLanguage(),
       'id',
     );
+    // Widget sync now also listens to the language; flush its 400 ms
+    // debounce (and any follow-up from the stream refresh) before ending.
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
   });
 
   testWidgets('finishing setup lands on the shell, not a black screen',

@@ -4513,6 +4513,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Berkas CSV gagal dibuat.'**
   String get csvExportFailed;
+
+  /// No description provided for @flashcardsExport.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan kartu sebagai CSV'**
+  String get flashcardsExport;
+
+  /// No description provided for @flashcardsImport.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor kartu dari CSV'**
+  String get flashcardsImport;
+
+  /// No description provided for @flashcardsImportConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kartu akan ditambahkan ke deck ini. Lanjutkan?'**
+  String flashcardsImportConfirm(int count);
+
+  /// No description provided for @flashcardsImported.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kartu diimpor.'**
+  String flashcardsImported(int count);
+
+  /// No description provided for @flashcardsImportInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Berkas itu bukan CSV dengan kolom front dan back.'**
+  String get flashcardsImportInvalid;
+
+  /// No description provided for @flashcardsImportCap.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya 500 kartu pertama yang diimpor.'**
+  String get flashcardsImportCap;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas gagal disimpan. Coba lagi.'**
+  String get saveFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -258,15 +258,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     ref.invalidate(localeProvider);
   }
 
+  bool _savingSpace = false;
+
   void _next() {
     if (_step == 0) {
       setState(() => _step = 1);
-    } else {
+    } else if (!_savingSpace) {
       _saveSpace();
     }
   }
 
   Future<void> _saveSpace() async {
+    _savingSpace = true;
     final spaceRepo = ref.read(spaceRepositoryProvider);
     final settingsRepo = ref.read(settingsRepositoryProvider);
     final fallbackName = AppLocalizations.of(context)!.firstCourseFallback;
@@ -282,10 +285,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
-    await spaceRepo.insertSpace(space);
-    await settingsRepo.set('language', _language);
-    await settingsRepo.set('level', _level);
-    await settingsRepo.set('onboarded', 'true');
+    try {
+      await spaceRepo.insertSpace(space);
+      await settingsRepo.set('language', _language);
+      await settingsRepo.set('level', _level);
+      await settingsRepo.set('onboarded', 'true');
+    } catch (_) {
+      if (!mounted) return;
+      _savingSpace = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed)),
+      );
+      return;
+    }
     if (!mounted) return;
     // Onboarding is the root route, so popping it would empty the navigator
     // and leave a black screen (the v1.4.1 bug on real devices). Flip the

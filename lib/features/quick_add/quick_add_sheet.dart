@@ -77,7 +77,9 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   /// kept in front of whatever is recognized.
   final VoiceInput _voice = VoiceInput();
   bool _listening = false;
-  String _voiceBase = '';
+  /// The recognized text currently inserted in the field. Replacing only
+  /// this slice on the next partial leaves anything typed meanwhile alone.
+  String _voiceSegment = '';
 
   /// Settling time between the last keystroke and the parse of the chips.
   Timer? _debounce;
@@ -223,7 +225,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
 
     final language =
         ref.read(localeProvider).valueOrNull?.languageCode ?? 'id';
-    _voiceBase = _controller.text.trim();
+    _voiceSegment = '';
     final started = await _voice.start(
       localeId: language == 'id' ? 'id_ID' : 'en_US',
       onText: _onVoiceText,
@@ -238,14 +240,21 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   }
 
   /// Writes the recognized sentence behind the text already there, so the
-  /// user can keep typing while the session runs.
+  /// user can keep typing while the session runs. Only the previous voice
+  /// slice is replaced on each partial result.
   void _onVoiceText(String text, bool isFinal) {
     if (!mounted) return;
     final heard = text.trim();
-    final base = _voiceBase;
+    final current = _controller.text;
+    final prefix = _voiceSegment.isEmpty
+        ? current
+        : current.endsWith(_voiceSegment)
+            ? current.substring(0, current.length - _voiceSegment.length)
+            : current;
     final next =
-        heard.isEmpty ? base : (base.isEmpty ? heard : '$base $heard');
-    if (_controller.text != next) {
+        heard.isEmpty ? prefix : (prefix.isEmpty ? heard : '$prefix $heard');
+    _voiceSegment = heard;
+    if (current != next) {
       _controller.text = next;
       _controller.selection =
           TextSelection.collapsed(offset: _controller.text.length);
@@ -605,7 +614,8 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     final now = DateTime.now();
     final parsed = _parsed;
     final taskId = const Uuid().v4();
-    await ref.read(taskRepositoryProvider).insertTask(Task(
+    try {
+      await ref.read(taskRepositoryProvider).insertTask(Task(
           id: taskId,
           spaceId: _spaceId,
           title: (_title ?? text).trim(),
@@ -661,7 +671,16 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.savedTasksCount(1))),
     );
+  } catch (_) {
+    // A failed write must leave the sheet usable instead of stuck on a
+    // disabled button; the user can retry without losing the typed text.
+    if (!mounted) return;
+    setState(() => _saving = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.saveFailed)),
+    );
   }
+}
 
   String _deadlineLabel(AppLocalizations l10n) {
     final deadline = _deadline;

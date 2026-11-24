@@ -824,5 +824,14 @@
   "@csvImported": { "placeholders": { "count": { "type": "int" } } },
   "csvImportInvalid": "Berkas itu bukan CSV, atau tidak punya kolom title.",
   "csvImportTooLarge": "Hanya 1000 baris pertama yang diimpor.",
-  "csvExportFailed": "Berkas CSV gagal dibuat."
+  "csvExportFailed": "Berkas CSV gagal dibuat.",
+  "flashcardsExport": "Bagikan kartu sebagai CSV",
+  "flashcardsImport": "Impor kartu dari CSV",
+  "flashcardsImportConfirm": "{count} kartu akan ditambahkan ke deck ini. Lanjutkan?",
+  "@flashcardsImportConfirm": { "placeholders": { "count": { "type": "int" } } },
+  "flashcardsImported": "{count} kartu diimpor.",
+  "@flashcardsImported": { "placeholders": { "count": { "type": "int" } } },
+  "flashcardsImportInvalid": "Berkas itu bukan CSV dengan kolom front dan back.",
+  "flashcardsImportCap": "Hanya 500 kartu pertama yang diimpor.",
+  "saveFailed": "Tugas gagal disimpan. Coba lagi."
 }

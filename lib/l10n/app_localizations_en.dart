@@ -2460,4 +2460,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'The CSV file could not be built.';
+
+  @override
+  String get flashcardsExport => 'Share cards as CSV';
+
+  @override
+  String get flashcardsImport => 'Import cards from CSV';
+
+  @override
+  String flashcardsImportConfirm(int count) {
+    return '$count cards will be added to this deck. Continue?';
+  }
+
+  @override
+  String flashcardsImported(int count) {
+    return '$count cards imported.';
+  }
+
+  @override
+  String get flashcardsImportInvalid =>
+      'That file is not a CSV with front and back columns.';
+
+  @override
+  String get flashcardsImportCap => 'Only the first 500 cards were imported.';
+
+  @override
+  String get saveFailed => 'The task could not be saved. Try again.';
 }

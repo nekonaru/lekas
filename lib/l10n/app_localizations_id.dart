@@ -2462,4 +2462,30 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'Berkas CSV gagal dibuat.';
+
+  @override
+  String get flashcardsExport => 'Bagikan kartu sebagai CSV';
+
+  @override
+  String get flashcardsImport => 'Impor kartu dari CSV';
+
+  @override
+  String flashcardsImportConfirm(int count) {
+    return '$count kartu akan ditambahkan ke deck ini. Lanjutkan?';
+  }
+
+  @override
+  String flashcardsImported(int count) {
+    return '$count kartu diimpor.';
+  }
+
+  @override
+  String get flashcardsImportInvalid =>
+      'Berkas itu bukan CSV dengan kolom front dan back.';
+
+  @override
+  String get flashcardsImportCap => 'Hanya 500 kartu pertama yang diimpor.';
+
+  @override
+  String get saveFailed => 'Tugas gagal disimpan. Coba lagi.';
 }
