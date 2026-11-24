@@ -2497,4 +2497,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get habitReminderFailed => 'Pengingat harian gagal dijadwalkan.';
+
+  @override
+  String get weeklyGoalsTitle => 'Target minggu ini';
+
+  @override
+  String get weeklyTaskGoalLabel => 'Tugas selesai';
+
+  @override
+  String get weeklyFocusGoalLabel => 'Menit fokus';
+
+  @override
+  String get editWeeklyGoals => 'Ubah target mingguan';
+
+  @override
+  String get weeklyGoalHint =>
+      'Pasang target yang bisa kamu jaga. Nol mematikan target.';
 }

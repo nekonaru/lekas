@@ -2496,4 +2496,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get habitReminderFailed =>
       'The daily reminder could not be scheduled.';
+
+  @override
+  String get weeklyGoalsTitle => 'Weekly goals';
+
+  @override
+  String get weeklyTaskGoalLabel => 'Tasks completed';
+
+  @override
+  String get weeklyFocusGoalLabel => 'Focus minutes';
+
+  @override
+  String get editWeeklyGoals => 'Edit weekly goals';
+
+  @override
+  String get weeklyGoalHint =>
+      'Set a target you can keep. Zero turns the goal off.';
 }

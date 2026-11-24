@@ -836,5 +836,10 @@
   "saveFailed": "Tugas gagal disimpan. Coba lagi.",
   "habitReminderTitle": "Pengingat centang harian",
   "habitReminderBody": "Jangan lupa centang kebiasaanmu hari ini.",
-  "habitReminderFailed": "Pengingat harian gagal dijadwalkan."
+  "habitReminderFailed": "Pengingat harian gagal dijadwalkan.",
+  "weeklyGoalsTitle": "Target minggu ini",
+  "weeklyTaskGoalLabel": "Tugas selesai",
+  "weeklyFocusGoalLabel": "Menit fokus",
+  "editWeeklyGoals": "Ubah target mingguan",
+  "weeklyGoalHint": "Pasang target yang bisa kamu jaga. Nol mematikan target."
 }

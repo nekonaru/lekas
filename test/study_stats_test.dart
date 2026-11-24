@@ -67,4 +67,18 @@ void main() {
   test('completionStreak of no completions is zero', () {
     expect(completionStreak(const [], today: day), 0);
   });
+
+  test('goal progress is saturated and safe with no target', () {
+    final none = GoalProgress(current: 5, target: 0);
+    expect(none.ratio, 0);
+    expect(none.reached, isFalse);
+
+    final partial = GoalProgress(current: 3, target: 4);
+    expect(partial.ratio, closeTo(0.75, 1e-9));
+    expect(partial.reached, isFalse);
+
+    final over = GoalProgress(current: 12, target: 10);
+    expect(over.ratio, 1);
+    expect(over.reached, isTrue);
+  });
 }

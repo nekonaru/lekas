@@ -31,8 +31,76 @@ class _StatistikBelajarScreenState
     _data = _load();
   }
 
+  void _reload() => setState(() => _data = _load());
+
+  /// Edits the two weekly targets. Zero is allowed and means the goal is off.
+  Future<void> _editGoals(int taskGoal, int focusGoal) async {
+    final l10n = AppLocalizations.of(context)!;
+    final taskController = TextEditingController(text: '$taskGoal');
+    final focusController = TextEditingController(text: '$focusGoal');
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.editWeeklyGoals),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: taskController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: l10n.weeklyTaskGoalLabel,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: focusController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: l10n.weeklyFocusGoalLabel,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.weeklyGoalHint,
+              style: Theme.of(dialogContext).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(dialogContext).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    final nextTask = int.tryParse(taskController.text.trim());
+    final nextFocus = int.tryParse(focusController.text.trim());
+    taskController.dispose();
+    focusController.dispose();
+    if (saved != true || !mounted) return;
+    final settings = ref.read(settingsRepositoryProvider);
+    await settings.set('weekly_task_goal', '${nextTask ?? taskGoal}');
+    await settings.set('weekly_focus_goal', '${nextFocus ?? focusGoal}');
+    if (mounted) _reload();
+  }
+
   Future<_StatsData> _load() async {
     final now = DateTime.now();
+    final settings = ref.read(settingsRepositoryProvider);
+    final taskGoal =
+        int.tryParse(await settings.get('weekly_task_goal') ?? '') ?? 20;
+    final focusGoal =
+        int.tryParse(await settings.get('weekly_focus_goal') ?? '') ?? 300;
     final today = DateTime(now.year, now.month, now.day);
     final start14 = today.subtract(const Duration(days: 13));
     final focusRepo = ref.read(focusSessionRepositoryProvider);
@@ -109,6 +177,8 @@ class _StatistikBelajarScreenState
       subjectMinutes: subjectMinutes.take(5).toList(),
       prevWeekMinutes: prevWeekMinutes,
       donePrevWeek: donePrevWeek,
+      taskGoal: taskGoal,
+      focusGoal: focusGoal,
     );
   }
 
@@ -196,6 +266,48 @@ class _StatistikBelajarScreenState
                             ),
                       )
                     : null,
+              ),
+              const SizedBox(height: 10),
+              // Editable weekly promises, measured from the same data.
+              Material(
+                color: colors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(18),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      dense: true,
+                      leading: Icon(Icons.flag_outlined, color: colors.primary),
+                      title: Text(
+                        l10n.weeklyGoalsTitle,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      trailing: TextButton(
+                        onPressed: () => _editGoals(
+                          data.taskGoal,
+                          data.focusGoal,
+                        ),
+                        child: Text(l10n.editWeeklyGoals),
+                      ),
+                    ),
+                    _GoalRow(
+                      label: l10n.weeklyTaskGoalLabel,
+                      progress: GoalProgress(
+                        current: data.doneThisWeek,
+                        target: data.taskGoal,
+                      ),
+                    ),
+                    _GoalRow(
+                      label: l10n.weeklyFocusGoalLabel,
+                      progress: GoalProgress(
+                        current: data.weekMinutes,
+                        target: data.focusGoal,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
               ),
               const SizedBox(height: 10),
               // The week-over-week scorecard: one card, two honest deltas.
@@ -392,6 +504,8 @@ class _StatsData {
     required this.subjectMinutes,
     required this.prevWeekMinutes,
     required this.donePrevWeek,
+    required this.taskGoal,
+    required this.focusGoal,
   });
 
   final List<int> buckets;
@@ -405,6 +519,8 @@ class _StatsData {
   final List<_SubjectMinutes> subjectMinutes;
   final int prevWeekMinutes;
   final int donePrevWeek;
+  final int taskGoal;
+  final int focusGoal;
 }
 
 class _SubjectMinutes {
@@ -472,6 +588,59 @@ class _StatCard extends StatelessWidget {
                   color: colors.onSurfaceVariant,
                   height: 1.25,
                 ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One weekly goal line: label, current/target and a progress bar that
+/// turns full when the promise is kept.
+class _GoalRow extends StatelessWidget {
+  const _GoalRow({required this.label, required this.progress});
+
+  final String label;
+  final GoalProgress progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final caption = progress.target <= 0
+        ? '—'
+        : '${progress.current}/${progress.target}';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                ),
+              ),
+              Text(
+                caption,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: progress.reached ? colors.primary : null,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress.ratio,
+              minHeight: 7,
+              backgroundColor: colors.surfaceContainerHighest,
+            ),
           ),
         ],
       ),

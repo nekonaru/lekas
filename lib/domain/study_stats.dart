@@ -24,6 +24,20 @@ List<int> focusMinutesByDay(
   return buckets;
 }
 
+/// One weekly goal with its current value and target.
+class GoalProgress {
+  const GoalProgress({required this.current, required this.target});
+
+  final int current;
+  final int target;
+
+  /// 0..1, saturated, and safe with a missing or zero target.
+  double get ratio =>
+      target <= 0 ? 0 : (current / target).clamp(0.0, 1.0);
+
+  bool get reached => target > 0 && current >= target;
+}
+
 /// Total focus minutes in the last [days] days.
 int focusMinutesInWindow(
   Iterable<FocusSession> sessions, {

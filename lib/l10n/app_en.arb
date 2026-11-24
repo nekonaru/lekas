@@ -836,5 +836,10 @@
   "saveFailed": "The task could not be saved. Try again.",
   "habitReminderTitle": "Daily check-in reminder",
   "habitReminderBody": "Remember to check off your habits today.",
-  "habitReminderFailed": "The daily reminder could not be scheduled."
+  "habitReminderFailed": "The daily reminder could not be scheduled.",
+  "weeklyGoalsTitle": "Weekly goals",
+  "weeklyTaskGoalLabel": "Tasks completed",
+  "weeklyFocusGoalLabel": "Focus minutes",
+  "editWeeklyGoals": "Edit weekly goals",
+  "weeklyGoalHint": "Set a target you can keep. Zero turns the goal off."
 }

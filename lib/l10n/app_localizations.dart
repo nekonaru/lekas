@@ -4573,6 +4573,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pengingat harian gagal dijadwalkan.'**
   String get habitReminderFailed;
+
+  /// No description provided for @weeklyGoalsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Target minggu ini'**
+  String get weeklyGoalsTitle;
+
+  /// No description provided for @weeklyTaskGoalLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas selesai'**
+  String get weeklyTaskGoalLabel;
+
+  /// No description provided for @weeklyFocusGoalLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Menit fokus'**
+  String get weeklyFocusGoalLabel;
+
+  /// No description provided for @editWeeklyGoals.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah target mingguan'**
+  String get editWeeklyGoals;
+
+  /// No description provided for @weeklyGoalHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pasang target yang bisa kamu jaga. Nol mematikan target.'**
+  String get weeklyGoalHint;
 }
 
 class _AppLocalizationsDelegate
