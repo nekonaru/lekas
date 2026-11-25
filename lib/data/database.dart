@@ -438,6 +438,7 @@ class HabitChecks extends Table {
   /// Local calendar day as `YYYY-MM-DD` (design section 10).
   TextColumn get date => text()();
   IntColumn get createdAt => integer()();
+  TextColumn get kind => text().withDefault(const Constant('check'))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -478,7 +479,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -627,6 +628,11 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(idxHabitsDeleted);
             await m.createTable(habitChecks);
             await m.createIndex(idxHabitChecksHabitDate);
+          }
+          if (from >= 8 && from < 9) {
+            // A schema 8 file has the table without the rest-day kind; a
+            // schema 2 file gets the current table from the from < 8 branch.
+            await m.addColumn(habitChecks, habitChecks.kind);
           }
         },
       );

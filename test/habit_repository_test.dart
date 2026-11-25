@@ -52,6 +52,22 @@ void main() {
     expect(await repo.allChecksOf(habit.id), hasLength(1));
   });
 
+  test('a rest day swaps with a check and is not counted as a check-in',
+      () async {
+    final (_, repo, habit) = await seeded();
+    final day = dayKeyOf(DateTime.now());
+    expect(await repo.toggleSkip(habit.id, day), isTrue);
+    var rows = await repo.allChecksOf(habit.id);
+    expect(rows.single.kind, 'skip');
+    // Tapping clears the rest day in one step.
+    expect(await repo.toggleCheck(habit.id, day), isFalse);
+    rows = await repo.allChecksOf(habit.id);
+    expect(rows, isEmpty);
+    // Long press again turns it into a rest day, then back off.
+    expect(await repo.toggleSkip(habit.id, day), isTrue);
+    expect(await repo.toggleSkip(habit.id, day), isFalse);
+  });
+
   test('recentChecks returns everything inside the window only', () async {
     final (_, repo, habit) = await seeded();
     final today = dayKeyOf(DateTime.now());

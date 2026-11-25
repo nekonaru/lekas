@@ -2591,4 +2591,7 @@ class AppLocalizationsId extends AppLocalizations {
   String raportAttendance(Object attended, Object planned) {
     return '$attended/$planned hadir';
   }
+
+  @override
+  String get habitRestDay => 'Hari libur (tekan lama)';
 }

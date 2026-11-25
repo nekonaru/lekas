@@ -10,15 +10,16 @@ import 'package:lekas/data/database.dart';
 /// drag order column, schema 5 added semesters with a backfill that turns
 /// existing periods into semesters, schema 6 added the flashcards table
 /// with its due index, schema 7 added the SMA grade book table, and schema 8
-/// added the habit tracker tables. A user who installs this APK on top of
+/// added the habit tracker tables, and schema 9 lets a check be a rest day.
+/// A user who installs this APK on top of
 /// v1.0.0 runs all of those upgrades for the first time on a real file, so
 /// they must not throw or leave the schema half built.
 ///
 /// The fixture below rebuilds schema 2 by opening a fresh database (which
 /// creates the latest schema), dropping the `idx_` indexes, dropping the
-/// schema 4, 5, 6, 7 and 8 pieces, and stamping `user_version = 2`. Reopening it
+/// schema 4, 5, 6, 7, 8 and 9 pieces, and stamping `user_version = 2`. Reopening it
 /// with the shipped [AppDatabase] then runs the genuine `from < 3`,
-/// `from < 4`, `from < 5`, `from < 6`, `from < 7` and `from < 8` branches.
+/// `from < 4`, `from < 5`, `from < 6`, `from < 7`, `from < 8` and `from < 9` branches.
 void main() {
   late File file;
 
@@ -107,18 +108,18 @@ void main() {
     await seed.close();
   }
 
-  test('upgrading a v1.0.0 schema 2 database to schema 8 succeeds', () async {
+  test('upgrading a v1.0.0 schema 2 database to schema 9 succeeds', () async {
     await createSchema2File();
 
-    // Reopen with the shipped database: onUpgrade(from: 2, to: 8) runs.
+    // Reopen with the shipped database: onUpgrade(from: 2, to: 9) runs.
     final db = AppDatabase(NativeDatabase(file));
     // A read forces the migration to complete before we assert.
     final tasks = await db.select(db.tasks).get();
     expect(tasks, isEmpty);
 
-    // The version is now 8.
+    // The version is now 9.
     final version = await db.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 8);
+    expect(version.read<int>('user_version'), 9);
 
     // Every schema index was recreated by the upgrade, including schema 8.
     expect(await idxNames(db), schemaIndexes);
@@ -192,14 +193,14 @@ void main() {
     await db.close();
   });
 
-  test('a second open at schema 8 does not re-run the upgrade', () async {
+  test('a second open at schema 9 does not re-run the upgrade', () async {
     await createSchema2File();
     final first = AppDatabase(NativeDatabase(file));
     await first.select(first.tasks).get();
     expect(await idxNames(first), schemaIndexes);
     await first.close();
 
-    // Reopen at the same version 8: onUpgrade must not run again, so it must
+    // Reopen at the same version 9: onUpgrade must not run again, so it must
     // not try to recreate indexes or columns that already exist (which would
     // throw).
     final second = AppDatabase(NativeDatabase(file));
@@ -207,7 +208,7 @@ void main() {
     expect(tasks, isEmpty);
     final version =
         await second.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 8);
+    expect(version.read<int>('user_version'), 9);
     await second.close();
   });
 }

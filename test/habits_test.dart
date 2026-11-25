@@ -41,6 +41,18 @@ void main() {
     expect(habitStreak(const [], today: today), 0);
   });
 
+  test('rest days keep a streak alive without counting as check-ins', () {
+    final today = DateTime(2026, 11, 17);
+    expect(
+      habitStreak(
+        const ['2026-11-15', '2026-11-17'],
+        today: today,
+        skippedDays: const ['2026-11-16'],
+      ),
+      3,
+    );
+  });
+
   test('habitWindowCount counts only the window', () {
     final end = DateTime(2026, 11, 17);
     expect(

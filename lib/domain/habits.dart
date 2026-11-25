@@ -41,9 +41,15 @@ DateTime nextDailyReminder(DateTime now, int hour, int minute) {
 
 /// Consecutive checked days ending today. A today without a check yet
 /// does not break the streak: the count walks back from yesterday.
-int habitStreak(Iterable<String> checkedDays, {required DateTime today}) {
+int habitStreak(
+  Iterable<String> checkedDays, {
+  required DateTime today,
+  Iterable<String> skippedDays = const [],
+}) {
   final days = <String>{
-    for (final day in checkedDays) day,
+    ...checkedDays,
+    // A rest day keeps the chain alive but is not a check-in.
+    ...skippedDays,
   };
   final last = DateTime(today.year, today.month, today.day);
   var streak = 0;

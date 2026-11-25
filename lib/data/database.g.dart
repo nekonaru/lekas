@@ -13073,8 +13073,18 @@ class $HabitChecksTable extends HabitChecks
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
   @override
-  List<GeneratedColumn> get $columns => [id, habitId, date, createdAt];
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('check'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, habitId, date, createdAt, kind];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -13116,6 +13126,12 @@ class $HabitChecksTable extends HabitChecks
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
     return context;
   }
 
@@ -13141,6 +13157,10 @@ class $HabitChecksTable extends HabitChecks
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
       )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
     );
   }
 
@@ -13157,11 +13177,13 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
   /// Local calendar day as `YYYY-MM-DD` (design section 10).
   final String date;
   final int createdAt;
+  final String kind;
   const HabitCheck({
     required this.id,
     required this.habitId,
     required this.date,
     required this.createdAt,
+    required this.kind,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -13170,6 +13192,7 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
     map['habit_id'] = Variable<String>(habitId);
     map['date'] = Variable<String>(date);
     map['created_at'] = Variable<int>(createdAt);
+    map['kind'] = Variable<String>(kind);
     return map;
   }
 
@@ -13179,6 +13202,7 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
       habitId: Value(habitId),
       date: Value(date),
       createdAt: Value(createdAt),
+      kind: Value(kind),
     );
   }
 
@@ -13192,6 +13216,7 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
       habitId: serializer.fromJson<String>(json['habitId']),
       date: serializer.fromJson<String>(json['date']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
+      kind: serializer.fromJson<String>(json['kind']),
     );
   }
   @override
@@ -13202,6 +13227,7 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
       'habitId': serializer.toJson<String>(habitId),
       'date': serializer.toJson<String>(date),
       'createdAt': serializer.toJson<int>(createdAt),
+      'kind': serializer.toJson<String>(kind),
     };
   }
 
@@ -13210,11 +13236,13 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
     String? habitId,
     String? date,
     int? createdAt,
+    String? kind,
   }) => HabitCheck(
     id: id ?? this.id,
     habitId: habitId ?? this.habitId,
     date: date ?? this.date,
     createdAt: createdAt ?? this.createdAt,
+    kind: kind ?? this.kind,
   );
   HabitCheck copyWithCompanion(HabitChecksCompanion data) {
     return HabitCheck(
@@ -13222,6 +13250,7 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
       habitId: data.habitId.present ? data.habitId.value : this.habitId,
       date: data.date.present ? data.date.value : this.date,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      kind: data.kind.present ? data.kind.value : this.kind,
     );
   }
 
@@ -13231,13 +13260,14 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
           ..write('id: $id, ')
           ..write('habitId: $habitId, ')
           ..write('date: $date, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('kind: $kind')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, habitId, date, createdAt);
+  int get hashCode => Object.hash(id, habitId, date, createdAt, kind);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -13245,7 +13275,8 @@ class HabitCheck extends DataClass implements Insertable<HabitCheck> {
           other.id == this.id &&
           other.habitId == this.habitId &&
           other.date == this.date &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.kind == this.kind);
 }
 
 class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
@@ -13253,12 +13284,14 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
   final Value<String> habitId;
   final Value<String> date;
   final Value<int> createdAt;
+  final Value<String> kind;
   final Value<int> rowid;
   const HabitChecksCompanion({
     this.id = const Value.absent(),
     this.habitId = const Value.absent(),
     this.date = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.kind = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitChecksCompanion.insert({
@@ -13266,6 +13299,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
     required String habitId,
     required String date,
     required int createdAt,
+    this.kind = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        habitId = Value(habitId),
@@ -13276,6 +13310,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
     Expression<String>? habitId,
     Expression<String>? date,
     Expression<int>? createdAt,
+    Expression<String>? kind,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -13283,6 +13318,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
       if (habitId != null) 'habit_id': habitId,
       if (date != null) 'date': date,
       if (createdAt != null) 'created_at': createdAt,
+      if (kind != null) 'kind': kind,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -13292,6 +13328,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
     Value<String>? habitId,
     Value<String>? date,
     Value<int>? createdAt,
+    Value<String>? kind,
     Value<int>? rowid,
   }) {
     return HabitChecksCompanion(
@@ -13299,6 +13336,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
       habitId: habitId ?? this.habitId,
       date: date ?? this.date,
       createdAt: createdAt ?? this.createdAt,
+      kind: kind ?? this.kind,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -13318,6 +13356,9 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -13331,6 +13372,7 @@ class HabitChecksCompanion extends UpdateCompanion<HabitCheck> {
           ..write('habitId: $habitId, ')
           ..write('date: $date, ')
           ..write('createdAt: $createdAt, ')
+          ..write('kind: $kind, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -24946,6 +24988,7 @@ typedef $$HabitChecksTableCreateCompanionBuilder =
       required String habitId,
       required String date,
       required int createdAt,
+      Value<String> kind,
       Value<int> rowid,
     });
 typedef $$HabitChecksTableUpdateCompanionBuilder =
@@ -24954,6 +24997,7 @@ typedef $$HabitChecksTableUpdateCompanionBuilder =
       Value<String> habitId,
       Value<String> date,
       Value<int> createdAt,
+      Value<String> kind,
       Value<int> rowid,
     });
 
@@ -25000,6 +25044,11 @@ class $$HabitChecksTableFilterComposer
 
   ColumnFilters<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -25051,6 +25100,11 @@ class $$HabitChecksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$HabitsTableOrderingComposer get habitId {
     final $$HabitsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -25092,6 +25146,9 @@ class $$HabitChecksTableAnnotationComposer
 
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
 
   $$HabitsTableAnnotationComposer get habitId {
     final $$HabitsTableAnnotationComposer composer = $composerBuilder(
@@ -25149,12 +25206,14 @@ class $$HabitChecksTableTableManager
                 Value<String> habitId = const Value.absent(),
                 Value<String> date = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
+                Value<String> kind = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HabitChecksCompanion(
                 id: id,
                 habitId: habitId,
                 date: date,
                 createdAt: createdAt,
+                kind: kind,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -25163,12 +25222,14 @@ class $$HabitChecksTableTableManager
                 required String habitId,
                 required String date,
                 required int createdAt,
+                Value<String> kind = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HabitChecksCompanion.insert(
                 id: id,
                 habitId: habitId,
                 date: date,
                 createdAt: createdAt,
+                kind: kind,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

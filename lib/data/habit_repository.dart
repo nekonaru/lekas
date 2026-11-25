@@ -75,23 +75,45 @@ class HabitRepository {
         .get();
   }
 
-  /// Toggles the check for [habitId] on [date]. Returns true when the day
-  /// is checked after the call, false when it was unchecked.
+  /// Toggles the check for [habitId] on [date]. Tapping a rest day clears
+  /// it instead of stacking a check on top.
   Future<bool> toggleCheck(String habitId, String date) async {
     return db.transaction(() async {
-      final existing = await (db.select(db.habitChecks)
+      final rows = await (db.select(db.habitChecks)
             ..where((t) => t.habitId.equals(habitId) & t.date.equals(date)))
           .get();
-      if (existing.isNotEmpty) {
-        await (db.delete(db.habitChecks)
-              ..where((t) => t.id.equals(existing.first.id)))
-            .go();
-        return false;
+      for (final row in rows) {
+        await (db.delete(db.habitChecks)..where((t) => t.id.equals(row.id))).go();
       }
+      if (rows.isNotEmpty) return false;
       await db.into(db.habitChecks).insert(HabitCheck(
             id: const Uuid().v4(),
             habitId: habitId,
             date: date,
+            kind: 'check',
+            createdAt: DateTime.now().millisecondsSinceEpoch,
+          ));
+      return true;
+    });
+  }
+
+  /// Marks [date] as a protected rest day: the streak continues but the
+  /// day does not count as a check-in. Long press toggles it.
+  Future<bool> toggleSkip(String habitId, String date) async {
+    return db.transaction(() async {
+      final rows = await (db.select(db.habitChecks)
+            ..where((t) => t.habitId.equals(habitId) & t.date.equals(date)))
+          .get();
+      final wasSkipped = rows.any((row) => row.kind == 'skip');
+      for (final row in rows) {
+        await (db.delete(db.habitChecks)..where((t) => t.id.equals(row.id))).go();
+      }
+      if (wasSkipped) return false;
+      await db.into(db.habitChecks).insert(HabitCheck(
+            id: const Uuid().v4(),
+            habitId: habitId,
+            date: date,
+            kind: 'skip',
             createdAt: DateTime.now().millisecondsSinceEpoch,
           ));
       return true;

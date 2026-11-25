@@ -149,11 +149,19 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
     final repo = ref.read(habitRepositoryProvider);
     final habits = await repo.watchActiveHabits().first;
     final checks = <String, Set<String>>{};
+    final skips = <String, Set<String>>{};
     for (final habit in habits) {
       final rows = await repo.allChecksOf(habit.id);
-      checks[habit.id] = {for (final row in rows) row.date};
+      checks[habit.id] = {
+        for (final row in rows)
+          if (row.kind == 'check') row.date,
+      };
+      skips[habit.id] = {
+        for (final row in rows)
+          if (row.kind == 'skip') row.date,
+      };
     }
-    return _HabitData(habits, checks);
+    return _HabitData(habits, checks, skips);
   }
 
   Future<void> _addHabit() async {
@@ -322,12 +330,20 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
                   child: _HabitCard(
                     habit: habit,
                     checked: data.checks[habit.id] ?? const <String>{},
+                    skipped: data.skips[habit.id] ?? const <String>{},
                     weekKeys: weekKeys,
                     onToggle: (dayKey) async {
                       HapticFeedback.selectionClick();
                       await ref
                           .read(habitRepositoryProvider)
                           .toggleCheck(habit.id, dayKey);
+                      _reload();
+                    },
+                    onSkip: (dayKey) async {
+                      HapticFeedback.mediumImpact();
+                      await ref
+                          .read(habitRepositoryProvider)
+                          .toggleSkip(habit.id, dayKey);
                       _reload();
                     },
                     onDelete: () => _deleteHabit(habit),
@@ -364,6 +380,13 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
                           minHeight: 8,
                         ),
                       ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.habitRestDay,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: colors.onSurfaceVariant,
+                            ),
+                      ),
                     ],
                   ),
                 ),
@@ -385,10 +408,11 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
 }
 
 class _HabitData {
-  _HabitData(this.habits, this.checks);
+  _HabitData(this.habits, this.checks, this.skips);
 
   final List<Habit> habits;
   final Map<String, Set<String>> checks;
+  final Map<String, Set<String>> skips;
 
   /// How many habits were checked on each day, across every habit.
   Map<String, int> checkCounts() {
@@ -411,15 +435,19 @@ class _HabitCard extends StatelessWidget {
   const _HabitCard({
     required this.habit,
     required this.checked,
+    required this.skipped,
     required this.weekKeys,
     required this.onToggle,
+    required this.onSkip,
     required this.onDelete,
   });
 
   final Habit habit;
   final Set<String> checked;
+  final Set<String> skipped;
   final List<String> weekKeys;
   final ValueChanged<String> onToggle;
+  final ValueChanged<String> onSkip;
   final VoidCallback onDelete;
 
   @override
@@ -428,7 +456,11 @@ class _HabitCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
     final weekdayFormat = DateFormat('E', locale);
-    final streak = habitStreak(checked, today: DateTime.now());
+    final streak = habitStreak(
+      checked,
+      today: DateTime.now(),
+      skippedDays: skipped,
+    );
     final weekCount = checked.where(weekKeys.contains).length;
 
     return Material(
@@ -494,9 +526,11 @@ class _HabitCard extends StatelessWidget {
                         .substring(0, 1),
                     date: dayFromKey(weekKeys[i])!,
                     checked: checked.contains(weekKeys[i]),
+                    skipped: skipped.contains(weekKeys[i]),
                     color: _hexColor(habit.color),
                     isToday: weekKeys[i] == dayKeyOf(DateTime.now()),
                     onTap: () => onToggle(weekKeys[i]),
+                    onLongPress: () => onSkip(weekKeys[i]),
                   ),
                 const Spacer(),
                 Text(
@@ -519,21 +553,26 @@ class _DayCell extends StatelessWidget {
     required this.keyLabel,
     required this.date,
     required this.checked,
+    required this.skipped,
     required this.color,
     required this.isToday,
     required this.onTap,
+    required this.onLongPress,
   });
 
   final String keyLabel;
   final DateTime date;
   final bool checked;
+  final bool skipped;
   final Color color;
   final bool isToday;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: 40,
       child: Column(
@@ -546,32 +585,48 @@ class _DayCell extends StatelessWidget {
                 ),
           ),
           const SizedBox(height: 4),
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: checked ? color : Colors.transparent,
-                border: Border.all(
+          Tooltip(
+            message: l10n.habitRestDay,
+            child: GestureDetector(
+              onTap: onTap,
+              onLongPress: onLongPress,
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
                   color: checked
                       ? color
-                      : (isToday ? colors.primary : colors.outlineVariant),
-                  width: isToday ? 2 : 1.4,
+                      : skipped
+                          ? const Color(0xFFF59E0B).withValues(alpha: 0.22)
+                          : Colors.transparent,
+                  border: Border.all(
+                    color: checked
+                        ? color
+                        : skipped
+                            ? const Color(0xFFF59E0B)
+                            : (isToday ? colors.primary : colors.outlineVariant),
+                    width: isToday ? 2 : 1.4,
+                  ),
                 ),
+                alignment: Alignment.center,
+                child: checked
+                    ? const Icon(Icons.check, size: 18, color: Colors.white)
+                    : skipped
+                        ? const Icon(Icons.local_cafe_outlined,
+                            size: 17, color: Color(0xFFF59E0B))
+                        : Text(
+                            '${date.day}',
+                            style: TextStyle(
+                              color: isToday
+                                  ? colors.primary
+                                  : colors.onSurfaceVariant,
+                              fontSize: 11,
+                              fontWeight:
+                                  isToday ? FontWeight.w800 : FontWeight.w600,
+                            ),
+                          ),
               ),
-              alignment: Alignment.center,
-              child: checked
-                  ? const Icon(Icons.check, size: 18, color: Colors.white)
-                  : Text(
-                      '${date.day}',
-                      style: TextStyle(
-                        color: isToday ? colors.primary : colors.onSurfaceVariant,
-                        fontSize: 11,
-                        fontWeight: isToday ? FontWeight.w800 : FontWeight.w600,
-                      ),
-                    ),
             ),
           ),
         ],

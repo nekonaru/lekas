@@ -4729,6 +4729,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{attended}/{planned} hadir'**
   String raportAttendance(Object attended, Object planned);
+
+  /// No description provided for @habitRestDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari libur (tekan lama)'**
+  String get habitRestDay;
 }
 
 class _AppLocalizationsDelegate

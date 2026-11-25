@@ -868,5 +868,6 @@
   "studyStreakLabel": "Study days in a row",
   "breakTimerTitle": "Short break",
   "skipBreak": "Skip break",
-  "raportAttendance": "{attended}/{planned} attended"
+  "raportAttendance": "{attended}/{planned} attended",
+  "habitRestDay": "Rest day (long press)"
 }

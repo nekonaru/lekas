@@ -868,5 +868,6 @@
   "studyStreakLabel": "hari belajar beruntun",
   "breakTimerTitle": "Istirahat sebentar",
   "skipBreak": "Lewati istirahat",
-  "raportAttendance": "{attended}/{planned} hadir"
+  "raportAttendance": "{attended}/{planned} hadir",
+  "habitRestDay": "Hari libur (tekan lama)"
 }

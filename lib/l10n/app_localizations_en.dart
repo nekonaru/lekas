@@ -2589,4 +2589,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String raportAttendance(Object attended, Object planned) {
     return '$attended/$planned attended';
   }
+
+  @override
+  String get habitRestDay => 'Rest day (long press)';
 }
