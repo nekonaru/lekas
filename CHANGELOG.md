@@ -2,6 +2,14 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.30.0
+
+The SMA report card now carries attendance next to grades, like a real rapor.
+
+### New features
+
+- **Attendance on the report card.** Every subject row shows attended and planned meetings from the attendance records, and the shared text recap includes the same numbers.
+
 ## v1.29.0
 
 A streak that counts all your study, and a proper pause after every focus session.

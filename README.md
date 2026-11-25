@@ -70,7 +70,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Courses** | Spaces bound to a semester with attendance, an editable class schedule, a per course bring list, grade prediction and their own folder for files |
 | **School (SMA) mode** | Level switch to School turns courses into subjects with a Kelas (10, 11 or 12) picked in the space form, shows it on the subject page, speaks subject wording everywhere (Manage Subjects, Subjects This Semester); demo data seeds a Matematika sample with scores |
 | **Grade Book (SMA)** | Per-subject score log with live average (uses component weights when present), a green or red KKM verdict, and an editable KKM setting |
-| **Report Card (SMA)** | Rapor screen on the Semester tab: every subject of the active semester with its average and KKM verdict, the semester average up top, and one tap to share the report as text |
+| **Report Card (SMA)** | Rapor screen on the Semester tab: every subject of the active semester with its average, KKM verdict and attendance count, the semester average up top, and one tap to share the report as text |
 | **Semester** | Active-semester tab: hero with course count, task progress and overdue badge, the course list, other semesters one tap away; create, rename, activate and delete semesters (courses cascade, their tasks move to the Inbox) |
 | **Tasks** | Type, deadline, priority, status, weight, estimate, individual or group, with subtasks, tags and attachments |
 | **Task filters and grouping** | Category, status (not done or done) and sort (nearest or farthest deadline, recently created, highest priority) on one shared filter sheet; optionally grouped by category with per-group counts |

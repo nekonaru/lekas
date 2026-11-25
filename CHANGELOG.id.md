@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.30.0
+
+Rapor SMA kini membawa kehadiran berdampingan dengan nilai, seperti rapor asli.
+
+### Fitur baru
+
+- **Kehadiran di rapor.** Setiap baris mata pelajaran menampilkan jumlah pertemuan hadir dan terencana dari catatan kehadiran, dan rekap teks yang dibagikan memuat angka yang sama.
+
 ## v1.29.0
 
 Streak yang menghitung semua aktivitas belajarmu, dan jeda yang layak setelah setiap sesi fokus.
