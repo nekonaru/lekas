@@ -2586,4 +2586,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get skipBreak => 'Lewati istirahat';
+
+  @override
+  String raportAttendance(Object attended, Object planned) {
+    return '$attended/$planned hadir';
+  }
 }

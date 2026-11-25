@@ -4723,6 +4723,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lewati istirahat'**
   String get skipBreak;
+
+  /// No description provided for @raportAttendance.
+  ///
+  /// In id, this message translates to:
+  /// **'{attended}/{planned} hadir'**
+  String raportAttendance(Object attended, Object planned);
 }
 
 class _AppLocalizationsDelegate

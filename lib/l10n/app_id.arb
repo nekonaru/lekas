@@ -867,5 +867,6 @@
   "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } },
   "studyStreakLabel": "hari belajar beruntun",
   "breakTimerTitle": "Istirahat sebentar",
-  "skipBreak": "Lewati istirahat"
+  "skipBreak": "Lewati istirahat",
+  "raportAttendance": "{attended}/{planned} hadir"
 }

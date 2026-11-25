@@ -2584,4 +2584,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skipBreak => 'Skip break';
+
+  @override
+  String raportAttendance(Object attended, Object planned) {
+    return '$attended/$planned attended';
+  }
 }

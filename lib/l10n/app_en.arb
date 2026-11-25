@@ -867,5 +867,6 @@
   "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } },
   "studyStreakLabel": "Study days in a row",
   "breakTimerTitle": "Short break",
-  "skipBreak": "Skip break"
+  "skipBreak": "Skip break",
+  "raportAttendance": "{attended}/{planned} attended"
 }

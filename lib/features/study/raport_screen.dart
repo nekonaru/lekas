@@ -6,6 +6,7 @@ import '../../core/components/empty_state.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../domain/attendance.dart';
 import '../../domain/grades.dart';
 import '../../l10n/app_localizations.dart';
 import 'buku_nilai_screen.dart';
@@ -44,6 +45,7 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
 
     final scoreRepo = ref.read(scoreRepositoryProvider);
     final gradeRepo = ref.read(gradeComponentRepositoryProvider);
+    final attendanceRepo = ref.read(attendanceRepositoryProvider);
 
     final rows = <_RaportRow>[];
     for (final subject in subjects) {
@@ -59,7 +61,13 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
             component.key.trim().toLowerCase(): component.weightPercent,
         },
       );
-      rows.add(_RaportRow(subject: subject, average: average, count: scores.length));
+      final attendance = await attendanceRepo.summaryFor(subject);
+      rows.add(_RaportRow(
+        subject: subject,
+        average: average,
+        count: scores.length,
+        attendance: attendance,
+      ));
     }
 
     final averages = [
@@ -92,7 +100,8 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
       for (final row in data.rows)
         row.average == null
             ? '${row.subject.name}: -'
-            : '${row.subject.name}: ${_avgText(row.average)}',
+            : '${row.subject.name}: ${_avgText(row.average)} '
+                '(${l10n.raportAttendance(row.attendance.attended, row.attendance.planned)})',
       '',
       '${l10n.raportAverage}: ${_avgText(data.average) ?? '-'}',
       '${l10n.kkmLabel}: ${data.kkm}',
@@ -243,11 +252,13 @@ class _RaportRow {
     required this.subject,
     required this.average,
     required this.count,
+    required this.attendance,
   });
 
   final Space subject;
   final double? average;
   final int count;
+  final AttendanceSummary attendance;
 }
 
 class _SubjectRow extends StatelessWidget {
@@ -289,8 +300,11 @@ class _SubjectRow extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
         subtitle: Text(
-          average == null ? l10n.noScoresYet : l10n.scoresCount(row.count),
+          '${average == null ? l10n.noScoresYet : l10n.scoresCount(row.count)} · '
+          '${l10n.raportAttendance(row.attendance.attended, row.attendance.planned)}',
           style: const TextStyle(fontSize: 12),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         trailing: average == null
             ? const Icon(Icons.chevron_right)
