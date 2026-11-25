@@ -2,6 +2,15 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.28.0
+
+A quiet end-of-day recap and an honest look at how long work actually takes.
+
+### New features
+
+- **Daily review.** A drawer entry shows today's finished tasks, open overdue work, focus minutes and habits checked, with one tap to share the recap as text.
+- **Estimate accuracy.** Study Stats compares estimated minutes with focus minutes actually recorded for those tasks, only when both exist, and shows how far over or under the estimate you landed.
+
 ## v1.27.0
 
 Finding anything in a growing Lekas database now takes one search box.

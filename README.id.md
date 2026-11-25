@@ -75,6 +75,8 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Tugas** | Tipe, deadline, prioritas, status, bobot, estimasi, individu atau kelompok, dengan subtugas, tag, dan lampiran |
 | **Filter dan pengelompokan tugas** | Kategori, status (belum selesai atau selesai), dan urutan (deadline terdekat atau terjauh, terbaru dibuat, prioritas tertinggi) dalam satu sheet filter; opsi pengelompokan per kategori dengan jumlah per grup |
 | **Cari semua data** | Satu entri di drawer mencari tugas, kartu belajar, kebiasaan, dan mata pelajaran dengan hasil dikelompokkan dan satu ketukan ke layar yang bersangkutan |
+| **Refleksi harian** | Rekap akhir hari yang bisa dibagikan: tugas selesai, tugas terlambat, menit fokus, dan kebiasaan |
+| **Akurasi estimasi** | Statistik Belajar membandingkan menit yang direncanakan dengan menit fokus yang benar-benar tercatat |
 | **Berkas per mata kuliah** | Modul, catatan, soal, dan arsip di pohon folder sungguhan pada penyimpanan HP; setiap mata kuliah punya subfolder sendiri, terlihat oleh file manager apa pun |
 | **Kehadiran per mata kuliah** | Tandai hadir, absen, izin, atau sakit per pertemuan; setiap catatan lama bisa diubah atau dihapus |
 | **Daftar bawaan per mata kuliah** | Bisa diedit, diurutkan ulang, dan dicentang per item |
@@ -321,7 +323,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (590 tes) |
+| `flutter test` | Seluruh suite harus lulus (593 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

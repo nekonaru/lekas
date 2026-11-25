@@ -2,6 +2,15 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.28.0
+
+Rekap akhir hari yang tenang dan gambaran jujur tentang berapa lama pekerjaan benar-benar berlangsung.
+
+### Fitur baru
+
+- **Refleksi harian.** Entri di drawer menampilkan tugas selesai hari ini, tugas terlambat yang masih terbuka, menit fokus, dan kebiasaan yang dicentang, dengan satu ketukan untuk membagikan rekap sebagai teks.
+- **Akurasi estimasi.** Statistik Belajar membandingkan menit estimasi dengan menit fokus yang benar-benar tercatat untuk tugas itu, hanya saat keduanya ada, dan menunjukkan seberapa jauh kamu meleset.
+
 ## v1.27.0
 
 Menemukan apa pun di database Lekas yang makin besar kini cukup satu kolom pencarian.
