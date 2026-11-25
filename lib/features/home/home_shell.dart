@@ -10,6 +10,7 @@ import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/quick_add_suara_screen.dart';
 import '../tasks/saved_filter_screen.dart';
+import '../tasks/daily_review_screen.dart';
 import '../tasks/search_filter_screen.dart';
 import '../tasks/statistik_rekap_screen.dart';
 import '../tasks/tautan_cepat_screen.dart';
@@ -238,6 +239,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.access_time,
             l10n.morningNightSummaryShort,
             () => _push(const MorningNightSummaryScreen()),
+          ),
+          _drawerTile(
+            Icons.assignment_turned_in_outlined,
+            l10n.dailyReviewTitle,
+            () => _push(const DailyReviewScreen()),
           ),
           _drawerTile(
             Icons.warning_amber_outlined,

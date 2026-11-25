@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../core/components/activity_heatmap.dart';
 import '../../core/components/empty_state.dart';
 import '../../data/providers.dart';
+import '../../domain/daily_review.dart';
 import '../../domain/habits.dart';
 import '../../domain/study_stats.dart';
 import '../../l10n/app_localizations.dart';
@@ -179,6 +180,7 @@ class _StatistikBelajarScreenState
       donePrevWeek: donePrevWeek,
       taskGoal: taskGoal,
       focusGoal: focusGoal,
+      accuracy: estimateAccuracy(tasks, sessions),
     );
   }
 
@@ -267,6 +269,36 @@ class _StatistikBelajarScreenState
                       )
                     : null,
               ),
+              if (data.accuracy.sampleCount > 0) ...[
+                const SizedBox(height: 10),
+                Material(
+                  color: colors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(18),
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    leading: Icon(Icons.speed_outlined, color: colors.primary),
+                    title: Text(
+                      l10n.estimateLabel,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    subtitle: Text(
+                      l10n.estimateDetail(
+                        data.accuracy.plannedMinutes,
+                        data.accuracy.actualMinutes,
+                      ),
+                    ),
+                    trailing: Text(
+                      l10n.estimateDiff(data.accuracy.excessPercent),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: data.accuracy.excessPercent > 0
+                                ? colors.error
+                                : colors.primary,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 10),
               // Editable weekly promises, measured from the same data.
               Material(
@@ -506,6 +538,7 @@ class _StatsData {
     required this.donePrevWeek,
     required this.taskGoal,
     required this.focusGoal,
+    required this.accuracy,
   });
 
   final List<int> buckets;
@@ -521,6 +554,7 @@ class _StatsData {
   final int donePrevWeek;
   final int taskGoal;
   final int focusGoal;
+  final EstimateAccuracy accuracy;
 }
 
 class _SubjectMinutes {

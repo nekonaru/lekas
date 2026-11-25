@@ -2533,4 +2533,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get globalSearchSectionSpaces => 'Subjects';
+
+  @override
+  String get dailyReviewTitle => 'Daily review';
+
+  @override
+  String dailyReviewCompleted(int count) {
+    return '$count tasks completed today';
+  }
+
+  @override
+  String dailyReviewOverdue(int count) {
+    return '$count still overdue';
+  }
+
+  @override
+  String dailyReviewFocus(int count) {
+    return '$count minutes of focus';
+  }
+
+  @override
+  String dailyReviewHabits(int checked, int total) {
+    return '$checked of $total habits checked';
+  }
+
+  @override
+  String get dailyReviewShare => 'Share today\'s review';
+
+  @override
+  String get dailyReviewEmpty => 'Nothing logged today yet.';
+
+  @override
+  String get estimateLabel => 'Estimate vs focus';
+
+  @override
+  String estimateDetail(int planned, int actual) {
+    return '$planned min planned, $actual min actual';
+  }
+
+  @override
+  String estimateDiff(int percent) {
+    return '$percent% over estimate';
+  }
 }

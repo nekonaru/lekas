@@ -848,5 +848,21 @@
   "globalSearchSectionTasks": "Tugas",
   "globalSearchSectionCards": "Kartu Belajar",
   "globalSearchSectionHabits": "Kebiasaan",
-  "globalSearchSectionSpaces": "Mata Pelajaran"
+  "globalSearchSectionSpaces": "Mata Pelajaran",
+  "dailyReviewTitle": "Refleksi harian",
+  "dailyReviewCompleted": "{count} tugas selesai hari ini",
+  "@dailyReviewCompleted": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewOverdue": "{count} masih terlambat",
+  "@dailyReviewOverdue": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewFocus": "{count} menit fokus",
+  "@dailyReviewFocus": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewHabits": "{checked} dari {total} kebiasaan dicentang",
+  "@dailyReviewHabits": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "dailyReviewShare": "Bagikan refleksi hari ini",
+  "dailyReviewEmpty": "Belum ada yang tercatat hari ini.",
+  "estimateLabel": "Estimasi vs fokus",
+  "estimateDetail": "{planned} mnt direncanakan, {actual} mnt aktual",
+  "@estimateDetail": { "placeholders": { "planned": { "type": "int" }, "actual": { "type": "int" } } },
+  "estimateDiff": "{percent}% lebih lama dari estimasi",
+  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } }
 }

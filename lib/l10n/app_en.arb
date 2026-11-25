@@ -848,5 +848,21 @@
   "globalSearchSectionTasks": "Tasks",
   "globalSearchSectionCards": "Flashcards",
   "globalSearchSectionHabits": "Habits",
-  "globalSearchSectionSpaces": "Subjects"
+  "globalSearchSectionSpaces": "Subjects",
+  "dailyReviewTitle": "Daily review",
+  "dailyReviewCompleted": "{count} tasks completed today",
+  "@dailyReviewCompleted": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewOverdue": "{count} still overdue",
+  "@dailyReviewOverdue": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewFocus": "{count} minutes of focus",
+  "@dailyReviewFocus": { "placeholders": { "count": { "type": "int" } } },
+  "dailyReviewHabits": "{checked} of {total} habits checked",
+  "@dailyReviewHabits": { "placeholders": { "checked": { "type": "int" }, "total": { "type": "int" } } },
+  "dailyReviewShare": "Share today's review",
+  "dailyReviewEmpty": "Nothing logged today yet.",
+  "estimateLabel": "Estimate vs focus",
+  "estimateDetail": "{planned} min planned, {actual} min actual",
+  "@estimateDetail": { "placeholders": { "planned": { "type": "int" }, "actual": { "type": "int" } } },
+  "estimateDiff": "{percent}% over estimate",
+  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } }
 }

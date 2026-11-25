@@ -4645,6 +4645,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mata Pelajaran'**
   String get globalSearchSectionSpaces;
+
+  /// No description provided for @dailyReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Refleksi harian'**
+  String get dailyReviewTitle;
+
+  /// No description provided for @dailyReviewCompleted.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas selesai hari ini'**
+  String dailyReviewCompleted(int count);
+
+  /// No description provided for @dailyReviewOverdue.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} masih terlambat'**
+  String dailyReviewOverdue(int count);
+
+  /// No description provided for @dailyReviewFocus.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} menit fokus'**
+  String dailyReviewFocus(int count);
+
+  /// No description provided for @dailyReviewHabits.
+  ///
+  /// In id, this message translates to:
+  /// **'{checked} dari {total} kebiasaan dicentang'**
+  String dailyReviewHabits(int checked, int total);
+
+  /// No description provided for @dailyReviewShare.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan refleksi hari ini'**
+  String get dailyReviewShare;
+
+  /// No description provided for @dailyReviewEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada yang tercatat hari ini.'**
+  String get dailyReviewEmpty;
+
+  /// No description provided for @estimateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi vs fokus'**
+  String get estimateLabel;
+
+  /// No description provided for @estimateDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'{planned} mnt direncanakan, {actual} mnt aktual'**
+  String estimateDetail(int planned, int actual);
+
+  /// No description provided for @estimateDiff.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent}% lebih lama dari estimasi'**
+  String estimateDiff(int percent);
 }
 
 class _AppLocalizationsDelegate

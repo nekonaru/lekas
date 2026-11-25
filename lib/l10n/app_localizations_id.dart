@@ -2535,4 +2535,46 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get globalSearchSectionSpaces => 'Mata Pelajaran';
+
+  @override
+  String get dailyReviewTitle => 'Refleksi harian';
+
+  @override
+  String dailyReviewCompleted(int count) {
+    return '$count tugas selesai hari ini';
+  }
+
+  @override
+  String dailyReviewOverdue(int count) {
+    return '$count masih terlambat';
+  }
+
+  @override
+  String dailyReviewFocus(int count) {
+    return '$count menit fokus';
+  }
+
+  @override
+  String dailyReviewHabits(int checked, int total) {
+    return '$checked dari $total kebiasaan dicentang';
+  }
+
+  @override
+  String get dailyReviewShare => 'Bagikan refleksi hari ini';
+
+  @override
+  String get dailyReviewEmpty => 'Belum ada yang tercatat hari ini.';
+
+  @override
+  String get estimateLabel => 'Estimasi vs fokus';
+
+  @override
+  String estimateDetail(int planned, int actual) {
+    return '$planned mnt direncanakan, $actual mnt aktual';
+  }
+
+  @override
+  String estimateDiff(int percent) {
+    return '$percent% lebih lama dari estimasi';
+  }
 }
