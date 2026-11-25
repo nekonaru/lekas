@@ -2,6 +2,15 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.29.0
+
+A streak that counts all your study, and a proper pause after every focus session.
+
+### New features
+
+- **Study streak.** The streak in Study Stats now counts a day when you finished a task, ran a focus session or checked a habit, not only completed tasks.
+- **Break after focus.** Finishing a focus timer records the session and starts a five minute break automatically. The break can be skipped and never writes a focus session.
+
 ## v1.28.0
 
 A quiet end-of-day recap and an honest look at how long work actually takes.

@@ -2,6 +2,15 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.29.0
+
+Streak yang menghitung semua aktivitas belajarmu, dan jeda yang layak setelah setiap sesi fokus.
+
+### Fitur baru
+
+- **Streak belajar.** Streak di Statistik Belajar kini menghitung hari saat kamu menyelesaikan tugas, menjalankan sesi fokus, atau mencentang kebiasaan, tidak hanya tugas selesai.
+- **Jeda setelah fokus.** Timer fokus yang selesai menyimpan sesi dan otomatis memulai istirahat lima menit. Jeda bisa dilewati dan tidak pernah ditulis sebagai sesi fokus.
+
 ## v1.28.0
 
 Rekap akhir hari yang tenang dan gambaran jujur tentang berapa lama pekerjaan benar-benar berlangsung.

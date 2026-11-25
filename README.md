@@ -77,6 +77,8 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Global search** | One drawer entry searches tasks, flashcards, habits and subjects, with grouped results and one tap to the owning screen |
 | **Daily review** | A shareable end-of-day recap of finished tasks, overdue work, focus minutes and habits |
 | **Estimate accuracy** | Study Stats compares planned minutes with focus minutes actually recorded for those tasks |
+| **Study streak** | A day counts when you finish a task, run a focus session or check a habit |
+| **Break after focus** | A five minute break starts automatically after a focus session, with a skip button |
 | **Files per course** | Modules, notes, papers and archives under a real folder tree stored directly in phone storage; each course gets its own subfolder, visible to any file manager |
 | **Attendance per course** | Mark present, absent, excused or sick per meeting; every past record can be edited or deleted |
 | **Bring list per course** | Editable, reorderable and checkable per course |
@@ -323,7 +325,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (593 tests) |
+| `flutter test` | Must pass the full suite (594 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
