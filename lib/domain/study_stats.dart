@@ -3,6 +3,7 @@
 library;
 
 import '../data/database.dart' show FocusSession;
+import 'habits.dart' show dayKeyOf;
 
 /// Focus minutes per day for the last [days] days, oldest first.
 /// The bucket key is the local calendar day of each session.
@@ -46,6 +47,34 @@ int focusMinutesInWindow(
 }) =>
     focusMinutesByDay(sessions, endDay: endDay, days: days)
         .fold(0, (sum, minutes) => sum + minutes);
+
+/// Days with any study activity: a completed task, a focus session or a
+/// checked habit. Walks back from today (or yesterday when today is empty).
+int studyStreak({
+  required Iterable<int> completedAt,
+  required Iterable<FocusSession> sessions,
+  required Iterable<String> habitDays,
+  required DateTime today,
+}) {
+  final days = <String>{
+    for (final millis in completedAt)
+      dayKeyOf(DateTime.fromMillisecondsSinceEpoch(millis)),
+    for (final session in sessions)
+      dayKeyOf(DateTime.fromMillisecondsSinceEpoch(session.startedAt)),
+    ...habitDays,
+  };
+  final last = DateTime(today.year, today.month, today.day);
+  var streak = 0;
+  var cursor = last;
+  if (days.contains(dayKeyOf(cursor))) streak += 1;
+  while (true) {
+    cursor = cursor.subtract(const Duration(days: 1));
+    if (!days.contains(dayKeyOf(cursor))) break;
+    streak += 1;
+    if (streak > 3650) break;
+  }
+  return streak;
+}
 
 /// Consecutive days with at least one completed task, counting back from
 /// [today]. A today without a completion yet does not break the streak.

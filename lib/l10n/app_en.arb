@@ -864,5 +864,8 @@
   "estimateDetail": "{planned} min planned, {actual} min actual",
   "@estimateDetail": { "placeholders": { "planned": { "type": "int" }, "actual": { "type": "int" } } },
   "estimateDiff": "{percent}% over estimate",
-  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } }
+  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } },
+  "studyStreakLabel": "Study days in a row",
+  "breakTimerTitle": "Short break",
+  "skipBreak": "Skip break"
 }

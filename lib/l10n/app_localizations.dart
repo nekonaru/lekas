@@ -4705,6 +4705,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{percent}% lebih lama dari estimasi'**
   String estimateDiff(int percent);
+
+  /// No description provided for @studyStreakLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'hari belajar beruntun'**
+  String get studyStreakLabel;
+
+  /// No description provided for @breakTimerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Istirahat sebentar'**
+  String get breakTimerTitle;
+
+  /// No description provided for @skipBreak.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati istirahat'**
+  String get skipBreak;
 }
 
 class _AppLocalizationsDelegate

@@ -2577,4 +2577,13 @@ class AppLocalizationsId extends AppLocalizations {
   String estimateDiff(int percent) {
     return '$percent% lebih lama dari estimasi';
   }
+
+  @override
+  String get studyStreakLabel => 'hari belajar beruntun';
+
+  @override
+  String get breakTimerTitle => 'Istirahat sebentar';
+
+  @override
+  String get skipBreak => 'Lewati istirahat';
 }

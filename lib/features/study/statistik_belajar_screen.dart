@@ -111,6 +111,13 @@ class _StatistikBelajarScreenState
     final sessions = await focusRepo.getFocusSessionsSince(
       start14.millisecondsSinceEpoch,
     );
+    final habits =
+        await ref.read(habitRepositoryProvider).watchActiveHabits().first;
+    final habitDays = <String>{};
+    for (final habit in habits) {
+      final rows = await ref.read(habitRepositoryProvider).allChecksOf(habit.id);
+      habitDays.addAll(rows.map((row) => row.date));
+    }
     final tasks = await taskRepo.getTasks(includeInbox: true);
     final completed = tasks
         .where((task) => task.status == 'done' && task.completedAt != null)
@@ -171,7 +178,12 @@ class _StatistikBelajarScreenState
       todayMinutes: focusMinutesInWindow(sessions, endDay: today, days: 1),
       weekMinutes: weekMinutes,
       doneThisWeek: doneThisWeek,
-      streak: completionStreak(completed, today: today),
+      streak: studyStreak(
+        completedAt: completed,
+        sessions: sessions,
+        habitDays: habitDays,
+        today: today,
+      ),
       totalCards: cards.total,
       dueCards: cards.due,
       completedByDay: completedByDay,
@@ -242,7 +254,7 @@ class _StatistikBelajarScreenState
                     child: _StatCard(
                       value: '${data.streak}',
                       unit: '',
-                      label: l10n.completionStreakLabel,
+                      label: l10n.studyStreakLabel,
                       icon: Icons.local_fire_department_outlined,
                     ),
                   ),

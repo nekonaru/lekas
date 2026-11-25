@@ -81,4 +81,22 @@ void main() {
     expect(over.ratio, 1);
     expect(over.reached, isTrue);
   });
+
+  test('study streak counts any activity, not just tasks', () {
+    final today = DateTime(2026, 11, 26, 15);
+    final streak = studyStreak(
+      completedAt: [DateTime(2026, 11, 24).millisecondsSinceEpoch],
+      sessions: [
+        FocusSession(
+          id: 's1',
+          taskId: 't1',
+          startedAt: DateTime(2026, 11, 25, 9).millisecondsSinceEpoch,
+          durationSec: 1500,
+        ),
+      ],
+      habitDays: ['2026-11-26'],
+      today: today,
+    );
+    expect(streak, 3);
+  });
 }

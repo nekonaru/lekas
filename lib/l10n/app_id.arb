@@ -864,5 +864,8 @@
   "estimateDetail": "{planned} mnt direncanakan, {actual} mnt aktual",
   "@estimateDetail": { "placeholders": { "planned": { "type": "int" }, "actual": { "type": "int" } } },
   "estimateDiff": "{percent}% lebih lama dari estimasi",
-  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } }
+  "@estimateDiff": { "placeholders": { "percent": { "type": "int" } } },
+  "studyStreakLabel": "hari belajar beruntun",
+  "breakTimerTitle": "Istirahat sebentar",
+  "skipBreak": "Lewati istirahat"
 }

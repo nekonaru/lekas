@@ -2575,4 +2575,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String estimateDiff(int percent) {
     return '$percent% over estimate';
   }
+
+  @override
+  String get studyStreakLabel => 'Study days in a row';
+
+  @override
+  String get breakTimerTitle => 'Short break';
+
+  @override
+  String get skipBreak => 'Skip break';
 }
