@@ -2,6 +2,18 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.31.0
+
+Missing a habit no longer has to break your streak.
+
+### New features
+
+- **Protected rest days.** Long press a habit day to mark it as rest: the streak continues, but the day does not count as a check-in. A tap clears it in one step, and rest days are distinct from real check-ins in the history.
+
+### Improvements
+
+- **Schema 9.** Habit check rows now carry a kind; migration from older releases happens automatically and backups carry the new field.
+
 ## v1.30.0
 
 The SMA report card now carries attendance next to grades, like a real rapor.

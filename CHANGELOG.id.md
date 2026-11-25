@@ -2,6 +2,18 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.31.0
+
+Lupa satu hari kebiasaan kini tidak harus memutus streakmu.
+
+### Fitur baru
+
+- **Hari libur yang dilindungi.** Tekan lama sebuah hari pada kebiasaan untuk menandainya sebagai libur: streak tetap berlanjut, tetapi hari itu tidak dihitung sebagai centangan. Satu ketukan membersihkannya, dan hari libur dibedakan dari centangan asli di riwayat.
+
+### Peningkatan
+
+- **Skema 9.** Baris centangan kebiasaan kini punya jenis; peningkatan dari rilis lama berjalan otomatis dan cadangan membawa kolom baru itu.
+
 ## v1.30.0
 
 Rapor SMA kini membawa kehadiran berdampingan dengan nilai, seperti rapor asli.

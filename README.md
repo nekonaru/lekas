@@ -96,7 +96,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Today screen** | Urgency score with overdue, today, waiting and someday sections, plus an undo snackbar; every card shows its category or course |
 | **Smart actions** | Long press for multi select and bulk actions, swipe right to finish, swipe left to postpone |
 | **Focus mode** | At most three tasks a day, a 25/5 focus timer, and what did not fit carries over (5.24) |
-| **Habit tracker** | Kebiasaan: check-off habits with a 7-day grid, a streak counter, a 90-day check-in heatmap, an optional daily reminder with a chosen time and the weekly total in the drawer's Study section |
+| **Habit tracker** | Kebiasaan: check-off habits with a 7-day grid, long-press rest days that protect the streak, a 90-day check-in heatmap, an optional daily reminder with a chosen time and the weekly total in the drawer's Study section |
 | **Flashcards on Today** | A dismissible banner on Today opens the deck whenever cards are due |
 
 ### Study
@@ -325,7 +325,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (594 tests) |
+| `flutter test` | Must pass the full suite (596 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
