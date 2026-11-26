@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/drift.dart' show Value, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lekas/data/database.dart';
@@ -61,5 +61,24 @@ void main() {
     ]);
     final all = await repo.getTasks(includeInbox: true);
     expect(all.where((row) => row.id != task.id), hasLength(1));
+  });
+
+  test('weekday repeats land on the next named weekday', () async {
+    final (_, repo, task) = await seeded(
+      deadlineMs: DateTime(2026, 11, 23, 23, 59).millisecondsSinceEpoch,
+    );
+    await repo.updateTask(task.copyWith(
+      repeatKind: const Value('weekdays'),
+      repeatDays: const Value('1,3'),
+    ));
+    await repo.markDone(task.id);
+    final next = (await repo.getTasks(includeInbox: true))
+        .where((row) => row.id != task.id)
+        .single;
+    // Monday 23 November, next named day is Wednesday 25 November.
+    expect(
+      DateTime.fromMillisecondsSinceEpoch(next.deadline!),
+      DateTime(2026, 11, 25, 23, 59),
+    );
   });
 }

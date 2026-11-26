@@ -139,12 +139,28 @@ class TaskRepository {
     final baseMs = task.deadline ?? task.createdAt;
     final from = DateTime.fromMillisecondsSinceEpoch(baseMs);
     final every = task.repeatEvery ?? 1;
-    final DateTime next;
+    DateTime next;
     switch (task.repeatKind) {
       case 'daily':
         next = from.add(Duration(days: every));
       case 'weekly':
         next = from.add(Duration(days: 7 * every));
+      case 'weekdays':
+        final wanted = (task.repeatDays ?? '')
+            .split(',')
+            .map((part) => int.tryParse(part.trim()))
+            .whereType<int>()
+            .where((day) => day >= 1 && day <= 7)
+            .toSet();
+        if (wanted.isEmpty) return null;
+        next = from;
+        for (var step = 1; step <= 7; step++) {
+          final candidate = from.add(Duration(days: step));
+          if (wanted.contains(candidate.weekday)) {
+            next = candidate;
+            break;
+          }
+        }
       case 'monthly':
         // Dart rolls over when a day does not exist in the target month
         // (Jan 31 + 1 month would be Mar 3), so clamp to the month's last day.
@@ -169,6 +185,7 @@ class TaskRepository {
       completedAt: const Value(null),
       repeatKind: Value(task.repeatKind),
       repeatEvery: Value(task.repeatEvery),
+      repeatDays: Value(task.repeatDays),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       deadline: task.deadline != null ? Value(next.millisecondsSinceEpoch) : const Value.absent(),

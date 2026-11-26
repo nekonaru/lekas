@@ -110,6 +110,7 @@ class Tasks extends Table {
   TextColumn get parentId => text().nullable().references(Tasks, #id)();
   TextColumn get repeatKind => text().nullable()();
   IntColumn get repeatEvery => integer().nullable()();
+  TextColumn get repeatDays => text().nullable()();
   TextColumn get sourceText => text().nullable()();
   IntColumn get createdAt => integer()();
   IntColumn get completedAt => integer().nullable()();
@@ -481,7 +482,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -640,6 +641,10 @@ class AppDatabase extends _$AppDatabase {
             // Cards can be QA, cloze or multiple choice (schema 10).
             await m.addColumn(flashCards, flashCards.kind);
             await m.addColumn(flashCards, flashCards.options);
+          }
+          if (from >= 10 && from < 11) {
+            // Repeats can name specific weekdays (schema 11).
+            await m.addColumn(tasks, tasks.repeatDays);
           }
         },
       );

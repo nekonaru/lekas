@@ -2650,4 +2650,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transcriptTitle => 'GPA projection';
+
+  @override
+  String get repeatWeekdays => 'On specific days';
+
+  @override
+  String get repeatWeekdaysSubtitle => 'Pick the weekdays a task repeats on';
+
+  @override
+  String get examPlanAction => 'Make a study plan';
+
+  @override
+  String examPlanCreated(int count) {
+    return '$count study tasks created';
+  }
+
+  @override
+  String examPlanTask(String title) {
+    return 'Review for $title';
+  }
 }

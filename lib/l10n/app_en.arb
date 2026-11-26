@@ -888,5 +888,12 @@
   "clozeHint": "Write ____ in the front for the blank.",
   "choicePickPrompt": "Pick the right answer",
   "finalGradeValue": "Final grade (0-100)",
-  "transcriptTitle": "GPA projection"
+  "transcriptTitle": "GPA projection",
+  "repeatWeekdays": "On specific days",
+  "repeatWeekdaysSubtitle": "Pick the weekdays a task repeats on",
+  "examPlanAction": "Make a study plan",
+  "examPlanCreated": "{count} study tasks created",
+  "@examPlanCreated": { "placeholders": { "count": { "type": "int" } } },
+  "examPlanTask": "Review for {title}",
+  "@examPlanTask": { "placeholders": { "title": { "type": "String" } } }
 }

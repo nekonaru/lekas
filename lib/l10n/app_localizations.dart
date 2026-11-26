@@ -4843,6 +4843,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Proyeksi IPK'**
   String get transcriptTitle;
+
+  /// No description provided for @repeatWeekdays.
+  ///
+  /// In id, this message translates to:
+  /// **'Pada hari tertentu'**
+  String get repeatWeekdays;
+
+  /// No description provided for @repeatWeekdaysSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih hari dalam minggu saat tugas diulang'**
+  String get repeatWeekdaysSubtitle;
+
+  /// No description provided for @examPlanAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat rencana belajar'**
+  String get examPlanAction;
+
+  /// No description provided for @examPlanCreated.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} tugas belajar dibuat'**
+  String examPlanCreated(int count);
+
+  /// No description provided for @examPlanTask.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulas untuk {title}'**
+  String examPlanTask(String title);
 }
 
 class _AppLocalizationsDelegate

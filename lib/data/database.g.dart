@@ -2253,6 +2253,17 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _repeatDaysMeta = const VerificationMeta(
+    'repeatDays',
+  );
+  @override
+  late final GeneratedColumn<String> repeatDays = GeneratedColumn<String>(
+    'repeat_days',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _sourceTextMeta = const VerificationMeta(
     'sourceText',
   );
@@ -2334,6 +2345,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     parentId,
     repeatKind,
     repeatEvery,
+    repeatDays,
     sourceText,
     createdAt,
     completedAt,
@@ -2521,6 +2533,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         ),
       );
     }
+    if (data.containsKey('repeat_days')) {
+      context.handle(
+        _repeatDaysMeta,
+        repeatDays.isAcceptableOrUnknown(data['repeat_days']!, _repeatDaysMeta),
+      );
+    }
     if (data.containsKey('source_text')) {
       context.handle(
         _sourceTextMeta,
@@ -2663,6 +2681,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         DriftSqlType.int,
         data['${effectivePrefix}repeat_every'],
       ),
+      repeatDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}repeat_days'],
+      ),
       sourceText: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}source_text'],
@@ -2717,6 +2739,7 @@ class Task extends DataClass implements Insertable<Task> {
   final String? parentId;
   final String? repeatKind;
   final int? repeatEvery;
+  final String? repeatDays;
   final String? sourceText;
   final int createdAt;
   final int? completedAt;
@@ -2747,6 +2770,7 @@ class Task extends DataClass implements Insertable<Task> {
     this.parentId,
     this.repeatKind,
     this.repeatEvery,
+    this.repeatDays,
     this.sourceText,
     required this.createdAt,
     this.completedAt,
@@ -2813,6 +2837,9 @@ class Task extends DataClass implements Insertable<Task> {
     }
     if (!nullToAbsent || repeatEvery != null) {
       map['repeat_every'] = Variable<int>(repeatEvery);
+    }
+    if (!nullToAbsent || repeatDays != null) {
+      map['repeat_days'] = Variable<String>(repeatDays);
     }
     if (!nullToAbsent || sourceText != null) {
       map['source_text'] = Variable<String>(sourceText);
@@ -2886,6 +2913,9 @@ class Task extends DataClass implements Insertable<Task> {
       repeatEvery: repeatEvery == null && nullToAbsent
           ? const Value.absent()
           : Value(repeatEvery),
+      repeatDays: repeatDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(repeatDays),
       sourceText: sourceText == null && nullToAbsent
           ? const Value.absent()
           : Value(sourceText),
@@ -2930,6 +2960,7 @@ class Task extends DataClass implements Insertable<Task> {
       parentId: serializer.fromJson<String?>(json['parentId']),
       repeatKind: serializer.fromJson<String?>(json['repeatKind']),
       repeatEvery: serializer.fromJson<int?>(json['repeatEvery']),
+      repeatDays: serializer.fromJson<String?>(json['repeatDays']),
       sourceText: serializer.fromJson<String?>(json['sourceText']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       completedAt: serializer.fromJson<int?>(json['completedAt']),
@@ -2965,6 +2996,7 @@ class Task extends DataClass implements Insertable<Task> {
       'parentId': serializer.toJson<String?>(parentId),
       'repeatKind': serializer.toJson<String?>(repeatKind),
       'repeatEvery': serializer.toJson<int?>(repeatEvery),
+      'repeatDays': serializer.toJson<String?>(repeatDays),
       'sourceText': serializer.toJson<String?>(sourceText),
       'createdAt': serializer.toJson<int>(createdAt),
       'completedAt': serializer.toJson<int?>(completedAt),
@@ -2998,6 +3030,7 @@ class Task extends DataClass implements Insertable<Task> {
     Value<String?> parentId = const Value.absent(),
     Value<String?> repeatKind = const Value.absent(),
     Value<int?> repeatEvery = const Value.absent(),
+    Value<String?> repeatDays = const Value.absent(),
     Value<String?> sourceText = const Value.absent(),
     int? createdAt,
     Value<int?> completedAt = const Value.absent(),
@@ -3036,6 +3069,7 @@ class Task extends DataClass implements Insertable<Task> {
     parentId: parentId.present ? parentId.value : this.parentId,
     repeatKind: repeatKind.present ? repeatKind.value : this.repeatKind,
     repeatEvery: repeatEvery.present ? repeatEvery.value : this.repeatEvery,
+    repeatDays: repeatDays.present ? repeatDays.value : this.repeatDays,
     sourceText: sourceText.present ? sourceText.value : this.sourceText,
     createdAt: createdAt ?? this.createdAt,
     completedAt: completedAt.present ? completedAt.value : this.completedAt,
@@ -3086,6 +3120,9 @@ class Task extends DataClass implements Insertable<Task> {
       repeatEvery: data.repeatEvery.present
           ? data.repeatEvery.value
           : this.repeatEvery,
+      repeatDays: data.repeatDays.present
+          ? data.repeatDays.value
+          : this.repeatDays,
       sourceText: data.sourceText.present
           ? data.sourceText.value
           : this.sourceText,
@@ -3125,6 +3162,7 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('parentId: $parentId, ')
           ..write('repeatKind: $repeatKind, ')
           ..write('repeatEvery: $repeatEvery, ')
+          ..write('repeatDays: $repeatDays, ')
           ..write('sourceText: $sourceText, ')
           ..write('createdAt: $createdAt, ')
           ..write('completedAt: $completedAt, ')
@@ -3160,6 +3198,7 @@ class Task extends DataClass implements Insertable<Task> {
     parentId,
     repeatKind,
     repeatEvery,
+    repeatDays,
     sourceText,
     createdAt,
     completedAt,
@@ -3194,6 +3233,7 @@ class Task extends DataClass implements Insertable<Task> {
           other.parentId == this.parentId &&
           other.repeatKind == this.repeatKind &&
           other.repeatEvery == this.repeatEvery &&
+          other.repeatDays == this.repeatDays &&
           other.sourceText == this.sourceText &&
           other.createdAt == this.createdAt &&
           other.completedAt == this.completedAt &&
@@ -3226,6 +3266,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String?> parentId;
   final Value<String?> repeatKind;
   final Value<int?> repeatEvery;
+  final Value<String?> repeatDays;
   final Value<String?> sourceText;
   final Value<int> createdAt;
   final Value<int?> completedAt;
@@ -3257,6 +3298,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.parentId = const Value.absent(),
     this.repeatKind = const Value.absent(),
     this.repeatEvery = const Value.absent(),
+    this.repeatDays = const Value.absent(),
     this.sourceText = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.completedAt = const Value.absent(),
@@ -3289,6 +3331,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.parentId = const Value.absent(),
     this.repeatKind = const Value.absent(),
     this.repeatEvery = const Value.absent(),
+    this.repeatDays = const Value.absent(),
     this.sourceText = const Value.absent(),
     required int createdAt,
     this.completedAt = const Value.absent(),
@@ -3324,6 +3367,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<String>? parentId,
     Expression<String>? repeatKind,
     Expression<int>? repeatEvery,
+    Expression<String>? repeatDays,
     Expression<String>? sourceText,
     Expression<int>? createdAt,
     Expression<int>? completedAt,
@@ -3356,6 +3400,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (parentId != null) 'parent_id': parentId,
       if (repeatKind != null) 'repeat_kind': repeatKind,
       if (repeatEvery != null) 'repeat_every': repeatEvery,
+      if (repeatDays != null) 'repeat_days': repeatDays,
       if (sourceText != null) 'source_text': sourceText,
       if (createdAt != null) 'created_at': createdAt,
       if (completedAt != null) 'completed_at': completedAt,
@@ -3390,6 +3435,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Value<String?>? parentId,
     Value<String?>? repeatKind,
     Value<int?>? repeatEvery,
+    Value<String?>? repeatDays,
     Value<String?>? sourceText,
     Value<int>? createdAt,
     Value<int?>? completedAt,
@@ -3422,6 +3468,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       parentId: parentId ?? this.parentId,
       repeatKind: repeatKind ?? this.repeatKind,
       repeatEvery: repeatEvery ?? this.repeatEvery,
+      repeatDays: repeatDays ?? this.repeatDays,
       sourceText: sourceText ?? this.sourceText,
       createdAt: createdAt ?? this.createdAt,
       completedAt: completedAt ?? this.completedAt,
@@ -3506,6 +3553,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (repeatEvery.present) {
       map['repeat_every'] = Variable<int>(repeatEvery.value);
     }
+    if (repeatDays.present) {
+      map['repeat_days'] = Variable<String>(repeatDays.value);
+    }
     if (sourceText.present) {
       map['source_text'] = Variable<String>(sourceText.value);
     }
@@ -3554,6 +3604,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('parentId: $parentId, ')
           ..write('repeatKind: $repeatKind, ')
           ..write('repeatEvery: $repeatEvery, ')
+          ..write('repeatDays: $repeatDays, ')
           ..write('sourceText: $sourceText, ')
           ..write('createdAt: $createdAt, ')
           ..write('completedAt: $completedAt, ')
@@ -16050,6 +16101,7 @@ typedef $$TasksTableCreateCompanionBuilder = TasksCompanion Function({
   Value<String?> parentId,
   Value<String?> repeatKind,
   Value<int?> repeatEvery,
+  Value<String?> repeatDays,
   Value<String?> sourceText,
   required int createdAt,
   Value<int?> completedAt,
@@ -16082,6 +16134,7 @@ typedef $$TasksTableUpdateCompanionBuilder = TasksCompanion Function({
   Value<String?> parentId,
   Value<String?> repeatKind,
   Value<int?> repeatEvery,
+  Value<String?> repeatDays,
   Value<String?> sourceText,
   Value<int> createdAt,
   Value<int?> completedAt,
@@ -16354,6 +16407,11 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
 
   ColumnFilters<int> get repeatEvery => $composableBuilder(
     column: $table.repeatEvery,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get repeatDays => $composableBuilder(
+    column: $table.repeatDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16698,6 +16756,11 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get repeatDays => $composableBuilder(
+    column: $table.repeatDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get sourceText => $composableBuilder(
     column: $table.sourceText,
     builder: (column) => ColumnOrderings(column),
@@ -16860,6 +16923,11 @@ class $$TasksTableAnnotationComposer
 
   GeneratedColumn<int> get repeatEvery => $composableBuilder(
     column: $table.repeatEvery,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get repeatDays => $composableBuilder(
+    column: $table.repeatDays,
     builder: (column) => column,
   );
 
@@ -17140,6 +17208,7 @@ class $$TasksTableTableManager
                 Value<String?> parentId = const Value.absent(),
                 Value<String?> repeatKind = const Value.absent(),
                 Value<int?> repeatEvery = const Value.absent(),
+                Value<String?> repeatDays = const Value.absent(),
                 Value<String?> sourceText = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int?> completedAt = const Value.absent(),
@@ -17171,6 +17240,7 @@ class $$TasksTableTableManager
                 parentId: parentId,
                 repeatKind: repeatKind,
                 repeatEvery: repeatEvery,
+                repeatDays: repeatDays,
                 sourceText: sourceText,
                 createdAt: createdAt,
                 completedAt: completedAt,
@@ -17204,6 +17274,7 @@ class $$TasksTableTableManager
                 Value<String?> parentId = const Value.absent(),
                 Value<String?> repeatKind = const Value.absent(),
                 Value<int?> repeatEvery = const Value.absent(),
+                Value<String?> repeatDays = const Value.absent(),
                 Value<String?> sourceText = const Value.absent(),
                 required int createdAt,
                 Value<int?> completedAt = const Value.absent(),
@@ -17235,6 +17306,7 @@ class $$TasksTableTableManager
                 parentId: parentId,
                 repeatKind: repeatKind,
                 repeatEvery: repeatEvery,
+                repeatDays: repeatDays,
                 sourceText: sourceText,
                 createdAt: createdAt,
                 completedAt: completedAt,

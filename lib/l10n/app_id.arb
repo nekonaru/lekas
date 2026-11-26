@@ -888,5 +888,12 @@
   "clozeHint": "Tulis ____ di depan kartu untuk titik-titiknya.",
   "choicePickPrompt": "Pilih jawaban yang benar",
   "finalGradeValue": "Nilai akhir (0-100)",
-  "transcriptTitle": "Proyeksi IPK"
+  "transcriptTitle": "Proyeksi IPK",
+  "repeatWeekdays": "Pada hari tertentu",
+  "repeatWeekdaysSubtitle": "Pilih hari dalam minggu saat tugas diulang",
+  "examPlanAction": "Buat rencana belajar",
+  "examPlanCreated": "{count} tugas belajar dibuat",
+  "@examPlanCreated": { "placeholders": { "count": { "type": "int" } } },
+  "examPlanTask": "Ulas untuk {title}",
+  "@examPlanTask": { "placeholders": { "title": { "type": "String" } } }
 }

@@ -2651,4 +2651,24 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get transcriptTitle => 'Proyeksi IPK';
+
+  @override
+  String get repeatWeekdays => 'Pada hari tertentu';
+
+  @override
+  String get repeatWeekdaysSubtitle =>
+      'Pilih hari dalam minggu saat tugas diulang';
+
+  @override
+  String get examPlanAction => 'Buat rencana belajar';
+
+  @override
+  String examPlanCreated(int count) {
+    return '$count tugas belajar dibuat';
+  }
+
+  @override
+  String examPlanTask(String title) {
+    return 'Ulas untuk $title';
+  }
 }
