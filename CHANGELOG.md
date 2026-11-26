@@ -2,6 +2,22 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v2.0.0
+
+The big study update: focus, flashcards and grades all gain a second dimension, and repeating tasks and exam prep become smarter.
+
+### New features
+
+- **Focus sessions with adjustable rhythm.** Work and break minutes are persisted, with presets, automatic breaks and a day-grouped session log showing task titles and total minutes.
+- **Three flashcard types.** Question-answer, fill-in-the-blank with `____`, and multiple choice, carried through the editor, review screen and CSV round trip.
+- **College grade book and GPA projection.** Courses carry a numeric final grade, open the grade book and contribute to a semester GPA projection, while SMA keeps its KKM report card.
+- **Weekday repeats.** Repeating tasks can name specific weekdays, created from a weekday picker with localized day names.
+- **Exam study plans.** One tap on an exam creates review tasks seven, three and one days before the deadline, skipping dates that already passed.
+
+### Improvements
+
+- **Schemas 10 and 11** add card types and repeat weekdays with automatic migration, index and migration coverage.
+
 ## v1.34.0
 
 A larger update: focus sessions become a real routine, flashcards gain two new types, and college gets the grade tools that were school-only.

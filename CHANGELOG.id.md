@@ -2,6 +2,22 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v2.0.0
+
+Update belajar besar besaran: fokus, kartu, dan nilai masing-masing mendapat dimensi baru, sementara tugas berulang dan persiapan ujian makin pintar.
+
+### Fitur baru
+
+- **Sesi fokus dengan ritme yang bisa diatur.** Menit kerja dan istirahat tersimpan, dengan preset, jeda otomatis, dan log sesi per hari yang menampilkan judul tugas serta total menit.
+- **Tiga tipe kartu belajar.** Pertanyaan-jawaban, isian titik-titik dengan `____`, dan pilihan ganda, semuanya didukung editor, layar ulasan, dan ekspor/impor CSV.
+- **Buku nilai dan proyeksi IPK Kuliah.** Mata kuliah menyimpan nilai akhir numerik, membuka buku nilai, dan menyumbang ke proyeksi IPK semester, sementara SMA tetap memakai rapor KKM.
+- **Pengulangan per hari.** Tugas berulang bisa menyebut hari tertentu, dibuat dari pemilih hari dengan nama hari lokal.
+- **Rencana belajar ujian.** Satu ketukan pada ujian membuat tugas ulasan tujuh, tiga, dan satu hari sebelum deadline, melewati tanggal yang sudah terlewat.
+
+### Peningkatan
+
+- **Skema 10 dan 11** menambah tipe kartu dan hari pengulangan dengan migrasi otomatis serta pengujian indeks dan migrasi.
+
 ## v1.34.0
 
 Update lebih besar: sesi fokus jadi rutinitas nyata, kartu belajar dapat dua tipe baru, dan Kuliah mendapat alat nilai yang dulu hanya untuk SMA.

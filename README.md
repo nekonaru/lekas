@@ -85,9 +85,11 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | **Task dependencies** | Prerequisites per task; blocked tasks wait in their own section, a finished prerequisite sends one soft "ready to start" notice, and a save that would close a loop is refused |
 | **Personal target and grade prediction** | A target date before the deadline, plus grade prediction inside a space |
 | **Inbox and trash** | Quick capture without a course (the Uncategorized row on the Categories tab), and a trash that keeps deleted tasks restorable |
-| **Recurring tasks** | Daily, weekly or monthly repeats; completing one in Today creates the next with the same rhythm |
+| **Recurring tasks** | Daily, weekly, monthly or named weekdays; completing one in Today creates the next with the same rhythm |
 | **Saved search views** | Save the current query, category, type, status and sort as a view and reopen it in one tap from Saved Views |
 | **Quick links** | Your own drawer links to the sites you open every day (portal, e-learning, library), stored and opened through the platform channel |
+| **Study plans** | One tap on an exam creates review tasks seven, three and one days before the deadline |
+| **GPA projection** | College courses carry a numeric final grade and contribute to a semester GPA projection alongside the SMA report card |
 
 ### Today and Focus
 
@@ -95,7 +97,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 |---------|-------------|
 | **Today screen** | Urgency score with overdue, today, waiting and someday sections, plus an undo snackbar; every card shows its category or course |
 | **Smart actions** | Long press for multi select and bulk actions, swipe right to finish, swipe left to postpone |
-| **Focus mode** | At most three tasks a day, a 25/5 focus timer, and what did not fit carries over (5.24) |
+| **Focus mode** | At most three tasks a day, an adjustable focus/break timer with an automatic break, and what did not fit carries over (5.24) |
 | **Habit tracker** | Kebiasaan: check-off habits with a 7-day grid, long-press rest days that protect the streak, a 90-day check-in heatmap, an optional daily reminder with a chosen time and the weekly total in the drawer's Study section |
 | **Flashcards on Today** | A dismissible banner on Today opens the deck whenever cards are due |
 
@@ -104,7 +106,7 @@ Type one line and the parser reads the deadline, the course and the priority. Sw
 | Feature | Description |
 |---------|-------------|
 | **Flashcards** | A general deck plus one deck per subject with spaced repetition (SM-2); tap to flip, grade Again, Hard or Easy, due counts visible per deck, per-deck CSV share and import, an optional daily review reminder, and question-answer, cloze and multiple-choice cards |
-| **Focus timer** | A 15, 25 or 45 minute timer inside Focus mode that records every session |
+| **Focus timer** | An adjustable work and break timer inside Focus mode that records every session, with a day-grouped session log and total minutes |
 | **Study Stats** | Focus minutes today and this week, the day streak of completed tasks, a 14-day bar chart, a 90-day activity heatmap, focus per subject and flashcard totals |
 | **CSV grade export** | Share a subject's score log as a CSV file for spreadsheets |
 | **Week-over-week scorecard** | Study Stats compares this week with last week with colored deltas for focus minutes and tasks completed |
@@ -325,7 +327,7 @@ flutter test
 | Check | Requirement |
 |-------|-------------|
 | `flutter analyze` | Must report **No issues found** (zero errors, zero warnings) |
-| `flutter test` | Must pass the full suite (601 tests) |
+| `flutter test` | Must pass the full suite (602 tests) |
 
 Lints are enforced through `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 

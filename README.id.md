@@ -85,9 +85,11 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | **Dependensi tugas** | Prasyarat per tugas; tugas yang terblokir menunggu di bagian tersendiri, prasyarat yang selesai mengirim satu pemberitahuan lembut "siap dimulai", dan penyimpanan yang akan membentuk putaran ditolak |
 | **Target pribadi dan prediksi nilai** | Tanggal target sebelum deadline, plus prediksi nilai di dalam sebuah space |
 | **Inbox dan tempat sampah** | Pencatatan cepat tanpa mata kuliah (baris Tanpa Kategori di tab Kategori), dan tempat sampah yang membuat tugas terhapus tetap bisa dipulihkan |
-| **Tugas berulang** | Berulang harian, mingguan, atau bulanan; mencentang selesai di Hari Ini membuat tugas berikutnya dengan ritme yang sama |
+| **Tugas berulang** | Berulang harian, mingguan, bulanan, atau pada hari tertentu; mencentang selesai di Hari Ini membuat tugas berikutnya dengan ritme yang sama |
 | **Tampilan pencarian tersimpan** | Simpan query, kategori, jenis, status, dan urutan sebagai tampilan dan buka kembali dengan satu ketukan dari Tampilan Tersimpan |
 | **Tautan cepat** | Tautan buatanmu di drawer ke situs yang biasa kamu buka (portal, e-learning, perpustakaan), tersimpan dan terbuka lewat channel platform |
+| **Rencana belajar** | Satu ketukan pada ujian membuat tugas ulasan tujuh, tiga, dan satu hari sebelum deadline |
+| **Proyeksi IPK** | Mata kuliah Kuliah menyimpan nilai akhir numerik dan menyumbang ke proyeksi IPK semester di samping rapor SMA |
 
 ### Hari Ini dan Fokus
 
@@ -95,7 +97,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 |-------|-----------|
 | **Layar Hari Ini** | Skor urgensi dengan bagian terlambat, hari ini, menunggu, dan suatu hari nanti, plus snackbar undo; setiap kartu membawa nama kategori atau mata kuliahnya |
 | **Aksi cerdas** | Tekan lama untuk pilih banyak dan aksi massal, geser kanan untuk menyelesaikan, geser kiri untuk menunda |
-| **Mode fokus** | Maksimal tiga tugas per hari, timer fokus 25/5, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
+| **Mode fokus** | Maksimal tiga tugas per hari, timer fokus dan istirahat yang bisa diatur dengan jeda otomatis, dan yang tidak muat dibawa ke hari berikutnya (5.24) |
 | **Pelacak kebiasaan** | Kebiasaan: centang kebiasaan harian dengan grid 7 hari, hari libur tekan-lama yang menjaga streak, heatmap centangan 90 hari, pengingat harian opsional dengan jam pilihan, dan total mingguan di bagian Belajar pada drawer |
 | **Kartu belajar di Hari Ini** | Banner yang bisa ditutup muncul di Hari Ini saat kartu jatuh tempo |
 
@@ -104,7 +106,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 | Fitur | Deskripsi |
 |-------|-----------|
 | **Kartu Belajar** | Deck umum plus satu deck per mata pelajaran dengan pengulangan berjeda (SM-2); ketuk untuk membalik, nilai Lupa, Sulit, atau Mudah, jumlah jatuh tempo terlihat per deck, ekspor/impor CSV per deck, pengingat ulasan harian opsional, serta kartu tanya-jawab, isian, dan pilihan ganda |
-| **Timer fokus** | Timer 15, 25, atau 45 menit di dalam mode Fokus yang mencatat setiap sesi |
+| **Timer fokus** | Timer kerja dan istirahat yang bisa diatur di dalam mode Fokus, mencatat setiap sesi, dengan log per hari dan total menit |
 | **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, peta aktivitas 90 hari, fokus per mata pelajaran, dan total kartu |
 | **Ekspor CSV nilai** | Bagikan log nilai mata pelajaran sebagai file CSV untuk spreadsheet |
 | **Skor perbandingan mingguan** | Statistik Belajar membandingkan minggu ini dengan minggu lalu lewat delta berwarna untuk menit fokus dan tugas selesai |
@@ -325,7 +327,7 @@ flutter test
 | Pemeriksaan | Syarat |
 |-------------|--------|
 | `flutter analyze` | Harus melaporkan **No issues found** (nol error, nol warning) |
-| `flutter test` | Seluruh suite harus lulus (601 tes) |
+| `flutter test` | Seluruh suite harus lulus (602 tes) |
 
 Lint ditegakkan lewat `analysis_options.yaml` (flutter_lints plus `prefer_single_quotes`).
 
