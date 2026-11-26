@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../date_util.dart';
 import '../../domain/habits.dart';
 
 /// A GitHub-style 12-week grid of daily activity. Callers supply the
@@ -29,10 +30,7 @@ class ActivityHeatmap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final last = DateTime(endDay.year, endDay.month, endDay.day);
-    // Align to Monday so each row stays a weekday across the 12 columns.
-    var start = last.subtract(const Duration(days: 83));
-    start = start.subtract(Duration(days: start.weekday - 1));
+    final start = DateUtil.heatmapStart(endDay);
 
     Color cellColor(int count) {
       if (count <= 0) return colors.surfaceContainerHighest;

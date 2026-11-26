@@ -31,27 +31,19 @@ class SemesterRepository {
 
   final Map<String, Stream<List<Semester>>> _watchCache = {};
 
+  SimpleSelectStatement<$SemestersTable, Semester> _ordered() => db.select(db.semesters)
+    ..orderBy([
+      (s) => OrderingTerm.desc(s.isActive),
+      (s) => OrderingTerm.desc(s.createdAt),
+    ]);
+
   // One stream instance per query, so StreamBuilders subscribing on every
   // rebuild do not re-trigger drift's watch emission each frame.
   Stream<List<Semester>> watchSemesters() {
-    return _watchCache.putIfAbsent('semesters', () {
-      return (db.select(db.semesters)
-            ..orderBy([
-              (s) => OrderingTerm.desc(s.isActive),
-              (s) => OrderingTerm.desc(s.createdAt),
-            ]))
-          .watch();
-    });
+    return _watchCache.putIfAbsent('semesters', () => _ordered().watch());
   }
 
-  Future<List<Semester>> getSemesters() {
-    return (db.select(db.semesters)
-          ..orderBy([
-            (s) => OrderingTerm.desc(s.isActive),
-            (s) => OrderingTerm.desc(s.createdAt),
-          ]))
-        .get();
-  }
+  Future<List<Semester>> getSemesters() => _ordered().get();
 
   Future<Semester?> activeSemester() {
     return (db.select(db.semesters)..where((s) => s.isActive.equals(true)))

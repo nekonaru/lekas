@@ -7,22 +7,20 @@ class SpaceItemRepository {
 
   final Map<String, Stream<List<SpaceItem>>> _watchCache = {};
 
+  SimpleSelectStatement<$SpaceItemsTable, SpaceItem> _activeFor(String spaceId) =>
+      db.select(db.spaceItems)
+        ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
+        ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]);
+
   Stream<List<SpaceItem>> watchSpaceItems(String spaceId) {
     return _watchCache.putIfAbsent(
       'items:$spaceId',
-      () => (db.select(db.spaceItems)
-            ..where(
-                (t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
-            ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-          .watch(),
+      () => _activeFor(spaceId).watch(),
     );
   }
 
   Future<List<SpaceItem>> getSpaceItems(String spaceId) async {
-    return (db.select(db.spaceItems)
-          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-        .get();
+    return _activeFor(spaceId).get();
   }
 
   Future<void> insertSpaceItem(SpaceItem item) async {

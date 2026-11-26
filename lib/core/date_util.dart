@@ -37,20 +37,6 @@ class DateUtil {
     return today.difference(due).inDays;
   }
 
-  static String relativeTime(DateTime dateTime, String locale) {
-    final now = DateTime.now();
-    final difference = dateTime.difference(now);
-    final minutes = difference.inMinutes;
-    final hours = difference.inHours;
-    final days = difference.inDays;
-
-    if (minutes < 1) return 'baru saja';
-    if (minutes < 60) return '$minutes menit lagi';
-    if (hours < 24) return '$hours jam lagi';
-    if (days < 7) return '$days hari lagi';
-    return formatDate(dateTime, locale);
-  }
-
   static bool isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
@@ -59,14 +45,10 @@ class DateUtil {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
-  static int toFocusDateKey(DateTime dateTime) {
-    return dateTime.year * 10000 + dateTime.month * 100 + dateTime.day;
-  }
-
-  static DateTime fromFocusDateKey(int key) {
-    final year = key ~/ 10000;
-    final month = (key % 10000) ~/ 100;
-    final day = key % 100;
-    return DateTime(year, month, day);
+  /// Monday of the week 83 days before [endDay]: the first cell of a
+  /// 12-week activity grid, kept weekday-aligned.
+  static DateTime heatmapStart(DateTime endDay) {
+    final start = startOfDay(endDay).subtract(const Duration(days: 83));
+    return start.subtract(Duration(days: start.weekday - 1));
   }
 }

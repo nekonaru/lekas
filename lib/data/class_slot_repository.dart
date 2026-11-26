@@ -7,12 +7,6 @@ class ClassSlotRepository {
 
   final Map<String, Stream<List<ClassSlot>>> _watchCache = {};
 
-  Stream<List<ClassSlot>> watchClassSlots(String spaceId) {
-    return (db.select(db.classSlots)
-          ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))
-        .watch();
-  }
-
   Future<List<ClassSlot>> getClassSlots(String spaceId) async {
     return (db.select(db.classSlots)
           ..where((t) => t.spaceId.equals(spaceId) & t.deletedAt.isNull()))

@@ -7,17 +7,11 @@ class QuickLinkRepository {
 
   final Map<String, Stream<List<QuickLink>>> _watchCache = {};
 
-  Stream<List<QuickLink>> watchQuickLinks() {
-    return _watchCache.putIfAbsent(
-      'quicklinks',
-      () => (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
-          .watch(),
-    );
-  }
+  SimpleSelectStatement<$QuickLinksTable, QuickLink> _active() =>
+      db.select(db.quickLinks)..where((t) => t.deletedAt.isNull());
 
-  Future<List<QuickLink>> getQuickLinks() async {
-    return (db.select(db.quickLinks)..where((t) => t.deletedAt.isNull()))
-        .get();
+  Stream<List<QuickLink>> watchQuickLinks() {
+    return _watchCache.putIfAbsent('quicklinks', () => _active().watch());
   }
 
   Future<void> insertQuickLink(QuickLink link) async {
