@@ -4735,6 +4735,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Hari libur (tekan lama)'**
   String get habitRestDay;
+
+  /// No description provided for @flashcardReminderTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Saatnya mengulas kartu'**
+  String get flashcardReminderTitle;
+
+  /// No description provided for @flashcardReminderBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Kartu Belajar dan selesaikan yang jatuh tempo hari ini.'**
+  String get flashcardReminderBody;
+
+  /// No description provided for @flashcardReminderFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat kartu gagal dijadwalkan.'**
+  String get flashcardReminderFailed;
 }
 
 class _AppLocalizationsDelegate

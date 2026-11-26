@@ -66,6 +66,9 @@ const String kChannelUnblock = 'unblock_channel';
 /// The optional daily check-in nudge of the habit tracker.
 const String kChannelHabit = 'habit_channel';
 
+/// The optional daily nudge for flashcards waiting for review.
+const String kChannelFlashcards = 'flashcards_channel';
+
 const String _timezoneChannel = 'lekas/timezone';
 
 /// Settings key holding the screen a notification action asked for until
@@ -572,6 +575,12 @@ class ReminderService {
         kChannelHabit,
         'Habit check-in',
         description: 'Daily reminder to check off habits',
+        importance: Importance.defaultImportance,
+      ),
+      AndroidNotificationChannel(
+        kChannelFlashcards,
+        'Flashcard review',
+        description: 'Daily reminder to review flashcards',
         importance: Importance.defaultImportance,
       ),
     ];
@@ -1599,6 +1608,44 @@ class ReminderService {
     );
   }
 
+  /// The flashcard counterpart of [syncHabitReminder]: one daily nudge to
+  /// open the decks and review what is due.
+  Future<void> syncFlashcardReminder({
+    required bool enabled,
+    required int hour,
+    required int minute,
+  }) async {
+    await init();
+    if (!enabled) {
+      await _plugin.cancel(kFlashcardReminderId);
+      return;
+    }
+    final l10n = await _l10n();
+    final when = nextDailyReminder(
+      DateTime.now(),
+      hour.clamp(0, 23),
+      minute.clamp(0, 59),
+    );
+    await _plugin.zonedSchedule(
+      kFlashcardReminderId,
+      l10n.flashcardReminderTitle,
+      l10n.flashcardReminderBody,
+      tz.TZDateTime.from(when, tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          kChannelFlashcards,
+          'Flashcard review',
+          channelDescription: 'Daily reminder to review flashcards',
+          importance: Importance.defaultImportance,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
   Future<void> cancelTaskReminders(String taskId) async {
     final reminderRepository = _ref.read(reminderRepositoryProvider);
     final rows = await reminderRepository.getReminders();
@@ -1612,6 +1659,9 @@ class ReminderService {
   /// Cancels every scheduled notification this app owns.
   Future<void> cancelAll() => _plugin.cancelAll();
 }
+
+/// Notification id reserved for the daily flashcard review reminder.
+const int kFlashcardReminderId = 900002;
 
 /// Notification id reserved for the daily habit check-in reminder.
 const int kHabitReminderId = 900001;

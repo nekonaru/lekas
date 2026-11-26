@@ -2594,4 +2594,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get habitRestDay => 'Hari libur (tekan lama)';
+
+  @override
+  String get flashcardReminderTitle => 'Saatnya mengulas kartu';
+
+  @override
+  String get flashcardReminderBody =>
+      'Buka Kartu Belajar dan selesaikan yang jatuh tempo hari ini.';
+
+  @override
+  String get flashcardReminderFailed => 'Pengingat kartu gagal dijadwalkan.';
 }

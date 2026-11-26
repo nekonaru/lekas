@@ -6,6 +6,7 @@ import '../../data/providers.dart';
 import '../../data/flashcard_repository.dart';
 import '../../core/components/empty_state.dart';
 import '../../l10n/app_localizations.dart';
+import '../../reminders/reminder_service.dart';
 import 'flashcard_deck_screen.dart';
 
 /// The study flashcards entry point: one row for the general deck and one
@@ -24,10 +25,112 @@ const _generalDeck = '__general__';
 class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> {
   late Future<List<DeckSummary>> _decks;
 
+  bool _reminderOn = false;
+  int _reminderHour = 19;
+  int _reminderMinute = 0;
+
   @override
   void initState() {
     super.initState();
     _reload();
+    _loadReminder();
+  }
+
+  Future<void> _loadReminder() async {
+    final settings = ref.read(settingsRepositoryProvider);
+    final on = await settings.get('flashcard_reminder_enabled') == '1';
+    final hour = int.tryParse(await settings.get('flashcard_reminder_hour') ?? '');
+    final minute =
+        int.tryParse(await settings.get('flashcard_reminder_minute') ?? '');
+    if (!mounted) return;
+    setState(() {
+      _reminderOn = on;
+      _reminderHour = (hour ?? 19).clamp(0, 23);
+      _reminderMinute = (minute ?? 0).clamp(0, 59);
+    });
+  }
+
+  Future<void> _applyReminder({bool? enabled, TimeOfDay? time}) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final on = enabled ?? _reminderOn;
+    final hour = time?.hour ?? _reminderHour;
+    final minute = time?.minute ?? _reminderMinute;
+    setState(() {
+      _reminderOn = on;
+      _reminderHour = hour;
+      _reminderMinute = minute;
+    });
+
+    final settings = ref.read(settingsRepositoryProvider);
+    await settings.set('flashcard_reminder_enabled', on ? '1' : '0');
+    await settings.set('flashcard_reminder_hour', '$hour');
+    await settings.set('flashcard_reminder_minute', '$minute');
+
+    try {
+      final service = ref.read(reminderServiceProvider);
+      if (on && await service.notificationsEnabled() == false) {
+        await service.requestNotificationPermission();
+      }
+      await service.syncFlashcardReminder(
+        enabled: on,
+        hour: hour,
+        minute: minute,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.flashcardReminderFailed)),
+      );
+    }
+  }
+
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: _reminderHour, minute: _reminderMinute),
+    );
+    if (picked == null || !mounted) return;
+    await _applyReminder(time: picked);
+  }
+
+  Widget _reminderCard(AppLocalizations l10n) {
+    final colors = Theme.of(context).colorScheme;
+    final time = '${_reminderHour.toString().padLeft(2, '0')}:'
+        '${_reminderMinute.toString().padLeft(2, '0')}';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Material(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          leading: Icon(Icons.notifications_outlined, color: colors.primary),
+          title: Text(
+            l10n.flashcardReminderTitle,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          subtitle: Text(
+            l10n.flashcardReminderBody,
+            style: const TextStyle(fontSize: 12),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_reminderOn)
+                TextButton(
+                  onPressed: _pickReminderTime,
+                  child: Text(time),
+                ),
+              Switch(
+                value: _reminderOn,
+                onChanged: (value) => _applyReminder(enabled: value),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _reload() {
@@ -85,8 +188,12 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.flashcardsTitle)),
-      body: StreamBuilder<List<Space>>(
-        stream: ref.watch(spaceRepositoryProvider).watchSpaces(),
+      body: Column(
+        children: [
+          _reminderCard(l10n),
+          Expanded(
+            child: StreamBuilder<List<Space>>(
+              stream: ref.watch(spaceRepositoryProvider).watchSpaces(),
         builder: (context, spacesSnapshot) {
           final spaces = (spacesSnapshot.data ?? const <Space>[])
               .where((space) => !space.archived)
@@ -160,6 +267,9 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> {
             },
           );
         },
+          ),
+        ),
+        ],
       ),
       floatingActionButton: StreamBuilder<List<Space>>(
         stream: ref.watch(spaceRepositoryProvider).watchSpaces(),

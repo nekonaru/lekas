@@ -869,5 +869,8 @@
   "breakTimerTitle": "Short break",
   "skipBreak": "Skip break",
   "raportAttendance": "{attended}/{planned} attended",
-  "habitRestDay": "Rest day (long press)"
+  "habitRestDay": "Rest day (long press)",
+  "flashcardReminderTitle": "Time to review cards",
+  "flashcardReminderBody": "Open Flashcards and clear what's due today.",
+  "flashcardReminderFailed": "The card reminder could not be scheduled."
 }

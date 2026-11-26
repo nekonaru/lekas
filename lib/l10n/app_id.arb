@@ -869,5 +869,8 @@
   "breakTimerTitle": "Istirahat sebentar",
   "skipBreak": "Lewati istirahat",
   "raportAttendance": "{attended}/{planned} hadir",
-  "habitRestDay": "Hari libur (tekan lama)"
+  "habitRestDay": "Hari libur (tekan lama)",
+  "flashcardReminderTitle": "Saatnya mengulas kartu",
+  "flashcardReminderBody": "Buka Kartu Belajar dan selesaikan yang jatuh tempo hari ini.",
+  "flashcardReminderFailed": "Pengingat kartu gagal dijadwalkan."
 }

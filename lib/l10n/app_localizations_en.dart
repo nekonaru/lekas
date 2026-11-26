@@ -2592,4 +2592,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get habitRestDay => 'Rest day (long press)';
+
+  @override
+  String get flashcardReminderTitle => 'Time to review cards';
+
+  @override
+  String get flashcardReminderBody =>
+      'Open Flashcards and clear what\'s due today.';
+
+  @override
+  String get flashcardReminderFailed =>
+      'The card reminder could not be scheduled.';
 }
