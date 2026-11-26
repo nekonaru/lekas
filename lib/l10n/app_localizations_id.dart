@@ -2604,4 +2604,51 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get flashcardReminderFailed => 'Pengingat kartu gagal dijadwalkan.';
+
+  @override
+  String get timerSettings => 'Pengaturan timer';
+
+  @override
+  String get workMinutes => 'Menit fokus';
+
+  @override
+  String get breakMinutes => 'Menit istirahat';
+
+  @override
+  String get sessionLogTitle => 'Sesi fokus';
+
+  @override
+  String get sessionLogEmpty => 'Belum ada sesi fokus yang tercatat.';
+
+  @override
+  String sessionLogTotal(int minutes) {
+    return 'Total $minutes menit';
+  }
+
+  @override
+  String get cardTypeLabel => 'Tipe kartu';
+
+  @override
+  String get typeQuestionAnswer => 'Pertanyaan dan jawaban';
+
+  @override
+  String get typeCloze => 'Isi titik-titik';
+
+  @override
+  String get typeChoice => 'Pilihan ganda';
+
+  @override
+  String get optionsLabel => 'Pilihan, dipisah titik koma';
+
+  @override
+  String get clozeHint => 'Tulis ____ di depan kartu untuk titik-titiknya.';
+
+  @override
+  String get choicePickPrompt => 'Pilih jawaban yang benar';
+
+  @override
+  String get finalGradeValue => 'Nilai akhir (0-100)';
+
+  @override
+  String get transcriptTitle => 'Proyeksi IPK';
 }

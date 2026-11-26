@@ -4753,6 +4753,96 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pengingat kartu gagal dijadwalkan.'**
   String get flashcardReminderFailed;
+
+  /// No description provided for @timerSettings.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan timer'**
+  String get timerSettings;
+
+  /// No description provided for @workMinutes.
+  ///
+  /// In id, this message translates to:
+  /// **'Menit fokus'**
+  String get workMinutes;
+
+  /// No description provided for @breakMinutes.
+  ///
+  /// In id, this message translates to:
+  /// **'Menit istirahat'**
+  String get breakMinutes;
+
+  /// No description provided for @sessionLogTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi fokus'**
+  String get sessionLogTitle;
+
+  /// No description provided for @sessionLogEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada sesi fokus yang tercatat.'**
+  String get sessionLogEmpty;
+
+  /// No description provided for @sessionLogTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'Total {minutes} menit'**
+  String sessionLogTotal(int minutes);
+
+  /// No description provided for @cardTypeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tipe kartu'**
+  String get cardTypeLabel;
+
+  /// No description provided for @typeQuestionAnswer.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan dan jawaban'**
+  String get typeQuestionAnswer;
+
+  /// No description provided for @typeCloze.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi titik-titik'**
+  String get typeCloze;
+
+  /// No description provided for @typeChoice.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilihan ganda'**
+  String get typeChoice;
+
+  /// No description provided for @optionsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilihan, dipisah titik koma'**
+  String get optionsLabel;
+
+  /// No description provided for @clozeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis ____ di depan kartu untuk titik-titiknya.'**
+  String get clozeHint;
+
+  /// No description provided for @choicePickPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jawaban yang benar'**
+  String get choicePickPrompt;
+
+  /// No description provided for @finalGradeValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai akhir (0-100)'**
+  String get finalGradeValue;
+
+  /// No description provided for @transcriptTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Proyeksi IPK'**
+  String get transcriptTitle;
 }
 
 class _AppLocalizationsDelegate

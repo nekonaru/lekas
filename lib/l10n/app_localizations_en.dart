@@ -2603,4 +2603,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get flashcardReminderFailed =>
       'The card reminder could not be scheduled.';
+
+  @override
+  String get timerSettings => 'Timer settings';
+
+  @override
+  String get workMinutes => 'Focus minutes';
+
+  @override
+  String get breakMinutes => 'Break minutes';
+
+  @override
+  String get sessionLogTitle => 'Focus sessions';
+
+  @override
+  String get sessionLogEmpty => 'No focus sessions recorded yet.';
+
+  @override
+  String sessionLogTotal(int minutes) {
+    return '$minutes minutes total';
+  }
+
+  @override
+  String get cardTypeLabel => 'Card type';
+
+  @override
+  String get typeQuestionAnswer => 'Question and answer';
+
+  @override
+  String get typeCloze => 'Fill in the blank';
+
+  @override
+  String get typeChoice => 'Multiple choice';
+
+  @override
+  String get optionsLabel => 'Options, separated by semicolons';
+
+  @override
+  String get clozeHint => 'Write ____ in the front for the blank.';
+
+  @override
+  String get choicePickPrompt => 'Pick the right answer';
+
+  @override
+  String get finalGradeValue => 'Final grade (0-100)';
+
+  @override
+  String get transcriptTitle => 'GPA projection';
 }

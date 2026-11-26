@@ -23,15 +23,91 @@ class FocusTimerCard extends ConsumerStatefulWidget {
 }
 
 class _FocusTimerCardState extends ConsumerState<FocusTimerCard> {
-  static const _presets = [15, 25, 45];
-
+  int _workMinutes = 25;
+  int _breakMinutes = 5;
   Timer? _ticker;
-  int _selectedMinutes = 25;
-  static const int _breakSeconds = 5 * 60;
-  late int _remainingSeconds = _selectedMinutes * 60;
+  late int _remainingSeconds = _workMinutes * 60;
   bool _running = false;
   bool _onBreak = false;
   DateTime? _startedAt;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settings = ref.read(settingsRepositoryProvider);
+    final work = int.tryParse(await settings.get('focus_work_minutes') ?? '');
+    final rest = int.tryParse(await settings.get('focus_break_minutes') ?? '');
+    if (!mounted) return;
+    setState(() {
+      _workMinutes = (work ?? 25).clamp(5, 120);
+      _breakMinutes = (rest ?? 5).clamp(1, 60);
+      if (!_running) _remainingSeconds = _workMinutes * 60;
+    });
+  }
+
+  Future<void> _editSettings() async {
+    final l10n = AppLocalizations.of(context)!;
+    final workController = TextEditingController(text: '$_workMinutes');
+    final breakController = TextEditingController(text: '$_breakMinutes');
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.timerSettings),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: workController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: l10n.workMinutes,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: breakController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: l10n.breakMinutes,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    final work = int.tryParse(workController.text.trim());
+    final rest = int.tryParse(breakController.text.trim());
+    workController.dispose();
+    breakController.dispose();
+    if (saved != true || !mounted) return;
+    final nextWork = (work ?? _workMinutes).clamp(5, 120);
+    final nextBreak = (rest ?? _breakMinutes).clamp(1, 60);
+    final settings = ref.read(settingsRepositoryProvider);
+    await settings.set('focus_work_minutes', '$nextWork');
+    await settings.set('focus_break_minutes', '$nextBreak');
+    if (!mounted) return;
+    setState(() {
+      _workMinutes = nextWork;
+      _breakMinutes = nextBreak;
+      if (!_running) _remainingSeconds = _workMinutes * 60;
+    });
+  }
 
   @override
   void dispose() {
@@ -39,7 +115,8 @@ class _FocusTimerCardState extends ConsumerState<FocusTimerCard> {
     super.dispose();
   }
 
-  int get _selectedSeconds => _selectedMinutes * 60;
+  int get _selectedSeconds => _workMinutes * 60;
+  int get _breakSeconds => _breakMinutes * 60;
   int get _durationSeconds => _onBreak ? _breakSeconds : _selectedSeconds;
   int get _elapsedSeconds => _durationSeconds - _remainingSeconds;
 
@@ -52,7 +129,7 @@ class _FocusTimerCardState extends ConsumerState<FocusTimerCard> {
   void _pickPreset(int minutes) {
     if (_running || _onBreak) return;
     setState(() {
-      _selectedMinutes = minutes;
+      _workMinutes = minutes;
       _remainingSeconds = minutes * 60;
       _startedAt = null;
     });
@@ -226,16 +303,22 @@ class _FocusTimerCardState extends ConsumerState<FocusTimerCard> {
                   ),
                   const Spacer(),
                   if (!_onBreak)
-                    for (final minutes in _presets)
+                    for (final minutes
+                        in <int>{15, 25, 45, _workMinutes}.toList()..sort())
                       Padding(
                         padding: const EdgeInsets.only(left: 6),
                         child: ChoiceChip(
                           label: Text('$minutes'),
-                          selected: _selectedMinutes == minutes,
+                          selected: _workMinutes == minutes,
                           onSelected:
                               _running ? null : (_) => _pickPreset(minutes),
                         ),
                       ),
+                  IconButton(
+                    icon: const Icon(Icons.tune_outlined, size: 18),
+                    tooltip: l10n.timerSettings,
+                    onPressed: _editSettings,
+                  ),
                 ],
               ),
               const SizedBox(height: 10),

@@ -23,6 +23,7 @@ import '../csv/csv_screen.dart';
 import '../search/global_search_screen.dart';
 import '../kebiasaan/kebiasaan_screen.dart';
 import '../study/flashcards_screen.dart';
+import '../study/session_log_screen.dart';
 import '../study/statistik_belajar_screen.dart';
 import '../semester/semester_screen.dart';
 import '../settings/settings_screen.dart';
@@ -269,6 +270,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             Icons.local_fire_department_outlined,
             l10n.kebiasaanTitle,
             () => _push(const KebiasaanScreen()),
+          ),
+          _drawerTile(
+            Icons.history_toggle_off_outlined,
+            l10n.sessionLogTitle,
+            () => _push(const SessionLogScreen()),
           ),
           _drawerTile(
             Icons.insights_outlined,

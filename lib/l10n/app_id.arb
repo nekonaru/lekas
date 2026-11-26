@@ -872,5 +872,21 @@
   "habitRestDay": "Hari libur (tekan lama)",
   "flashcardReminderTitle": "Saatnya mengulas kartu",
   "flashcardReminderBody": "Buka Kartu Belajar dan selesaikan yang jatuh tempo hari ini.",
-  "flashcardReminderFailed": "Pengingat kartu gagal dijadwalkan."
+  "flashcardReminderFailed": "Pengingat kartu gagal dijadwalkan.",
+  "timerSettings": "Pengaturan timer",
+  "workMinutes": "Menit fokus",
+  "breakMinutes": "Menit istirahat",
+  "sessionLogTitle": "Sesi fokus",
+  "sessionLogEmpty": "Belum ada sesi fokus yang tercatat.",
+  "sessionLogTotal": "Total {minutes} menit",
+  "@sessionLogTotal": { "placeholders": { "minutes": { "type": "int" } } },
+  "cardTypeLabel": "Tipe kartu",
+  "typeQuestionAnswer": "Pertanyaan dan jawaban",
+  "typeCloze": "Isi titik-titik",
+  "typeChoice": "Pilihan ganda",
+  "optionsLabel": "Pilihan, dipisah titik koma",
+  "clozeHint": "Tulis ____ di depan kartu untuk titik-titiknya.",
+  "choicePickPrompt": "Pilih jawaban yang benar",
+  "finalGradeValue": "Nilai akhir (0-100)",
+  "transcriptTitle": "Proyeksi IPK"
 }

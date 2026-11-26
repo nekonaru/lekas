@@ -872,5 +872,21 @@
   "habitRestDay": "Rest day (long press)",
   "flashcardReminderTitle": "Time to review cards",
   "flashcardReminderBody": "Open Flashcards and clear what's due today.",
-  "flashcardReminderFailed": "The card reminder could not be scheduled."
+  "flashcardReminderFailed": "The card reminder could not be scheduled.",
+  "timerSettings": "Timer settings",
+  "workMinutes": "Focus minutes",
+  "breakMinutes": "Break minutes",
+  "sessionLogTitle": "Focus sessions",
+  "sessionLogEmpty": "No focus sessions recorded yet.",
+  "sessionLogTotal": "{minutes} minutes total",
+  "@sessionLogTotal": { "placeholders": { "minutes": { "type": "int" } } },
+  "cardTypeLabel": "Card type",
+  "typeQuestionAnswer": "Question and answer",
+  "typeCloze": "Fill in the blank",
+  "typeChoice": "Multiple choice",
+  "optionsLabel": "Options, separated by semicolons",
+  "clozeHint": "Write ____ in the front for the blank.",
+  "choicePickPrompt": "Pick the right answer",
+  "finalGradeValue": "Final grade (0-100)",
+  "transcriptTitle": "GPA projection"
 }
