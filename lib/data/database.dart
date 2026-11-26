@@ -388,6 +388,8 @@ class FlashCards extends Table {
   RealColumn get easeFactor => real().withDefault(const Constant(2.5))();
   IntColumn get repetitions => integer().withDefault(const Constant(0))();
   IntColumn get lapses => integer().withDefault(const Constant(0))();
+  TextColumn get kind => text().withDefault(const Constant('qa'))();
+  TextColumn get options => text().nullable()();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
   IntColumn get deletedAt => integer().nullable()();
@@ -479,7 +481,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -633,6 +635,11 @@ class AppDatabase extends _$AppDatabase {
             // A schema 8 file has the table without the rest-day kind; a
             // schema 2 file gets the current table from the from < 8 branch.
             await m.addColumn(habitChecks, habitChecks.kind);
+          }
+          if (from >= 9 && from < 10) {
+            // Cards can be QA, cloze or multiple choice (schema 10).
+            await m.addColumn(flashCards, flashCards.kind);
+            await m.addColumn(flashCards, flashCards.options);
           }
         },
       );

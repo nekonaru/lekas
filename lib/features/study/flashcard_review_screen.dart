@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../domain/card_types.dart';
 import '../../l10n/app_localizations.dart';
 
 /// The review session: due cards one at a time, tap to flip, then grade.
@@ -56,6 +57,27 @@ class _FlashcardReviewScreenState
       _flipped = false;
       _index += 1;
     });
+  }
+
+  Widget _face(FlashCard card, bool flipped, TextStyle? style) {
+    if (card.kind == 'cloze') {
+      return Text(
+        flipped ? card.front.replaceFirst('____', card.back) : card.front,
+        style: flipped
+            ? style?.copyWith(color: const Color(0xFF10B981))
+            : style,
+        textAlign: TextAlign.center,
+      );
+    }
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      child: Text(
+        flipped ? card.back : card.front,
+        key: ValueKey(flipped),
+        style: style,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   @override
@@ -148,18 +170,13 @@ class _FlashcardReviewScreenState
                         child: Padding(
                           padding: const EdgeInsets.all(28),
                           child: SingleChildScrollView(
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              child: Text(
-                                _flipped ? card.back : card.front,
-                                key: ValueKey(_flipped),
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.35,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
+                            child: _face(
+                              card,
+                              _flipped,
+                              Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.35,
+                                  ),
                             ),
                           ),
                         ),
@@ -177,6 +194,35 @@ class _FlashcardReviewScreenState
                       ),
                 ),
               const SizedBox(height: 12),
+              if (card.kind == 'choice' && !_flipped) ...[
+                Text(
+                  l10n.choicePickPrompt,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    for (final option in parseChoices(card.options))
+                      ChoiceChip(
+                        label: Text(option),
+                        selected: false,
+                        onSelected: (_) => choiceMatches(
+                              card.options,
+                              card.back,
+                              option,
+                            )
+                            ? _grade(5)
+                            : _grade(1),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
               Row(
                 children: [
                   Expanded(

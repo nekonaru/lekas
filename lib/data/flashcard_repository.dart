@@ -30,6 +30,8 @@ class FlashcardRepository {
     required String front,
     required String back,
     String? spaceId,
+    String kind = 'qa',
+    String? options,
   }) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     final card = FlashCard(
@@ -42,6 +44,8 @@ class FlashcardRepository {
       easeFactor: 2.5,
       repetitions: 0,
       lapses: 0,
+      kind: kind,
+      options: options,
       createdAt: now,
       updatedAt: now,
       deletedAt: null,

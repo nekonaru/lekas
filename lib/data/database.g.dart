@@ -11510,6 +11510,27 @@ class $FlashCardsTable extends FlashCards
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('qa'),
+  );
+  static const VerificationMeta _optionsMeta = const VerificationMeta(
+    'options',
+  );
+  @override
+  late final GeneratedColumn<String> options = GeneratedColumn<String>(
+    'options',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -11554,6 +11575,8 @@ class $FlashCardsTable extends FlashCards
     easeFactor,
     repetitions,
     lapses,
+    kind,
+    options,
     createdAt,
     updatedAt,
     deletedAt,
@@ -11635,6 +11658,18 @@ class $FlashCardsTable extends FlashCards
         lapses.isAcceptableOrUnknown(data['lapses']!, _lapsesMeta),
       );
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
+    if (data.containsKey('options')) {
+      context.handle(
+        _optionsMeta,
+        options.isAcceptableOrUnknown(data['options']!, _optionsMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -11702,6 +11737,14 @@ class $FlashCardsTable extends FlashCards
         DriftSqlType.int,
         data['${effectivePrefix}lapses'],
       )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      options: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}options'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -11733,6 +11776,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
   final double easeFactor;
   final int repetitions;
   final int lapses;
+  final String kind;
+  final String? options;
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
@@ -11746,6 +11791,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     required this.easeFactor,
     required this.repetitions,
     required this.lapses,
+    required this.kind,
+    this.options,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -11764,6 +11811,10 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     map['ease_factor'] = Variable<double>(easeFactor);
     map['repetitions'] = Variable<int>(repetitions);
     map['lapses'] = Variable<int>(lapses);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || options != null) {
+      map['options'] = Variable<String>(options);
+    }
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
@@ -11785,6 +11836,10 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       easeFactor: Value(easeFactor),
       repetitions: Value(repetitions),
       lapses: Value(lapses),
+      kind: Value(kind),
+      options: options == null && nullToAbsent
+          ? const Value.absent()
+          : Value(options),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
@@ -11808,6 +11863,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       easeFactor: serializer.fromJson<double>(json['easeFactor']),
       repetitions: serializer.fromJson<int>(json['repetitions']),
       lapses: serializer.fromJson<int>(json['lapses']),
+      kind: serializer.fromJson<String>(json['kind']),
+      options: serializer.fromJson<String?>(json['options']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
@@ -11826,6 +11883,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       'easeFactor': serializer.toJson<double>(easeFactor),
       'repetitions': serializer.toJson<int>(repetitions),
       'lapses': serializer.toJson<int>(lapses),
+      'kind': serializer.toJson<String>(kind),
+      'options': serializer.toJson<String?>(options),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
@@ -11842,6 +11901,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     double? easeFactor,
     int? repetitions,
     int? lapses,
+    String? kind,
+    Value<String?> options = const Value.absent(),
     int? createdAt,
     int? updatedAt,
     Value<int?> deletedAt = const Value.absent(),
@@ -11855,6 +11916,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     easeFactor: easeFactor ?? this.easeFactor,
     repetitions: repetitions ?? this.repetitions,
     lapses: lapses ?? this.lapses,
+    kind: kind ?? this.kind,
+    options: options.present ? options.value : this.options,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -11876,6 +11939,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
           ? data.repetitions.value
           : this.repetitions,
       lapses: data.lapses.present ? data.lapses.value : this.lapses,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      options: data.options.present ? data.options.value : this.options,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -11894,6 +11959,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
           ..write('easeFactor: $easeFactor, ')
           ..write('repetitions: $repetitions, ')
           ..write('lapses: $lapses, ')
+          ..write('kind: $kind, ')
+          ..write('options: $options, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -11912,6 +11979,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     easeFactor,
     repetitions,
     lapses,
+    kind,
+    options,
     createdAt,
     updatedAt,
     deletedAt,
@@ -11929,6 +11998,8 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
           other.easeFactor == this.easeFactor &&
           other.repetitions == this.repetitions &&
           other.lapses == this.lapses &&
+          other.kind == this.kind &&
+          other.options == this.options &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -11944,6 +12015,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
   final Value<double> easeFactor;
   final Value<int> repetitions;
   final Value<int> lapses;
+  final Value<String> kind;
+  final Value<String?> options;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int?> deletedAt;
@@ -11958,6 +12031,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     this.easeFactor = const Value.absent(),
     this.repetitions = const Value.absent(),
     this.lapses = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.options = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -11973,6 +12048,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     this.easeFactor = const Value.absent(),
     this.repetitions = const Value.absent(),
     this.lapses = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.options = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.deletedAt = const Value.absent(),
@@ -11993,6 +12070,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     Expression<double>? easeFactor,
     Expression<int>? repetitions,
     Expression<int>? lapses,
+    Expression<String>? kind,
+    Expression<String>? options,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? deletedAt,
@@ -12008,6 +12087,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
       if (easeFactor != null) 'ease_factor': easeFactor,
       if (repetitions != null) 'repetitions': repetitions,
       if (lapses != null) 'lapses': lapses,
+      if (kind != null) 'kind': kind,
+      if (options != null) 'options': options,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -12025,6 +12106,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     Value<double>? easeFactor,
     Value<int>? repetitions,
     Value<int>? lapses,
+    Value<String>? kind,
+    Value<String?>? options,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int?>? deletedAt,
@@ -12040,6 +12123,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
       easeFactor: easeFactor ?? this.easeFactor,
       repetitions: repetitions ?? this.repetitions,
       lapses: lapses ?? this.lapses,
+      kind: kind ?? this.kind,
+      options: options ?? this.options,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -12077,6 +12162,12 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     if (lapses.present) {
       map['lapses'] = Variable<int>(lapses.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (options.present) {
+      map['options'] = Variable<String>(options.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -12104,6 +12195,8 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
           ..write('easeFactor: $easeFactor, ')
           ..write('repetitions: $repetitions, ')
           ..write('lapses: $lapses, ')
+          ..write('kind: $kind, ')
+          ..write('options: $options, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -23851,6 +23944,8 @@ typedef $$FlashCardsTableCreateCompanionBuilder = FlashCardsCompanion Function({
   Value<double> easeFactor,
   Value<int> repetitions,
   Value<int> lapses,
+  Value<String> kind,
+  Value<String?> options,
   required int createdAt,
   required int updatedAt,
   Value<int?> deletedAt,
@@ -23866,6 +23961,8 @@ typedef $$FlashCardsTableUpdateCompanionBuilder = FlashCardsCompanion Function({
   Value<double> easeFactor,
   Value<int> repetitions,
   Value<int> lapses,
+  Value<String> kind,
+  Value<String?> options,
   Value<int> createdAt,
   Value<int> updatedAt,
   Value<int?> deletedAt,
@@ -23940,6 +24037,16 @@ class $$FlashCardsTableFilterComposer
 
   ColumnFilters<int> get lapses => $composableBuilder(
     column: $table.lapses,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get options => $composableBuilder(
+    column: $table.options,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -24031,6 +24138,16 @@ class $$FlashCardsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -24109,6 +24226,12 @@ class $$FlashCardsTableAnnotationComposer
   GeneratedColumn<int> get lapses =>
       $composableBuilder(column: $table.lapses, builder: (column) => column);
 
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get options =>
+      $composableBuilder(column: $table.options, builder: (column) => column);
+
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -24179,6 +24302,8 @@ class $$FlashCardsTableTableManager
                 Value<double> easeFactor = const Value.absent(),
                 Value<int> repetitions = const Value.absent(),
                 Value<int> lapses = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String?> options = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
@@ -24193,6 +24318,8 @@ class $$FlashCardsTableTableManager
                 easeFactor: easeFactor,
                 repetitions: repetitions,
                 lapses: lapses,
+                kind: kind,
+                options: options,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -24209,6 +24336,8 @@ class $$FlashCardsTableTableManager
                 Value<double> easeFactor = const Value.absent(),
                 Value<int> repetitions = const Value.absent(),
                 Value<int> lapses = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String?> options = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int?> deletedAt = const Value.absent(),
@@ -24223,6 +24352,8 @@ class $$FlashCardsTableTableManager
                 easeFactor: easeFactor,
                 repetitions: repetitions,
                 lapses: lapses,
+                kind: kind,
+                options: options,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,

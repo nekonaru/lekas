@@ -59,7 +59,7 @@ void main() {
   });
 
   test('the schema version is 9', () {
-    expect(db.schemaVersion, 9);
+    expect(db.schemaVersion, 10);
   });
 
   test('the database declares twenty three secondary indexes', () {

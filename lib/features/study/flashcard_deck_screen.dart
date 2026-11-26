@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../core/components/empty_state.dart';
+import '../../domain/card_types.dart';
 import '../../domain/csv.dart';
 import '../../l10n/app_localizations.dart';
 import 'flashcard_review_screen.dart';
@@ -102,9 +104,14 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final cards = await ref.read(flashcardRepositoryProvider).cardsOf(widget.spaceId);
     final buffer = StringBuffer('\uFEFF');
-    buffer.write(csvRow(const ['front', 'back']));
+    buffer.write(csvRow(const ['front', 'back', 'kind', 'options']));
     for (final card in cards) {
-      buffer.write(csvRow([card.front, card.back]));
+      buffer.write(csvRow([
+        card.front,
+        card.back,
+        card.kind,
+        card.options ?? '',
+      ]));
     }
     try {
       final file = File(
@@ -158,13 +165,26 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
       );
       return;
     }
-    final pairs = <(String, String)>[];
+    final kindCol = header.indexOf('kind');
+    final optionsCol = header.indexOf('options');
+    final pairs = <(String, String, String, String?)>[];
     for (final row in rows.skip(1)) {
       final front = frontCol < row.length ? row[frontCol].trim() : '';
       final back = backCol < row.length ? row[backCol].trim() : '';
       if (front.isEmpty || back.isEmpty) continue;
-      pairs.add((front.length > 500 ? front.substring(0, 500) : front,
-          back.length > 500 ? back.substring(0, 500) : back));
+      final rawKind = kindCol >= 0 && kindCol < row.length
+          ? row[kindCol].trim().toLowerCase()
+          : 'qa';
+      final kind = kCardKinds.contains(rawKind) ? rawKind : 'qa';
+      final rawOptions = optionsCol >= 0 && optionsCol < row.length
+          ? row[optionsCol].trim()
+          : '';
+      pairs.add((
+        front.length > 500 ? front.substring(0, 500) : front,
+        back.length > 500 ? back.substring(0, 500) : back,
+        kind,
+        kind == 'choice' && rawOptions.isNotEmpty ? rawOptions : null,
+      ));
     }
     if (pairs.isEmpty) {
       messenger.showSnackBar(
@@ -211,8 +231,14 @@ class _FlashcardDeckScreenState extends ConsumerState<FlashcardDeckScreen> {
     );
     if (confirmed != true || !mounted) return;
     final repo = ref.read(flashcardRepositoryProvider);
-    for (final (front, back) in limited) {
-      await repo.addCard(front: front, back: back, spaceId: widget.spaceId);
+    for (final (front, back, kind, options) in limited) {
+      await repo.addCard(
+        front: front,
+        back: back,
+        spaceId: widget.spaceId,
+        kind: kind,
+        options: options,
+      );
     }
     if (!mounted) return;
     setState(_reload);
@@ -377,19 +403,49 @@ Future<bool> showFlashcardEditor(
   final l10n = AppLocalizations.of(context)!;
   final frontController = TextEditingController(text: existing?.front ?? '');
   final backController = TextEditingController(text: existing?.back ?? '');
+  final optionsController =
+      TextEditingController(text: existing?.options ?? '');
+  var kind = existing?.kind ?? 'qa';
 
   final saved = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
         final canSave = frontController.text.trim().isNotEmpty &&
-            backController.text.trim().isNotEmpty;
+            backController.text.trim().isNotEmpty &&
+            (kind != 'choice' || optionsController.text.trim().isNotEmpty);
         return AlertDialog(
           title: Text(existing == null ? l10n.addFlashcard : l10n.editFlashcard),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                DropdownButtonFormField<String>(
+                  initialValue: kind,
+                  decoration: InputDecoration(
+                    labelText: l10n.cardTypeLabel,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'qa',
+                      child: Text(l10n.typeQuestionAnswer),
+                    ),
+                    DropdownMenuItem(
+                      value: 'cloze',
+                      child: Text(l10n.typeCloze),
+                    ),
+                    DropdownMenuItem(
+                      value: 'choice',
+                      child: Text(l10n.typeChoice),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setDialogState(() => kind = value);
+                  },
+                ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: frontController,
                   minLines: 1,
@@ -401,6 +457,26 @@ Future<bool> showFlashcardEditor(
                   ),
                   onChanged: (_) => setDialogState(() {}),
                 ),
+                if (kind == 'cloze') ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.clozeHint,
+                    style: Theme.of(dialogContext).textTheme.bodySmall,
+                  ),
+                ],
+                if (kind == 'choice') ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: optionsController,
+                    minLines: 2,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      labelText: l10n.optionsLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    onChanged: (_) => setDialogState(() {}),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 TextField(
                   controller: backController,
@@ -431,11 +507,19 @@ Future<bool> showFlashcardEditor(
                           front: front,
                           back: back,
                           spaceId: spaceId,
+                          kind: kind,
+                          options: kind == 'choice'
+                              ? optionsController.text.trim()
+                              : null,
                         );
                       } else {
                         await repo.updateCard(existing.copyWith(
                           front: front,
                           back: back,
+                          kind: kind,
+                          options: Value(kind == 'choice'
+                              ? optionsController.text.trim()
+                              : null),
                         ));
                       }
                       if (dialogContext.mounted) Navigator.pop(dialogContext, true);
@@ -453,6 +537,7 @@ Future<bool> showFlashcardEditor(
   Future<void>.delayed(const Duration(milliseconds: 400), () {
     frontController.dispose();
     backController.dispose();
+    optionsController.dispose();
   });
 
   return saved == true;
