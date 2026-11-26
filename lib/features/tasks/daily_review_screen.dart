@@ -5,7 +5,6 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/components/empty_state.dart';
 import '../../core/theme.dart';
-import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/daily_review.dart';
 import '../../domain/habits.dart';
@@ -40,11 +39,12 @@ class _DailyReviewScreenState extends ConsumerState<DailyReviewScreen> {
         .read(focusSessionRepositoryProvider)
         .getFocusSessionsSince(today.millisecondsSinceEpoch);
     final habits = await ref.read(habitRepositoryProvider).watchActiveHabits().first;
-    final checks = <HabitCheck>[];
-    for (final habit in habits) {
-      final rows = await ref.read(habitRepositoryProvider).allChecksOf(habit.id);
-      checks.addAll(rows.where((row) => row.date == key));
-    }
+    // One query instead of one per habit: the review needs only today's rows.
+    final checks = (await ref
+            .read(habitRepositoryProvider)
+            .recentChecks(key))
+        .where((row) => row.date == key)
+        .toList();
     final review = buildDailyReview(
       tasks: tasks,
       sessions: sessions,

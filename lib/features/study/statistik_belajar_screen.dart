@@ -111,13 +111,14 @@ class _StatistikBelajarScreenState
     final sessions = await focusRepo.getFocusSessionsSince(
       start14.millisecondsSinceEpoch,
     );
-    final habits =
-        await ref.read(habitRepositoryProvider).watchActiveHabits().first;
-    final habitDays = <String>{};
-    for (final habit in habits) {
-      final rows = await ref.read(habitRepositoryProvider).allChecksOf(habit.id);
-      habitDays.addAll(rows.map((row) => row.date));
-    }
+    // One query for all recent checks instead of one per habit (N+1).
+    final checks = await ref
+        .read(habitRepositoryProvider)
+        .recentChecks(dayKeyOf(today.subtract(const Duration(days: 83))));
+    final habitDays = {
+      for (final row in checks)
+        if (row.kind == 'check') row.date,
+    };
     final tasks = await taskRepo.getTasks(includeInbox: true);
     final completed = tasks
         .where((task) => task.status == 'done' && task.completedAt != null)

@@ -236,7 +236,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
             ),
           ),
           if (widget.view == SpaceView.free && !_showingArchive)
-            _UncategorizedRow(),
+            _UncategorizedRow(tasks: tasksSnapshot.data ?? const <Task>[]),
           Expanded(
             child: StreamBuilder<List<Space>>(
               stream: repo.watchSpaces(includeArchived: true),
@@ -493,35 +493,33 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
 /// every category land in the inbox, so the tab surfaces them here with
 /// their open count instead of hiding them behind another screen.
 class _UncategorizedRow extends ConsumerWidget {
+  const _UncategorizedRow({required this.tasks});
+
+  /// The parent's task stream already has everything; no second subscription.
+  final List<Task> tasks;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final repo = ref.watch(taskRepositoryProvider);
     final colors = Theme.of(context).colorScheme;
-    return StreamBuilder(
-      stream: repo.watchTasks(includeInbox: true),
-      builder: (context, snapshot) {
-        final tasks = (snapshot.data ?? const <Task>[])
-            .where((task) => task.inbox && task.status != 'done')
-            .toList();
-        return Material(
-          color: colors.surfaceContainerLow,
-          child: ListTile(
-            leading: const Icon(Icons.inbox_outlined),
-            title: Text(l10n.inboxTitle),
-            subtitle: Text(tasks.isEmpty
-                ? l10n.uncategorizedInfo
-                : l10n.openTasksCount(tasks.length)),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (_) => const InboxScreen(),
-              ),
-            ),
+    final count =
+        tasks.where((task) => task.inbox && task.status != 'done').length;
+    return Material(
+      color: colors.surfaceContainerLow,
+      child: ListTile(
+        leading: const Icon(Icons.inbox_outlined),
+        title: Text(l10n.inboxTitle),
+        subtitle: Text(count == 0
+            ? l10n.uncategorizedInfo
+            : l10n.openTasksCount(count)),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (_) => const InboxScreen(),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

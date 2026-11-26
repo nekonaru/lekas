@@ -51,6 +51,16 @@ class SemesterScreen extends ConsumerWidget {
               builder: (context, taskSnapshot) {
                 final tasks = taskSnapshot.data ?? const <Task>[];
                 final stats = _statsBySemester(spaces, tasks);
+                // One pass over the tasks: the rows and the stats reuse it.
+                final tasksBySpace = <String, int>{};
+                for (final task in tasks) {
+                  final sid = task.spaceId;
+                  if (sid == null || task.status == 'done') continue;
+                  tasksBySpace[sid] = (tasksBySpace[sid] ?? 0) + 1;
+                }
+                final activeCourses = active == null
+                    ? const <Space>[]
+                    : spaces.where((s) => s.semesterId == active.id).toList();
                 return ListView(
                   padding: EdgeInsets.only(
                     bottom: 96,
@@ -90,11 +100,10 @@ class SemesterScreen extends ConsumerWidget {
                             ? l10n.subjectListTitle
                             : l10n.courseListTitle,
                       ),
-                      for (final space
-                          in spaces.where((s) => s.semesterId == active.id))
+                      for (final space in activeCourses)
                         _CourseRow(
                           space: space,
-                          openTasks: _openTasks(tasks, space.id),
+                          openTasks: tasksBySpace[space.id] ?? 0,
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute<void>(
@@ -111,7 +120,7 @@ class SemesterScreen extends ConsumerWidget {
                               _archiveCourse(context, ref, space),
                           onDelete: () => _deleteCourse(context, ref, space),
                         ),
-                      if (spaces.where((s) => s.semesterId == active.id).isEmpty)
+                      if (activeCourses.isEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
                           child: Text(
@@ -211,9 +220,6 @@ class SemesterScreen extends ConsumerWidget {
     );
   }
 
-  int _openTasks(List<Task> tasks, String spaceId) => tasks
-      .where((task) => task.spaceId == spaceId && task.status != 'done')
-      .length;
 }
 
 /// How far one semester's courses and tasks have come (design 4.3).

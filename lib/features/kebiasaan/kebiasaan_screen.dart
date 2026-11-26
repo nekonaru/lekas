@@ -456,9 +456,10 @@ class _HabitCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
     final weekdayFormat = DateFormat('E', locale);
+    final now = DateTime.now();
     final streak = habitStreak(
       checked,
-      today: DateTime.now(),
+      today: now,
       skippedDays: skipped,
     );
     final weekCount = checked.where(weekKeys.contains).length;
@@ -521,14 +522,14 @@ class _HabitCard extends StatelessWidget {
                 for (var i = 0; i < weekKeys.length; i++)
                   _DayCell(
                     keyLabel: weekdayFormat
-                        .format(DateTime.now().subtract(
+                        .format(now.subtract(
                             Duration(days: weekKeys.length - 1 - i)))
                         .substring(0, 1),
                     date: dayFromKey(weekKeys[i])!,
                     checked: checked.contains(weekKeys[i]),
                     skipped: skipped.contains(weekKeys[i]),
                     color: _hexColor(habit.color),
-                    isToday: weekKeys[i] == dayKeyOf(DateTime.now()),
+                    isToday: weekKeys[i] == dayKeyOf(now),
                     onTap: () => onToggle(weekKeys[i]),
                     onLongPress: () => onSkip(weekKeys[i]),
                   ),

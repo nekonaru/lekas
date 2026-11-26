@@ -21,6 +21,11 @@ class FlashcardRepository {
 
   final AppDatabase db;
 
+  /// One shared stream per query; the drawer resubscribes on every tab
+  /// switch, which otherwise reopens the full table watch each time.
+  /// Cached so switching tabs does not reopen the table watch for a badge.
+  Stream<int>? _dueCountStream;
+
   Future<FlashCard> addCard({
     required String front,
     required String back,
@@ -109,13 +114,13 @@ class FlashcardRepository {
 
   /// Live count of due cards for the drawer badge; the cutoff is read at
   /// every emission so a long-lived drawer never goes stale.
-  Stream<int> watchDueCount() {
-    return (db.select(db.flashCards)..where((t) => t.deletedAt.isNull()))
-        .watch()
-        .map((rows) => rows
-            .where((card) => card.dueAt <= DateTime.now().millisecondsSinceEpoch)
-            .length);
-  }
+  Stream<int> watchDueCount() => _dueCountStream ??=
+      (db.select(db.flashCards)..where((t) => t.deletedAt.isNull()))
+          .watch()
+          .map((rows) => rows
+              .where((card) =>
+                  card.dueAt <= DateTime.now().millisecondsSinceEpoch)
+              .length);
 
   /// Cards due right now across every deck.
   Future<List<FlashCard>> dueCardsAny() {
