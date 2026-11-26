@@ -2,6 +2,16 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.33.0
+
+Putaran performa pada layar yang paling sering dibuka, tanpa mengubah apa yang mereka lakukan.
+
+### Peningkatan
+
+- **Stream lencana di-cache.** Stream jumlah kartu jatuh tempo dipakai ulang saat berpindah tab alih-alih membuka ulang query tabel setiap kali.
+- **Lebih sedikit query berulang.** Centangan kebiasaan dimuat dalam satu query, bukan satu per kebiasaan di Statistik Belajar dan Refleksi Harian; baris inbox Kategori memakai stream tugas induknya; tab Semester mengelompokkan tugas sekali alih-alih memindainya per mata pelajaran.
+- **Grid kebiasaan lebih ringan.** Setiap kartu kebiasaan membaca jam sekali, bukan tiga kali per sel tanggal.
+
 ## v1.32.0
 
 Kartu Belajar kini mengingatkanmu untuk menjaga kebiasaan mengulas.

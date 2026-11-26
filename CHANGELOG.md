@@ -2,6 +2,16 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.33.0
+
+A performance pass on the screens you open most, without changing what they do.
+
+### Improvements
+
+- **Cached badge stream.** The flashcard due-count stream is shared across tab switches instead of reopening a table watch on every tab change.
+- **Fewer repeated queries.** Habit checks load in one query instead of one per habit in Study Stats and Daily Review; the Kategori inbox row reuses its parent's task stream; the Semester tab groups tasks once instead of scanning them per subject.
+- **Cheaper habit grid.** Each habit card reads the clock once instead of three times per day cell.
+
 ## v1.32.0
 
 Flashcards now remind you to keep the review habit going.
