@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.34.0
+
+A larger update: focus sessions become a real routine, flashcards gain two new types, and college gets the grade tools that were school-only.
+
+### New features
+
+- **Pomodoro 2.0.** Focus and break minutes are editable and saved, with quick presets, an automatic break and a session log grouped by day with task titles and total minutes.
+- **Flashcards 2.0.** Cards can be question-answer, fill-in-the-blank (`____`) or multiple choice, and the CSV round trip carries the new type and options.
+- **College grade book and GPA projection.** Courses can carry a numeric final grade, open the grade book, and the semester hero leads to a projected GPA, while school keeps its KKM report card.
+
+### Improvements
+
+- **Schema 10.** Card type and options are migrated automatically, with index and migration tests updated.
+
 ## v1.33.0
 
 A performance pass on the screens you open most, without changing what they do.

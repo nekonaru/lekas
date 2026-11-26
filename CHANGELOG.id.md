@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.34.0
+
+Update lebih besar: sesi fokus jadi rutinitas nyata, kartu belajar dapat dua tipe baru, dan Kuliah mendapat alat nilai yang dulu hanya untuk SMA.
+
+### Fitur baru
+
+- **Pomodoro 2.0.** Menit fokus dan istirahat bisa diatur dan disimpan, dengan preset cepat, jeda otomatis, dan log sesi dikelompokkan per hari beserta judul tugas serta total menit.
+- **Flashcards 2.0.** Kartu bisa berupa pertanyaan-jawaban, isi titik-titik (`____`), atau pilihan ganda, dan ekspor/impor CSV membawa tipe serta pilihan tersebut.
+- **Buku nilai dan proyeksi IPK Kuliah.** Mata kuliah bisa menyimpan nilai akhir numerik, membuka buku nilai, dan hero semester menuju proyeksi IPK, sementara SMA tetap memakai rapor KKM.
+
+### Peningkatan
+
+- **Skema 10.** Tipe dan pilihan kartu dimigrasikan otomatis, dengan tes indeks dan migrasi yang diperbarui.
+
 ## v1.33.0
 
 Putaran performa pada layar yang paling sering dibuka, tanpa mengubah apa yang mereka lakukan.
