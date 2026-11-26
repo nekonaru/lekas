@@ -36,6 +36,8 @@ Future<void> showSpaceFormDialog(
       TextEditingController(text: existing?.sks?.toString() ?? '');
   final targetController =
       TextEditingController(text: existing?.targetGrade ?? '');
+  final finalGradeController =
+      TextEditingController(text: existing?.finalGrade ?? '');
   var color =
       existing?.color ?? AppTheme.containerColors.first.toARGB32();
   var classYear = classYearInitial;
@@ -186,6 +188,15 @@ Future<void> showSpaceFormDialog(
                     ),
                   ],
                 ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: finalGradeController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: l10n.finalGradeValue,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
               ],
             ],
           ),
@@ -210,6 +221,9 @@ Future<void> showSpaceFormDialog(
                       ? null
                       : targetController.text.trim();
               final now = DateTime.now().millisecondsSinceEpoch;
+              final finalGrade = finalGradeController.text.trim().isEmpty
+                  ? null
+                  : finalGradeController.text.trim();
               if (existing == null) {
                 final newId = const Uuid().v4();
                 await repo.insertSpace(
@@ -221,6 +235,7 @@ Future<void> showSpaceFormDialog(
                     level: level,
                     sks: sks,
                     targetGrade: targetGrade,
+                    finalGrade: finalGrade,
                     kind: kind,
                     archived: false,
                     sortOrder: 0,
@@ -239,6 +254,7 @@ Future<void> showSpaceFormDialog(
                     color: color,
                     sks: Value(sks),
                     targetGrade: Value(targetGrade),
+                    finalGrade: Value(finalGrade),
                     updatedAt: now,
                   ),
                 );
@@ -263,6 +279,7 @@ Future<void> showSpaceFormDialog(
       codeController.dispose();
       sksController.dispose();
       targetController.dispose();
+      finalGradeController.dispose();
     },
   );
 }

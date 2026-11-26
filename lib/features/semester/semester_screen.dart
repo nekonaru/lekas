@@ -85,14 +85,12 @@ class SemesterScreen extends ConsumerWidget {
                                   const SpacesScreen(view: SpaceView.courses),
                             ),
                           ),
-                          onRaport: level == 'school'
-                              ? () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute<void>(
-                                      builder: (_) => const RaportScreen(),
-                                    ),
-                                  )
-                              : null,
+                          onRaport: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (_) => const RaportScreen(),
+                            ),
+                          ),
                         ),
                       ),
                       _SectionHeader(
@@ -410,7 +408,9 @@ class _ActiveSemesterHero extends StatelessWidget {
                 onPressed: onRaport,
                 icon: const Icon(Icons.assignment_outlined, size: 20),
                 label: Text(
-                  l10n.raportTitle,
+                  level == 'school'
+                    ? l10n.raportTitle
+                    : l10n.transcriptTitle,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),

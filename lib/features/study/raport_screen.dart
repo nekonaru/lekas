@@ -23,6 +23,7 @@ class RaportScreen extends ConsumerStatefulWidget {
 
 class _RaportScreenState extends ConsumerState<RaportScreen> {
   late Future<_RaportData> _data;
+  bool _isSchool = true;
 
   @override
   void initState() {
@@ -33,6 +34,9 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
   void _reload() => setState(() => _data = _load());
 
   Future<_RaportData> _load() async {
+    final level = await ref.read(levelProvider.future);
+    final isSchool = level == 'school';
+    _isSchool = isSchool;
     final settings = ref.read(settingsRepositoryProvider);
     final kkm = int.tryParse(await settings.get('kkm') ?? '') ?? 75;
     final active = await ref.read(semesterRepositoryProvider).activeSemester();
@@ -51,16 +55,18 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
     for (final subject in subjects) {
       final scores = await scoreRepo.getScores(subject.id);
       final components = await gradeRepo.getGradeComponents(subject.id);
-      final average = averageScore(
-        [
-          for (final score in scores)
-            ScoreLike(label: score.label, value: score.value),
-        ],
-        {
-          for (final component in components)
-            component.key.trim().toLowerCase(): component.weightPercent,
-        },
-      );
+      final average = isSchool
+          ? averageScore(
+              [
+                for (final score in scores)
+                  ScoreLike(label: score.label, value: score.value),
+              ],
+              {
+                for (final component in components)
+                  component.key.trim().toLowerCase(): component.weightPercent,
+              },
+            )
+          : double.tryParse(subject.finalGrade ?? '');
       final attendance = await attendanceRepo.summaryFor(subject);
       rows.add(_RaportRow(
         subject: subject,
@@ -83,6 +89,7 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
       kkm: kkm,
       rows: rows,
       average: semesterAverage,
+      isSchool: isSchool,
     );
   }
 
@@ -94,7 +101,7 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
   Future<void> _share(_RaportData data) async {
     final l10n = AppLocalizations.of(context)!;
     final lines = <String>[
-      l10n.raportTitle,
+      (data.isSchool ? l10n.raportTitle : l10n.transcriptTitle),
       if (data.semesterName != null) data.semesterName!,
       '',
       for (final row in data.rows)
@@ -107,7 +114,10 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
       '${l10n.kkmLabel}: ${data.kkm}',
       'Lekas',
     ];
-    await Share.share(lines.join('\n'), subject: l10n.raportTitle);
+    await Share.share(
+      lines.join('\n'),
+      subject: data.isSchool ? l10n.raportTitle : l10n.transcriptTitle,
+    );
   }
 
   @override
@@ -116,7 +126,9 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.raportTitle),
+        title: Text(
+          _isSchool ? l10n.raportTitle : l10n.transcriptTitle,
+        ),
         actions: [
           IconButton(
             tooltip: l10n.raportShare,
@@ -210,6 +222,7 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
                     child: _SubjectRow(
                       row: row,
                       kkm: data.kkm,
+                      isSchool: data.isSchool,
                       onOpen: () async {
                         await Navigator.push(
                           context,
@@ -239,12 +252,14 @@ class _RaportData {
     required this.kkm,
     required this.rows,
     required this.average,
+    required this.isSchool,
   });
 
   final String? semesterName;
   final int kkm;
   final List<_RaportRow> rows;
   final double? average;
+  final bool isSchool;
 }
 
 class _RaportRow {
@@ -265,11 +280,13 @@ class _SubjectRow extends StatelessWidget {
   const _SubjectRow({
     required this.row,
     required this.kkm,
+    required this.isSchool,
     required this.onOpen,
   });
 
   final _RaportRow row;
   final int kkm;
+  final bool isSchool;
   final VoidCallback onOpen;
 
   @override
@@ -320,15 +337,16 @@ class _SubjectRow extends StatelessWidget {
                           color: statusColor,
                         ),
                   ),
-                  Text(
-                    passed ? l10n.kkmPassed : l10n.kkmFailed,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: statusColor,
-                      letterSpacing: 0.6,
+                  if (isSchool)
+                    Text(
+                      passed ? l10n.kkmPassed : l10n.kkmFailed,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: statusColor,
+                        letterSpacing: 0.6,
+                      ),
                     ),
-                  ),
                 ],
               ),
         onTap: onOpen,

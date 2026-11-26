@@ -139,9 +139,7 @@ class _SpaceDetailScreenState extends ConsumerState<SpaceDetailScreen> {
                   onTap: () => _push(PrediksiNilaiScreen(spaceId: space.id)),
                 ),
               ],
-              // The grade book is a school feature; college keeps the GPA
-              // tooling above untouched.
-              if (isCourse && space.level == 'school')
+              if (isCourse)
                 ListTile(
                   title: Text(l10n.gradeBookTitle),
                   leading: const Icon(Icons.grading_outlined),
