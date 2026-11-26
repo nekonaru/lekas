@@ -103,7 +103,7 @@ Ketik satu baris dan parser membaca deadline, mata kuliah, dan prioritasnya. Ges
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Kartu Belajar** | Deck umum plus satu deck per mata pelajaran dengan pengulangan berjeda (SM-2); ketuk untuk membalik, nilai Lupa, Sulit, atau Mudah, jumlah jatuh tempo terlihat per deck, dan ekspor/impor CSV per deck |
+| **Kartu Belajar** | Deck umum plus satu deck per mata pelajaran dengan pengulangan berjeda (SM-2); ketuk untuk membalik, nilai Lupa, Sulit, atau Mudah, jumlah jatuh tempo terlihat per deck, ekspor/impor CSV per deck, dan pengingat ulasan harian opsional |
 | **Timer fokus** | Timer 15, 25, atau 45 menit di dalam mode Fokus yang mencatat setiap sesi |
 | **Statistik Belajar** | Menit fokus hari ini dan 7 hari terakhir, hari beruntun dengan tugas selesai, grafik batang 14 hari, peta aktivitas 90 hari, fokus per mata pelajaran, dan total kartu |
 | **Ekspor CSV nilai** | Bagikan log nilai mata pelajaran sebagai file CSV untuk spreadsheet |

@@ -2,6 +2,14 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v1.32.0
+
+Flashcards now remind you to keep the review habit going.
+
+### New features
+
+- **Daily flashcard reminder.** The Flashcards screen has an optional daily nudge with a chosen time on its own notification channel. Enabling asks for permission only when needed; disabling cancels the alarm, and both settings persist.
+
 ## v1.31.0
 
 Missing a habit no longer has to break your streak.

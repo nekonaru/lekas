@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v1.32.0
+
+Kartu Belajar kini mengingatkanmu untuk menjaga kebiasaan mengulas.
+
+### Fitur baru
+
+- **Pengingat kartu harian.** Layar Kartu Belajar punya pengingat harian opsional dengan jam pilihan pada kanal notifikasinya sendiri. Mengaktifkan hanya meminta izin saat diperlukan, menonaktifkan membatalkan alarm, dan keduanya tersimpan di pengaturan.
+
 ## v1.31.0
 
 Lupa satu hari kebiasaan kini tidak harus memutus streakmu.
