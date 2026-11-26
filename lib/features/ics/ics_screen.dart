@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/components/nav_action_tile.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/ics.dart';
@@ -218,7 +219,7 @@ class _IcsScreenState extends ConsumerState<IcsScreen> {
             const LinearProgressIndicator(),
             const SizedBox(height: 16),
           ],
-          _IcsTile(
+          NavActionTile(
             icon: Icons.ios_share_outlined,
             tint: const Color(0xFF6366F1),
             title: l10n.icsExportTitle,
@@ -226,7 +227,7 @@ class _IcsScreenState extends ConsumerState<IcsScreen> {
             onTap: _busy ? null : _export,
           ),
           const SizedBox(height: 12),
-          _IcsTile(
+          NavActionTile(
             icon: Icons.file_download_outlined,
             tint: const Color(0xFF10B981),
             title: l10n.icsImportTitle,
@@ -241,48 +242,6 @@ class _IcsScreenState extends ConsumerState<IcsScreen> {
                 ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _IcsTile extends StatelessWidget {
-  const _IcsTile({
-    required this.icon,
-    required this.tint,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final Color tint;
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Material(
-      color: colors.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(20),
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: tint.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: tint),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
       ),
     );
   }

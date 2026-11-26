@@ -9,10 +9,33 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/components/nav_action_tile.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/csv.dart';
 import '../../l10n/app_localizations.dart';
+
+class _ImportRow {
+  const _ImportRow({
+    required this.title,
+    required this.type,
+    required this.deadline,
+    required this.priority,
+    required this.done,
+    required this.spaceId,
+    required this.weight,
+    required this.tags,
+  });
+
+  final String title;
+  final String? type;
+  final int? deadline;
+  final int priority;
+  final bool done;
+  final String? spaceId;
+  final double? weight;
+  final List<String> tags;
+}
 
 /// Tasks as a spreadsheet: export every live task to a CSV file, and
 /// import a CSV back into the inbox or straight onto its subject. Tags
@@ -287,7 +310,7 @@ class _CsvScreenState extends ConsumerState<CsvScreen> {
             const LinearProgressIndicator(),
             const SizedBox(height: 16),
           ],
-          _CsvTile(
+          NavActionTile(
             icon: Icons.ios_share_outlined,
             tint: const Color(0xFF6366F1),
             title: l10n.csvExportTitle,
@@ -295,7 +318,7 @@ class _CsvScreenState extends ConsumerState<CsvScreen> {
             onTap: _busy ? null : _export,
           ),
           const SizedBox(height: 12),
-          _CsvTile(
+          NavActionTile(
             icon: Icons.file_download_outlined,
             tint: const Color(0xFF10B981),
             title: l10n.csvImportTitle,
@@ -306,68 +329,4 @@ class _CsvScreenState extends ConsumerState<CsvScreen> {
       ),
     );
   }
-}
-
-class _CsvTile extends StatelessWidget {
-  const _CsvTile({
-    required this.icon,
-    required this.tint,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final Color tint;
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Material(
-      color: colors.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(20),
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: tint.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: tint),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
-      ),
-    );
-  }
-}
-
-class _ImportRow {
-  const _ImportRow({
-    required this.title,
-    required this.type,
-    required this.deadline,
-    required this.priority,
-    required this.done,
-    required this.spaceId,
-    required this.weight,
-    required this.tags,
-  });
-
-  final String title;
-  final String? type;
-  final int? deadline;
-  final int priority;
-  final bool done;
-  final String? spaceId;
-  final double? weight;
-  final List<String> tags;
 }

@@ -39,24 +39,14 @@ DateTime nextDailyReminder(DateTime now, int hour, int minute) {
   return candidate.isAfter(now) ? candidate : candidate.add(const Duration(days: 1));
 }
 
-/// Consecutive checked days ending today. A today without a check yet
-/// does not break the streak: the count walks back from yesterday.
-int habitStreak(
-  Iterable<String> checkedDays, {
-  required DateTime today,
-  Iterable<String> skippedDays = const [],
-}) {
-  final days = <String>{
-    ...checkedDays,
-    // A rest day keeps the chain alive but is not a check-in.
-    ...skippedDays,
-  };
+/// Counts consecutive days ending today from a set of active day keys.
+/// A today that is not active yet does not break the streak: the walk
+/// simply starts at yesterday. Ten years is the safety cap.
+int countDayStreak(Set<String> days, DateTime today) {
   final last = DateTime(today.year, today.month, today.day);
   var streak = 0;
   var cursor = last;
-  if (days.contains(dayKeyOf(cursor))) {
-    streak += 1;
-  }
+  if (days.contains(dayKeyOf(cursor))) streak += 1;
   while (true) {
     cursor = cursor.subtract(const Duration(days: 1));
     if (!days.contains(dayKeyOf(cursor))) break;
@@ -65,6 +55,22 @@ int habitStreak(
   }
   return streak;
 }
+
+/// Consecutive checked days ending today. A today without a check yet
+/// does not break the streak: the count walks back from yesterday.
+int habitStreak(
+  Iterable<String> checkedDays, {
+  required DateTime today,
+  Iterable<String> skippedDays = const [],
+}) =>
+    countDayStreak(
+      {
+        ...checkedDays,
+        // A rest day keeps the chain alive but is not a check-in.
+        ...skippedDays,
+      },
+      today,
+    );
 
 /// How many of the last [days] days are checked, out of [days].
 int habitWindowCount(

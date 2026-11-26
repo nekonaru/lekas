@@ -25,6 +25,17 @@ class DailyReview {
       completedTasks > 0 || focusMinutes > 0 || habitsChecked > 0;
 }
 
+/// Tasks whose completion timestamp is on [today]'s local calendar day.
+List<Task> completedOn(Iterable<Task> tasks, DateTime today) {
+  final key = dayKeyOf(today);
+  return tasks
+      .where((task) =>
+          task.status == 'done' &&
+          task.completedAt != null &&
+          dayKeyOf(DateTime.fromMillisecondsSinceEpoch(task.completedAt!)) == key)
+      .toList();
+}
+
 /// Collects today's facts from tasks, focus sessions and habit checks.
 DailyReview buildDailyReview({
   required List<Task> tasks,
@@ -35,12 +46,7 @@ DailyReview buildDailyReview({
 }) {
   final key = dayKeyOf(today);
   final start = DateTime(today.year, today.month, today.day);
-  final completed = tasks
-      .where((task) =>
-          task.status == 'done' &&
-          task.completedAt != null &&
-          dayKeyOf(DateTime.fromMillisecondsSinceEpoch(task.completedAt!)) == key)
-      .length;
+  final completed = completedOn(tasks, today).length;
   final overdue = tasks
       .where((task) =>
           task.status != 'done' &&

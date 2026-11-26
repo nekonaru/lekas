@@ -3,7 +3,7 @@
 library;
 
 import '../data/database.dart' show FocusSession;
-import 'habits.dart' show dayKeyOf;
+import 'habits.dart' show countDayStreak, dayKeyOf;
 
 /// Focus minutes per day for the last [days] days, oldest first.
 /// The bucket key is the local calendar day of each session.
@@ -63,17 +63,7 @@ int studyStreak({
       dayKeyOf(DateTime.fromMillisecondsSinceEpoch(session.startedAt)),
     ...habitDays,
   };
-  final last = DateTime(today.year, today.month, today.day);
-  var streak = 0;
-  var cursor = last;
-  if (days.contains(dayKeyOf(cursor))) streak += 1;
-  while (true) {
-    cursor = cursor.subtract(const Duration(days: 1));
-    if (!days.contains(dayKeyOf(cursor))) break;
-    streak += 1;
-    if (streak > 3650) break;
-  }
-  return streak;
+  return countDayStreak(days, today);
 }
 
 /// Consecutive days with at least one completed task, counting back from
@@ -81,27 +71,11 @@ int studyStreak({
 int completionStreak(
   Iterable<int> completedAtMillis, {
   required DateTime today,
-}) {
-  final days = <String>{
-    for (final millis in completedAtMillis)
-      _dayKey(DateTime.fromMillisecondsSinceEpoch(millis)),
-  };
-  var streak = 0;
-  var cursor = DateTime(today.year, today.month, today.day);
-  if (days.contains(_dayKey(cursor))) {
-    streak += 1;
-  }
-  while (true) {
-    cursor = cursor.subtract(const Duration(days: 1));
-    if (!days.contains(_dayKey(cursor))) break;
-    streak += 1;
-    // Today not completed yet: the streak still counts yesterday back.
-    if (streak > 3650) break;
-  }
-  return streak;
-}
-
-String _dayKey(DateTime date) {
-  final local = DateTime(date.year, date.month, date.day);
-  return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
-}
+}) =>
+    countDayStreak(
+      {
+        for (final millis in completedAtMillis)
+          dayKeyOf(DateTime.fromMillisecondsSinceEpoch(millis)),
+      },
+      today,
+    );

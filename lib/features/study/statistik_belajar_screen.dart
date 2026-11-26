@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/components/activity_heatmap.dart';
+import '../../core/components/stat_card.dart';
 import '../../core/components/empty_state.dart';
+import '../../core/date_util.dart';
 import '../../data/providers.dart';
 import '../../domain/daily_review.dart';
 import '../../domain/habits.dart';
@@ -140,9 +142,7 @@ class _StatistikBelajarScreenState
         buckets14.sublist(7).fold<int>(0, (sum, minutes) => sum + minutes);
     final prevWeekMinutes =
         buckets14.sublist(0, 7).fold<int>(0, (sum, minutes) => sum + minutes);
-    var heatStart = today.subtract(const Duration(days: 83));
-    // Match the heatmap grid, which aligns its first cell to Monday.
-    heatStart = heatStart.subtract(Duration(days: heatStart.weekday - 1));
+    final heatStart = DateUtil.heatmapStart(today);
     final completedByDay = <String, int>{};
     for (final millis in completed) {
       final day = DateTime.fromMillisecondsSinceEpoch(millis);
@@ -234,7 +234,7 @@ class _StatistikBelajarScreenState
               Row(
                 children: [
                   Expanded(
-                    child: _StatCard(
+                    child: StatCard(
                       value: '${data.todayMinutes}',
                       unit: l10n.minutesUnit,
                       label: l10n.focusToday,
@@ -243,7 +243,7 @@ class _StatistikBelajarScreenState
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: _StatCard(
+                    child: StatCard(
                       value: '${data.weekMinutes}',
                       unit: l10n.minutesUnit,
                       label: l10n.focusThisWeek,
@@ -252,7 +252,7 @@ class _StatistikBelajarScreenState
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: _StatCard(
+                    child: StatCard(
                       value: '${data.streak}',
                       unit: '',
                       label: l10n.studyStreakLabel,
@@ -577,70 +577,6 @@ class _SubjectMinutes {
   final int minutes;
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.value,
-    required this.unit,
-    required this.label,
-    required this.icon,
-  });
-
-  final String value;
-  final String unit;
-  final String label;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 18, color: colors.primary),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                    ),
-              ),
-              if (unit.isNotEmpty) ...[
-                const SizedBox(width: 2),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    unit,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colors.onSurfaceVariant,
-                  height: 1.25,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 /// One weekly goal line: label, current/target and a progress bar that
 /// turns full when the promise is kept.

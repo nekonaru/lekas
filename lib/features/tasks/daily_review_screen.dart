@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/components/empty_state.dart';
+import '../../core/components/stat_card.dart';
 import '../../core/theme.dart';
 import '../../data/providers.dart';
 import '../../domain/daily_review.dart';
@@ -52,13 +53,7 @@ class _DailyReviewScreenState extends ConsumerState<DailyReviewScreen> {
       habitsTotal: habits.length,
       today: today,
     );
-    final finished = tasks
-        .where((task) =>
-            task.status == 'done' &&
-            task.completedAt != null &&
-            dayKeyOf(DateTime.fromMillisecondsSinceEpoch(task.completedAt!)) == key)
-        .map((task) => task.title)
-        .toList();
+    final finished = completedOn(tasks, today).map((task) => task.title).toList();
     return _ReviewData(review, finished, today);
   }
 
@@ -170,7 +165,7 @@ class _DailyReviewScreenState extends ConsumerState<DailyReviewScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: _ReviewCard(
+                    child: StatCard(
                       icon: Icons.warning_amber_outlined,
                       value: '${review.overdueTasks}',
                       label: l10n.dailyReviewOverdue(review.overdueTasks),
@@ -179,7 +174,7 @@ class _DailyReviewScreenState extends ConsumerState<DailyReviewScreen> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: _ReviewCard(
+                    child: StatCard(
                       icon: Icons.timer_outlined,
                       value: '${review.focusMinutes}',
                       label: l10n.dailyReviewFocus(review.focusMinutes),
@@ -188,7 +183,7 @@ class _DailyReviewScreenState extends ConsumerState<DailyReviewScreen> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: _ReviewCard(
+                    child: StatCard(
                       icon: Icons.local_fire_department_outlined,
                       value: '${review.habitsChecked}/${review.habitsTotal}',
                       label: l10n.dailyReviewHabits(
@@ -237,50 +232,3 @@ class _ReviewData {
   final DateTime today;
 }
 
-class _ReviewCard extends StatelessWidget {
-  const _ReviewCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.tint,
-  });
-
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color tint;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 18, color: tint),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colors.onSurfaceVariant,
-                  height: 1.25,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-}
