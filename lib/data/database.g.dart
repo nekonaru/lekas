@@ -11582,6 +11582,18 @@ class $FlashCardsTable extends FlashCards
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -11628,6 +11640,7 @@ class $FlashCardsTable extends FlashCards
     lapses,
     kind,
     options,
+    sortOrder,
     createdAt,
     updatedAt,
     deletedAt,
@@ -11721,6 +11734,12 @@ class $FlashCardsTable extends FlashCards
         options.isAcceptableOrUnknown(data['options']!, _optionsMeta),
       );
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -11796,6 +11815,10 @@ class $FlashCardsTable extends FlashCards
         DriftSqlType.string,
         data['${effectivePrefix}options'],
       ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -11829,6 +11852,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
   final int lapses;
   final String kind;
   final String? options;
+  final int sortOrder;
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
@@ -11844,6 +11868,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     required this.lapses,
     required this.kind,
     this.options,
+    required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -11866,6 +11891,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     if (!nullToAbsent || options != null) {
       map['options'] = Variable<String>(options);
     }
+    map['sort_order'] = Variable<int>(sortOrder);
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
@@ -11891,6 +11917,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       options: options == null && nullToAbsent
           ? const Value.absent()
           : Value(options),
+      sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
@@ -11916,6 +11943,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       lapses: serializer.fromJson<int>(json['lapses']),
       kind: serializer.fromJson<String>(json['kind']),
       options: serializer.fromJson<String?>(json['options']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
@@ -11936,6 +11964,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       'lapses': serializer.toJson<int>(lapses),
       'kind': serializer.toJson<String>(kind),
       'options': serializer.toJson<String?>(options),
+      'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
@@ -11954,6 +11983,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     int? lapses,
     String? kind,
     Value<String?> options = const Value.absent(),
+    int? sortOrder,
     int? createdAt,
     int? updatedAt,
     Value<int?> deletedAt = const Value.absent(),
@@ -11969,6 +11999,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     lapses: lapses ?? this.lapses,
     kind: kind ?? this.kind,
     options: options.present ? options.value : this.options,
+    sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -11992,6 +12023,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
       lapses: data.lapses.present ? data.lapses.value : this.lapses,
       kind: data.kind.present ? data.kind.value : this.kind,
       options: data.options.present ? data.options.value : this.options,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -12012,6 +12044,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
           ..write('lapses: $lapses, ')
           ..write('kind: $kind, ')
           ..write('options: $options, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -12032,6 +12065,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
     lapses,
     kind,
     options,
+    sortOrder,
     createdAt,
     updatedAt,
     deletedAt,
@@ -12051,6 +12085,7 @@ class FlashCard extends DataClass implements Insertable<FlashCard> {
           other.lapses == this.lapses &&
           other.kind == this.kind &&
           other.options == this.options &&
+          other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -12068,6 +12103,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
   final Value<int> lapses;
   final Value<String> kind;
   final Value<String?> options;
+  final Value<int> sortOrder;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int?> deletedAt;
@@ -12084,6 +12120,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     this.lapses = const Value.absent(),
     this.kind = const Value.absent(),
     this.options = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -12101,6 +12138,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     this.lapses = const Value.absent(),
     this.kind = const Value.absent(),
     this.options = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.deletedAt = const Value.absent(),
@@ -12123,6 +12161,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     Expression<int>? lapses,
     Expression<String>? kind,
     Expression<String>? options,
+    Expression<int>? sortOrder,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? deletedAt,
@@ -12140,6 +12179,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
       if (lapses != null) 'lapses': lapses,
       if (kind != null) 'kind': kind,
       if (options != null) 'options': options,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -12159,6 +12199,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     Value<int>? lapses,
     Value<String>? kind,
     Value<String?>? options,
+    Value<int>? sortOrder,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int?>? deletedAt,
@@ -12176,6 +12217,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
       lapses: lapses ?? this.lapses,
       kind: kind ?? this.kind,
       options: options ?? this.options,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -12219,6 +12261,9 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
     if (options.present) {
       map['options'] = Variable<String>(options.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -12248,6 +12293,7 @@ class FlashCardsCompanion extends UpdateCompanion<FlashCard> {
           ..write('lapses: $lapses, ')
           ..write('kind: $kind, ')
           ..write('options: $options, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -24018,6 +24064,7 @@ typedef $$FlashCardsTableCreateCompanionBuilder = FlashCardsCompanion Function({
   Value<int> lapses,
   Value<String> kind,
   Value<String?> options,
+  Value<int> sortOrder,
   required int createdAt,
   required int updatedAt,
   Value<int?> deletedAt,
@@ -24035,6 +24082,7 @@ typedef $$FlashCardsTableUpdateCompanionBuilder = FlashCardsCompanion Function({
   Value<int> lapses,
   Value<String> kind,
   Value<String?> options,
+  Value<int> sortOrder,
   Value<int> createdAt,
   Value<int> updatedAt,
   Value<int?> deletedAt,
@@ -24119,6 +24167,11 @@ class $$FlashCardsTableFilterComposer
 
   ColumnFilters<String> get options => $composableBuilder(
     column: $table.options,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -24220,6 +24273,11 @@ class $$FlashCardsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -24304,6 +24362,9 @@ class $$FlashCardsTableAnnotationComposer
   GeneratedColumn<String> get options =>
       $composableBuilder(column: $table.options, builder: (column) => column);
 
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -24376,6 +24437,7 @@ class $$FlashCardsTableTableManager
                 Value<int> lapses = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String?> options = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
@@ -24392,6 +24454,7 @@ class $$FlashCardsTableTableManager
                 lapses: lapses,
                 kind: kind,
                 options: options,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -24410,6 +24473,7 @@ class $$FlashCardsTableTableManager
                 Value<int> lapses = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String?> options = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int?> deletedAt = const Value.absent(),
@@ -24426,6 +24490,7 @@ class $$FlashCardsTableTableManager
                 lapses: lapses,
                 kind: kind,
                 options: options,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,

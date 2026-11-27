@@ -66,6 +66,44 @@ class _FlashcardReviewScreenState
   }
 
   Widget _face(FlashCard card, bool flipped, TextStyle? style) {
+    if (card.kind == 'order') {
+      final steps = parseOrderSteps(card.front);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!flipped)
+            for (var i = 0; i < steps.length; i++)
+              ListTile(
+                dense: true,
+                leading: CircleAvatar(
+                  radius: 16,
+                  child: Text('${i + 1}'),
+                ),
+                title: Text(steps[i]),
+              )
+          else if (steps.length >= 2)
+            Text(
+              '${steps.first} → ${steps.last}',
+              style: style?.copyWith(color: const Color(0xFF10B981)),
+              textAlign: TextAlign.center,
+            ),
+        ],
+      );
+    }
+    if (card.kind == 'pair') {
+      final pairs = parsePairs(card.front);
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        alignment: WrapAlignment.center,
+        children: [
+          for (final pair in pairs)
+            Chip(
+              label: Text(flipped ? '${pair.prompt} → ${pair.answer}' : pair.prompt),
+            ),
+        ],
+      );
+    }
     if (card.kind == 'cloze') {
       return Text(
         flipped ? card.front.replaceFirst('____', card.back) : card.front,

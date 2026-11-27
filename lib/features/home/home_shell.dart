@@ -10,6 +10,7 @@ import '../tasks/morning_night_summary.dart';
 import '../tasks/overdue_reminder_screen.dart';
 import '../tasks/quick_add_suara_screen.dart';
 import '../tasks/saved_filter_screen.dart';
+import '../tasks/batch_edit_screen.dart';
 import '../tasks/daily_review_screen.dart';
 import '../tasks/search_filter_screen.dart';
 import '../tasks/statistik_rekap_screen.dart';
@@ -22,6 +23,7 @@ import '../ics/ics_screen.dart';
 import '../csv/csv_screen.dart';
 import '../search/global_search_screen.dart';
 import '../kebiasaan/kebiasaan_screen.dart';
+import '../study/exam_simulation_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/session_log_screen.dart';
 import '../study/statistik_belajar_screen.dart';
@@ -227,6 +229,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             () => _push(const GlobalSearchScreen()),
           ),
           _drawerTile(
+            Icons.edit_note_outlined,
+            l10n.batchEditMenu,
+            () => _push(const BatchEditScreen(taskIds: [])),
+          ),
+          _drawerTile(
             Icons.bookmark_border,
             l10n.savedViewsTitle,
             () => _push(const SavedFilterScreen()),
@@ -265,6 +272,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           _drawerSection(l10n.drawerSectionStudy, Icons.auto_stories_outlined),
           _FlashcardsTile(
             onTap: () => _push(const FlashcardsScreen()),
+          ),
+          _drawerTile(
+            Icons.grade_outlined,
+            l10n.examSimulationTitle,
+            () => _push(const ExamSimulationScreen(spaceId: null)),
           ),
           _drawerTile(
             Icons.local_fire_department_outlined,

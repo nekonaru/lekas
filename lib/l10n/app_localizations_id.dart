@@ -2671,4 +2671,60 @@ class AppLocalizationsId extends AppLocalizations {
   String examPlanTask(String title) {
     return 'Ulas untuk $title';
   }
+
+  @override
+  String batchEditTitle(int count) {
+    return 'Ubah $count tugas';
+  }
+
+  @override
+  String get batchEditHint =>
+      'Pilih hanya yang ingin diubah. Kolom lain tetap apa adanya.';
+
+  @override
+  String get batchMoveToCategory => 'Pindah ke kategori';
+
+  @override
+  String get batchSetPriority => 'Atur prioritas';
+
+  @override
+  String get batchSetStatus => 'Atur status';
+
+  @override
+  String get batchAddTags => 'Tambah tag';
+
+  @override
+  String get batchKeepValue => 'Biarkan apa adanya';
+
+  @override
+  String get batchEditMenu => 'Ubah banyak tugas';
+
+  @override
+  String get batchPickTasks => 'Pilih tugas dulu';
+
+  @override
+  String get batchNoTasks => 'Belum ada tugas untuk diubah.';
+
+  @override
+  String get typeOrder => 'Urutan';
+
+  @override
+  String get typePair => 'Pasangan';
+
+  @override
+  String get orderHint => 'Tulis satu langkah per baris di kolom depan.';
+
+  @override
+  String get pairHint => 'Tulis pertanyaan|jawaban per baris di kolom depan.';
+
+  @override
+  String get examSimulationTitle => 'Simulasi ujian';
+
+  @override
+  String examSimulationScore(int correct, int total) {
+    return 'Skor: $correct dari $total';
+  }
+
+  @override
+  String get retryLabel => 'Coba lagi';
 }

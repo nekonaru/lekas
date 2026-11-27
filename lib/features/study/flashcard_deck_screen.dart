@@ -439,6 +439,14 @@ Future<bool> showFlashcardEditor(
                       value: 'choice',
                       child: Text(l10n.typeChoice),
                     ),
+                    DropdownMenuItem(
+                      value: 'order',
+                      child: Text(l10n.typeOrder),
+                    ),
+                    DropdownMenuItem(
+                      value: 'pair',
+                      child: Text(l10n.typePair),
+                    ),
                   ],
                   onChanged: (value) {
                     if (value == null) return;
@@ -457,6 +465,13 @@ Future<bool> showFlashcardEditor(
                   ),
                   onChanged: (_) => setDialogState(() {}),
                 ),
+                if (kind == 'order' || kind == 'pair') ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    kind == 'order' ? l10n.orderHint : l10n.pairHint,
+                    style: Theme.of(dialogContext).textTheme.bodySmall,
+                  ),
+                ],
                 if (kind == 'cloze') ...[
                   const SizedBox(height: 8),
                   Text(

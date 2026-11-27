@@ -13,7 +13,9 @@ import 'features/onboarding/onboarding_screen.dart';
 import 'features/onboarding/intro_splash.dart';
 import 'features/quick_add/quick_add_sheet.dart';
 import 'features/share_intake/share_intake_screen.dart';
+import 'domain/deep_link.dart';
 import 'features/tasks/fokus_hari_ini_screen.dart';
+import 'features/tasks/task_detail_screen.dart';
 import 'features/tasks/attendance_screen.dart';
 import 'lock/unlock_screen.dart';
 import 'reminders/reminder_service.dart';
@@ -255,7 +257,7 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
       final error = next.error;
       if (error != null) debugPrint('reminder start up failed: $error');
     });
-    final onboarded = ref.watch(onboardedProvider);
+    ref.watch(onboardedProvider);
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeModeProvider);
     final accent = ref.watch(accentColorProvider);
@@ -279,6 +281,34 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
     return MaterialApp(
       title: 'Lekas',
       navigatorKey: navigatorKey,
+      onGenerateInitialRoutes: (initial) {
+        final taskId = taskIdFromLink(initial);
+        if (taskId != null) {
+          return [
+            MaterialPageRoute<void>(
+              settings: RouteSettings(name: initial),
+              builder: (_) => TaskDetailScreen(taskId: taskId),
+            ),
+          ];
+        }
+        return [
+          MaterialPageRoute<void>(
+            settings: const RouteSettings(name: '/'),
+            builder: (_) => const _Home(),
+          ),
+        ];
+      },
+      onGenerateRoute: (settings) {
+        final taskId = taskIdFromLink(settings.name ?? '');
+        if (taskId != null) {
+          return MaterialPageRoute<void>(
+            builder: (_) => TaskDetailScreen(taskId: taskId),
+          );
+        }
+        return MaterialPageRoute<void>(
+          builder: (_) => const _Home(),
+        );
+      },
       locale: locale.value ?? const Locale('id'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -309,15 +339,12 @@ class _LekasAppState extends ConsumerState<LekasApp> with WidgetsBindingObserver
           ),
         );
       },
-      home: _Home(onboarded: onboarded),
     );
   }
 }
 
 class _Home extends ConsumerStatefulWidget {
-  const _Home({required this.onboarded});
-
-  final AsyncValue<bool> onboarded;
+  const _Home();
 
   @override
   ConsumerState<_Home> createState() => _HomeState();
@@ -345,10 +372,11 @@ class _HomeState extends ConsumerState<_Home> {
 
   @override
   Widget build(BuildContext context) {
+    final onboarded = ref.watch(onboardedProvider);
     // After setup the flag is re-read through an invalidate. The skip flags
     // keep the current screen during that reload, so the swap to the shell
     // never flashes a spinner in between.
-    return widget.onboarded.when(
+    return onboarded.when(
       data: (value) => value ? const HomeShell() : const OnboardingScreen(),
       loading: () => const Scaffold(
         body: Center(child: CircularProgressIndicator()),

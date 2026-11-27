@@ -391,6 +391,7 @@ class FlashCards extends Table {
   IntColumn get lapses => integer().withDefault(const Constant(0))();
   TextColumn get kind => text().withDefault(const Constant('qa'))();
   TextColumn get options => text().nullable()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
   IntColumn get deletedAt => integer().nullable()();
@@ -482,7 +483,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   /// Creates the default semester of a fresh install, active, so every
   /// space has a home and the tab is never empty on first run.
@@ -645,6 +646,10 @@ class AppDatabase extends _$AppDatabase {
           if (from >= 10 && from < 11) {
             // Repeats can name specific weekdays (schema 11).
             await m.addColumn(tasks, tasks.repeatDays);
+          }
+          if (from >= 11 && from < 12) {
+            // Flashcards gain an explicit order within a deck (schema 12).
+            await m.addColumn(flashCards, flashCards.sortOrder);
           }
         },
       );

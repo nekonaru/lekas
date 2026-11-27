@@ -2669,4 +2669,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String examPlanTask(String title) {
     return 'Review for $title';
   }
+
+  @override
+  String batchEditTitle(int count) {
+    return 'Edit $count tasks';
+  }
+
+  @override
+  String get batchEditHint =>
+      'Pick only what should change. Other fields stay as they are.';
+
+  @override
+  String get batchMoveToCategory => 'Move to category';
+
+  @override
+  String get batchSetPriority => 'Set priority';
+
+  @override
+  String get batchSetStatus => 'Set status';
+
+  @override
+  String get batchAddTags => 'Add tags';
+
+  @override
+  String get batchKeepValue => 'Keep current';
+
+  @override
+  String get batchEditMenu => 'Edit many tasks';
+
+  @override
+  String get batchPickTasks => 'Pick tasks first';
+
+  @override
+  String get batchNoTasks => 'No tasks to edit yet.';
+
+  @override
+  String get typeOrder => 'Ordering';
+
+  @override
+  String get typePair => 'Matching pairs';
+
+  @override
+  String get orderHint => 'Write one step per line in the front field.';
+
+  @override
+  String get pairHint => 'Write prompt|answer per line in the front field.';
+
+  @override
+  String get examSimulationTitle => 'Exam simulation';
+
+  @override
+  String examSimulationScore(int correct, int total) {
+    return 'Score: $correct of $total';
+  }
+
+  @override
+  String get retryLabel => 'Try again';
 }

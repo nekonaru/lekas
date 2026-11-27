@@ -46,6 +46,7 @@ class FlashcardRepository {
       lapses: 0,
       kind: kind,
       options: options,
+      sortOrder: 0,
       createdAt: now,
       updatedAt: now,
       deletedAt: null,

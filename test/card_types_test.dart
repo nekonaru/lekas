@@ -20,4 +20,12 @@ void main() {
     expect(hasClozeBlank('Ibu kota Indonesia ____ Jakarta'), isTrue);
     expect(hasClozeBlank('Ibu kota Indonesia Jakarta'), isFalse);
   });
+
+  test('order steps and pairs parse from the front field', () {
+    expect(parseOrderSteps('Iris\nTumis\nSajikan'), ['Iris', 'Tumis', 'Sajikan']);
+    expect(parsePairs('Air|H2O\nGaram|NaCl'), [
+      (prompt: 'Air', answer: 'H2O'),
+      (prompt: 'Garam', answer: 'NaCl'),
+    ]);
+  });
 }

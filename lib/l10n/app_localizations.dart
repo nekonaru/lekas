@@ -4873,6 +4873,108 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ulas untuk {title}'**
   String examPlanTask(String title);
+
+  /// No description provided for @batchEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah {count} tugas'**
+  String batchEditTitle(int count);
+
+  /// No description provided for @batchEditHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih hanya yang ingin diubah. Kolom lain tetap apa adanya.'**
+  String get batchEditHint;
+
+  /// No description provided for @batchMoveToCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Pindah ke kategori'**
+  String get batchMoveToCategory;
+
+  /// No description provided for @batchSetPriority.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur prioritas'**
+  String get batchSetPriority;
+
+  /// No description provided for @batchSetStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur status'**
+  String get batchSetStatus;
+
+  /// No description provided for @batchAddTags.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah tag'**
+  String get batchAddTags;
+
+  /// No description provided for @batchKeepValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan apa adanya'**
+  String get batchKeepValue;
+
+  /// No description provided for @batchEditMenu.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah banyak tugas'**
+  String get batchEditMenu;
+
+  /// No description provided for @batchPickTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tugas dulu'**
+  String get batchPickTasks;
+
+  /// No description provided for @batchNoTasks.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tugas untuk diubah.'**
+  String get batchNoTasks;
+
+  /// No description provided for @typeOrder.
+  ///
+  /// In id, this message translates to:
+  /// **'Urutan'**
+  String get typeOrder;
+
+  /// No description provided for @typePair.
+  ///
+  /// In id, this message translates to:
+  /// **'Pasangan'**
+  String get typePair;
+
+  /// No description provided for @orderHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis satu langkah per baris di kolom depan.'**
+  String get orderHint;
+
+  /// No description provided for @pairHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pertanyaan|jawaban per baris di kolom depan.'**
+  String get pairHint;
+
+  /// No description provided for @examSimulationTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasi ujian'**
+  String get examSimulationTitle;
+
+  /// No description provided for @examSimulationScore.
+  ///
+  /// In id, this message translates to:
+  /// **'Skor: {correct} dari {total}'**
+  String examSimulationScore(int correct, int total);
+
+  /// No description provided for @retryLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get retryLabel;
 }
 
 class _AppLocalizationsDelegate
