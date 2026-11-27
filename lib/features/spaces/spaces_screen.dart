@@ -362,6 +362,7 @@ class _SpacesScreenState extends ConsumerState<SpacesScreen> {
           trailing: selecting
               ? null
               : IconButton(
+                  tooltip: AppLocalizations.of(context)!.editLabel,
                   icon: const Icon(Icons.more_vert),
                   onPressed: () => _spaceMenu(space),
                 ),

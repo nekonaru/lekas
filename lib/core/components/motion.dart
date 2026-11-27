@@ -29,6 +29,7 @@ class FadeSlideIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) return child;
     final step = index.clamp(0, 6);
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
@@ -70,6 +71,7 @@ class _PressScaleState extends State<PressScale> {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) return widget.child;
     return Listener(
       onPointerDown: (_) => setState(() => _pressed = true),
       onPointerUp: (_) => setState(() => _pressed = false),

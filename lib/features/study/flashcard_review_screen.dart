@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/components/flip_card.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/card_types.dart';
@@ -156,33 +157,28 @@ class _FlashcardReviewScreenState
                 ),
               ),
               const SizedBox(height: 12),
-              // The card: tap toggles the flip; content crossfades.
+              // The card: a real 3D flip with the shared motion curve.
               Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _flipped = !_flipped),
-                  child: Material(
-                    color: colors.primaryContainer.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(28),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () => setState(() => _flipped = !_flipped),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(28),
-                          child: SingleChildScrollView(
-                            child: _face(
-                              card,
-                              _flipped,
-                              Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.35,
-                                  ),
-                            ),
-                          ),
+                child: FlipCard(
+                  key: ValueKey(card.id),
+                  color: colors.primary,
+                  front: _face(
+                    card,
+                    false,
+                    Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
                         ),
-                      ),
-                    ),
                   ),
+                  back: _face(
+                    card,
+                    true,
+                    Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
+                        ),
+                  ),
+                  onFlip: (shown) => setState(() => _flipped = shown),
                 ),
               ),
               const SizedBox(height: 12),

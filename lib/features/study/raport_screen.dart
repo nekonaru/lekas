@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/components/empty_state.dart';
+import '../../core/components/progress_ring.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -203,14 +204,12 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(999),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 6,
-                          backgroundColor: Colors.white.withValues(alpha: 0.2),
-                          color: Colors.white,
-                        ),
+                      ProgressRing(
+                        value: progress,
+                        size: 56,
+                        strokeWidth: 7,
+                        color: Colors.white,
+                        center: '${(progress * 100).round()}%',
                       ),
                     ],
                   ),

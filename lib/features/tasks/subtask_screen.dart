@@ -69,6 +69,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
+                      tooltip: l10n.editLabel,
                       icon: const Icon(Icons.edit, size: 20),
                       onPressed: () async {
                         _titleController.text = subtask.title;
@@ -106,6 +107,7 @@ class _SubtaskScreenState extends ConsumerState<SubtaskScreen> {
                       },
                     ),
                     IconButton(
+                      tooltip: l10n.deleteLabel,
                       icon: const Icon(
                         Icons.delete,
                         size: 20,

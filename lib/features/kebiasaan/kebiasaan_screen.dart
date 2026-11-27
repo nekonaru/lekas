@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/components/activity_heatmap.dart';
+import '../../core/components/motion.dart';
 import '../../core/components/empty_state.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -324,29 +325,36 @@ class _KebiasaanScreenState extends ConsumerState<KebiasaanScreen> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 88),
             children: [
-              for (final habit in data.habits)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _HabitCard(
-                    habit: habit,
-                    checked: data.checks[habit.id] ?? const <String>{},
-                    skipped: data.skips[habit.id] ?? const <String>{},
-                    weekKeys: weekKeys,
-                    onToggle: (dayKey) async {
-                      HapticFeedback.selectionClick();
-                      await ref
-                          .read(habitRepositoryProvider)
-                          .toggleCheck(habit.id, dayKey);
-                      _reload();
-                    },
-                    onSkip: (dayKey) async {
-                      HapticFeedback.mediumImpact();
-                      await ref
-                          .read(habitRepositoryProvider)
-                          .toggleSkip(habit.id, dayKey);
-                      _reload();
-                    },
-                    onDelete: () => _deleteHabit(habit),
+              for (var habitIndex = 0;
+                  habitIndex < data.habits.length;
+                  habitIndex++)
+                FadeSlideIn(
+                  index: habitIndex,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _HabitCard(
+                      habit: data.habits[habitIndex],
+                      checked:
+                          data.checks[data.habits[habitIndex].id] ?? const <String>{},
+                      skipped:
+                          data.skips[data.habits[habitIndex].id] ?? const <String>{},
+                      weekKeys: weekKeys,
+                      onToggle: (dayKey) async {
+                        HapticFeedback.selectionClick();
+                        await ref
+                            .read(habitRepositoryProvider)
+                            .toggleCheck(data.habits[habitIndex].id, dayKey);
+                        _reload();
+                      },
+                      onSkip: (dayKey) async {
+                        HapticFeedback.mediumImpact();
+                        await ref
+                            .read(habitRepositoryProvider)
+                            .toggleSkip(data.habits[habitIndex].id, dayKey);
+                        _reload();
+                      },
+                      onDelete: () => _deleteHabit(data.habits[habitIndex]),
+                    ),
                   ),
                 ),
               const SizedBox(height: 6),
