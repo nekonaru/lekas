@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v2.1.0
+
+A design and motion pass across the app, with accessibility fixes and no data changes.
+
+### New features
+
+- **Shared 3D flip card.** Flashcards now turn on the Y axis with the app's motion curve, including an instant mode when the system asks for reduced motion.
+- **One progress ring.** Report cards and GPA projection use the same circular progress component with a percent label.
+
+### Improvements
+
+- **Reduced motion everywhere.** The shared entrance and press animations return their child unchanged when animations are disabled.
+- **Staggered habit list.** Habit cards arrive one after another with capped delays, so long lists still settle quickly.
+- **Accessibility.** Remaining icon-only buttons gained tooltips on calendar, category, task and subtask screens.
+
 ## v2.0.0
 
 The big study update: focus, flashcards and grades all gain a second dimension, and repeating tasks and exam prep become smarter.

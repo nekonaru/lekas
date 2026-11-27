@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v2.1.0
+
+Putaran desain dan animasi di seluruh aplikasi, plus perbaikan aksesibilitas tanpa perubahan data.
+
+### Fitur baru
+
+- **Kartu flip 3D bersama.** Kartu belajar kini berputar pada sumbu Y dengan kurva gerak aplikasi, termasuk mode instan saat sistem mematikan animasi.
+- **Satu progress ring.** Rapor dan proyeksi IPK memakai komponen progres melingkar yang sama dengan label persen.
+
+### Peningkatan
+
+- **Reduced motion di mana-mana.** Animasi masuk dan tekan bersama mengembalikan child apa adanya saat animasi dimatikan.
+- **Daftar kebiasaan bergilir.** Kartu kebiasaan muncul satu per satu dengan jeda terbatas agar daftar panjang tetap cepat stabil.
+- **Aksesibilitas.** Tombol ikon yang tersisa mendapat tooltip di layar kalender, kategori, tugas, dan subtugas.
+
 ## v2.0.0
 
 Update belajar besar besaran: fokus, kartu, dan nilai masing-masing mendapat dimensi baru, sementara tugas berulang dan persiapan ujian makin pintar.
