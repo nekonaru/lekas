@@ -4,6 +4,16 @@ import 'package:lekas/reminders/class_quiet.dart';
 import 'package:lekas/reminders/reminder_service.dart';
 
 void main() {
+  test('reserved notification ids are unique', () {
+    final ids = <int>[
+      kFlashcardReminderId,
+      kHabitReminderId,
+      kTestNotificationId,
+      kUnblockNotificationId,
+    ];
+    expect(ids.toSet(), hasLength(ids.length));
+  });
+
   group('quiet hours rule (design section 4.6)', () {
     final deadline = DateTime(2026, 10, 20, 23, 59);
 

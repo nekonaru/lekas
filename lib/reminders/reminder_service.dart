@@ -430,6 +430,13 @@ Future<void> _markDoneInDb(AppDatabase db, String taskId) async {
 
 Future<void> _snoozeInDb(AppDatabase db, String taskId) async {
   tz_data.initializeTimeZones();
+  // The background isolate has no channel-backed timezone lookup here, so
+  // set the app's default zone before interpreting local DateTimes.
+  try {
+    tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
+  } catch (_) {
+    // Keep the library default if the database is unavailable.
+  }
   final repository = TaskRepository(db);
   final reminderRepository = ReminderRepository(db);
   final settings = SettingsRepository(db);
@@ -1671,7 +1678,7 @@ const int kTestNotificationId = 999999;
 
 /// Notification id of the soft "ready to start" notice (design section
 /// 5.27), outside the range the reminder id sequence hands out.
-const int kUnblockNotificationId = 900001;
+const int kUnblockNotificationId = 900003;
 
 final reminderServiceProvider = Provider<ReminderService>((ref) {
   return ReminderService(ref);

@@ -49,7 +49,11 @@ class _FlashcardReviewScreenState
     });
   }
 
+  bool _grading = false;
+
   Future<void> _grade(int quality) async {
+    if (_grading || _index >= _queue.length) return;
+    _grading = true;
     final card = _queue[_index];
     await ref.read(flashcardRepositoryProvider).reviewCard(card, quality);
     if (!mounted) return;
@@ -57,6 +61,7 @@ class _FlashcardReviewScreenState
       _reviewed += 1;
       _flipped = false;
       _index += 1;
+      _grading = false;
     });
   }
 

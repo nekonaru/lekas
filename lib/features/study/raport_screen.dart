@@ -136,7 +136,7 @@ class _RaportScreenState extends ConsumerState<RaportScreen> {
             icon: const Icon(Icons.share_outlined),
             onPressed: () async {
               final data = await _data;
-              if (data.rows.isEmpty) return;
+              if (!mounted || data.rows.isEmpty) return;
               await _share(data);
             },
           ),

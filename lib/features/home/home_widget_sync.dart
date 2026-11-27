@@ -167,26 +167,42 @@ Future<void> widgetBackgroundCallback(Uri? data) async {
 
 /// Keeps the widgets in step with the data. Task edits arrive often while
 /// a form is being typed, so the rebuild waits for a short pause.
+final _syncClassSlotsProvider = StreamProvider<List<ClassSlot>>(
+  (ref) => ref.watch(classSlotRepositoryProvider).watchAllClassSlots(),
+);
+final _syncExceptionsProvider = StreamProvider<List<ClassException>>(
+  (ref) => ref.watch(classExceptionRepositoryProvider).watchClassExceptions(),
+);
+final _syncSpacesProvider = StreamProvider<List<Space>>(
+  (ref) => ref.watch(spaceRepositoryProvider).watchSpaces(),
+);
+final _syncSemestersProvider = StreamProvider<List<Semester>>(
+  (ref) => ref.watch(semesterRepositoryProvider).watchSemesters(),
+);
+
 final homeWidgetSyncProvider = Provider<void>((ref) {
   Timer? timer;
   ref.onDispose(() => timer?.cancel());
   // Class/exam widgets read more than tasks: a timetable edit, a moved
   // class, a renamed subject or a language switch must redraw them too.
-  ref.watch(allTasksProvider);
-  ref.watch(classSlotRepositoryProvider).watchAllClassSlots();
-  ref.watch(classExceptionRepositoryProvider).watchClassExceptions();
-  ref.watch(spaceRepositoryProvider).watchSpaces();
-  ref.watch(semesterRepositoryProvider).watchSemesters();
   ref.watch(localeProvider);
-  final tasks = ref.watch(allTasksProvider);
-  tasks.whenData((_) {
-    timer?.cancel();
-    timer = Timer(const Duration(milliseconds: 400), () {
-      unawaited(syncHomeWidgets(ref.read(appDatabaseProvider)).catchError(
-        (Object error, StackTrace stack) {
-          debugPrint('widget sync failed: $error\n$stack');
-        },
-      ));
+  final inputs = <AsyncValue<dynamic>>[
+    ref.watch(allTasksProvider),
+    ref.watch(_syncClassSlotsProvider),
+    ref.watch(_syncExceptionsProvider),
+    ref.watch(_syncSpacesProvider),
+    ref.watch(_syncSemestersProvider),
+  ];
+  for (final input in inputs) {
+    input.whenData((_) {
+      timer?.cancel();
+      timer = Timer(const Duration(milliseconds: 400), () {
+        unawaited(syncHomeWidgets(ref.read(appDatabaseProvider)).catchError(
+          (Object error, StackTrace stack) {
+            debugPrint('widget sync failed: $error\n$stack');
+          },
+        ));
+      });
     });
-  });
+  }
 });

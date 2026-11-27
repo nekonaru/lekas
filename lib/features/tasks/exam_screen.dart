@@ -15,12 +15,26 @@ class ExamScreen extends ConsumerStatefulWidget {
 }
 
 class _ExamScreenState extends ConsumerState<ExamScreen> {
+  late Future<List<Task>> _examsFuture;
+  bool _planning = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _examsFuture = ref.read(taskRepositoryProvider).getTasks(spaceId: widget.spaceId);
+  }
+
   Future<void> _createPlan(Task exam) async {
+    if (_planning) return;
+    _planning = true;
     final l10n = AppLocalizations.of(context)!;
     final deadline = exam.deadline == null
         ? null
         : DateTime.fromMillisecondsSinceEpoch(exam.deadline!);
-    if (deadline == null) return;
+    if (deadline == null) {
+      _planning = false;
+      return;
+    }
     final now = DateTime.now();
     var created = 0;
     for (final lead in [7, 3, 1]) {
@@ -43,6 +57,7 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
           ));
       created += 1;
     }
+    _planning = false;
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.examPlanCreated(created))),
@@ -53,12 +68,11 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
-    final repo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.examStudyMaterialsTitle)),
       body: FutureBuilder<List<Task>>(
-        future: repo.getTasks(spaceId: widget.spaceId),
+        future: _examsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

@@ -102,11 +102,15 @@ class _FocusTimerCardState extends ConsumerState<FocusTimerCard> {
     await settings.set('focus_work_minutes', '$nextWork');
     await settings.set('focus_break_minutes', '$nextBreak');
     if (!mounted) return;
-    setState(() {
-      _workMinutes = nextWork;
-      _breakMinutes = nextBreak;
-      if (!_running) _remainingSeconds = _workMinutes * 60;
-    });
+    // Changing the length while a timer is running would desync progress
+    // and elapsed time, so the saved values take effect on the next reset.
+    if (!_running) {
+      setState(() {
+        _workMinutes = nextWork;
+        _breakMinutes = nextBreak;
+        _remainingSeconds = _workMinutes * 60;
+      });
+    }
   }
 
   @override

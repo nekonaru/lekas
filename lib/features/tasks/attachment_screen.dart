@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../../core/constants.dart';
@@ -18,6 +19,17 @@ class AttachmentScreen extends ConsumerStatefulWidget {
 }
 
 class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
+  late Future<List<Attachment>> _attachments;
+
+  @override
+  void initState() {
+    super.initState();
+    _attachments = _load();
+  }
+
+  Future<List<Attachment>> _load() =>
+      ref.read(attachmentRepositoryProvider).getAttachments(widget.taskId);
+
   /// Sends the attachment to another app (design section 7.6).
   Future<void> _share(Attachment attachment) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -46,12 +58,11 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final repo = ref.watch(attachmentRepositoryProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.attachmentsTitle)),
       body: FutureBuilder<List<Attachment>>(
-        future: repo.getAttachments(widget.taskId),
+        future: _attachments,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -75,6 +86,7 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final messenger = ScaffoldMessenger.of(context);
+          final repo = ref.read(attachmentRepositoryProvider);
           final result = await FilePicker.platform.pickFiles(
             type: FileType.any,
           );
@@ -96,7 +108,7 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
             // Copy into app-owned storage so moving or deleting the picked
             // file (or restoring a backup on another device) never leaves
             // a dead path behind.
-            final id = DateTime.now().millisecondsSinceEpoch.toString();
+            final id = const Uuid().v4();
             final dir = Directory(
                 '${(await getApplicationDocumentsDirectory()).path}/lekas_attachments');
             await dir.create(recursive: true);
@@ -112,7 +124,7 @@ class _AttachmentScreenState extends ConsumerState<AttachmentScreen> {
               sizeBytes: size,
               createdAt: DateTime.now().millisecondsSinceEpoch,
             ));
-            if (mounted) setState(() {});
+            if (mounted) setState(() => _attachments = _load());
           }
         },
         child: const Icon(Icons.add),
