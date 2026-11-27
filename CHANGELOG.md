@@ -2,6 +2,21 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v2.1.1
+
+A native-correctness and smoothness patch found by a fourth deep audit.
+
+### Bug fixes
+
+- **Reminders keep their own ids.** The task-unblock notice no longer shares an id with the daily habit alarm, and background snoozes set the local timezone before scheduling, so they fire at the intended local time.
+- **Widgets really follow changes.** The sync provider now subscribes to class slot, exception, space and semester streams instead of discarding them, so timetable and subject edits redraw the widgets.
+- **No duplicate writes.** Rapid taps during flashcard review and exam-plan creation are guarded, and attachment ids are unique UUIDs.
+- **Fewer rebuild reads.** Exam, attachment and report screens keep their futures in state instead of querying on every rebuild.
+
+### Improvements
+
+- **Timer settings while running** take effect on the next reset instead of desyncing the progress bar.
+
 ## v2.1.0
 
 A design and motion pass across the app, with accessibility fixes and no data changes.

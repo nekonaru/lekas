@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v2.1.1
+
+Patch kebenaran native dan kelancaran dari audit mendalam keempat.
+
+### Perbaikan bug
+
+- **Pengingat punya id sendiri.** Notifikasi tugas yang terbuka tidak lagi memakai id yang sama dengan alarm kebiasaan harian, dan snooze latar belakang menetapkan zona waktu lokal sebelum menjadwalkan agar berbunyi di waktu lokal yang tepat.
+- **Widget benar-benar mengikuti perubahan.** Provider sinkar kini berlangganan stream jadwal kelas, pengecualian, ruang, dan semester, sehingga edit jadwal dan mata pelajaran menggambar ulang widget.
+- **Tidak ada penulisan ganda.** Ketukan cepat saat ulasan kartu dan pembuatan rencana ujian dijaga, dan id lampiran memakai UUID unik.
+- **Lebih sedikit query saat rebuild.** Layar ujian, lampiran, dan rapor menyimpan future di state alih-alih mengquery setiap rebuild.
+
+### Peningkatan
+
+- **Pengaturan timer saat berjalan** mulai berlaku pada reset berikutnya agar progres tidak tidak sinkron.
+
 ## v2.1.0
 
 Putaran desain dan animasi di seluruh aplikasi, plus perbaikan aksesibilitas tanpa perubahan data.
