@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v2.2.0
+
+Langkah besar menuju ruang belajar lengkap: ubah banyak tugas, deep link, dan dua tipe kartu baru.
+
+### Fitur baru
+
+- **Ubah banyak tugas sekaligus.** Pilih tugas, lalu pindahkan ke kategori, ubah prioritas atau status, atau tambah tag dalam satu putaran.
+- **Deep link tugas.** `lekas://task/<id>` membuka tugas langsung dari tautan, notifikasi, atau share sheet.
+- **Kartu urutan dan pasangan.** Kartu Belajar bisa berisi langkah berurutan dan pasangan `pertanyaan|jawaban`, plus simulasi ujian dari kartu pilihan ganda.
+
+### Peningkatan
+
+- **Skema 12** menyimpan urutan kartu secara eksplisit; tes migrasi dan indeks diperbarui.
+
 ## v2.1.1
 
 Patch kebenaran native dan kelancaran dari audit mendalam keempat.

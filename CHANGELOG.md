@@ -2,6 +2,20 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v2.2.0
+
+A larger step toward a full study workspace: bulk edits, deep links and two new card types.
+
+### New features
+
+- **Edit many tasks at once.** Pick tasks, then move them to a category, change priority or status, or add tags in one pass.
+- **Task deep links.** `lekas://task/<id>` opens a task directly from a link, notification or share sheet.
+- **Ordering and matching cards.** Flashcards can hold ordered steps and `prompt|answer` pairs, with an exam simulation built from multiple-choice cards.
+
+### Improvements
+
+- **Schema 12** stores an explicit order for cards; the migration and index tests are updated.
+
 ## v2.1.1
 
 A native-correctness and smoothness patch found by a fourth deep audit.
