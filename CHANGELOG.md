@@ -2,6 +2,23 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v3.0.0
+
+The full study workspace release: bulk editing, deep links, five widgets, a weekly plan and a transcript across semesters.
+
+### New features
+
+- **Edit many tasks at once.** Move, reprioritize, change status or add tags to a selected set of tasks in one pass.
+- **Task deep links.** `lekas://task/<id>` opens a task directly from a link.
+- **Flashcards 3.0.** Ordering and matching-pair cards, plus an exam simulation built from multiple-choice cards.
+- **Transcript and weekly plan.** Every semester's numeric average in one view, and a seven-day plan with deadlines beside weekly classes.
+- **Onboarding with a first habit.** Setup ends with an optional habit created alongside the first space.
+- **Fifth home widget.** A compact widget shows how many flashcards are due.
+
+### Improvements
+
+- **Schemas 11 and 12** add repeat weekdays and explicit card order, with migration and index coverage.
+
 ## v2.3.0
 
 The workspace now covers setup, a full transcript and a week at a glance.

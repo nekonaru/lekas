@@ -2,6 +2,23 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v3.0.0
+
+Rilis ruang belajar lengkap: ubah banyak tugas, deep link, lima widget, rencana mingguan, dan transkrip lintas semester.
+
+### Fitur baru
+
+- **Ubah banyak tugas sekaligus.** Pindahkan, ubah prioritas atau status, dan tambah tag pada sekumpulan tugas dalam satu putaran.
+- **Deep link tugas.** `lekas://task/<id>` membuka tugas langsung dari tautan.
+- **Flashcards 3.0.** Kartu urutan dan pasangan, plus simulasi ujian dari kartu pilihan ganda.
+- **Transkrip dan rencana mingguan.** Rata-rata numerik semua semester dalam satu layar, dan rencana tujuh hari dengan deadline di samping kelas mingguan.
+- **Onboarding dengan kebiasaan pertama.** Setup diakhiri kebiasaan opsional yang dibuat bersama ruang pertama.
+- **Widget kelima.** Widget ringkas menampilkan jumlah kartu yang jatuh tempo.
+
+### Peningkatan
+
+- **Skema 11 dan 12** menambah hari pengulangan dan urutan kartu dengan pengujian migrasi serta indeks.
+
 ## v2.3.0
 
 Ruang kerja kini mencakup setup, transkrip lengkap, dan sekilas pandang satu minggu.
