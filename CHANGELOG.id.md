@@ -2,6 +2,16 @@
 
 Semua perubahan penting pada Lekas. Versi terbaru di paling atas.
 
+## v2.3.0
+
+Ruang kerja kini mencakup setup, transkrip lengkap, dan sekilas pandang satu minggu.
+
+### Fitur baru
+
+- **Onboarding dengan kebiasaan pertama.** Setup diakhiri kebiasaan opsional, dibuat bersama ruang pertama dalam satu putaran.
+- **Transkrip lintas semester.** Satu layar menampilkan rata-rata numerik tiap semester dan rata-rata keseluruhan, melewati semester tanpa nilai.
+- **Rencana mingguan.** Tujuh hari menampilkan tugas yang jatuh tempo berdampingan dengan slot kelas mingguan, dengan navigasi minggu sebelumnya dan berikutnya.
+
 ## v2.2.0
 
 Langkah besar menuju ruang belajar lengkap: ubah banyak tugas, deep link, dan dua tipe kartu baru.

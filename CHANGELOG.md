@@ -2,6 +2,16 @@
 
 All notable changes to Lekas. Newest version on top.
 
+## v2.3.0
+
+The workspace now covers setup, a full transcript and a week at a glance.
+
+### New features
+
+- **Onboarding with a first habit.** Setup ends with an optional habit, created together with the first space in one pass.
+- **Transcript across semesters.** One screen shows every semester's numeric average and the overall mean, skipping semesters without grades.
+- **Weekly plan.** Seven days show tasks due that day beside the weekly class slots, with previous and next week navigation.
+
 ## v2.2.0
 
 A larger step toward a full study workspace: bulk edits, deep links and two new card types.
