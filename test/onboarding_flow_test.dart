@@ -159,9 +159,14 @@ void main() {
 
     expect(find.byType(TextField), findsNWidgets(2));
 
-    // Finish the run. This used to pop the root route and leave an empty
-    // navigator behind, which showed up as a black screen on the device.
+    // Step 1 to the optional first habit, then finish the run. This used
+    // to pop the root route and leave an empty navigator behind, which
+    // showed up as a black screen on the device.
     await tester.tap(find.text('Simpan & Lanjut'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Satu kebiasaan kecil'), findsOneWidget);
+    await tester.tap(find.text('Selesai'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));

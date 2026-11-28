@@ -2650,7 +2650,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get finalGradeValue => 'Nilai akhir (0-100)';
 
   @override
-  String get transcriptTitle => 'Proyeksi IPK';
+  String get transcriptTitle => 'Transkrip nilai';
 
   @override
   String get repeatWeekdays => 'Pada hari tertentu';
@@ -2727,4 +2727,23 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get retryLabel => 'Coba lagi';
+
+  @override
+  String get onboardHabitTitle => 'Satu kebiasaan kecil';
+
+  @override
+  String get onboardHabitSubtitle =>
+      'Opsional. Bangun streak dari sesuatu yang kamu lakukan tiap hari.';
+
+  @override
+  String get onboardHabitName => 'Nama kebiasaan (opsional)';
+
+  @override
+  String get weekPlannerTitle => 'Rencana minggu ini';
+
+  @override
+  String get weekPlannerPrevious => 'Minggu sebelumnya';
+
+  @override
+  String get weekPlannerNext => 'Minggu berikutnya';
 }

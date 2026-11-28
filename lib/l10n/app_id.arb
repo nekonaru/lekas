@@ -914,5 +914,12 @@
   "examSimulationTitle": "Simulasi ujian",
   "examSimulationScore": "Skor: {correct} dari {total}",
   "@examSimulationScore": { "placeholders": { "correct": { "type": "int" }, "total": { "type": "int" } } },
-  "retryLabel": "Coba lagi"
+  "retryLabel": "Coba lagi",
+  "onboardHabitTitle": "Satu kebiasaan kecil",
+  "onboardHabitSubtitle": "Opsional. Bangun streak dari sesuatu yang kamu lakukan tiap hari.",
+  "onboardHabitName": "Nama kebiasaan (opsional)",
+  "transcriptTitle": "Transkrip nilai",
+  "weekPlannerTitle": "Rencana minggu ini",
+  "weekPlannerPrevious": "Minggu sebelumnya",
+  "weekPlannerNext": "Minggu berikutnya"
 }

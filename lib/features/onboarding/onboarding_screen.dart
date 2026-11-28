@@ -20,6 +20,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _step = 0;
   final _nameController = TextEditingController();
   final _codeController = TextEditingController();
+  final _habitController = TextEditingController();
   String _level = 'college';
   String _language = 'id';
 
@@ -27,12 +28,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void dispose() {
     _nameController.dispose();
     _codeController.dispose();
+    _habitController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -55,7 +58,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                _step == 0 ? l10n.welcome : l10n.addFirstSpace,
+                _step == 0
+                    ? l10n.welcome
+                    : _step == 1
+                        ? l10n.addFirstSpace
+                        : l10n.onboardHabitTitle,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -63,12 +70,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               Text(
                 _step == 0
                     ? l10n.welcomeSubtitle
-                    : l10n.enterFirstCourseSubtitle,
+                    : _step == 1
+                        ? l10n.enterFirstCourseSubtitle
+                        : l10n.onboardHabitSubtitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 32),
-              if (_step == 0) ...[
+              if (_step == 2) ...[
+                TextField(
+                  controller: _habitController,
+                  decoration: InputDecoration(
+                    labelText: l10n.onboardHabitName,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.onboardHabitSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                ),
+              ] else if (_step == 0) ...[
                 _languageSelector(l10n),
                 const SizedBox(height: 16),
                 _levelSelector(l10n),
@@ -109,8 +133,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       _step == 0
                           ? l10n.start
                           : _step == 1
-                          ? l10n.saveContinue
-                          : l10n.finish,
+                              ? l10n.saveContinue
+                              : l10n.finish,
                     ),
                   ),
                 ],
@@ -131,7 +155,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        for (var step = 0; step < 2; step++) ...[
+        for (var step = 0; step < 3; step++) ...[
           if (step > 0) const SizedBox(width: 8),
           AnimatedContainer(
             duration: AppMotion.fast,
@@ -261,8 +285,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _savingSpace = false;
 
   void _next() {
-    if (_step == 0) {
-      setState(() => _step = 1);
+    if (_step == 0 || _step == 1) {
+      setState(() => _step++);
     } else if (!_savingSpace) {
       _saveSpace();
     }
@@ -287,6 +311,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
     try {
       await spaceRepo.insertSpace(space);
+      final habitName = _habitController.text.trim();
+      if (habitName.isNotEmpty) {
+        await ref.read(habitRepositoryProvider).createHabit(name: habitName);
+      }
       await settingsRepo.set('language', _language);
       await settingsRepo.set('level', _level);
       await settingsRepo.set('onboarded', 'true');

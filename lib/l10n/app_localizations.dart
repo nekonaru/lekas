@@ -4841,7 +4841,7 @@ abstract class AppLocalizations {
   /// No description provided for @transcriptTitle.
   ///
   /// In id, this message translates to:
-  /// **'Proyeksi IPK'**
+  /// **'Transkrip nilai'**
   String get transcriptTitle;
 
   /// No description provided for @repeatWeekdays.
@@ -4975,6 +4975,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Coba lagi'**
   String get retryLabel;
+
+  /// No description provided for @onboardHabitTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kebiasaan kecil'**
+  String get onboardHabitTitle;
+
+  /// No description provided for @onboardHabitSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Bangun streak dari sesuatu yang kamu lakukan tiap hari.'**
+  String get onboardHabitSubtitle;
+
+  /// No description provided for @onboardHabitName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kebiasaan (opsional)'**
+  String get onboardHabitName;
+
+  /// No description provided for @weekPlannerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rencana minggu ini'**
+  String get weekPlannerTitle;
+
+  /// No description provided for @weekPlannerPrevious.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu sebelumnya'**
+  String get weekPlannerPrevious;
+
+  /// No description provided for @weekPlannerNext.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu berikutnya'**
+  String get weekPlannerNext;
 }
 
 class _AppLocalizationsDelegate

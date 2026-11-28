@@ -20,9 +20,11 @@ import '../tasks/trash_screen.dart';
 import '../tasks/tunda_smart_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../ics/ics_screen.dart';
+import '../calendar/week_planner_screen.dart';
 import '../csv/csv_screen.dart';
 import '../search/global_search_screen.dart';
 import '../kebiasaan/kebiasaan_screen.dart';
+import '../study/transcript_screen.dart';
 import '../study/exam_simulation_screen.dart';
 import '../study/flashcards_screen.dart';
 import '../study/session_log_screen.dart';
@@ -249,6 +251,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             () => _push(const MorningNightSummaryScreen()),
           ),
           _drawerTile(
+            Icons.view_week_outlined,
+            l10n.weekPlannerTitle,
+            () => _push(const WeekPlannerScreen()),
+          ),
+          _drawerTile(
             Icons.assignment_turned_in_outlined,
             l10n.dailyReviewTitle,
             () => _push(const DailyReviewScreen()),
@@ -272,6 +279,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           _drawerSection(l10n.drawerSectionStudy, Icons.auto_stories_outlined),
           _FlashcardsTile(
             onTap: () => _push(const FlashcardsScreen()),
+          ),
+          _drawerTile(
+            Icons.description_outlined,
+            l10n.transcriptTitle,
+            () => _push(const TranscriptScreen()),
           ),
           _drawerTile(
             Icons.grade_outlined,

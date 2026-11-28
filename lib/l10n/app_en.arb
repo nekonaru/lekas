@@ -914,5 +914,12 @@
   "examSimulationTitle": "Exam simulation",
   "examSimulationScore": "Score: {correct} of {total}",
   "@examSimulationScore": { "placeholders": { "correct": { "type": "int" }, "total": { "type": "int" } } },
-  "retryLabel": "Try again"
+  "retryLabel": "Try again",
+  "onboardHabitTitle": "One small habit",
+  "onboardHabitSubtitle": "Optional. Build a streak from something you do every day.",
+  "onboardHabitName": "Habit name (optional)",
+  "transcriptTitle": "Transcript",
+  "weekPlannerTitle": "Weekly plan",
+  "weekPlannerPrevious": "Previous week",
+  "weekPlannerNext": "Next week"
 }

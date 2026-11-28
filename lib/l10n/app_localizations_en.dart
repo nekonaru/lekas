@@ -2649,7 +2649,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finalGradeValue => 'Final grade (0-100)';
 
   @override
-  String get transcriptTitle => 'GPA projection';
+  String get transcriptTitle => 'Transcript';
 
   @override
   String get repeatWeekdays => 'On specific days';
@@ -2725,4 +2725,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retryLabel => 'Try again';
+
+  @override
+  String get onboardHabitTitle => 'One small habit';
+
+  @override
+  String get onboardHabitSubtitle =>
+      'Optional. Build a streak from something you do every day.';
+
+  @override
+  String get onboardHabitName => 'Habit name (optional)';
+
+  @override
+  String get weekPlannerTitle => 'Weekly plan';
+
+  @override
+  String get weekPlannerPrevious => 'Previous week';
+
+  @override
+  String get weekPlannerNext => 'Next week';
 }
