@@ -4,6 +4,9 @@
     <string name="widget_classes_title">Classes Today</string>
     <string name="widget_exam_title">Exam Countdown</string>
     <string name="widget_focus_title">Today Focus</string>
+    <string name="widget_cards_title">Cards Due</string>
+    <string name="widget_empty_cards">No cards due</string>
+    <string name="widget_cards_count">%d cards</string>
     <string name="widget_add">+ Add</string>
     <string name="widget_empty_tasks">No tasks yet</string>
     <string name="widget_empty_classes">No class today</string>

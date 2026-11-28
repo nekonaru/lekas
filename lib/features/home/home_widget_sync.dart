@@ -8,6 +8,7 @@ import 'package:home_widget/home_widget.dart';
 import '../../data/class_exception_repository.dart';
 import '../../data/class_slot_repository.dart';
 import '../../data/database.dart';
+import '../../data/flashcard_repository.dart';
 import '../../data/providers.dart';
 import '../../data/settings_repository.dart';
 import '../../data/space_repository.dart';
@@ -24,6 +25,7 @@ const String kTaskWidgetProvider = 'com.lekas.lekas.TaskListWidgetProvider';
 const String kClassWidgetProvider = 'com.lekas.lekas.ClassWidgetProvider';
 const String kExamWidgetProvider = 'com.lekas.lekas.ExamWidgetProvider';
 const String kFocusWidgetProvider = 'com.lekas.lekas.FocusWidgetProvider';
+const String kCardsWidgetProvider = 'com.lekas.lekas.CardsWidgetProvider';
 
 /// Endless deadline used only to sort tasks without one to the back.
 const int _noDeadline = 9223372036854775807;
@@ -109,6 +111,14 @@ Future<void> syncHomeWidgets(AppDatabase db, {DateTime? now}) async {
       for (final entry in classRows) _classRowJson(entry.row),
     ]),
   );
+  final flashcards = await FlashcardRepository(db).dueCardsAny();
+  await HomeWidget.saveWidgetData<String>(
+    kWidgetCardsKey,
+    jsonEncode({
+      'count': flashcards.length,
+      'caption': language == 'en' ? 'cards due' : 'kartu jatuh tempo',
+    }),
+  );
   await HomeWidget.saveWidgetData<String>(
     kWidgetExamKey,
     countdown == null ? '' : jsonEncode(_examJson(countdown)),
@@ -119,6 +129,7 @@ Future<void> syncHomeWidgets(AppDatabase db, {DateTime? now}) async {
     kClassWidgetProvider,
     kExamWidgetProvider,
     kFocusWidgetProvider,
+    kCardsWidgetProvider,
   ]) {
     await HomeWidget.updateWidget(qualifiedAndroidName: provider);
   }

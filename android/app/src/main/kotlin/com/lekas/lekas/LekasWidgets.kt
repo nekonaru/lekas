@@ -162,6 +162,33 @@ class FocusWidgetProvider : LekasWidgetProvider(R.layout.widget_list, "widget_fo
     }
 }
 
+/** Due flashcards at a glance, using the compact single-number layout. */
+class CardsWidgetProvider : LekasWidgetProvider(R.layout.widget_exam, "widget_cards") {
+
+    override val titleRes = R.string.widget_cards_title
+
+    override fun fill(context: Context, views: RemoteViews, payload: String?) {
+        val cards = if (payload.isNullOrEmpty()) null else try {
+            JSONObject(payload)
+        } catch (error: Exception) {
+            null
+        }
+        if (cards == null) {
+            views.setTextViewText(R.id.widget_exam_days, "")
+            views.setTextViewText(
+                R.id.widget_exam_caption,
+                context.getString(R.string.widget_empty_cards),
+            )
+            return
+        }
+        views.setTextViewText(
+            R.id.widget_exam_days,
+            context.getString(R.string.widget_cards_count, cards.optInt("count")),
+        )
+        views.setTextViewText(R.id.widget_exam_caption, cards.optString("caption"))
+    }
+}
+
 /** Days until the nearest deadline (design section 7.8). */
 class ExamWidgetProvider : LekasWidgetProvider(R.layout.widget_exam, "widget_exam") {
 

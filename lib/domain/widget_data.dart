@@ -9,6 +9,7 @@ const String kWidgetTasksKey = 'widget_tasks';
 const String kWidgetClassesKey = 'widget_classes';
 const String kWidgetExamKey = 'widget_exam';
 const String kWidgetFocusKey = 'widget_focus';
+const String kWidgetCardsKey = 'widget_cards';
 
 /// The task list widget shows three to six lines (design section 7.8).
 const int kWidgetTaskRows = 6;

@@ -17,6 +17,12 @@
     <string name="widget_classes_title">Kelas Hari Ini</string>
     <string name="widget_exam_title">Hitung Mundur Ujian</string>
     <string name="widget_focus_title">Fokus Hari Ini</string>
+    <string name="widget_cards_title">Kartu Jatuh Tempo</string>
+    <string name="widget_empty_cards">Belum ada kartu jatuh tempo</string>
+    <string name="widget_cards_count">%d kartu</string>
+    <string name="widget_cards_title">Kartu Jatuh Tempo</string>
+    <string name="widget_empty_cards">Belum ada kartu jatuh tempo</string>
+    <string name="widget_cards_count">%d kartu</string>
     <string name="widget_add">+ Tambah</string>
     <string name="widget_empty_tasks">Belum ada tugas</string>
     <string name="widget_empty_classes">Belum ada kelas hari ini</string>
